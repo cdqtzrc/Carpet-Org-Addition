@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "carpet-org-addition",
+  "version": "${version}",
+  "name": "Carpet Org Addition",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/carpet-org-addition/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "org.carpet_org_addition.client.CarpetOrgAdditionClient"
+    ],
+    "main": [
+      "org.carpet_org_addition.CarpetOrgAddition"
+    ]
+  },
+  "mixins": [
+    "carpet_org.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "minecraft": "${minecraft_version}"
+  }
+}
