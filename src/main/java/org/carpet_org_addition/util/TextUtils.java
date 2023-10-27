@@ -10,6 +10,8 @@ import org.carpet_org_addition.carpet.tools.text.Translate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 public class TextUtils {
     private TextUtils() {
     }
@@ -164,8 +166,12 @@ public class TextUtils {
      * @return 可翻译文本
      */
     public static MutableText getTranslate(String key, Object... obj) {
-        // TODO 可能产生空指针异常
-        String value = Translate.getTranslate().get(key);
+        String value;
+        try {
+            value = Objects.requireNonNull(Translate.getTranslate()).get(key);
+        } catch (NullPointerException e) {
+            value = null;
+        }
         return Text.translatableWithFallback(key, value, obj);
     }
 }

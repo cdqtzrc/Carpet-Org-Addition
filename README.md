@@ -577,7 +577,7 @@ CCE更新抑制器(CCEUpdateSuppression)
 - 通过移除路径点中的交互事件来让OMMC可以解析聊天中的路径点
     - 类型：布尔值
     - 默认值：false
-    - 参考选项：true，false
+    - 参考选项：`true`，`false`
     - 分类：Org，生存
 
 禁用无序聊天数据包检查(disableOutOfOrderChatCheck)
@@ -585,7 +585,7 @@ CCE更新抑制器(CCEUpdateSuppression)
 - 玩家发送无序的聊天数据包时不会被踢出游戏
     - 类型：布尔值
     - 默认值：false
-    - 参考选项：true，false
+    - 参考选项：`true`，`false`
     - 分类：Org，生存
 
 ## 命令
