@@ -26,7 +26,7 @@ public class FakePlayerCraft {
             Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
             //如果合成材料是空气，停止合成，然后直接结束方法
             if (item == Items.AIR) {
-                FakePlayerUtils.stopCraftAction(context.getSource(), fakePlayer);
+                stopCraftAction(context.getSource(), fakePlayer);
                 return;
             }
             int loopCount = 0;
@@ -76,7 +76,7 @@ public class FakePlayerCraft {
                 if (craftingScreenHandler.getSlot(0).hasStack()) {
                     FakePlayerUtils.throwItem(craftingScreenHandler, 0, fakePlayer);
                 } else {
-                    FakePlayerUtils.stopCraftAction(context.getSource(), fakePlayer);
+                    stopCraftAction(context.getSource(), fakePlayer);
                     //如果输出槽没有物品，及时结束方法，防止进入无法跳出的死循环
                     return;
                 }
@@ -90,7 +90,7 @@ public class FakePlayerCraft {
             Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
             //如果合成材料是空气，停止合成，然后直接结束方法
             if (item == Items.AIR) {
-                FakePlayerUtils.stopCraftAction(context.getSource(), fakePlayer);
+                stopCraftAction(context.getSource(), fakePlayer);
                 return;
             }
             int loopCount = 0;
@@ -175,7 +175,7 @@ public class FakePlayerCraft {
                     if (craftingScreenHandler.getSlot(0).hasStack()) {
                         FakePlayerUtils.throwItem(craftingScreenHandler, 0, fakePlayer);
                     } else {
-                        FakePlayerUtils.stopCraftAction(context.getSource(), fakePlayer);
+                        stopCraftAction(context.getSource(), fakePlayer);
                         //如果输出槽没有物品，说明该配方不能合成任何物品，这时候要及时结束方法，避免游戏进入无法跳出的死循环
                         return;
                     }
@@ -189,7 +189,7 @@ public class FakePlayerCraft {
         Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
         //如果合成材料是空气，停止合成，然后直接结束方法
         if (item == Items.AIR) {
-            FakePlayerUtils.stopCraftAction(context.getSource(), fakePlayer);
+            stopCraftAction(context.getSource(), fakePlayer);
             return;
         }
         int loopCount = 0;
@@ -276,7 +276,7 @@ public class FakePlayerCraft {
                     FakePlayerUtils.throwItem(playerScreenHandler, 0, fakePlayer);
                 } else {
                     //否则，认为前面的执行有误，停止合成，结束方法
-                    FakePlayerUtils.stopCraftAction(context.getSource(), fakePlayer);
+                    stopCraftAction(context.getSource(), fakePlayer);
                     return;
                 }
             }
@@ -340,7 +340,7 @@ public class FakePlayerCraft {
                         FakePlayerUtils.throwItem(craftingScreenHandler, 0, fakePlayer);
                     } else {
                         //如果没有输出物品，说明之前的合成步骤有误，停止合成
-                        FakePlayerUtils.stopCraftAction(context.getSource(), fakePlayer);
+                        stopCraftAction(context.getSource(), fakePlayer);
                         return;
                     }
                 } else {
@@ -406,7 +406,7 @@ public class FakePlayerCraft {
                     FakePlayerUtils.throwItem(playerScreenHandler, 0, fakePlayer);
                 } else {
                     //如果输出槽没有物品，认为前面的合成操作有误，停止合成
-                    FakePlayerUtils.stopCraftAction(context.getSource(), fakePlayer);
+                    stopCraftAction(context.getSource(), fakePlayer);
                     return;
                 }
             } else {
@@ -414,5 +414,15 @@ public class FakePlayerCraft {
                 return;
             }
         } while (CarpetSettings.ctrlQCraftingFix);
+    }
+
+    /**
+     * 假玩家停止物品合成操作，并广播停止合成的消息
+     *
+     * @param source       发送消息的消息源
+     * @param playerMPFake 需要停止操作的假玩家
+     */
+    private static void stopCraftAction(ServerCommandSource source, EntityPlayerMPFake playerMPFake) {
+        FakePlayerUtils.stopAction(source, playerMPFake, "carpet.commands.playerTools.action.craft");
     }
 }

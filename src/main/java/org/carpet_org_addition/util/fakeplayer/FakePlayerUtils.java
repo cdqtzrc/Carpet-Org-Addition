@@ -79,17 +79,6 @@ public class FakePlayerUtils {
     }
 
     /**
-     * 假玩家停止物品合成操作，并广播停止合成的消息，移动到{@link FakePlayerCraft}类中
-     *
-     * @param source       发送消息的消息源
-     * @param playerMPFake 需要停止操作的假玩家
-     */
-    public static void stopCraftAction(ServerCommandSource source, EntityPlayerMPFake playerMPFake) {
-        // TODO 移动成员方法
-        stopAction(source, playerMPFake, "carpet.commands.playerTools.action.craft");
-    }
-
-    /**
      * 让假玩家停止当前的操作
      *
      * @param source       发送消息的的消息源
