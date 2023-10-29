@@ -284,7 +284,7 @@ public class FakePlayerCraft {
     }
 
     //合成自定义物品，3x3
-    public static void craft3x3(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) {
+    public static void craft3x3(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer, Item[] items) {
         if (fakePlayer.currentScreenHandler instanceof CraftingScreenHandler craftingScreenHandler) {
             int loopCount = 0;
             do {
@@ -298,7 +298,7 @@ public class FakePlayerCraft {
                 //依次获取每一个合成材料和遍历合成格
                 for (int index = 1; index <= 9; index++) {
                     //依次获取每一个合成材料
-                    Item item = ItemStackArgumentType.getItemStackArgument(context, "item" + index).getItem();
+                    Item item = items[index - 1];
                     Slot slot = craftingScreenHandler.getSlot(index);
                     //如果合成格的指定槽位不是所需要合成材料，则丢出该物品
                     if (slot.hasStack()) {

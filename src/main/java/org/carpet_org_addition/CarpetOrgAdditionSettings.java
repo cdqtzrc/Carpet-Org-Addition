@@ -459,4 +459,10 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean disableOutOfOrderChatCheck = false;
+
+    //禁止水结冰
+    @Rule(
+            categories = {ORG, RuleCategory.FEATURE}
+    )
+    public static boolean disableWaterFreezes = false;
 }

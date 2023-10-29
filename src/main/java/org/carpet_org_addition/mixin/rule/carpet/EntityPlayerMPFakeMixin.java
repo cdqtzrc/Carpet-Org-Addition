@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
@@ -56,6 +57,20 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
     @Override
     public void setAction(FakePlayerActionType action) {
         this.action = action;
+    }
+
+    // 假玩家3x3合成时的配方
+
+
+    @Override
+    public Item[] getCraft() {
+        return ITEMS;
+    }
+
+    @Override
+    public void setCraft(Item[] items) {
+        //数组拷贝
+        System.arraycopy(items, 0, ITEMS, 0, ITEMS.length);
     }
 
     //假玩家保护类型
@@ -124,7 +139,7 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
             //假玩家自动合成物品（九个相同的材料）
             case CRAFT_NINE -> FakePlayerCraft.craftNine(context, thisPlayer);
             //假玩家自动合成物品（9x9自定义物品）
-            case CRAFT_3X3 -> FakePlayerCraft.craft3x3(context, thisPlayer);
+            case CRAFT_3X3 -> FakePlayerCraft.craft3x3(context, thisPlayer, ITEMS);
             //假玩家自动合成物品（4x4自定义物品）
             case CRAFT_2X2 -> FakePlayerCraft.craft2x2(context, thisPlayer);
             //假玩家自动重命名
@@ -142,7 +157,7 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
     @Override
     public boolean damage(DamageSource source, float amount) {
         if (CarpetOrgAdditionSettings.fakePlayerProtect && FakePlayerProtectManager.isNotDamage(thisPlayer)
-            && !(source.getSource() instanceof PlayerEntity) && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+                && !(source.getSource() instanceof PlayerEntity) && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return false;
         }
         return super.damage(source, amount);
@@ -152,7 +167,7 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
     @Inject(method = "onDeath", at = @At("HEAD"), cancellable = true)
     private void onDeath(DamageSource source, CallbackInfo ci) {
         if (CarpetOrgAdditionSettings.fakePlayerProtect && FakePlayerProtectManager.isNotDeath(thisPlayer)
-            && !(source.getSource() instanceof PlayerEntity) && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+                && !(source.getSource() instanceof PlayerEntity) && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             this.setHealth(this.getMaxHealth());
             HungerManager hungerManager = this.getHungerManager();
             hungerManager.setFoodLevel(20);

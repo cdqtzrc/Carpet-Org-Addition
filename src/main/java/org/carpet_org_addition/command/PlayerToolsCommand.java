@@ -16,7 +16,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.Item;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
+import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -35,15 +38,13 @@ import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.SendMessageUtils;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.fakeplayer.FakePlayerActionInterface;
-import org.carpet_org_addition.util.fakeplayer.FakePlayerActionType;
-import org.carpet_org_addition.util.fakeplayer.FakePlayerEnderChestScreenHandler;
-import org.carpet_org_addition.util.fakeplayer.FakePlayerProtectManager;
+import org.carpet_org_addition.util.fakeplayer.*;
 
 import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
 
+@SuppressWarnings("SameReturnValue")
 public class PlayerToolsCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("playerTools").requires(source ->
@@ -60,8 +61,8 @@ public class PlayerToolsCommand {
                                 .then(CommandManager.literal("craft")
                                         .then(CommandManager.literal("one").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext)).executes(context -> setAction(context, EntityArgumentType.getPlayer(context, "player"), FakePlayerActionType.CRAFT_ONE))))
                                         .then(CommandManager.literal("nine").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext)).executes(context -> setAction(context, EntityArgumentType.getPlayer(context, "player"), FakePlayerActionType.CRAFT_NINE))))
-                                        .then(CommandManager.literal("four").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext)).executes(context -> setAction(context, EntityArgumentType.getPlayer(context, "player"), FakePlayerActionType.CRAFT_FOUR)))
-                                        ).then(CommandManager.literal("3x3")
+                                        .then(CommandManager.literal("four").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext)).executes(context -> setAction(context, EntityArgumentType.getPlayer(context, "player"), FakePlayerActionType.CRAFT_FOUR))))
+                                        .then(CommandManager.literal("3x3")
                                                 .then(CommandManager.argument("item1", ItemStackArgumentType.itemStack(commandBuildContext))
                                                         .then(CommandManager.argument("item2", ItemStackArgumentType.itemStack(commandBuildContext))
                                                                 .then(CommandManager.argument("item3", ItemStackArgumentType.itemStack(commandBuildContext))
@@ -72,13 +73,14 @@ public class PlayerToolsCommand {
                                                                                                         .then(CommandManager.argument("item8", ItemStackArgumentType.itemStack(commandBuildContext))
                                                                                                                 .then(CommandManager.argument("item9", ItemStackArgumentType.itemStack(commandBuildContext))
                                                                                                                         .executes(context -> setAction(context, EntityArgumentType.getPlayer(context, "player"), FakePlayerActionType.CRAFT_3X3))
-                                                                                                                )))))))))
-                                        ).then(CommandManager.literal("2x2")
+                                                                                                                ))))))))))
+                                        .then(CommandManager.literal("2x2")
                                                 .then(CommandManager.argument("item1", ItemStackArgumentType.itemStack(commandBuildContext))
                                                         .then(CommandManager.argument("item2", ItemStackArgumentType.itemStack(commandBuildContext))
                                                                 .then(CommandManager.argument("item3", ItemStackArgumentType.itemStack(commandBuildContext))
                                                                         .then(CommandManager.argument("item4", ItemStackArgumentType.itemStack(commandBuildContext))
-                                                                                .executes(context -> setAction(context, EntityArgumentType.getPlayer(context, "player"), FakePlayerActionType.CRAFT_2X2))))))))
+                                                                                .executes(context -> setAction(context, EntityArgumentType.getPlayer(context, "player"), FakePlayerActionType.CRAFT_2X2)))))))
+                                        .then(CommandManager.literal("gui").executes(context -> openFakePlayerCraftGui(context, EntityArgumentType.getPlayer(context, "player")))))
                                 .then(CommandManager.literal("trade").then(CommandManager.argument("index", IntegerArgumentType.integer(1))
                                         .executes(context -> setAction(context, EntityArgumentType.getPlayer(context, "player"), FakePlayerActionType.TRADE))))
                                 .then(CommandManager.literal("query").executes(context -> getAction(context, EntityArgumentType.getPlayer(context, "player"))))
@@ -246,6 +248,14 @@ public class PlayerToolsCommand {
         if (isFakePlayer(fakePlayer)) {
             //将假玩家类型强转为假玩家动作接口
             FakePlayerActionInterface fakePlayerActionInterface = (FakePlayerActionInterface) fakePlayer;
+            //如果假玩家动作类型是3x3物品合成，为数组复制
+            if (action == FakePlayerActionType.CRAFT_3X3) {
+                Item[] items = new Item[9];
+                for (int i = 1; i <= 9; i++) {
+                    items[i - 1] = ItemStackArgumentType.getItemStackArgument(context, "item" + i).getItem();
+                }
+                fakePlayerActionInterface.setCraft(items);
+            }
             //设置假玩家的操作类型和命令的参数
             fakePlayerActionInterface.setAction(action);
             fakePlayerActionInterface.setContext(context);
@@ -270,6 +280,21 @@ public class PlayerToolsCommand {
         if (isFakePlayer(fakePlayer)) {
             FakePlayerActionType action = ((FakePlayerActionInterface) fakePlayer).getAction();
             SendMessageUtils.sendTextMessage(player, TextUtils.appendAll(fakePlayer.getDisplayName(), ": ", action.getActionText(context)));
+        }
+        return 1;
+    }
+
+    // 打开控制假人合成物品的GUI
+    private static int openFakePlayerCraftGui(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer) throws CommandSyntaxException {
+        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        if (isFakePlayer(fakePlayer)) {
+            FakePlayerActionInterface fakePlayerActionInterface = (FakePlayerActionInterface) fakePlayer;
+            fakePlayerActionInterface.setContext(context);
+            // 打开合成GUI
+            SimpleNamedScreenHandlerFactory screen = new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity)
+                    -> new FakePlayerGuiCraftScreenHandler(i, playerInventory, (EntityPlayerMPFake) fakePlayer,
+                    ScreenHandlerContext.create(player.getWorld(), player.getBlockPos()), new SimpleInventory(9)), TextUtils.getTranslate("carpet.commands.playerTools.action.type.craft_gui"));
+            player.openHandledScreen(screen);
         }
         return 1;
     }
