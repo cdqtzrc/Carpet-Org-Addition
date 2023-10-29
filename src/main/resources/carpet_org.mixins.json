@@ -11,6 +11,7 @@
     "rule.BatEntityMixin",
     "rule.BeaconBlockEntityMixin",
     "rule.BindingCurseEnchantmentMixin",
+    "rule.BiomeMixin",
     "rule.BowItemMixin",
     "rule.CreeperEntityMixin",
     "rule.DamageEnchantmentMixin",
