@@ -11,7 +11,9 @@ import net.minecraft.screen.CraftingScreenHandler;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.command.ServerCommandSource;
+import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.exception.InfiniteLoopException;
+import org.carpet_org_addition.util.StringUtils;
 
 public class FakePlayerCraft {
     //最大循环次数
@@ -34,7 +36,9 @@ public class FakePlayerCraft {
                 loopCount++;
                 //循环次数过多，认为游戏进入了死循环，通过抛出异常结束循环
                 if (loopCount > MAX_LOOP_COUNT) {
-                    throw new InfiniteLoopException();
+                    throw new InfiniteLoopException(StringUtils.getPlayerName(fakePlayer) + "在合成物品时循环了"
+                            + loopCount + "次(" + StringUtils.getDimensionId(fakePlayer.getWorld()) + ":["
+                            + StringUtils.getBlockPosString(fakePlayer.getBlockPos()) + "])");
                 }
                 //是否需要遍历物品栏
                 boolean flag = false;
@@ -98,7 +102,9 @@ public class FakePlayerCraft {
                 loopCount++;
                 if (loopCount > MAX_LOOP_COUNT) {
                     //循环次数过多，认为游戏进入了死循环，通过抛出异常结束循环
-                    throw new InfiniteLoopException();
+                    throw new InfiniteLoopException(StringUtils.getPlayerName(fakePlayer) + "在合成物品时循环了"
+                            + loopCount + "次(" + StringUtils.getDimensionId(fakePlayer.getWorld()) + ":["
+                            + StringUtils.getBlockPosString(fakePlayer.getBlockPos()) + "])");
                 }
                 //是否可以取出合成物品
                 boolean canCraft = false;
@@ -111,7 +117,8 @@ public class FakePlayerCraft {
                     if (!craftingScreenHandler.getSlot(index).hasStack()) {
                         //如果该合成格上没有物品，设置需要遍历玩家物品栏，结束本轮循环
                         flag = true;
-                        //因为该格子没有物品，所以这里一定不是所需要的合成材料，没有必要继续进行判断（如果合成材料是空气，代码也不会执行到这里，在进入循环前会对合成材料进行检查
+                        // 因为该格子没有物品，所以这里一定不是所需要的合成材料，没有必要继续进行判断
+                        // 如果合成材料是空气，代码也不会执行到这里，在进入循环前会对合成材料进行检查
                         continue;
                     }
                     //判断该格子是否为指定的合成材料
@@ -197,7 +204,9 @@ public class FakePlayerCraft {
             loopCount++;
             if (loopCount > MAX_LOOP_COUNT) {
                 //循环次数过多，认为游戏进入了死循环，通过抛出异常结束循环
-                throw new InfiniteLoopException();
+                throw new InfiniteLoopException(StringUtils.getPlayerName(fakePlayer) + "在合成物品时循环了"
+                        + loopCount + "次(" + StringUtils.getDimensionId(fakePlayer.getWorld()) + ":["
+                        + StringUtils.getBlockPosString(fakePlayer.getBlockPos()) + "])");
             }
             //获取玩家的物品栏GUI对象
             PlayerScreenHandler playerScreenHandler = fakePlayer.playerScreenHandler;
@@ -291,7 +300,9 @@ public class FakePlayerCraft {
                 loopCount++;
                 //避免游戏进入死循环
                 if (loopCount > MAX_LOOP_COUNT) {
-                    throw new InfiniteLoopException();
+                    throw new InfiniteLoopException(StringUtils.getPlayerName(fakePlayer) + "在合成物品时循环了"
+                            + loopCount + "次(" + StringUtils.getDimensionId(fakePlayer.getWorld()) + ":["
+                            + StringUtils.getBlockPosString(fakePlayer.getBlockPos()) + "])");
                 }
                 //定义变量记录找到正确合成材料的次数
                 int successCount = 0;
@@ -318,11 +329,17 @@ public class FakePlayerCraft {
                         //遍历物品栏找到需要的合成材料
                         int size = craftingScreenHandler.slots.size();
                         for (int inventoryIndex = 10; inventoryIndex < size; inventoryIndex++) {
-                            if (craftingScreenHandler.getSlot(inventoryIndex).getStack().isOf(item)) {
-                                //找到正确合成材料的次数自增
-                                successCount++;
-                                //光标拾取和移动物品
+                            ItemStack itemStack = craftingScreenHandler.getSlot(inventoryIndex).getStack();
+                            if (itemStack.isOf(item)) {
+                                // 如果假玩家合成保留物品启用，并且该物品的数量为1，并且该物品的最大堆叠数大于1
+                                // 认为这个物品需要保留，结束本轮循环
+                                if (CarpetOrgAdditionSettings.fakePlayerCraftKeepItem && itemStack.getCount() == 1 && itemStack.getMaxCount() > 1) {
+                                    continue;
+                                }
+                                // 光标拾取和移动物品
                                 FakePlayerUtils.pickupAndMoveItemStack(craftingScreenHandler, inventoryIndex, index, fakePlayer);
+                                // 找到正确合成材料的次数自增
+                                successCount++;
                                 break;
                             }
                             //合成格没有遍历完毕，继续查找下一个合成材料
@@ -360,7 +377,9 @@ public class FakePlayerCraft {
             loopCount++;
             //如果循环次数过多，认为游戏进入了死循环，直接抛出异常强行结束方法
             if (loopCount > MAX_LOOP_COUNT) {
-                throw new InfiniteLoopException();
+                throw new InfiniteLoopException(StringUtils.getPlayerName(fakePlayer) + "在合成物品时循环了"
+                        + loopCount + "次(" + StringUtils.getDimensionId(fakePlayer.getWorld()) + ":["
+                        + StringUtils.getBlockPosString(fakePlayer.getBlockPos()) + "])");
             }
             //定义变量记录找到正确合成材料的次数
             int successCount = 0;
@@ -386,8 +405,14 @@ public class FakePlayerCraft {
                     int size = playerScreenHandler.slots.size();
                     //遍历物品栏，包括盔甲槽和副手槽
                     for (int inventoryIndex = 5; inventoryIndex < size; inventoryIndex++) {
+                        ItemStack itemStack = playerScreenHandler.getSlot(inventoryIndex).getStack();
                         //如果该槽位是正确的合成材料，将该物品移动到合成格，然后增加找到正确合成材料的次数
-                        if (playerScreenHandler.getSlot(inventoryIndex).getStack().isOf(item)) {
+                        if (itemStack.isOf(item)) {
+                            // 如果假玩家合成保留物品启用，并且该物品的数量为1，并且该物品的最大堆叠数大于1
+                            // 认为这个物品需要保留，结束本轮循环
+                            if (CarpetOrgAdditionSettings.fakePlayerCraftKeepItem && itemStack.getCount() == 1 && itemStack.getMaxCount() > 1) {
+                                continue;
+                            }
                             FakePlayerUtils.pickupAndMoveItemStack(playerScreenHandler, inventoryIndex, craftIndex, fakePlayer);
                             successCount++;
                             break;

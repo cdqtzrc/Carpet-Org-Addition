@@ -288,12 +288,10 @@ public class PlayerToolsCommand {
     private static int openFakePlayerCraftGui(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getPlayer(context);
         if (isFakePlayer(fakePlayer)) {
-            FakePlayerActionInterface fakePlayerActionInterface = (FakePlayerActionInterface) fakePlayer;
-            fakePlayerActionInterface.setContext(context);
             // 打开合成GUI
             SimpleNamedScreenHandlerFactory screen = new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity)
                     -> new FakePlayerGuiCraftScreenHandler(i, playerInventory, (EntityPlayerMPFake) fakePlayer,
-                    ScreenHandlerContext.create(player.getWorld(), player.getBlockPos()), new SimpleInventory(9)), TextUtils.getTranslate("carpet.commands.playerTools.action.type.craft_gui"));
+                    ScreenHandlerContext.create(player.getWorld(), player.getBlockPos()), new SimpleInventory(9), context), TextUtils.getTranslate("carpet.commands.playerTools.action.type.craft_gui"));
             player.openHandledScreen(screen);
         }
         return 1;

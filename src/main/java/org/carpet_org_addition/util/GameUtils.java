@@ -17,7 +17,7 @@ public class GameUtils {
      * @return 指定名称的玩家
      * @throws NotFoundPlayerException 找不到指定玩家
      */
-    public static PlayerEntity getPlayer(MinecraftServer server, String playerName) throws NotFoundPlayerException {
+    public static ServerPlayerEntity getPlayer(MinecraftServer server, String playerName) throws NotFoundPlayerException {
         ServerPlayerEntity player = server.getPlayerManager().getPlayer(playerName);
         if (player == null) {
             throw new NotFoundPlayerException();

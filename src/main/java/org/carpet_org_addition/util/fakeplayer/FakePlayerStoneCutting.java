@@ -10,6 +10,7 @@ import net.minecraft.screen.StonecutterScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.exception.InfiniteLoopException;
+import org.carpet_org_addition.util.StringUtils;
 
 public class FakePlayerStoneCutting {
     private FakePlayerStoneCutting() {
@@ -26,7 +27,9 @@ public class FakePlayerStoneCutting {
                 loopCount++;
                 if (loopCount > 1000) {
                     //无限循环异常
-                    throw new InfiniteLoopException();
+                    throw new InfiniteLoopException(StringUtils.getPlayerName(fakePlayer) + "在使用切石机时循环了" + loopCount + "次("
+                            + StringUtils.getDimensionId(fakePlayer.getWorld()) + ":["
+                            + StringUtils.getBlockPosString(fakePlayer.getBlockPos()) + "])");
                 }
                 //定义变量记录是否需要遍历物品栏
                 boolean flag = true;

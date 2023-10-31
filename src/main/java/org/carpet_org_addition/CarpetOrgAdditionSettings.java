@@ -465,4 +465,10 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean disableWaterFreezes = false;
+
+    //假玩家合成保留物品
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean fakePlayerCraftKeepItem = false;
 }

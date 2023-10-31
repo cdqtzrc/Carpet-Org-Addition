@@ -9,6 +9,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.exception.InfiniteLoopException;
+import org.carpet_org_addition.util.StringUtils;
 
 public class FakePlayerTrade {
     //假玩家交易
@@ -28,7 +29,9 @@ public class FakePlayerTrade {
                 loopCount++;
                 if (loopCount > 1000) {
                     //无限循环异常
-                    throw new InfiniteLoopException();
+                    throw new InfiniteLoopException(StringUtils.getPlayerName(fakePlayer) + "在与村民交易时循环了" + loopCount + "次("
+                            + StringUtils.getDimensionId(fakePlayer.getWorld()) + ":["
+                            + StringUtils.getBlockPosString(fakePlayer.getBlockPos()) + "])");
                 }
                 //如果当前交易以锁定，直接结束方法
                 if (merchantScreenHandler.getRecipes().get(index).isDisabled()) {

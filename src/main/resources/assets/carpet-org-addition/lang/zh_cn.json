@@ -146,6 +146,8 @@
   "carpet.rule.disableOutOfOrderChatCheck.desc": "玩家发送无序的聊天数据包时不会被踢出游戏",
   "carpet.rule.disableWaterFreezes.name": "禁止水结冰",
   "carpet.rule.disableWaterFreezes.desc": "在寒冷的生物群系中水不会结冰",
+  "carpet.rule.fakePlayerCraftKeepItem.name": "假玩家合成保留物品",
+  "carpet.rule.fakePlayerCraftKeepItem.desc": "假玩家合成物品时会在物品栏中保留至少一个合成材料，除非该物品的最大堆叠数为1",
   "carpet.command.source.not_player": "期望一名玩家来执行此命令",
   "carpet.commands.blockFinder.timeout": "查找方块超时",
   "carpet.commands.blockFinder.not_found_block": "在指定范围内找不到%s",
