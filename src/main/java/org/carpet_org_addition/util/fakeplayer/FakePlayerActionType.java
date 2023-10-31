@@ -103,4 +103,22 @@ public enum FakePlayerActionType {
     public boolean isCraftAction() {
         return this == CRAFT_ONE || this == CRAFT_FOUR || this == CRAFT_NINE || this == CRAFT_2X2 || this == CRAFT_3X3;
     }
+
+    @Override
+    public String toString() {
+        return switch (this) {
+            case STOP -> "停止";
+            case SORTING -> "分拣";
+            case CLEAN -> "清空潜影盒";
+            case FILL -> "填充潜影盒";
+            case CRAFT_ONE -> "合成(单个材料)";
+            case CRAFT_FOUR -> "合成(四个相同材料)";
+            case CRAFT_NINE -> "合成(九个相同材料)";
+            case CRAFT_3X3 -> "合成(3x3自定义合成)";
+            case CRAFT_2X2 -> "合成(2x2自定义合成)";
+            case RENAME -> "重命名";
+            case STONE_CUTTING -> "切石";
+            case TRADE -> "交易";
+        };
+    }
 }

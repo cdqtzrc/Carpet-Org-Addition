@@ -1,6 +1,7 @@
 package org.carpet_org_addition.util;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.text.Text;
 import net.minecraft.text.Texts;
@@ -71,20 +72,6 @@ public class StringUtils {
     }
 
     /**
-     * 将一些零散的字符串拼接成一个大字符串
-     *
-     * @param str 要拼接的所有字符串
-     * @return 拼接后的大字符串
-     */
-    public static String addAll(String... str) {
-        StringBuilder sb = new StringBuilder();
-        for (String s : str) {
-            sb.append(s);
-        }
-        return sb.toString();
-    }
-
-    /**
      * 获取当前维度的ID
      *
      * @param world 当前世界的对象
@@ -94,6 +81,17 @@ public class StringUtils {
         return world.getRegistryKey().getValue().toString();
     }
 
+    /**
+     * 获取一名玩家的字符串形式的玩家名
+     *
+     * @param player 要获取字符串形式玩家名的玩家
+     * @return 玩家名的字符串形式
+     */
+    public static String getPlayerName(PlayerEntity player) {
+        return player.getName().getString();
+    }
+
+    // TODO 这个方法干啥用的？
     public static String getTranslatableString(String key, Object... obj) {
         return TextUtils.getTranslate(key, obj).getString();
     }

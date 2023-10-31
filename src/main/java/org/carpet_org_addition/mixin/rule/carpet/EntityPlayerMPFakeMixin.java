@@ -12,6 +12,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.exception.InfiniteLoopException;
 import org.carpet_org_addition.util.SendMessageUtils;
@@ -103,23 +104,32 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
             }
             //空指针异常
         } catch (NullPointerException e) {
+            //将错误信息写入日志
+            CarpetOrgAddition.LOGGER.error(thisPlayer.getName().getString() + "在执行操作“" + this.action.toString() + "”时抛出空指针异常:", e);
+            //让假玩家停止当前操作
             this.action = FakePlayerActionType.STOP;
+            //向聊天栏发送错误消息的反馈
             SendMessageUtils.broadcastTextMessage(thisPlayer, TextUtils.appendAll(
                     thisPlayer.getDisplayName(), ": ",
                     TextUtils.getTranslate("carpet.commands.playerTools.action.exception.null_pointer")));
-            e.printStackTrace();
         } catch (InfiniteLoopException e) {
+            //将错误信息写入日志
+            CarpetOrgAddition.LOGGER.error(thisPlayer.getName().getString() + "在执行操作“" + this.action.toString() + "”时进入了死循环:", e);
+            //让假玩家停止当前操作
             this.action = FakePlayerActionType.STOP;
+            //向聊天栏发送错误消息的反馈
             SendMessageUtils.broadcastTextMessage(thisPlayer, TextUtils.appendAll(
                     thisPlayer.getDisplayName(), ": ",
                     TextUtils.getTranslate("carpet.commands.playerTools.action.exception.infinite_loop")));
-            e.printStackTrace();
         } catch (RuntimeException e) {
+            //将错误信息写入日志
+            CarpetOrgAddition.LOGGER.error(thisPlayer.getName().getString() + "在执行操作“" + this.action.toString() + "”时遇到意外错误:", e);
+            //让假玩家停止当前操作
             this.action = FakePlayerActionType.STOP;
+            //向聊天栏发送错误消息的反馈
             SendMessageUtils.broadcastTextMessage(thisPlayer,
                     TextUtils.getTranslate("carpet.commands.playerTools.action.exception.runtime",
                             thisPlayer.getDisplayName()));
-            e.printStackTrace();
         }
     }
 

@@ -1,11 +1,11 @@
 package org.carpet_org_addition.util.fakeplayer;
 
 import carpet.patches.EntityPlayerMPFake;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.command.ServerCommandSource;
+import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.SendMessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 
@@ -22,7 +22,6 @@ public class FakePlayerUtils {
     /**
      * 模拟右键单击槽位
      */
-    @SuppressWarnings("unused")
     public static final int PICKUP_RIGHT_CLICK = 1;
     /**
      * 模拟按Q键丢弃物品
@@ -47,7 +46,7 @@ public class FakePlayerUtils {
      * @param itemStack 要丢弃的物品堆栈对象
      */
     // TODO 真的不会清空工作台合成槽中的物品吗
-    public static void dropItem(PlayerEntity player, ItemStack itemStack) {
+    public static void dropItem(EntityPlayerMPFake player, ItemStack itemStack) {
         player.dropItem(itemStack.copy(), false, false);
         itemStack.setCount(0);
     }
@@ -61,7 +60,7 @@ public class FakePlayerUtils {
      * @param slotIndex     假玩家当前操作槽位的索引
      * @param player        当前操作的假玩家
      */
-    public static void throwItem(ScreenHandler screenHandler, int slotIndex, PlayerEntity player) {
+    public static void throwItem(ScreenHandler screenHandler, int slotIndex, EntityPlayerMPFake player) {
         screenHandler.onSlotClick(slotIndex, THROW_CTRL_Q, SlotActionType.THROW, player);
     }
 
@@ -74,7 +73,7 @@ public class FakePlayerUtils {
      * @param key           模拟按下的数字键
      * @param player        当前操作的假玩家
      */
-    public static void swapItem(ScreenHandler screenHandler, int slotIndex, int key, PlayerEntity player) {
+    public static void swapItem(ScreenHandler screenHandler, int slotIndex, int key, EntityPlayerMPFake player) {
         screenHandler.onSlotClick(slotIndex, key, SlotActionType.SWAP, player);
     }
 
@@ -98,18 +97,18 @@ public class FakePlayerUtils {
      * @param slotIndex     要操作的槽位的索引
      * @param player        当前操作的玩家
      */
-    public static void quickMove(ScreenHandler screenHandler, int slotIndex, PlayerEntity player) {
+    public static void quickMove(ScreenHandler screenHandler, int slotIndex, EntityPlayerMPFake player) {
         screenHandler.quickMove(player, slotIndex);
     }
 
     /**
-     * 模拟光标拾取并丢出物品，作用与{@link #throwItem(ScreenHandler, int, PlayerEntity)}模拟Ctrl+Q丢出物品类似，但是可能有些GUI的槽位不能使用Ctrl+Q丢弃物品，这时可以尝试使用本方法
+     * 模拟光标拾取并丢出物品，作用与{@link #throwItem(ScreenHandler, int, EntityPlayerMPFake)}模拟Ctrl+Q丢出物品类似，但是可能有些GUI的槽位不能使用Ctrl+Q丢弃物品，这时可以尝试使用本方法
      *
      * @param screenHandler 玩家当前打开的GUI
      * @param slotIndex     玩家当前操作的索引
      * @param player        当前操作GUI的假玩家
      */
-    public static void pickupAndThrow(ScreenHandler screenHandler, int slotIndex, PlayerEntity player) {
+    public static void pickupAndThrow(ScreenHandler screenHandler, int slotIndex, EntityPlayerMPFake player) {
         screenHandler.onSlotClick(slotIndex, PICKUP_LEFT_CLICK, SlotActionType.PICKUP, player);
         screenHandler.onSlotClick(EMPTY_SPACE_SLOT_INDEX, PICKUP_LEFT_CLICK, SlotActionType.PICKUP, player);
     }
@@ -121,11 +120,16 @@ public class FakePlayerUtils {
      * @param fromIndex     玩家拿取物品槽位的索引索引
      * @param player        当前操作GUI的假玩家
      */
-    public static void pickupAndMoveItemStack(ScreenHandler screenHandler, int fromIndex, int toIndex, PlayerEntity player) {
+    public static void pickupAndMoveItemStack(ScreenHandler screenHandler, int fromIndex, int toIndex, EntityPlayerMPFake player) {
+        // 如果鼠标光标上有物品，先把光标上的物品丢弃
         if (!screenHandler.getCursorStack().isEmpty()) {
             screenHandler.onSlotClick(EMPTY_SPACE_SLOT_INDEX, PICKUP_LEFT_CLICK, SlotActionType.PICKUP, player);
         }
         screenHandler.onSlotClick(fromIndex, PICKUP_LEFT_CLICK, SlotActionType.PICKUP, player);
+        //如果规则假玩家合成保留物品启用，并且该物品的最大堆叠数大于1，就在该槽位上放回一个物品
+        if (CarpetOrgAdditionSettings.fakePlayerCraftKeepItem && screenHandler.getCursorStack().getMaxCount() > 1) {
+            screenHandler.onSlotClick(fromIndex, PICKUP_RIGHT_CLICK, SlotActionType.PICKUP, player);
+        }
         screenHandler.onSlotClick(toIndex, PICKUP_LEFT_CLICK, SlotActionType.PICKUP, player);
     }
 
@@ -137,7 +141,7 @@ public class FakePlayerUtils {
      * @param slotIndex     玩家当前操作槽位的索引
      * @param player        当前操作该GUI的玩家
      */
-    public static void loopThrowItem(ScreenHandler screenHandler, int slotIndex, PlayerEntity player) {
+    public static void loopThrowItem(ScreenHandler screenHandler, int slotIndex, EntityPlayerMPFake player) {
         while (screenHandler.getSlot(slotIndex).hasStack()) {
             screenHandler.onSlotClick(slotIndex, THROW_Q, SlotActionType.THROW, player);
         }
