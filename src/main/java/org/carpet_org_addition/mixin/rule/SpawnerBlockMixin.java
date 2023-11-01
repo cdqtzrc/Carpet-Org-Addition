@@ -31,7 +31,7 @@ public abstract class SpawnerBlockMixin extends BlockWithEntity {
         super(settings);
     }
 
-    @SuppressWarnings("deprecation")//抑制使用以弃用方法的警告
+    @SuppressWarnings("deprecation")//抑制使用已弃用方法的警告
     @Inject(method = "onStacksDropped", at = @At("HEAD"), cancellable = true)
     //使用精准采集工具挖掘时不会掉落经验
     private void onStacksDropped(BlockState state, ServerWorld world, BlockPos pos, ItemStack tool, boolean dropExperience, CallbackInfo ci) {

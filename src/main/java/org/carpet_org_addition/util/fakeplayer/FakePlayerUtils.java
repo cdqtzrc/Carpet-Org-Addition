@@ -45,7 +45,6 @@ public class FakePlayerUtils {
      * @param player    当前要丢弃物品的玩家
      * @param itemStack 要丢弃的物品堆栈对象
      */
-    // TODO 真的不会清空工作台合成槽中的物品吗
     public static void dropItem(EntityPlayerMPFake player, ItemStack itemStack) {
         player.dropItem(itemStack.copy(), false, false);
         itemStack.setCount(0);

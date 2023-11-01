@@ -19,8 +19,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BedBlock.class)
 public class BedBlockMixin {
     //禁止床爆炸
-    @Inject(method = "onUse", at = @At(value = "INVOKE",target = "Lnet/minecraft/block/BedBlock;isBedWorking(Lnet/minecraft/world/World;)Z"), cancellable = true)
-    private void onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
+    @Inject(method = "onUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BedBlock;isBedWorking(Lnet/minecraft/world/World;)Z"), cancellable = true)
+    private void onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit,
+                       CallbackInfoReturnable<ActionResult> cir) {
         if (CarpetOrgAdditionSettings.disableRespawnBlocksExplode && !BedBlock.isBedWorking(world)) {
             player.sendMessage(Text.literal("已禁用重生方块爆炸"), true);
             cir.setReturnValue(ActionResult.SUCCESS);

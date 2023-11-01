@@ -34,6 +34,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
         CarpetServer.settingsManager.parseSettingsClass(CarpetOrgAdditionSettings.class);
     }
 
+    // 当玩家登录时
     @Override
     public void onPlayerLoggedIn(ServerPlayerEntity player) {
         CarpetExtension.super.onPlayerLoggedIn(player);

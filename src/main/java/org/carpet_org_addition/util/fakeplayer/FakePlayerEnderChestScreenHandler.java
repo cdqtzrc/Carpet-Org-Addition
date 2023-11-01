@@ -8,7 +8,7 @@ import net.minecraft.screen.ScreenHandlerType;
 
 //假玩家末影箱GUI
 public class FakePlayerEnderChestScreenHandler extends GenericContainerScreenHandler {
-    PlayerEntity playerEntity;
+    private final PlayerEntity playerEntity;
 
     private FakePlayerEnderChestScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, Inventory inventory, int rows, PlayerEntity playerEntity) {
         super(type, syncId, playerInventory, inventory, rows);

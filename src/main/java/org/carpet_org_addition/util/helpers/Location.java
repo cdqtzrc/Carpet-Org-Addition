@@ -226,10 +226,6 @@ public class Location {
         }
     }
 
-    public String getIllustrate() {
-        return illustrate;
-    }
-
     public void setIllustrate(@Nullable String illustrate) {
         this.illustrate = illustrate;
     }

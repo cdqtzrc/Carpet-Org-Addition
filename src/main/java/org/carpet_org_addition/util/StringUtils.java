@@ -90,9 +90,4 @@ public class StringUtils {
     public static String getPlayerName(PlayerEntity player) {
         return player.getName().getString();
     }
-
-    // TODO 这个方法干啥用的？
-    public static String getTranslatableString(String key, Object... obj) {
-        return TextUtils.getTranslate(key, obj).getString();
-    }
 }

@@ -14,7 +14,7 @@ public abstract class PlayerEntityMixin {
     @Shadow
     public abstract HungerManager getHungerManager();
 
-    PlayerEntity thisPlayer = (PlayerEntity) (Object) this;
+    private final PlayerEntity thisPlayer = (PlayerEntity) (Object) this;
 
     //血量不满时也可以进食
     @Inject(method = "canConsume", at = @At("HEAD"), cancellable = true)
