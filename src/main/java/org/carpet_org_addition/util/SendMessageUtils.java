@@ -3,11 +3,8 @@ package org.carpet_org_addition.util;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import org.jetbrains.annotations.Nullable;
+import org.carpet_org_addition.CarpetOrgAddition;
 
 import java.util.Objects;
 
@@ -44,6 +41,7 @@ public class SendMessageUtils {
     public static void sendStringMessage(ServerCommandSource source, String message) {
         source.sendMessage(Text.literal(message));
     }
+
     /**
      * 广播指定内容的消息，消息对所有玩家可见，不带冒号
      *
@@ -58,7 +56,7 @@ public class SendMessageUtils {
                     containPlayerName ? TextUtils.appendAll(player.getDisplayName(), message) : Text.literal(message), false
             );
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            CarpetOrgAddition.LOGGER.error("无法通过玩家获取服务器对象", e);
         }
     }
 
@@ -73,7 +71,7 @@ public class SendMessageUtils {
             PlayerManager playerManager = Objects.requireNonNull(player.getServer()).getPlayerManager();
             playerManager.broadcast(message, false);
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            CarpetOrgAddition.LOGGER.error("无法通过玩家获取服务器对象", e);
         }
     }
 
@@ -88,7 +86,7 @@ public class SendMessageUtils {
             PlayerManager playerManager = Objects.requireNonNull(source.getServer()).getPlayerManager();
             playerManager.broadcast(message, false);
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            CarpetOrgAddition.LOGGER.error("无法通过服务器命令源获取服务器对象", e);
         }
     }
 

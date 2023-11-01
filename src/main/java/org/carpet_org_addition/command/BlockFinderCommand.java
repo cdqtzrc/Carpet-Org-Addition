@@ -34,12 +34,14 @@ public class BlockFinderCommand {
 
     //方块查找
     private static int finder(CommandContext<ServerCommandSource> context, Block block, int radius) throws CommandSyntaxException {
-        //获取执行命令的玩家并非空判断
+        // 获取执行命令的玩家并非空判断
         ServerPlayerEntity player = CommandUtils.getPlayer(context);
-        //获取命令执行时的方块坐标
+        // 获取命令执行时的方块坐标
         final BlockPos sourceBlockPos = player.getBlockPos();
+        // 开始查找方块，然后返回查询结果
         TreeSet<BlockPos> treeSet = findBlock(player.getWorld(), sourceBlockPos, block, radius);
         int count = treeSet.size();
+        // 发送命令反馈
         sendFeedback(context, block, treeSet, player.getBlockPos());
         return count;
     }
@@ -114,17 +116,12 @@ public class BlockFinderCommand {
 
     //发送反馈
     private static void sendFeedback(CommandContext<ServerCommandSource> context, BlockPos sourceBlockPos, int count, BlockPos blockPos) {
-        if (CarpetOrgAdditionSettings.canParseWayPoint) {
-            //如果规则可解析路径点启用，发送不带有特殊样式的文本
-            SendMessageUtils.sendStringMessage(context.getSource(),
-                    StringUtils.getTranslatableString("carpet.commands.blockFinder.feedback", count,
-                            (int) MathUtils.getBlockDistance(sourceBlockPos, blockPos),
-                            StringUtils.getBracketedBlockPos(blockPos)));
-        } else {
-            SendMessageUtils.sendCommandFeedback(context.getSource(),
-                    "carpet.commands.blockFinder.feedback", count,
-                    (int) MathUtils.getBlockDistance(sourceBlockPos, blockPos),
-                    TextUtils.blockPos(blockPos, Formatting.GREEN));
-        }
+        SendMessageUtils.sendCommandFeedback(context.getSource(),
+                "carpet.commands.blockFinder.feedback", count,
+                (int) MathUtils.getBlockDistance(sourceBlockPos, blockPos),
+                //如果规则可解析路径点启用，发送不带有特殊样式的文本
+                CarpetOrgAdditionSettings.canParseWayPoint
+                        ? StringUtils.getBracketedBlockPos(blockPos)
+                        : TextUtils.blockPos(blockPos, Formatting.GREEN));
     }
 }

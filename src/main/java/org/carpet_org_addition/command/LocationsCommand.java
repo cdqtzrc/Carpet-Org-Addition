@@ -15,6 +15,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.SendMessageUtils;
@@ -92,6 +93,7 @@ public class LocationsCommand {
                         .filter(name -> name.endsWith(".json")).map(LocationsCommand::removeExtension)
                         .map(StringArgumentType::escapeIfRequired), builder);
             }
+            CarpetOrgAddition.LOGGER.warn("无法列出/locations命令的建议");
             return null;
         };
     }
@@ -132,7 +134,7 @@ public class LocationsCommand {
             //成功添加路径点
             SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.locations.add.success", name, StringUtils.getBlockPosString(blockPos));
         } catch (IOException e) {
-            e.printStackTrace();
+            CarpetOrgAddition.LOGGER.error(StringUtils.getPlayerName(player) + "在尝试将路径点写入本地文件时出现意外问题:", e);
         }
         return 1;
     }
@@ -168,7 +170,7 @@ public class LocationsCommand {
                     SendMessageUtils.sendTextMessage(source, location.getText("[" + name + "] "));
                     count++;
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    CarpetOrgAddition.LOGGER.error(StringUtils.getPlayerName(player) + "在尝试将列出路径点时出现意外问题:", e);
                 }
             }
             SendMessageUtils.sendStringMessage(source, "------------------------------");

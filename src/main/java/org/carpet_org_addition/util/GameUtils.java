@@ -1,6 +1,5 @@
 package org.carpet_org_addition.util;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.carpet_org_addition.exception.NotFoundPlayerException;

@@ -29,12 +29,10 @@ public class FakePlayerRename {
                 //判断该槽位的物品是否已经正确重命名
                 if (itemStack.getName().getString().equals(newName)) {
                     //如果已经重命名，丢弃该槽位的物品
-                    //因为该槽位的物品被丢弃，所以该槽位的物品一定不是预期物品，没有必要继续判断，直接结束本轮循环
+                    //因为该槽位的物品被丢弃，所以该槽位已经没有物品，没有必要继续判断，直接结束本轮循环
                     FakePlayerUtils.pickupAndThrow(anvilScreenHandler, 0, fakePlayer);
-                }
-                // TODO 此处是否需要一个else？
-                //判断当前物品堆栈对象是否为指定物品
-                if (itemStack.isOf(item)) {
+                } else if (itemStack.isOf(item)) {
+                    //判断当前物品堆栈对象是否为指定物品
                     //让物品最大堆叠后才能重命名，节省经验
                     if (itemStack.getCount() == itemStack.getMaxCount()) {
                         oneSlotCorrect = true;

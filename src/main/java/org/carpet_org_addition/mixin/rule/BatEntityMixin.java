@@ -16,7 +16,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BatEntity.class)
 public class BatEntityMixin {
     @Inject(method = "canSpawn", at = @At("HEAD"), cancellable = true)
-    private static void canSpawn(EntityType<BatEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir) {
+    private static void canSpawn(EntityType<BatEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos,
+                                 Random random, CallbackInfoReturnable<Boolean> cir) {
         if (CarpetOrgAdditionSettings.disableBatCanSpawn) {
             cir.setReturnValue(false);
         }
