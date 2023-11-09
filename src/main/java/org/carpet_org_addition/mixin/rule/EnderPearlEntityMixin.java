@@ -5,6 +5,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
@@ -27,6 +28,7 @@ public class EnderPearlEntityMixin {
         return entity.damage(damageSource, 5F);
     }
 
+    @Unique
     private float getEnderPearlSpawnEndermiteProbability(float constant) {
         if (CarpetOrgAdditionSettings.enderPearlSpawnEndermiteProbability < 0) {
             return constant;

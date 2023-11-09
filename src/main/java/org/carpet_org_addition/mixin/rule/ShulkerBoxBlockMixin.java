@@ -33,7 +33,7 @@ public class ShulkerBoxBlockMixin {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof ShulkerBoxBlockEntity shulkerBoxBlockEntity) {
                 String blockName = shulkerBoxBlockEntity.getDisplayName().getString();
-                if ("更新抑制器".equals(blockName)) {
+                if ("更新抑制器".equals(blockName) || "updateSuppression".equalsIgnoreCase(blockName)) {
                     throw new ClassCastException(StringUtils.getDateString() + " 类型转换异常，在:"
                             + world.getRegistryKey().getValue() + " " + StringUtils.getBlockPosString(pos));
                 }

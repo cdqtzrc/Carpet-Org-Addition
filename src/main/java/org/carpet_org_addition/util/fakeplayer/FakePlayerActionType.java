@@ -66,21 +66,21 @@ public enum FakePlayerActionType {
             case CRAFT_NINE ->
                     TextUtils.getTranslate("carpet.commands.playerTools.action.type.craft_nine", getItemStatsName(context, "item"));
             case CRAFT_3X3 -> TextUtils.getTranslate("carpet.commands.playerTools.action.type.craft_3x3",
-                    getCraftItemName(0, fakePlayerActionInterface),
-                    getCraftItemName(1, fakePlayerActionInterface),
-                    getCraftItemName(2, fakePlayerActionInterface),
-                    getCraftItemName(3, fakePlayerActionInterface),
-                    getCraftItemName(4, fakePlayerActionInterface),
-                    getCraftItemName(5, fakePlayerActionInterface),
-                    getCraftItemName(6, fakePlayerActionInterface),
-                    getCraftItemName(7, fakePlayerActionInterface),
-                    getCraftItemName(8, fakePlayerActionInterface)
+                    get3x3CraftItemName(0, fakePlayerActionInterface),
+                    get3x3CraftItemName(1, fakePlayerActionInterface),
+                    get3x3CraftItemName(2, fakePlayerActionInterface),
+                    get3x3CraftItemName(3, fakePlayerActionInterface),
+                    get3x3CraftItemName(4, fakePlayerActionInterface),
+                    get3x3CraftItemName(5, fakePlayerActionInterface),
+                    get3x3CraftItemName(6, fakePlayerActionInterface),
+                    get3x3CraftItemName(7, fakePlayerActionInterface),
+                    get3x3CraftItemName(8, fakePlayerActionInterface)
             );
             case CRAFT_2X2 -> TextUtils.getTranslate("carpet.commands.playerTools.action.type.craft_2x2",
-                    getItemStatsName(context, "item1"),
-                    getItemStatsName(context, "item2"),
-                    getItemStatsName(context, "item3"),
-                    getItemStatsName(context, "item4"));
+                    get2x2CraftItemName(0, fakePlayerActionInterface),
+                    get2x2CraftItemName(1, fakePlayerActionInterface),
+                    get2x2CraftItemName(2, fakePlayerActionInterface),
+                    get2x2CraftItemName(3, fakePlayerActionInterface));
             case RENAME -> TextUtils.getTranslate("carpet.commands.playerTools.action.type.rename",
                     getItemStatsName(context, "item"), StringArgumentType.getString(context, "name"));
             case STONE_CUTTING -> TextUtils.getTranslate("carpet.commands.playerTools.action.type.stone_cutting",
@@ -94,9 +94,14 @@ public enum FakePlayerActionType {
         return ItemStackArgumentType.getItemStackArgument(context, name).getItem().getDefaultStack().toHoverableText();
     }
 
-    // 获取合成材料名称
-    private static Text getCraftItemName(int number, FakePlayerActionInterface fakePlayerActionInterface) {
-        return fakePlayerActionInterface.getCraft()[number].getDefaultStack().toHoverableText();
+    // 获取3x3合成材料名称
+    private static Text get3x3CraftItemName(int number, FakePlayerActionInterface fakePlayerActionInterface) {
+        return fakePlayerActionInterface.get3x3Craft()[number].getDefaultStack().toHoverableText();
+    }
+
+    // 获取2x2合成材料名称
+    private static Text get2x2CraftItemName(int number, FakePlayerActionInterface fakePlayerActionInterface) {
+        return fakePlayerActionInterface.get2x2Craft()[number].getDefaultStack().toHoverableText();
     }
 
     //是合成物品的操作类型

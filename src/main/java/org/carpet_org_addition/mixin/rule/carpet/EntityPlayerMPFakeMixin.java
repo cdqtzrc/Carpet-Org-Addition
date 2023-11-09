@@ -69,14 +69,24 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
 
 
     @Override
-    public Item[] getCraft() {
-        return ITEMS;
+    public Item[] get3x3Craft() {
+        return ITEMS_3X3;
     }
 
     @Override
-    public void setCraft(Item[] items) {
+    public void set3x3Craft(Item[] items) {
         //数组拷贝
-        System.arraycopy(items, 0, ITEMS, 0, ITEMS.length);
+        System.arraycopy(items, 0, ITEMS_3X3, 0, ITEMS_3X3.length);
+    }
+
+    @Override
+    public Item[] get2x2Craft() {
+        return ITEMS_2X2;
+    }
+
+    @Override
+    public void set2x2Craft(Item[] items) {
+        System.arraycopy(items, 0, ITEMS_2X2, 0, ITEMS_2X2.length);
     }
 
     //假玩家保护类型
@@ -155,9 +165,9 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
             //假玩家自动合成物品（九个相同的材料）
             case CRAFT_NINE -> FakePlayerCraft.craftNine(context, thisPlayer);
             //假玩家自动合成物品（9x9自定义物品）
-            case CRAFT_3X3 -> FakePlayerCraft.craft3x3(context, thisPlayer, ITEMS);
+            case CRAFT_3X3 -> FakePlayerCraft.craft3x3(context, thisPlayer, ITEMS_3X3);
             //假玩家自动合成物品（4x4自定义物品）
-            case CRAFT_2X2 -> FakePlayerCraft.craft2x2(context, thisPlayer);
+            case CRAFT_2X2 -> FakePlayerCraft.craft2x2(context, thisPlayer,ITEMS_2X2);
             //假玩家自动重命名
             case RENAME -> FakePlayerRename.rename(context, thisPlayer);
             //假玩家切石机

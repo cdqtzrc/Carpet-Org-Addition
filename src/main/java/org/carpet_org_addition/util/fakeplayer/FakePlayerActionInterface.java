@@ -16,10 +16,16 @@ public interface FakePlayerActionInterface {
 
     void setAction(FakePlayerActionType action);
 
-    Item[] ITEMS = new Item[9];
-
+    Item[] ITEMS_3X3 = new Item[9];
     // 假玩家3x3合成时的配方
-    Item[] getCraft();
 
-    void setCraft(Item[] items);
+    Item[] get3x3Craft();
+
+    void set3x3Craft(Item[] items);
+
+    Item[] ITEMS_2X2 = new Item[4];
+
+    Item[] get2x2Craft();
+
+    void set2x2Craft(Item[] items);
 }

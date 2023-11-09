@@ -72,6 +72,7 @@ public class FakePlayerUtils {
      * @param key           模拟按下的数字键
      * @param player        当前操作的假玩家
      */
+    @SuppressWarnings("unused")
     public static void swapItem(ScreenHandler screenHandler, int slotIndex, int key, EntityPlayerMPFake player) {
         screenHandler.onSlotClick(slotIndex, key, SlotActionType.SWAP, player);
     }
