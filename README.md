@@ -438,7 +438,7 @@
 
 CCE更新抑制器(CCEUpdateSuppression)
 
-- 通过将潜影盒命名为"更新抑制器"来制作基于"ClassCastException"的更新抑制器
+- "通过将潜影盒命名为“更新抑制器”或“updateSuppression”来制作基于"ClassCastException"的更新抑制器"
     - 类型：`布尔值`
     - 默认值：`false`
     - 参考选项：`true`，`false`
@@ -575,7 +575,7 @@ CCE更新抑制器(CCEUpdateSuppression)
 可解析路径点(canParseWayPoint)
 
 - 通过移除路径点中的交互事件来让OMMC可以解析聊天中的路径点
-    - 类型：布尔值
+    - 类型：`布尔值`
     - 默认值：`false`
     - 参考选项：`true`，`false`
     - 分类：`Org`，`生存`
@@ -583,7 +583,7 @@ CCE更新抑制器(CCEUpdateSuppression)
 禁用无序聊天数据包检查(disableOutOfOrderChatCheck)
 
 - 玩家发送无序的聊天数据包时不会被踢出游戏
-    - 类型：布尔值
+    - 类型：`布尔值`
     - 默认值：`false`
     - 参考选项：`true`，`false`
     - 分类：`Org`，`生存`
@@ -591,7 +591,7 @@ CCE更新抑制器(CCEUpdateSuppression)
 禁止水结冰(disableWaterFreezes)
 
 - 在寒冷的生物群系中水不会结冰
-    - 类型：布尔值
+    - 类型：`布尔值`
     - 默认值：`false`
     - 参考选项：`true`，`false`
     - 分类：`Org`，`特性`
@@ -599,10 +599,18 @@ CCE更新抑制器(CCEUpdateSuppression)
 假玩家合成保留物品(fakePlayerCraftKeepItem)
 
 - 假玩家合成物品时会在物品栏中保留至少一个合成材料，除非该物品的最大堆叠数为1
-    - 类型：布尔值
+    - 类型：`布尔值`
     - 默认值：`false`
     - 参考选项：`true`，`false`
     - 分类：`Org`，`生存`
+
+下界传送门有碰撞箱(NetherPortalHasCollisionBox)
+
+- 通过让下界传送门方块有碰撞箱来阻止玩家意外的进入传送门
+    - 类型：`布尔值`
+    - 默认值：`false`
+    - 参考选项：`true`，`false`
+    - 分类：`Org`，`特性`
 
 ## 命令
 
@@ -649,7 +657,7 @@ CCE更新抑制器(CCEUpdateSuppression)
             - 回满假玩家血量
                 - 同时回满假玩家饥饿值
         - action
-            - 让假玩家执行一些操作
+            - 让假玩家执行一些动作
             - sorting
                 - 让假玩家分拣特定的物品
                     - 要分拣的物品的id
@@ -664,12 +672,11 @@ CCE更新抑制器(CCEUpdateSuppression)
                 - 需要让假玩家打开一个潜影盒界面
                     - 要填充的物品
             - stop
-                - 让假玩家停止操作
+                - 让假玩家停止动作
             - craft
                 - 让假玩家合成一些单一合成材料的物品，有两条子命令
                     - one
                         - 用来合成配方只有一个材料的物品
-                        - 需要让假玩家打开一个工作台界面
                             - 要合成的物品
                     - nine
                         - 用来合成配方是九个相同材料的物品
@@ -687,10 +694,10 @@ CCE更新抑制器(CCEUpdateSuppression)
                         - 四个参数，表示四种合成材料，需要按配方在工作台中的顺序排序
                     - gui
                         - 执行后会打开一个界面，可以在里面按照合成材料顺序摆放物品
-                            - 关闭GUI时，假玩家的操作类型会被设置为3x3自定义配方，材料列表会被设置为GUI内物品的顺序，然后GUI内的物品会回到玩家物品栏
-                            - 如果关闭GUI时，没有在GUI内放在物品，则不会进行任何操作
+                            - 关闭GUI时，假玩家的动作类型会被设置为3x3自定义配方，但是如果配方能在生存模式物品栏中合成,假玩家动作类型会被设置为2x2自定义配方，材料列表会被设置为GUI内物品的顺序，然后GUI内的物品会回到玩家物品栏
+                            - 如果关闭GUI时，没有在GUI内放在物品，则不会执行任何动作
             - query
-                - 查询假玩家当前的操作类型
+                - 查询假玩家当前的动作类型
             - rename
                 - 用来让假人自动给物品重命名
                 - 重命名需要消耗经验

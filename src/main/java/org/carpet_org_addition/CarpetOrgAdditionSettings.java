@@ -471,4 +471,10 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean fakePlayerCraftKeepItem = false;
+
+    //下界传送门有碰撞箱
+    @Rule(
+            categories = {ORG, RuleCategory.FEATURE}
+    )
+    public static boolean NetherPortalHasCollisionBox = false;
 }

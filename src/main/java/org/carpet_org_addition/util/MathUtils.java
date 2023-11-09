@@ -71,7 +71,7 @@ public class MathUtils {
      *
      * @param fromBlockPos 第一个方块的坐标
      * @param toBlockPos   第二个方块的坐标
-     * @return 两个方块的距离
+     * @return 两个方块之间四舍五入的整数距离
      */
     public static int getBlockIntegerDistance(BlockPos fromBlockPos, BlockPos toBlockPos) {
         return (int) Math.round(Math.sqrt(getBlockSquareDistance(fromBlockPos, toBlockPos)));
@@ -92,7 +92,7 @@ public class MathUtils {
     }
 
     /**
-     * 获取Carpet Org设置的玩家最大交互距离并进行判断，小于0的值会被视为6.0，超过128的值会被视为128.0
+     * 获取Carpet Org Addition设置的玩家最大交互距离并进行判断，小于0的值会被视为6.0，超过128的值会被视为128.0
      *
      * @return 当前设置的最大交互距离，最大不超过128
      */

@@ -23,6 +23,16 @@ public class SendMessageUtils {
     }
 
     /**
+     * 让一个玩家发送带有特殊样式的文本，文本会显示在屏幕中下方的HUD上，文本内容仅对消息发送者可见
+     *
+     * @param player  要发送文本消息的玩家
+     * @param message 发送文本消息的内容
+     */
+    public static void sendTextMessageToHud(PlayerEntity player, Text message) {
+        player.sendMessage(message, true);
+    }
+
+    /**
      * 让一个玩家发送带有特殊样式的文本，文本内容仅对消息发送者可见
      *
      * @param source  要发送文本消息的命令源
