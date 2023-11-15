@@ -48,6 +48,7 @@ public class FakePlayerTrade {
                     // 这时由于原版漏洞，假玩家单击交易选项按钮时，物品不会自动填充到交易槽位
                     // 这虽然不至于导致游戏进入死循环，但是假玩家交易会卡住，所以但无法获取输出物品时，在结束方法前要丢出交易槽位的物品
                     if (inventoryIsFull(fakePlayer)) {
+                        // 第一个交易槽位
                         Slot slot0 = merchantScreenHandler.getSlot(0);
                         if (slot0.hasStack()) {
                             FakePlayerUtils.quickMove(merchantScreenHandler, 0, fakePlayer);
@@ -55,6 +56,7 @@ public class FakePlayerTrade {
                                 FakePlayerUtils.throwItem(merchantScreenHandler, 0, fakePlayer);
                             }
                         }
+                        // 第二个交易槽位
                         Slot slot1 = merchantScreenHandler.getSlot(1);
                         if (slot1.hasStack()) {
                             FakePlayerUtils.throwItem(merchantScreenHandler, 1, fakePlayer);

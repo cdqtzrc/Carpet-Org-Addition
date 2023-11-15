@@ -66,8 +66,6 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
     }
 
     // 假玩家3x3合成时的配方
-
-
     @Override
     public Item[] get3x3Craft() {
         return ITEMS_3X3;
@@ -75,7 +73,7 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
 
     @Override
     public void set3x3Craft(Item[] items) {
-        //数组拷贝
+        // 数组拷贝
         System.arraycopy(items, 0, ITEMS_3X3, 0, ITEMS_3X3.length);
     }
 
@@ -117,8 +115,7 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
             if (action != FakePlayerActionType.STOP && context != null) {
                 this.fakePlayerAction();
             }
-            //空指针异常
-        } catch (NullPointerException e) {
+        } catch (NullPointerException e) {//空指针异常
             //将错误信息写入日志
             CarpetOrgAddition.LOGGER.error(thisPlayer.getName().getString() + "在执行操作“" + this.action.toString() + "”时抛出空指针异常:", e);
             //让假玩家停止当前操作
@@ -167,7 +164,7 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
             //假玩家自动合成物品（9x9自定义物品）
             case CRAFT_3X3 -> FakePlayerCraft.craft3x3(context, thisPlayer, ITEMS_3X3);
             //假玩家自动合成物品（4x4自定义物品）
-            case CRAFT_2X2 -> FakePlayerCraft.craft2x2(context, thisPlayer,ITEMS_2X2);
+            case CRAFT_2X2 -> FakePlayerCraft.craft2x2(context, thisPlayer, ITEMS_2X2);
             //假玩家自动重命名
             case RENAME -> FakePlayerRename.rename(context, thisPlayer);
             //假玩家切石机
@@ -175,7 +172,10 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
             //假玩家交易
             case TRADE -> FakePlayerTrade.trade(context, thisPlayer);
             //以上值都不匹配，设置操作类型为STOP（不应该出现都不匹配的情况）
-            default -> action = FakePlayerActionType.STOP;
+            default -> {
+                CarpetOrgAddition.LOGGER.error(action + "的行为没有事先定义");
+                action = FakePlayerActionType.STOP;
+            }
         }
     }
 

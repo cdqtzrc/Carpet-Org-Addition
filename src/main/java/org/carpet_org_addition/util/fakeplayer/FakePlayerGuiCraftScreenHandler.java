@@ -12,9 +12,21 @@ import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.server.command.ServerCommandSource;
 
 public class FakePlayerGuiCraftScreenHandler extends Generic3x3ContainerScreenHandler {
+    /**
+     * 一个假玩家对象，类中所有操作都是围绕这个假玩家进行的
+     */
     private final EntityPlayerMPFake fakePlayer;
+    /**
+     * 假玩家当前打开的GUI的屏幕处理程序上下文对象，用来在关闭GUI时，将GUI内的物品放回玩家物品栏
+     */
     private final ScreenHandlerContext screenHandlerContext;
+    /**
+     * 控制假玩家合成物品的物品栏，不是假玩家背包的物品栏
+     */
     private final SimpleInventory fakePlayerCraftInventory;
+    /**
+     * 执行/playerTools命令后的命令执行上下文对象，修改假玩家动作类型时会用到这个属性
+     */
     private final CommandContext<ServerCommandSource> context;
 
     public FakePlayerGuiCraftScreenHandler(int syncId,

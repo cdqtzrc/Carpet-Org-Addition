@@ -90,6 +90,7 @@ public enum FakePlayerActionType {
     }
 
     //获取物品名
+    @SuppressWarnings("SameParameterValue")
     private static Text getItemStatsName(CommandContext<ServerCommandSource> context, String name) {
         return ItemStackArgumentType.getItemStackArgument(context, name).getItem().getDefaultStack().toHoverableText();
     }

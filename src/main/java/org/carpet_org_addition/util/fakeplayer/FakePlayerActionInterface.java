@@ -16,6 +16,9 @@ public interface FakePlayerActionInterface {
 
     void setAction(FakePlayerActionType action);
 
+    /**
+     * 使用数组的动态初始化把数组提前创建好，需要修改的时候只修改数组内的元素，这样能保证数组的长度是固定的
+     */
     Item[] ITEMS_3X3 = new Item[9];
     // 假玩家3x3合成时的配方
 

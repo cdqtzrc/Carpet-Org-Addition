@@ -16,8 +16,8 @@ public class FakePlayerMainInventoryScreenHandler extends GenericContainerScreen
         this.fakePlayerInventory = fakePlayerInventory;
     }
 
-    public static FakePlayerMainInventoryScreenHandler getFakePlayerMainInventoryScreenHandler(int syncId, PlayerInventory playerInventory, FakePlayerInventory fakePlayerInventory) {
-        return new FakePlayerMainInventoryScreenHandler(ScreenHandlerType.GENERIC_9X6, syncId, playerInventory, fakePlayerInventory, 6);
+    public FakePlayerMainInventoryScreenHandler(int syncId, PlayerInventory playerInventory, FakePlayerInventory fakePlayerInventory) {
+        this(ScreenHandlerType.GENERIC_9X6, syncId, playerInventory, fakePlayerInventory, 6);
     }
 
     @Override

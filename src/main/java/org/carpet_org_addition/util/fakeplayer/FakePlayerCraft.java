@@ -43,21 +43,21 @@ public class FakePlayerCraft {
     }
 
     // 填充数组
-    private static Item[] fillArray(Item item, Item[] items, boolean directFill) {
+    private static Item[] fillArray(Item item, Item[] itemArr, boolean directFill) {
         if (directFill) {
             // 直接使用元素填满整个数组
-            Arrays.fill(items, item);
+            Arrays.fill(itemArr, item);
         } else {
             // 第一个元素填入指定物品，其他元素填入空气
-            for (int i = 0; i < items.length; i++) {
+            for (int i = 0; i < itemArr.length; i++) {
                 if (i == 0) {
-                    items[i] = item;
+                    itemArr[i] = item;
                 } else {
-                    items[i] = Items.AIR;
+                    itemArr[i] = Items.AIR;
                 }
             }
         }
-        return items;
+        return itemArr;
     }
 
 
