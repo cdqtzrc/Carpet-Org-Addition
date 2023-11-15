@@ -20,7 +20,7 @@ public class FakePlayerMoveItem {
         Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
         //只遍历玩家物品栏，不遍历潜影盒容器
         //前27个格子是潜影盒的槽位
-        for (int index = 63 - 36; index < 63; index++) {//63-36=27
+        for (int index = 63 - 36; index < 63; index++) {// 63-36=27
             ItemStack itemStack = shulkerBoxScreenHandler.slots.get(index).getStack();
             if (itemStack.isEmpty()) {
                 continue;

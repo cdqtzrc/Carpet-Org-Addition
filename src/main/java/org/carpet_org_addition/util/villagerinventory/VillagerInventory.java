@@ -2,22 +2,27 @@ package org.carpet_org_addition.util.villagerinventory;
 
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventories;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
 
-public class VillagerInventory extends AbstractVillagerInventory {
+public class VillagerInventory implements Inventory {
     //物品栏实际大小
     private final int ACTUAL_SIZE = 8;
     private final SimpleInventory inventory;
     private final VillagerEntity villager;
     //removeStack(int slot, int amount)方法中会用到这个列表
-    private final DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(1, ItemStack.EMPTY);
+    // 村民的物品栏中最后一个物品
+    private final SimpleInventory finalItem = new SimpleInventory(1);
 
     public VillagerInventory(VillagerEntity villager) {
         this.villager = villager;
         this.inventory = villager.getInventory();
+    }
+
+    @Override
+    public int size() {
+        return 9;
     }
 
     //判断物品栏是否为空
@@ -32,7 +37,7 @@ public class VillagerInventory extends AbstractVillagerInventory {
         if (slot < ACTUAL_SIZE) {
             return inventory.getStack(slot);
         } else {
-            return defaultedList.get(0);
+            return finalItem.getStack(slot - ACTUAL_SIZE);
         }
     }
 
@@ -42,7 +47,7 @@ public class VillagerInventory extends AbstractVillagerInventory {
         if (slot < ACTUAL_SIZE) {
             return inventory.removeStack(slot, amount);
         }
-        return Inventories.splitStack(defaultedList, 0, amount);
+        return finalItem.removeStack(slot - ACTUAL_SIZE, amount);
     }
 
     //删除物品
@@ -53,8 +58,8 @@ public class VillagerInventory extends AbstractVillagerInventory {
             itemStack = inventory.getStack(slot);
             inventory.setStack(slot, ItemStack.EMPTY);
         } else {
-            itemStack = defaultedList.get(0);
-            defaultedList.set(0, ItemStack.EMPTY);
+            itemStack = finalItem.removeStack(slot - ACTUAL_SIZE);
+            finalItem.setStack(slot - ACTUAL_SIZE, ItemStack.EMPTY);
         }
         return itemStack;
     }
@@ -65,7 +70,7 @@ public class VillagerInventory extends AbstractVillagerInventory {
         if (slot < ACTUAL_SIZE) {
             inventory.setStack(slot, stack);
         } else {
-            defaultedList.set(0, stack);
+            finalItem.setStack(slot - ACTUAL_SIZE, stack);
         }
     }
 
@@ -93,8 +98,8 @@ public class VillagerInventory extends AbstractVillagerInventory {
         inventory.clear();
     }
 
-    //获取容器中最后一个槽位的物品堆栈，用于在关闭村民物品栏GUI时丢出物品
-    public ItemStack getEndSlot() {
-        return defaultedList.get(0);
+    // 获取容器中装着最后一个物品的物品栏，用于在关闭GUI时让物品回到玩家物品栏中
+    public SimpleInventory getFinalItemInventory() {
+        return finalItem;
     }
 }

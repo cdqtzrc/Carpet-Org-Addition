@@ -8,6 +8,9 @@ import net.minecraft.screen.ScreenHandlerType;
 
 //假玩家末影箱GUI
 public class FakePlayerEnderChestScreenHandler extends GenericContainerScreenHandler {
+    /**
+     * 不一定是假玩家，也有可能是/playerTools命令的执行者自己
+     */
     private final PlayerEntity playerEntity;
 
     private FakePlayerEnderChestScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, Inventory inventory, int rows, PlayerEntity playerEntity) {
@@ -16,8 +19,8 @@ public class FakePlayerEnderChestScreenHandler extends GenericContainerScreenHan
     }
 
     //获取假玩家末影箱GUI对象
-    public static FakePlayerEnderChestScreenHandler getFakePlayerEnderChestScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory, PlayerEntity playerEntity) {
-        return new FakePlayerEnderChestScreenHandler(ScreenHandlerType.GENERIC_9X3, syncId, playerInventory, inventory, 3, playerEntity);
+    public FakePlayerEnderChestScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory, PlayerEntity playerEntity) {
+        this(ScreenHandlerType.GENERIC_9X3, syncId, playerInventory, inventory, 3, playerEntity);
     }
 
     //假玩家死亡时，自动关闭GUI

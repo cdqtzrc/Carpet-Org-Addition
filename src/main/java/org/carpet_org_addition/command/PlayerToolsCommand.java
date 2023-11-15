@@ -119,7 +119,7 @@ public class PlayerToolsCommand {
         if (playerEntity instanceof EntityPlayerMPFake || playerEntity == player) {
             //创建GUI对象
             SimpleNamedScreenHandlerFactory screen = new SimpleNamedScreenHandlerFactory((i, inventory, playerEntity1) ->
-                    FakePlayerEnderChestScreenHandler.getFakePlayerEnderChestScreenHandler(i, inventory,
+                    new FakePlayerEnderChestScreenHandler(i, inventory,
                             playerEntity.getEnderChestInventory(), playerEntity), playerEntity.getName());
             //打开末影箱GUI
             player.openHandledScreen(screen);

@@ -16,7 +16,7 @@ public class VillagerContainerScreenHandler extends Generic3x3ContainerScreenHan
     @Override
     public void onClosed(PlayerEntity player) {
         super.onClosed(player);
-        //丢出容器最后一个物品
-        player.dropItem(villagerInventory.getEndSlot(), false, false);
+        // 最后一个格子的物品回到物品栏
+        this.dropInventory(player, villagerInventory.getFinalItemInventory());
     }
 }

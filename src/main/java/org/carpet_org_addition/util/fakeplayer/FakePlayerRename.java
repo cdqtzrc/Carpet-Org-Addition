@@ -27,19 +27,17 @@ public class FakePlayerRename {
             if (oneSlot.hasStack()) {
                 ItemStack itemStack = oneSlot.getStack();
                 //判断该槽位的物品是否已经正确重命名
-                if (itemStack.getName().getString().equals(newName)) {
-                    //如果已经重命名，丢弃该槽位的物品
-                    //因为该槽位的物品被丢弃，所以该槽位已经没有物品，没有必要继续判断，直接结束本轮循环
+                if (itemStack.getName().getString().equals(newName) || !itemStack.isOf(item)) {
+                    //如果已经重命名，或者当前槽位不是指定物品，丢出该槽位的物品
+                    //因为该槽位的物品被丢弃，所以该槽位已经没有物品，没有必要继续判断，直接结束方法
                     FakePlayerUtils.pickupAndThrow(anvilScreenHandler, 0, fakePlayer);
-                } else if (itemStack.isOf(item)) {
+                    return;
+                } else {
                     //判断当前物品堆栈对象是否为指定物品
                     //让物品最大堆叠后才能重命名，节省经验
                     if (itemStack.getCount() == itemStack.getMaxCount()) {
                         oneSlotCorrect = true;
                     }
-                } else {
-                    //当前槽位不是指定物品，丢出该槽位的物品
-                    FakePlayerUtils.pickupAndThrow(anvilScreenHandler, 0, fakePlayer);
                 }
             }
             //遍历玩家物品栏，找到指定需要重命名的物品
