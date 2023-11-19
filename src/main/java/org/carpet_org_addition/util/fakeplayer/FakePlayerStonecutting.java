@@ -12,11 +12,11 @@ import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.exception.InfiniteLoopException;
 import org.carpet_org_addition.util.StringUtils;
 
-public class FakePlayerStoneCutting {
-    private FakePlayerStoneCutting() {
+public class FakePlayerStonecutting {
+    private FakePlayerStonecutting() {
     }
 
-    public static void stoneCutting(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) {
+    public static void stonecutting(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) {
         if (fakePlayer.currentScreenHandler instanceof StonecutterScreenHandler stonecutterScreenHandler) {
             Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
             //获取要切割的物品和按钮的索引
@@ -27,7 +27,8 @@ public class FakePlayerStoneCutting {
                 loopCount++;
                 if (loopCount > 1000) {
                     //无限循环异常
-                    throw new InfiniteLoopException(StringUtils.getPlayerName(fakePlayer) + "在使用切石机时循环了" + loopCount + "次("
+                    throw new InfiniteLoopException(StringUtils.getPlayerName(fakePlayer)
+                            + "在使用切石机时循环了" + loopCount + "次("
                             + StringUtils.getDimensionId(fakePlayer.getWorld()) + ":["
                             + StringUtils.getBlockPosString(fakePlayer.getBlockPos()) + "])");
                 }
@@ -54,9 +55,6 @@ public class FakePlayerStoneCutting {
                         if (stonecutterScreenHandler.getSlot(index).getStack().isOf(item)) {
                             FakePlayerUtils.quickMove(stonecutterScreenHandler, index, fakePlayer);
                             break;
-                        } else {
-                            //如果不是指定物品，丢出该物品
-                            FakePlayerUtils.throwItem(stonecutterScreenHandler, index, fakePlayer);
                         }
                         //如果遍历完物品栏还没有找到指定物品，认为物品栏中没有该物品，结束方法
                         if (index == stonecutterScreenHandler.slots.size() - 1) {
@@ -74,7 +72,8 @@ public class FakePlayerStoneCutting {
                     FakePlayerUtils.loopThrowItem(stonecutterScreenHandler, 1, fakePlayer);
                 } else {
                     //否则，认为前面的操作有误，停止合成，结束方法
-                    FakePlayerUtils.stopAction(context.getSource(), fakePlayer, "carpet.commands.playerTools.action.stone_cutting");
+                    FakePlayerUtils.stopAction(context.getSource(), fakePlayer,
+                            "carpet.commands.playerTools.action.stone_cutting");
                     return;
                 }
             }

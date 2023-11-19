@@ -3,9 +3,11 @@ package org.carpet_org_addition.util;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.carpet_org_addition.CarpetOrgAddition;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class SendMessageUtils {
@@ -55,7 +57,8 @@ public class SendMessageUtils {
     /**
      * 广播指定内容的消息，消息对所有玩家可见，不带冒号
      *
-     * @param player            消息的发送者
+     * @param player            1.通过这个服务器命令源对象获取玩家管理器对象，然后通过玩家管理器对象发送消息，player不是消息的发送者。<br/>
+     *                          2.如果containPlayerName为true，用来在消息前追加玩家名
      * @param message           消息的内容
      * @param containPlayerName 是否在消息前追加玩家名
      */
@@ -63,7 +66,8 @@ public class SendMessageUtils {
         try {
             PlayerManager playerManager = Objects.requireNonNull(player.getServer()).getPlayerManager();
             playerManager.broadcast(
-                    containPlayerName ? TextUtils.appendAll(player.getDisplayName(), message) : Text.literal(message), false
+                    containPlayerName ? TextUtils.appendAll(player.getDisplayName(), message)
+                            : Text.literal(message), false
             );
         } catch (NullPointerException e) {
             CarpetOrgAddition.LOGGER.error("无法通过玩家获取服务器对象", e);
@@ -73,7 +77,7 @@ public class SendMessageUtils {
     /**
      * 广播一条带有特殊样式的文本消息
      *
-     * @param player  要广播消息的玩家
+     * @param player  通过这个玩家对象获取玩家管理器对象，然后通过玩家管理器对象发送消息，player不是消息的发送者
      * @param message 要广播消息的内容
      */
     public static void broadcastTextMessage(PlayerEntity player, Text message) {
@@ -88,7 +92,7 @@ public class SendMessageUtils {
     /**
      * 广播一条带有特殊样式的文本消息
      *
-     * @param source  要广播消息的命令源
+     * @param source  通过这个服务器命令源对象获取玩家管理器对象，然后通过玩家管理器对象发送消息，source不是消息的发送者
      * @param message 要广播消息的内容
      */
     public static void broadcastTextMessage(ServerCommandSource source, Text message) {
@@ -105,5 +109,11 @@ public class SendMessageUtils {
      */
     public static void sendCommandFeedback(ServerCommandSource source, String key, Object... obj) {
         SendMessageUtils.sendTextMessage(source, TextUtils.getTranslate(key, obj));
+    }
+
+    public static void sendListMessage(ServerCommandSource source, ArrayList<MutableText> list) {
+        for (MutableText mutableText : list) {
+            sendTextMessage(source, mutableText);
+        }
     }
 }

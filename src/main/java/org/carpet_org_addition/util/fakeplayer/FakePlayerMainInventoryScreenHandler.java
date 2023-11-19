@@ -8,6 +8,7 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.collection.DefaultedList;
 
+@SuppressWarnings("unused")
 public class FakePlayerMainInventoryScreenHandler extends GenericContainerScreenHandler {
     private final FakePlayerInventory fakePlayerInventory;
 

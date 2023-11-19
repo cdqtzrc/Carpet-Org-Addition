@@ -476,5 +476,5 @@ public class CarpetOrgAdditionSettings {
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
     )
-    public static boolean NetherPortalHasCollisionBox = false;
+    public static boolean netherPortalHasCollisionBox = false;
 }

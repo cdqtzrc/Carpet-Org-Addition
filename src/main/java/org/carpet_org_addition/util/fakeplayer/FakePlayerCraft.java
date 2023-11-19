@@ -3,7 +3,6 @@ package org.carpet_org_addition.util.fakeplayer;
 import carpet.CarpetSettings;
 import carpet.patches.EntityPlayerMPFake;
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -15,8 +14,6 @@ import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.exception.InfiniteLoopException;
 import org.carpet_org_addition.util.StringUtils;
 
-import java.util.Arrays;
-
 public class FakePlayerCraft {
     //最大循环次数
     private static final int MAX_LOOP_COUNT = 1000;
@@ -25,39 +22,18 @@ public class FakePlayerCraft {
     }
 
     //假玩家自动合成物品（单个材料）  例：一个铁块合成九个铁锭
-    public static void craftOne(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) {
-        Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
-        craft2x2(context, fakePlayer, fillArray(item, new Item[4], false));
+    public static void craftOne(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer, Item[] items) {
+        craft2x2(context, fakePlayer, items);
     }
 
     //自动合成物品（4个相同材料）
-    public static void craftFour(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) {
-        Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
-        craft2x2(context, fakePlayer, fillArray(item, new Item[4], true));
+    public static void craftFour(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer, Item[] items) {
+        craft2x2(context, fakePlayer, items);
     }
 
     //假玩家自动合成物品（九个相同的材料）  例：九个铁锭合成一个铁块
-    public static void craftNine(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) {
-        Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
-        craft3x3(context, fakePlayer, fillArray(item, new Item[9], true));
-    }
-
-    // 填充数组
-    private static Item[] fillArray(Item item, Item[] itemArr, boolean directFill) {
-        if (directFill) {
-            // 直接使用元素填满整个数组
-            Arrays.fill(itemArr, item);
-        } else {
-            // 第一个元素填入指定物品，其他元素填入空气
-            for (int i = 0; i < itemArr.length; i++) {
-                if (i == 0) {
-                    itemArr[i] = item;
-                } else {
-                    itemArr[i] = Items.AIR;
-                }
-            }
-        }
-        return itemArr;
+    public static void craftNine(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer, Item[] items) {
+        craft3x3(context, fakePlayer, items);
     }
 
 
@@ -102,11 +78,13 @@ public class FakePlayerCraft {
                             if (itemStack.isOf(item)) {
                                 // 如果假玩家合成保留物品启用，并且该物品的数量为1，并且该物品的最大堆叠数大于1
                                 // 认为这个物品需要保留，结束本轮循环
-                                if (CarpetOrgAdditionSettings.fakePlayerCraftKeepItem && itemStack.getCount() == 1 && itemStack.getMaxCount() > 1) {
+                                if (CarpetOrgAdditionSettings.fakePlayerCraftKeepItem && itemStack.getCount() == 1
+                                        && itemStack.getMaxCount() > 1) {
                                     continue;
                                 }
                                 // 光标拾取和移动物品
-                                FakePlayerUtils.pickupAndMoveItemStack(craftingScreenHandler, inventoryIndex, index, fakePlayer);
+                                FakePlayerUtils.pickupAndMoveItemStack(craftingScreenHandler,
+                                        inventoryIndex, index, fakePlayer);
                                 // 找到正确合成材料的次数自增
                                 successCount++;
                                 break;
@@ -184,10 +162,12 @@ public class FakePlayerCraft {
                     if (itemStack.isOf(item)) {
                         // 如果假玩家合成保留物品启用，并且该物品的数量为1，并且该物品的最大堆叠数大于1
                         // 认为这个物品需要保留，结束本轮循环
-                        if (CarpetOrgAdditionSettings.fakePlayerCraftKeepItem && itemStack.getCount() == 1 && itemStack.getMaxCount() > 1) {
+                        if (CarpetOrgAdditionSettings.fakePlayerCraftKeepItem && itemStack.getCount() == 1
+                                && itemStack.getMaxCount() > 1) {
                             continue;
                         }
-                        FakePlayerUtils.pickupAndMoveItemStack(playerScreenHandler, inventoryIndex, craftIndex, fakePlayer);
+                        FakePlayerUtils.pickupAndMoveItemStack(playerScreenHandler,
+                                inventoryIndex, craftIndex, fakePlayer);
                         successCount++;
                         break;
                     }

@@ -20,7 +20,8 @@ public class FakePlayerTrade {
         if (fakePlayer.currentScreenHandler instanceof MerchantScreenHandler merchantScreenHandler) {
             //判断按钮索引是否越界
             if (merchantScreenHandler.getRecipes().size() <= index) {
-                FakePlayerUtils.stopAction(context.getSource(), fakePlayer, "carpet.commands.playerTools.action.trade");
+                FakePlayerUtils.stopAction(context.getSource(), fakePlayer,
+                        "carpet.commands.playerTools.action.trade");
                 return;
             }
             int loopCount = 0;
@@ -29,7 +30,8 @@ public class FakePlayerTrade {
                 loopCount++;
                 if (loopCount > 1000) {
                     //无限循环异常
-                    throw new InfiniteLoopException(StringUtils.getPlayerName(fakePlayer) + "在与村民交易时循环了" + loopCount + "次("
+                    throw new InfiniteLoopException(StringUtils.getPlayerName(fakePlayer)
+                            + "在与村民交易时循环了" + loopCount + "次("
                             + StringUtils.getDimensionId(fakePlayer.getWorld()) + ":["
                             + StringUtils.getBlockPosString(fakePlayer.getBlockPos()) + "])");
                 }

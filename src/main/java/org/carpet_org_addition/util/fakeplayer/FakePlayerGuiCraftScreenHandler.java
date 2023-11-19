@@ -10,6 +10,7 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.Generic3x3ContainerScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.server.command.ServerCommandSource;
+import org.carpet_org_addition.command.PlayerToolsCommand;
 
 public class FakePlayerGuiCraftScreenHandler extends Generic3x3ContainerScreenHandler {
     /**
@@ -55,27 +56,33 @@ public class FakePlayerGuiCraftScreenHandler extends Generic3x3ContainerScreenHa
             items[i] = fakePlayerCraftInventory.getStack(i).getItem();
         }
         FakePlayerActionInterface fakePlayerActionInterface = (FakePlayerActionInterface) fakePlayer;
-        //context不能为null，否则假玩家不能合成
+        // context不能为null，否则假玩家不能合成
         fakePlayerActionInterface.setContext(context);
         // 设置假玩家合成动作
         setCraftAction(items, fakePlayerActionInterface);
-        //关闭GUI后，物品回到玩家背包
+        // 关闭GUI后，物品回到玩家背包
         this.screenHandlerContext.run((world, pos) -> this.dropInventory(player, fakePlayerCraftInventory));
+        // 提示启用Ctrl+Q合成修复
+        PlayerToolsCommand.promptToEnableCtrlQCraftingFix(context.getSource());
     }
 
     // 设置假玩家合成动作
     private void setCraftAction(Item[] items, FakePlayerActionInterface fakePlayerActionInterface) {
         // 如果能在2x2合成格中合成，优先使用2x2
-        if (items[0] == Items.AIR && items[1] == Items.AIR && items[2] == Items.AIR && items[5] == Items.AIR && items[8] == Items.AIR) {
+        if (items[0] == Items.AIR && items[1] == Items.AIR && items[2] == Items.AIR
+                && items[5] == Items.AIR && items[8] == Items.AIR) {
             fakePlayerActionInterface.setAction(FakePlayerActionType.CRAFT_2X2);
             fakePlayerActionInterface.set2x2Craft(new Item[]{items[3], items[4], items[6], items[7]});
-        } else if (items[0] == Items.AIR && items[3] == Items.AIR && items[6] == Items.AIR && items[7] == Items.AIR && items[8] == Items.AIR) {
+        } else if (items[0] == Items.AIR && items[3] == Items.AIR && items[6] == Items.AIR
+                && items[7] == Items.AIR && items[8] == Items.AIR) {
             fakePlayerActionInterface.setAction(FakePlayerActionType.CRAFT_2X2);
             fakePlayerActionInterface.set2x2Craft(new Item[]{items[1], items[2], items[4], items[5]});
-        } else if (items[2] == Items.AIR && items[5] == Items.AIR && items[6] == Items.AIR && items[7] == Items.AIR && items[8] == Items.AIR) {
+        } else if (items[2] == Items.AIR && items[5] == Items.AIR && items[6] == Items.AIR
+                && items[7] == Items.AIR && items[8] == Items.AIR) {
             fakePlayerActionInterface.setAction(FakePlayerActionType.CRAFT_2X2);
             fakePlayerActionInterface.set2x2Craft(new Item[]{items[0], items[1], items[3], items[4]});
-        } else if (items[0] == Items.AIR && items[1] == Items.AIR && items[2] == Items.AIR && items[3] == Items.AIR && items[6] == Items.AIR) {
+        } else if (items[0] == Items.AIR && items[1] == Items.AIR && items[2] == Items.AIR
+                && items[3] == Items.AIR && items[6] == Items.AIR) {
             fakePlayerActionInterface.setAction(FakePlayerActionType.CRAFT_2X2);
             fakePlayerActionInterface.set2x2Craft(new Item[]{items[4], items[5], items[7], items[8]});
         } else {

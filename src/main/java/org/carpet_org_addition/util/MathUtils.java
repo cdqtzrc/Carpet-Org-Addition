@@ -1,11 +1,10 @@
 package org.carpet_org_addition.util;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
-
-import static net.minecraft.server.network.ServerPlayNetworkHandler.MAX_BREAK_SQUARED_DISTANCE;
 
 public class MathUtils {
     /**
@@ -119,7 +118,7 @@ public class MathUtils {
      * @return 默认的交互距离，取平方距离
      */
     public static double getDefaultInteractionDistance() {
-        return MAX_BREAK_SQUARED_DISTANCE;
+        return ServerPlayNetworkHandler.MAX_BREAK_SQUARED_DISTANCE;
     }
 
     /**

@@ -48,7 +48,7 @@ public abstract class NetherPortalBlockMixin extends Block {
     // 下界传送门方块有碰撞箱
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        if (CarpetOrgAdditionSettings.NetherPortalHasCollisionBox) {
+        if (CarpetOrgAdditionSettings.netherPortalHasCollisionBox) {
             return Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 16.0, 16.0);
         }
         return super.getCollisionShape(state, world, pos, context);
