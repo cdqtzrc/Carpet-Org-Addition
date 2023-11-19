@@ -1,5 +1,6 @@
 package org.carpet_org_addition.util.fakeplayer;
 
+import carpet.patches.EntityPlayerMPFake;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.item.Item;
 import net.minecraft.server.command.ServerCommandSource;
@@ -31,4 +32,9 @@ public interface FakePlayerActionInterface {
     Item[] get2x2Craft();
 
     void set2x2Craft(Item[] items);
+
+    // 将假玩家类型强转为假玩家动作接口类型
+    static FakePlayerActionInterface getInstance(EntityPlayerMPFake fakePlayer) {
+        return (FakePlayerActionInterface) fakePlayer;
+    }
 }

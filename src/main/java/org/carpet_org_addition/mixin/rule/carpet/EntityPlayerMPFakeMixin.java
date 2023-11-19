@@ -156,11 +156,11 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
             //假玩家填充容器
             case FILL -> FakePlayerMoveItem.moveItem(context, thisPlayer);
             //假玩家自动合成物品（单个材料）
-            case CRAFT_ONE -> FakePlayerCraft.craftOne(context, thisPlayer);
+            case CRAFT_ONE -> FakePlayerCraft.craftOne(context, thisPlayer, ITEMS_2X2);
             //假玩家自动合成物品（四个相同的材料）
-            case CRAFT_FOUR -> FakePlayerCraft.craftFour(context, thisPlayer);
+            case CRAFT_FOUR -> FakePlayerCraft.craftFour(context, thisPlayer, ITEMS_2X2);
             //假玩家自动合成物品（九个相同的材料）
-            case CRAFT_NINE -> FakePlayerCraft.craftNine(context, thisPlayer);
+            case CRAFT_NINE -> FakePlayerCraft.craftNine(context, thisPlayer, ITEMS_3X3);
             //假玩家自动合成物品（9x9自定义物品）
             case CRAFT_3X3 -> FakePlayerCraft.craft3x3(context, thisPlayer, ITEMS_3X3);
             //假玩家自动合成物品（4x4自定义物品）
@@ -168,7 +168,7 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
             //假玩家自动重命名
             case RENAME -> FakePlayerRename.rename(context, thisPlayer);
             //假玩家切石机
-            case STONE_CUTTING -> FakePlayerStoneCutting.stoneCutting(context, thisPlayer);
+            case STONECUTTING -> FakePlayerStonecutting.stonecutting(context, thisPlayer);
             //假玩家交易
             case TRADE -> FakePlayerTrade.trade(context, thisPlayer);
             //以上值都不匹配，设置操作类型为STOP（不应该出现都不匹配的情况）

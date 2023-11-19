@@ -1,14 +1,13 @@
 package org.carpet_org_addition.util.fakeplayer;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
+import carpet.patches.EntityPlayerMPFake;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.command.argument.ItemStackArgumentType;
-import net.minecraft.item.Items;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import org.carpet_org_addition.util.TextUtils;
+
+import java.util.ArrayList;
 
 public enum FakePlayerActionType {
     //假玩家停止操作
@@ -32,77 +31,32 @@ public enum FakePlayerActionType {
     //假玩家自动重命名
     RENAME,
     //假玩家切石机
-    STONE_CUTTING,
+    STONECUTTING,
     //假玩家自动交易
     TRADE;
 
     //获取假玩家操作类型的字符串或可变文本形式
-    public MutableText getActionText(CommandContext<ServerCommandSource> context) {
+    public ArrayList<MutableText> getActionText(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) throws CommandSyntaxException {
         FakePlayerActionInterface fakePlayerActionInterface;
-        try {
-            if (context == null) {
-                return TextUtils.getTranslate("carpet.commands.playerTools.action.type.stop");
-            }
-            // 现在的命令执行上下文来自/playerTools <玩家名> action query，这条命令的命令执行上下文中只记录了一个玩家的信息
-            // 需要获取该玩家的对象，然后根据这个假玩家获取假玩家当前的命令执行上下文，这一个命令执行上下文对象中才有获取文本所需要的信息
-            fakePlayerActionInterface = (FakePlayerActionInterface) EntityArgumentType.getPlayer(context, "player");
-            context = fakePlayerActionInterface.getContext();
-        } catch (Exception e) {
-            //应该不会执行到这里吧
-            return TextUtils.getTranslate("carpet.commands.playerTools.action.type.fail");
+        if (context == null) {
+            return FakePlayerActionInfo.showStopInfo(fakePlayer);
         }
+        // 现在的命令执行上下文来自/playerTools <玩家名> action query，这条命令的命令执行上下文中只记录了一个玩家的信息
+        // 需要获取该玩家的对象，然后根据这个假玩家获取假玩家当前的命令执行上下文，这一个命令执行上下文对象中才有获取文本所需要的信息
+        fakePlayerActionInterface = (FakePlayerActionInterface) EntityArgumentType.getPlayer(context, "player");
+        context = fakePlayerActionInterface.getContext();
         return switch (this) {
-            case STOP -> TextUtils.getTranslate("carpet.commands.playerTools.action.type.stop");
-            case SORTING ->
-                    TextUtils.getTranslate("carpet.commands.playerTools.action.type.sorting", getItemStatsName(context, "item"));
-            case CLEAN ->
-                    TextUtils.getTranslate("carpet.commands.playerTools.action.type.clean", TextUtils.getItemName(Items.SHULKER_BOX));
-            case FILL ->
-                    TextUtils.getTranslate("carpet.commands.playerTools.action.type.fill", TextUtils.getItemName(Items.SHULKER_BOX), getItemStatsName(context, "item"));
-            case CRAFT_ONE ->
-                    TextUtils.getTranslate("carpet.commands.playerTools.action.type.craft_one", getItemStatsName(context, "item"));
-            case CRAFT_FOUR ->
-                    TextUtils.getTranslate("carpet.commands.playerTools.action.type.craft_four", getItemStatsName(context, "item"));
-            case CRAFT_NINE ->
-                    TextUtils.getTranslate("carpet.commands.playerTools.action.type.craft_nine", getItemStatsName(context, "item"));
-            case CRAFT_3X3 -> TextUtils.getTranslate("carpet.commands.playerTools.action.type.craft_3x3",
-                    get3x3CraftItemName(0, fakePlayerActionInterface),
-                    get3x3CraftItemName(1, fakePlayerActionInterface),
-                    get3x3CraftItemName(2, fakePlayerActionInterface),
-                    get3x3CraftItemName(3, fakePlayerActionInterface),
-                    get3x3CraftItemName(4, fakePlayerActionInterface),
-                    get3x3CraftItemName(5, fakePlayerActionInterface),
-                    get3x3CraftItemName(6, fakePlayerActionInterface),
-                    get3x3CraftItemName(7, fakePlayerActionInterface),
-                    get3x3CraftItemName(8, fakePlayerActionInterface)
-            );
-            case CRAFT_2X2 -> TextUtils.getTranslate("carpet.commands.playerTools.action.type.craft_2x2",
-                    get2x2CraftItemName(0, fakePlayerActionInterface),
-                    get2x2CraftItemName(1, fakePlayerActionInterface),
-                    get2x2CraftItemName(2, fakePlayerActionInterface),
-                    get2x2CraftItemName(3, fakePlayerActionInterface));
-            case RENAME -> TextUtils.getTranslate("carpet.commands.playerTools.action.type.rename",
-                    getItemStatsName(context, "item"), StringArgumentType.getString(context, "name"));
-            case STONE_CUTTING -> TextUtils.getTranslate("carpet.commands.playerTools.action.type.stone_cutting",
-                    getItemStatsName(context, "item"));
-            case TRADE -> TextUtils.getTranslate("carpet.commands.playerTools.action.type.trade");
+            case STOP -> FakePlayerActionInfo.showStopInfo(fakePlayer);
+            case SORTING -> FakePlayerActionInfo.showSortingInfo(context, fakePlayer);
+            case CLEAN -> FakePlayerActionInfo.showCleanInfo(fakePlayer);
+            case FILL -> FakePlayerActionInfo.showFillInfo(context, fakePlayer);
+            case CRAFT_NINE, CRAFT_3X3 -> FakePlayerActionInfo.showCraftingTableCraftInfo(context, fakePlayer);
+            case CRAFT_ONE, CRAFT_FOUR, CRAFT_2X2 ->
+                    FakePlayerActionInfo.showSurvivalInventoryCraftInfo(context, fakePlayer);
+            case RENAME -> FakePlayerActionInfo.showRenameInfo(context, fakePlayer);
+            case STONECUTTING -> FakePlayerActionInfo.showStoneCuttingInfo(context, fakePlayer);
+            case TRADE -> FakePlayerActionInfo.showTradeInfo(context, fakePlayer);
         };
-    }
-
-    //获取物品名
-    @SuppressWarnings("SameParameterValue")
-    private static Text getItemStatsName(CommandContext<ServerCommandSource> context, String name) {
-        return ItemStackArgumentType.getItemStackArgument(context, name).getItem().getDefaultStack().toHoverableText();
-    }
-
-    // 获取3x3合成材料名称
-    private static Text get3x3CraftItemName(int number, FakePlayerActionInterface fakePlayerActionInterface) {
-        return fakePlayerActionInterface.get3x3Craft()[number].getDefaultStack().toHoverableText();
-    }
-
-    // 获取2x2合成材料名称
-    private static Text get2x2CraftItemName(int number, FakePlayerActionInterface fakePlayerActionInterface) {
-        return fakePlayerActionInterface.get2x2Craft()[number].getDefaultStack().toHoverableText();
     }
 
     //是合成物品的操作类型
@@ -123,7 +77,7 @@ public enum FakePlayerActionType {
             case CRAFT_3X3 -> "合成(3x3自定义合成)";
             case CRAFT_2X2 -> "合成(2x2自定义合成)";
             case RENAME -> "重命名";
-            case STONE_CUTTING -> "切石";
+            case STONECUTTING -> "切石";
             case TRADE -> "交易";
         };
     }

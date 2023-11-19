@@ -121,6 +121,16 @@ public class TextUtils {
                 -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal(hover))));
     }
 
+
+    public static MutableText hoverText(MutableText initialText, Text hover, @Nullable Formatting color) {
+        initialText.styled(style
+                -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover)));
+        if (color != null) {
+            initialText.styled(style -> style.withColor(color));
+        }
+        return initialText;
+    }
+
     /**
      * 获取一个方块名称的可变文本形式
      *
@@ -153,7 +163,7 @@ public class TextUtils {
             } else if (object instanceof Text text) {
                 mutableText.append(text);
             } else {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException(object + "即便是可变文本对象，也不是字符串对象");
             }
         }
         return mutableText;

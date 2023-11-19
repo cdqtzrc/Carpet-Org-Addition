@@ -80,7 +80,7 @@ public class FakePlayerUtils {
     /**
      * 让假玩家停止当前的操作
      *
-     * @param source       发送消息的的消息源
+     * @param source       用来获取玩家管理器对象，然后通过玩家管理器发送消息，source本身不需要发送消息
      * @param playerMPFake 要停止操作的假玩家
      * @param key          停止操作时在聊天栏输出的内容的翻译键
      */
@@ -120,7 +120,8 @@ public class FakePlayerUtils {
      * @param fromIndex     玩家拿取物品槽位的索引索引
      * @param player        当前操作GUI的假玩家
      */
-    public static void pickupAndMoveItemStack(ScreenHandler screenHandler, int fromIndex, int toIndex, EntityPlayerMPFake player) {
+    public static void pickupAndMoveItemStack(ScreenHandler screenHandler, int fromIndex,
+                                              int toIndex, EntityPlayerMPFake player) {
         // 如果鼠标光标上有物品，先把光标上的物品丢弃
         if (!screenHandler.getCursorStack().isEmpty()) {
             screenHandler.onSlotClick(EMPTY_SPACE_SLOT_INDEX, PICKUP_LEFT_CLICK, SlotActionType.PICKUP, player);

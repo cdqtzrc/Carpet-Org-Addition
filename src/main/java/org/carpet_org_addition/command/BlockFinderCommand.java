@@ -20,6 +20,7 @@ import org.carpet_org_addition.util.*;
 import java.util.TreeSet;
 
 public class BlockFinderCommand {
+    // TODO 找到的方块分组
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("blockFinder").requires(source ->
                         CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandBlockFinder))

@@ -59,7 +59,8 @@ public class FakePlayerSorting {
                                 break;
                             }
                             //根据当前物品设置朝向
-                            fakePlayer.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, itemStack.getItem() == item ? thisVec : otherVec);
+                            fakePlayer.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES,
+                                    itemStack.getItem() == item ? thisVec : otherVec);
                         }
                         //如果为空，将朝向设置为丢出非指定物品的方向，然后结束循环
                         else {

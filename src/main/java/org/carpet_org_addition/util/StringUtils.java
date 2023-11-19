@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.StringJoiner;
 
 public class StringUtils {
     /**
@@ -89,5 +90,19 @@ public class StringUtils {
      */
     public static String getPlayerName(PlayerEntity player) {
         return player.getName().getString();
+    }
+
+    /**
+     * 将一个浮点数数组中的每一个元素格式化为保留两位小数的字符串，然后拼接成一个大字符串，每个元素用空格隔开
+     *
+     * @param args 要格式化的浮点数数组
+     * @return 每一个元素拼接后的大字符串
+     */
+    public static String keepTwoDecimalPlaces(double... args) {
+        StringJoiner sj = new StringJoiner(" ");
+        for (double arg : args) {
+            sj.add(String.format("%.2f", arg));
+        }
+        return sj.toString();
     }
 }
