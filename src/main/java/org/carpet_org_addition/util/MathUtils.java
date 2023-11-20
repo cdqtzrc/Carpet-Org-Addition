@@ -78,7 +78,7 @@ public class MathUtils {
 
     /**
      * 在集合中从近到远排序<br/>
-     * 计算两个方块坐标与源坐标的距离，用于在{@link java.util.TreeSet<BlockPos>}集合和{@link java.util.TreeMap<BlockPos>}集合中为定义的排序规则计算结果，分别计算两个方块坐标与原坐标的距离，根据结果返回整数，如果大于等于0，返回1，如果小于0，返回-1，这个方法比较的结果永远不会返回0，因为返回0，集合会认为这两个键是相同对象的而不存储，但是实际情况中经常会遇到两个方块坐标距离源方块坐标的距离相同的情况，这不代表两个方块坐标是同一个坐标。同样的，本方法不应使用类型转换返回结果，假设如果两个方块坐标距离源方块坐标距离的差为0.1，如果使用类型转换，即(int)0.1，那么返回值为0，与预期结果不符，此处使用三元运算符
+     * 计算两个方块坐标与源坐标的距离，用于在{@link java.util.TreeSet<BlockPos>}集合和{@link java.util.TreeMap<BlockPos>}集合或者sort方法中为定义的排序规则计算结果，分别计算两个方块坐标与原坐标的距离，根据结果返回整数，如果大于等于0，返回1，如果小于0，返回-1，这个方法比较的结果永远不会返回0，因为返回0，集合会认为这两个键是相同对象的而不存储，但是实际情况中经常会遇到两个方块坐标距离源方块坐标的距离相同的情况，这不代表两个方块坐标是同一个坐标。
      *
      * @param blockPos   源方块坐标
      * @param o1BlockPos 要在集合中添加的方块坐标
@@ -86,8 +86,14 @@ public class MathUtils {
      * @return 根据距离返回1或-1
      */
     public static int compareBlockPos(final BlockPos blockPos, BlockPos o1BlockPos, BlockPos o2BlockPos) {
-        double distance = getBlockSquareDistance(blockPos, o1BlockPos) - getBlockSquareDistance(blockPos, o2BlockPos);
-        return distance >= 0 ? 1 : -1;
+        // 坐标1到原坐标的距离
+        double distance1 = getBlockSquareDistance(blockPos, o1BlockPos);
+        // 坐标2到原坐标的距离
+        double distance2 = getBlockSquareDistance(blockPos, o2BlockPos);
+        // 比较两个距离的大小
+        int compare = Double.compare(distance1, distance2);
+        // 距离相等不代表两个方块坐标是同一个
+        return compare == 0 ? 1 : compare;
     }
 
     /**

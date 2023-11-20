@@ -145,6 +145,7 @@ public class TextUtils {
      *
      * @param item 要获取名称的物品
      */
+    @SuppressWarnings("unused")
     public static MutableText getItemName(Item item) {
         return Text.translatable(item.getTranslationKey());
     }
