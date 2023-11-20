@@ -6,6 +6,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 
+@Deprecated
 public class VillagerInventory implements Inventory {
     //物品栏实际大小
     private final int ACTUAL_SIZE = 8;

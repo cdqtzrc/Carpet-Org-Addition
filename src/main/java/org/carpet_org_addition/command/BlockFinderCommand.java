@@ -17,10 +17,9 @@ import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.*;
 
-import java.util.TreeSet;
+import java.util.ArrayList;
 
 public class BlockFinderCommand {
-    // TODO 找到的方块分组
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("blockFinder").requires(source ->
                         CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandBlockFinder))
@@ -40,10 +39,18 @@ public class BlockFinderCommand {
         // 获取命令执行时的方块坐标
         final BlockPos sourceBlockPos = player.getBlockPos();
         // 开始查找方块，然后返回查询结果
-        TreeSet<BlockPos> treeSet = findBlock(player.getWorld(), sourceBlockPos, block, radius);
-        int count = treeSet.size();
-        // 发送命令反馈
-        sendFeedback(context, block, treeSet, player.getBlockPos());
+        ArrayList<BlockPos> list = findBlock(player.getWorld(), sourceBlockPos, block, radius);
+        int count = list.size();
+        // 如果找到的方块数量过多，直接抛出异常结束方法，不再进行排序
+        if (count > 300000) {
+            throw CommandUtils.getException("carpet.commands.blockFinder.too_much_blocks", TextUtils.getBlockName(block), count);
+        }
+        // 在一个单独的线程中对查找到的方块进行排序
+        BlockFinderThread blockFinderThread = new BlockFinderThread(context, player, block, list);
+        // 设置多线程的名称
+        blockFinderThread.setName("Block Finder Thread");
+        // 启动新的线程
+        blockFinderThread.start();
         return count;
     }
 
@@ -56,9 +63,9 @@ public class BlockFinderCommand {
      * @param radius   查找的范围，是一个边长为两倍radius，高度为整个世界高度的长方体
      * @return 包含所有查找到的方块坐标和该方块距离源方块坐标的距离的集合，并且已经从近到远排序
      */
-    public static TreeSet<BlockPos> findBlock(World world, BlockPos blockPos, Block block, int radius) throws CommandSyntaxException {
-        //创建TreeSet集合，用来记录找到的方块坐标
-        TreeSet<BlockPos> treeSet = new TreeSet<>((o1, o2) -> MathUtils.compareBlockPos(blockPos, o1, o2));
+    public static ArrayList<BlockPos> findBlock(World world, BlockPos blockPos, Block block, int radius) throws CommandSyntaxException {
+        //创建ArrayList集合，用来记录找到的方块坐标
+        ArrayList<BlockPos> list = new ArrayList<>();
         //获取三个坐标的最大值
         int maxX = blockPos.getX() + radius;
         int maxZ = blockPos.getZ() + radius;
@@ -78,17 +85,17 @@ public class BlockFinderCommand {
                     mutableBlockPos.set(minX, bottomY, minZ);
                     if (world.getBlockState(mutableBlockPos).getBlock() == block) {
                         //将找到的方块坐标添加到集合
-                        treeSet.add(new BlockPos(mutableBlockPos.getX(), mutableBlockPos.getY(), mutableBlockPos.getZ()));
+                        list.add(new BlockPos(mutableBlockPos.getX(), mutableBlockPos.getY(), mutableBlockPos.getZ()));
                     }
                 }
             }
         }
-        return treeSet;
+        return list;
     }
 
     //发送命令反馈
-    public static void sendFeedback(CommandContext<ServerCommandSource> context, Block block, TreeSet<BlockPos> treeSet, BlockPos sourceBlockPos) {
-        int size = treeSet.size();
+    public static void sendFeedback(CommandContext<ServerCommandSource> context, Block block, ArrayList<BlockPos> list, BlockPos sourceBlockPos) {
+        int size = list.size();
         //判断集合中是否有元素
         if (size == 0) {
             SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.blockFinder.not_found_block"
@@ -98,7 +105,7 @@ public class BlockFinderCommand {
             int count = 0;
             if (size > 10) {
                 SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.blockFinder.find", size, TextUtils.getBlockName(block));
-                for (BlockPos blockPos : treeSet) {
+                for (BlockPos blockPos : list) {
                     count++;
                     if (count > 10) {
                         break;
@@ -107,7 +114,7 @@ public class BlockFinderCommand {
                 }
             } else {
                 SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.blockFinder.find.not_more_than_ten", size, TextUtils.getBlockName(block));
-                for (BlockPos blockPos : treeSet) {
+                for (BlockPos blockPos : list) {
                     count++;
                     sendFeedback(context, sourceBlockPos, count, blockPos);
                 }
@@ -124,5 +131,28 @@ public class BlockFinderCommand {
                 CarpetOrgAdditionSettings.canParseWayPoint
                         ? StringUtils.getBracketedBlockPos(blockPos)
                         : TextUtils.blockPos(blockPos, Formatting.GREEN));
+    }
+
+    static class BlockFinderThread extends Thread {
+        private final CommandContext<ServerCommandSource> context;
+        private final Block block;
+        private final BlockPos sourceBlockPos;
+        private final ArrayList<BlockPos> list;
+
+        BlockFinderThread(CommandContext<ServerCommandSource> context, ServerPlayerEntity player,
+                          Block block, ArrayList<BlockPos> list) {
+            this.context = context;
+            this.block = block;
+            this.sourceBlockPos = player.getBlockPos();
+            this.list = list;
+        }
+
+        @Override
+        public void run() {
+            // 将集合中的元素排序
+            list.sort((o1, o2) -> MathUtils.compareBlockPos(sourceBlockPos, o1, o2));
+            // 发送命令反馈
+            sendFeedback(context, block, list, sourceBlockPos);
+        }
     }
 }
