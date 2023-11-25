@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 public class GameRendererMixin {
     @ModifyConstant(method = "updateTargetedEntity", constant = @Constant(doubleValue = 3.0))
     private double targetedDistance(double constant) {
-        if (CarpetOrgAdditionSettings.maxBlockInteractionDistanceReferToEntity) {
+        if (CarpetOrgAdditionSettings.maxBlockPlaceDistanceReferToEntity) {
             //服务器最大交互距离
             return MathUtils.getPlayerMaxInteractionDistance();
         }
@@ -20,7 +20,7 @@ public class GameRendererMixin {
 
     @ModifyConstant(method = "updateTargetedEntity", constant = @Constant(doubleValue = 9.0))
     private double targetedSquaredDistance(double constant) {
-        if (CarpetOrgAdditionSettings.maxBlockInteractionDistanceReferToEntity) {
+        if (CarpetOrgAdditionSettings.maxBlockPlaceDistanceReferToEntity) {
             //服务器最大交互平方距离
             return MathUtils.getMaxBreakSquaredDistance();
         }

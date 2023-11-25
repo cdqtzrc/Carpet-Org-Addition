@@ -8,7 +8,7 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.collection.DefaultedList;
 
-@SuppressWarnings("unused")
+@Deprecated
 public class FakePlayerMainInventoryScreenHandler extends GenericContainerScreenHandler {
     private final FakePlayerInventory fakePlayerInventory;
 
@@ -17,6 +17,7 @@ public class FakePlayerMainInventoryScreenHandler extends GenericContainerScreen
         this.fakePlayerInventory = fakePlayerInventory;
     }
 
+    @SuppressWarnings("unused")
     public FakePlayerMainInventoryScreenHandler(int syncId, PlayerInventory playerInventory, FakePlayerInventory fakePlayerInventory) {
         this(ScreenHandlerType.GENERIC_9X6, syncId, playerInventory, fakePlayerInventory, 6);
     }

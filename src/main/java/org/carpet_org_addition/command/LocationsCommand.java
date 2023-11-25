@@ -207,6 +207,7 @@ public class LocationsCommand {
             throw CommandUtils.getException("carpet.commands.locations.illustrate.parse");
         } catch (IOException e) {
             //无法添加说明文本
+            CarpetOrgAddition.LOGGER.error("无法为路径点[" + name + "]添加说明文本", e);
             throw CommandUtils.getException("carpet.commands.locations.illustrate.io", name);
         }
         return 1;
@@ -238,6 +239,7 @@ public class LocationsCommand {
             //无法解析坐标
             throw CommandUtils.getException("carpet.commands.locations.another.parse");
         } catch (IOException e) {
+            CarpetOrgAddition.LOGGER.error("无法解析路径点[" + name + "]:", e);
             throw CommandUtils.getException("carpet.commands.locations.another.io", name);
         }
         return 1;
@@ -258,6 +260,7 @@ public class LocationsCommand {
             throw CommandUtils.getException("carpet.commands.locations.info.parse");
         } catch (IOException e) {
             //无法显示路径点的详细信息
+            CarpetOrgAddition.LOGGER.error("无法显示路径点详细信息:", e);
             throw CommandUtils.getException("carpet.commands.locations.info.io");
         }
         return 1;
@@ -272,6 +275,7 @@ public class LocationsCommand {
         //获取路径点文件对象
         File file = new File(getFile(player.getWorld()), delete + ".json");
         //从本地文件删除路径点
+        // 是否删除成功
         boolean successRemove = file.delete();
         if (successRemove) {
             //成功删除

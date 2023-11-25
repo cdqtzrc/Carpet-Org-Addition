@@ -59,7 +59,7 @@ public class SendMessageCommand {
             MutableText playerNameText = serverPlayerEntity.getDisplayName().copy();
             url = playerNameText.append(": ").append(url);
         }
-        SendMessageUtils.sendTextMessage(source, url);
+        SendMessageUtils.broadcastTextMessage(source, url);
         return 1;
     }
 

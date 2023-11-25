@@ -8,6 +8,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
 
+@Deprecated
 public class FakePlayerInventory extends PlayerInventory implements Inventory {
     //物品栏实际大小
     private final int ACTUAL_SIZE = 41;

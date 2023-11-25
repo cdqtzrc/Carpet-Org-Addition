@@ -107,13 +107,12 @@ public class Location {
     }
 
     //将坐标写入本地文件
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void saveLoc(File file, Location location, String fileName) throws IOException {
         Gson gson = new Gson();
         String json = gson.toJson(location, Location.class);
-        //noinspection ResultOfMethodCallIgnored
         file.mkdirs();
         File newFile = new File(file, fileName.endsWith(".json") ? fileName : fileName + ".json");
-        //noinspection ResultOfMethodCallIgnored
         newFile.createNewFile();
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(newFile, StandardCharsets.UTF_8))) {
             bw.write(json);

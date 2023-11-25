@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class FakePlayerActionInfo {
-    // 假玩家没有任何动作是显示的详细信息
+    // 假玩家没有任何动作时显示的详细信息
     public static ArrayList<MutableText> showStopInfo(EntityPlayerMPFake fakePlayer) {
         ArrayList<MutableText> list = new ArrayList<>();
         // 直接将假玩家没有任何动作的信息加入集合然后返回
@@ -200,7 +200,7 @@ public class FakePlayerActionInfo {
                     simpleInventory, world).get(buttonIndex);
             // 获取与配方对应的物品
             outputItemStack = stonecuttingRecipe.craft(simpleInventory, world.getRegistryManager());
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             // 如果索引越界了，将输出物品设置为空
             outputItemStack = ItemStack.EMPTY;
         }

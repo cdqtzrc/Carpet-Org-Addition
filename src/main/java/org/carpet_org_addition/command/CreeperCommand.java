@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
+@SuppressWarnings("unused")
 public class CreeperCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("creeper").requires(source ->

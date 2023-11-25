@@ -1,4 +1,4 @@
-package org.carpet_org_addition.util.villagerinventory;
+package org.carpet_org_addition.util.helpers;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;

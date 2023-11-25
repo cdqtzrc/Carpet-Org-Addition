@@ -4,7 +4,7 @@ import carpet.api.settings.Rule;
 import carpet.api.settings.RuleCategory;
 import org.carpet_org_addition.rulevalidator.CheckBedrockHardness;
 import org.carpet_org_addition.rulevalidator.CheckEnderPearlSpawnEndermiteProbability;
-import org.carpet_org_addition.rulevalidator.CheckMaxAllowInteractionDistance;
+import org.carpet_org_addition.rulevalidator.CheckMaxBlockPlaceDistance;
 import org.carpet_org_addition.rulevalidator.CheckPortalSpawnZombifiedPiglinProbability;
 
 public class CarpetOrgAdditionSettings {
@@ -13,7 +13,7 @@ public class CarpetOrgAdditionSettings {
 
     static {
         setBedrockHardness = -1;
-        maxBlockInteractionDistance = -1;
+        maxBlockPlaceDistance = -1;
         enderPearlSpawnEndermiteProbability = -1;
         portalSpawnZombifiedPiglinProbability = -1;
     }
@@ -116,9 +116,9 @@ public class CarpetOrgAdditionSettings {
     //最大方块交互距离
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL, RuleCategory.FEATURE},
-            validators = {CheckMaxAllowInteractionDistance.class}
+            validators = {CheckMaxBlockPlaceDistance.class}
     )
-    public static double maxBlockInteractionDistance;
+    public static double maxBlockPlaceDistance;
 
     //简易更新跳略器
     @Rule(
@@ -306,7 +306,7 @@ public class CarpetOrgAdditionSettings {
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
     )
-    public static boolean maxBlockInteractionDistanceReferToEntity = false;
+    public static boolean maxBlockPlaceDistanceReferToEntity = false;
 
     //可再生迅捷潜行
     @Rule(
