@@ -100,6 +100,7 @@ public class VillagerInventory implements Inventory {
     }
 
     // 获取容器中装着最后一个物品的物品栏，用于在关闭GUI时让物品回到玩家物品栏中
+    @SuppressWarnings("unused")
     public SimpleInventory getFinalItemInventory() {
         return finalItem;
     }

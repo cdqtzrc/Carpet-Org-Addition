@@ -12,8 +12,12 @@ public class FakePlayerClean {
         if (fakePlayer.currentScreenHandler instanceof ShulkerBoxScreenHandler shulkerBoxScreenHandler) {
             // 使用循环一个个丢出潜影盒中的物品
             for (int index = 0; index < 27; index++) {
-                FakePlayerUtils.throwItem(shulkerBoxScreenHandler, index, fakePlayer);
+                if (shulkerBoxScreenHandler.getSlot(index).hasStack()) {
+                    FakePlayerUtils.throwItem(shulkerBoxScreenHandler, index, fakePlayer);
+                }
             }
+            // 物品全部丢出后自动关闭潜影盒
+            fakePlayer.closeHandledScreen();
         }
     }
 }

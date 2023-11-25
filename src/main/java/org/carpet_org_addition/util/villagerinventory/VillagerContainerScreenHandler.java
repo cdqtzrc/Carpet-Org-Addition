@@ -9,6 +9,7 @@ import net.minecraft.screen.Generic3x3ContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
+import org.carpet_org_addition.util.helpers.DisabledSlot;
 
 public class VillagerContainerScreenHandler extends ScreenHandler {
     // 物品栏的大小

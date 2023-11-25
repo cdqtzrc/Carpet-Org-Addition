@@ -20,8 +20,10 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -32,6 +34,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionTypes;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
@@ -53,6 +56,7 @@ public class PlayerToolsCommand {
                         CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerTools))
                 .then(CommandManager.argument("player", EntityArgumentType.player())
                         .then(CommandManager.literal("enderChest").executes(context -> openEnderChest(context.getSource(), getPlayerEntity(context))))
+                        .then(CommandManager.literal("inventory").executes(context -> openFakePlayerInventory(context, getPlayerEntity(context))))
                         .then(CommandManager.literal("teleport").executes(context -> fakePlayerTp(context.getSource(), getPlayerEntity(context))))
                         .then(CommandManager.literal("isFakePlayer").executes(context -> isFakePlayer(context.getSource(), getPlayerEntity(context))))
                         .then(CommandManager.literal("position").executes(context -> getFakePlayerPos(context.getSource(), getPlayerEntity(context))))
@@ -377,6 +381,19 @@ public class PlayerToolsCommand {
                     -> new FakePlayerGuiCraftScreenHandler(i, playerInventory, (EntityPlayerMPFake) fakePlayer,
                     ScreenHandlerContext.create(player.getWorld(), player.getBlockPos()), new SimpleInventory(9), context),
                     TextUtils.getTranslate("carpet.commands.playerTools.action.info.craft.gui"));
+            player.openHandledScreen(screen);
+        }
+        return 1;
+    }
+
+    // 打开假玩家物品栏GUI
+    private static int openFakePlayerInventory(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer)
+            throws CommandSyntaxException {
+        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        if (isFakePlayer(fakePlayer)) {
+            SimpleNamedScreenHandlerFactory screen = new SimpleNamedScreenHandlerFactory((syncId, playerInventory, playerEntity)
+                    -> new FakePlayerInventoryScreenHandler(syncId, playerInventory,
+                    (EntityPlayerMPFake) fakePlayer), fakePlayer.getName());
             player.openHandledScreen(screen);
         }
         return 1;
