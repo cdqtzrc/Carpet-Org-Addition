@@ -6,6 +6,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -20,6 +21,7 @@ public class SculkShriekerBlockMixin {
         }
     }
 
+    @Unique
     private BlockState getBlockState(ItemPlacementContext ctx) {
         SculkShriekerBlock sculkShriekerBlock = (SculkShriekerBlock) (Object) this;
         return sculkShriekerBlock.getDefaultState().with(SculkShriekerBlock.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER).with(SculkShriekerBlock.CAN_SUMMON, true);
