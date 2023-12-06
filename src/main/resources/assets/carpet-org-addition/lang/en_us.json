@@ -142,8 +142,6 @@
   "carpet.rule.canActivatesObserver.desc": "侦测器可以通过用打火石右键直接激活",
   "carpet.rule.canParseWayPoint.name": "可解析路径点",
   "carpet.rule.canParseWayPoint.desc": "通过移除路径点中的交互事件来让OMMC可以解析聊天中的路径点",
-  "carpet.rule.disableOutOfOrderChatCheck.name": "禁用无序聊天数据包检查",
-  "carpet.rule.disableOutOfOrderChatCheck.desc": "玩家发送无序的聊天数据包时不会被踢出游戏",
   "carpet.rule.disableWaterFreezes.name": "禁止水结冰",
   "carpet.rule.disableWaterFreezes.desc": "在寒冷的生物群系中水不会结冰",
   "carpet.rule.fakePlayerCraftKeepItem.name": "假玩家合成保留物品",

@@ -39,7 +39,6 @@
     "rule.RegisterCarpetCommandsMixin",
     "rule.SculkShriekerBlockMixin",
     "rule.SeedCommandMixin",
-    "rule.ServerPlayNetworkHandlerMixin",
     "rule.ShulkerBoxBlockMixin",
     "rule.SnowGolemEntityMixin",
     "rule.SpawnerBlockMixin",
