@@ -26,11 +26,11 @@ public abstract class AbstractBlockMixin {
     //抄的Carpet AMS
     @Inject(method = "getHardness", at = @At("TAIL"), cancellable = true)
     public void getBlockHardness(BlockView world, BlockPos pos, CallbackInfoReturnable<Float> cir) {
-        float bedrockHardness = CarpetOrgAdditionSettings.setBedrockHardness;
-        if (bedrockHardness < 0) {
-            bedrockHardness = -1;
-        }
         if (this.getBlock() == Blocks.BEDROCK) {
+            float bedrockHardness = CarpetOrgAdditionSettings.setBedrockHardness;
+            if (bedrockHardness < 0) {
+                bedrockHardness = -1;
+            }
             cir.setReturnValue(bedrockHardness);
         }
     }

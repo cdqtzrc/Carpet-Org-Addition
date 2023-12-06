@@ -15,8 +15,8 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -43,7 +43,7 @@ public abstract class SpawnerBlockMixin extends BlockWithEntity {
 
     @Override
     //使用精准采集挖掘时掉落带NBT的物品
-    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+    public BlockState onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         super.onBreak(world, pos, state, player);
         if (CarpetOrgAdditionSettings.canMineSpawner && !player.isCreative() && EnchantmentHelper.hasSilkTouch(player.getMainHandStack())) {
             if (world.getBlockEntity(pos) instanceof MobSpawnerBlockEntity mobSpawnerBlock) {
@@ -54,6 +54,7 @@ public abstract class SpawnerBlockMixin extends BlockWithEntity {
                 world.spawnEntity(itemEntity);
             }
         }
+        return state;
     }
 
     @Override
