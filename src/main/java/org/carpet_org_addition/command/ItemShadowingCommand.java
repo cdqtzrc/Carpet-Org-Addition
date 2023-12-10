@@ -26,14 +26,17 @@ public class ItemShadowingCommand {
 
     //制作物品分身
     private static int itemShadowing(PlayerEntity player) throws CommandSyntaxException {
+        // 获取主副手上的物品
         ItemStack main = player.getMainHandStack();
         ItemStack off = player.getOffHandStack();
         if (main.isEmpty()) {
+            // 主手不能为空
             throw CommandUtils.getException("carpet.commands.itemshadowing.main_hand_is_empty");
         } else if (off.isEmpty()) {
             player.setStackInHand(Hand.OFF_HAND, player.getMainHandStack());
             return 1;
         } else {
+            // 副手必须为空
             throw CommandUtils.getException("carpet.commands.itemshadowing.off_hand_not_empty");
         }
     }

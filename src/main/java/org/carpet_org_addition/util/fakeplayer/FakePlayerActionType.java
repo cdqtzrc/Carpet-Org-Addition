@@ -41,7 +41,7 @@ public enum FakePlayerActionType {
         if (context == null) {
             return FakePlayerActionInfo.showStopInfo(fakePlayer);
         }
-        // 现在的命令执行上下文来自/playerTools <玩家名> action query，这条命令的命令执行上下文中只记录了一个玩家的信息
+        // 现在的命令执行上下文来自/playerTools <玩家名> action query，这条命令的命令执行上下文对象中只记录了假玩家玩家的基本信息，但是没有动作相关的信息
         // 需要获取该玩家的对象，然后根据这个假玩家获取假玩家当前的命令执行上下文，这一个命令执行上下文对象中才有获取文本所需要的信息
         fakePlayerActionInterface = (FakePlayerActionInterface) EntityArgumentType.getPlayer(context, "player");
         context = fakePlayerActionInterface.getContext();

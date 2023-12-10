@@ -45,4 +45,32 @@ public class CommandUtils {
     public static CommandSyntaxException getException(String key, Object... obj) {
         return new SimpleCommandExceptionType(TextUtils.getTranslate(key, obj)).create();
     }
+
+    /**
+     * json文件已存在
+     */
+    public static CommandSyntaxException createJsonFileAlreadyExistException() {
+        return new SimpleCommandExceptionType(TextUtils.getTranslate("carpet.command.file.json.file_already_exist")).create();
+    }
+
+    /**
+     * 无法解析json文件
+     */
+    public static CommandSyntaxException createJsonParseException() {
+        return new SimpleCommandExceptionType(TextUtils.getTranslate("carpet.command.file.json.json_parse")).create();
+    }
+
+    /**
+     * 无法读取json文件
+     */
+    public static CommandSyntaxException createReadJsonFileException() {
+        return new SimpleCommandExceptionType(TextUtils.getTranslate("carpet.command.file.json.read")).create();
+    }
+
+    /**
+     * 找不到json文件
+     */
+    public static CommandSyntaxException createNotJsonFileException() {
+        return new SimpleCommandExceptionType(TextUtils.getTranslate("carpet.command.file.json.not_file")).create();
+    }
 }
