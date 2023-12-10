@@ -10,6 +10,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.command.argument.ItemPredicateArgumentType;
 import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.entity.Entity;
@@ -17,8 +18,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
@@ -40,11 +40,13 @@ import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.SendMessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.fakeplayer.*;
+import org.carpet_org_addition.util.helpers.ItemMatcher;
 
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 
 @SuppressWarnings("SameReturnValue")
 public class PlayerToolsCommand {
@@ -66,31 +68,32 @@ public class PlayerToolsCommand {
                                         .executes(context -> setAction(context, getPlayerEntity(context), FakePlayerActionType.FILL))))
                                 .then(CommandManager.literal("stop").executes(context -> setAction(context, getPlayerEntity(context), FakePlayerActionType.STOP)))
                                 .then(CommandManager.literal("craft")
-                                        .then(CommandManager.literal("one").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
+                                        .then(CommandManager.literal("one").then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                 .executes(context -> setAction(context, getPlayerEntity(context), FakePlayerActionType.CRAFT_ONE))))
-                                        .then(CommandManager.literal("nine").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
+                                        .then(CommandManager.literal("nine").then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                 .executes(context -> setAction(context, getPlayerEntity(context), FakePlayerActionType.CRAFT_NINE))))
-                                        .then(CommandManager.literal("four").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
+                                        .then(CommandManager.literal("four").then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                 .executes(context -> setAction(context, getPlayerEntity(context), FakePlayerActionType.CRAFT_FOUR))))
                                         .then(CommandManager.literal("3x3")
-                                                .then(CommandManager.argument("item1", ItemStackArgumentType.itemStack(commandBuildContext))
-                                                        .then(CommandManager.argument("item2", ItemStackArgumentType.itemStack(commandBuildContext))
-                                                                .then(CommandManager.argument("item3", ItemStackArgumentType.itemStack(commandBuildContext))
-                                                                        .then(CommandManager.argument("item4", ItemStackArgumentType.itemStack(commandBuildContext))
-                                                                                .then(CommandManager.argument("item5", ItemStackArgumentType.itemStack(commandBuildContext))
-                                                                                        .then(CommandManager.argument("item6", ItemStackArgumentType.itemStack(commandBuildContext))
-                                                                                                .then(CommandManager.argument("item7", ItemStackArgumentType.itemStack(commandBuildContext))
-                                                                                                        .then(CommandManager.argument("item8", ItemStackArgumentType.itemStack(commandBuildContext))
-                                                                                                                .then(CommandManager.argument("item9", ItemStackArgumentType.itemStack(commandBuildContext))
+                                                .then(CommandManager.argument("item1", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                                        .then(CommandManager.argument("item2", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                                                .then(CommandManager.argument("item3", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                                                        .then(CommandManager.argument("item4", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                                                                .then(CommandManager.argument("item5", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                                                                        .then(CommandManager.argument("item6", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                                                                                .then(CommandManager.argument("item7", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                                                                                        .then(CommandManager.argument("item8", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                                                                                                .then(CommandManager.argument("item9", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                                                                                         .executes(context -> setAction(context, getPlayerEntity(context), FakePlayerActionType.CRAFT_3X3))
                                                                                                                 ))))))))))
                                         .then(CommandManager.literal("2x2")
-                                                .then(CommandManager.argument("item1", ItemStackArgumentType.itemStack(commandBuildContext))
-                                                        .then(CommandManager.argument("item2", ItemStackArgumentType.itemStack(commandBuildContext))
-                                                                .then(CommandManager.argument("item3", ItemStackArgumentType.itemStack(commandBuildContext))
-                                                                        .then(CommandManager.argument("item4", ItemStackArgumentType.itemStack(commandBuildContext))
+                                                .then(CommandManager.argument("item1", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                                        .then(CommandManager.argument("item2", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                                                .then(CommandManager.argument("item3", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                                                        .then(CommandManager.argument("item4", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                                                 .executes(context -> setAction(context, getPlayerEntity(context), FakePlayerActionType.CRAFT_2X2)))))))
-                                        .then(CommandManager.literal("gui").executes(context -> openFakePlayerCraftGui(context, getPlayerEntity(context)))))
+                                        .then(CommandManager.literal("gui").executes(context -> openFakePlayerCraftGui(context, getPlayerEntity(context))))
+                                )
                                 .then(CommandManager.literal("trade").then(CommandManager.argument("index", IntegerArgumentType.integer(1))
                                         .executes(context -> setAction(context, getPlayerEntity(context), FakePlayerActionType.TRADE))))
                                 .then(CommandManager.literal("info").executes(context -> getAction(context, getPlayerEntity(context))))
@@ -111,7 +114,7 @@ public class PlayerToolsCommand {
 
     //假玩家治疗
     private static int fakePlayerHeal(ServerCommandSource source, PlayerEntity fakePlayer) throws CommandSyntaxException {
-        if (isFakePlayer(fakePlayer)) {
+        if (checkFakePlayer(fakePlayer)) {
             float health = fakePlayer.getMaxHealth() - fakePlayer.getHealth();
             fakePlayer.heal(fakePlayer.getMaxHealth());
             fakePlayer.getHungerManager().setFoodLevel(20);
@@ -147,7 +150,7 @@ public class PlayerToolsCommand {
         Text fakePlayerName = fakePlayer.getDisplayName();
         Text playerName = player.getDisplayName();
         //判断被执行的玩家是否为假玩家
-        if (isFakePlayer(fakePlayer)) {
+        if (checkFakePlayer(fakePlayer)) {
             if (CarpetOrgAdditionSettings.fakePlayerProtect && FakePlayerProtectManager.isProtect((EntityPlayerMPFake) fakePlayer)) {
                 //不能传送受保护的假玩家
                 throw CommandUtils.getException("carpet.commands.playerTools.tp.protected_fake_player");
@@ -210,7 +213,7 @@ public class PlayerToolsCommand {
 
     //获取假玩家位置
     private static int getFakePlayerPos(ServerCommandSource source, PlayerEntity fakePlayer) throws CommandSyntaxException {
-        if (isFakePlayer(fakePlayer)) {
+        if (checkFakePlayer(fakePlayer)) {
             MutableText text = Texts.bracketed(Text.translatable("chat.coordinates", fakePlayer.getBlockX(),
                     fakePlayer.getBlockY(), fakePlayer.getBlockZ())).styled((Style style)
                     -> style.withColor(Formatting.GREEN).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD,
@@ -228,7 +231,7 @@ public class PlayerToolsCommand {
     }
 
     // 判断指定玩家是否为假玩家，如果不是会直接抛出异常
-    private static boolean isFakePlayer(PlayerEntity fakePlayer) throws CommandSyntaxException {
+    private static boolean checkFakePlayer(PlayerEntity fakePlayer) throws CommandSyntaxException {
         if (fakePlayer instanceof EntityPlayerMPFake) {
             return true;
         } else {
@@ -259,40 +262,40 @@ public class PlayerToolsCommand {
             promptToEnableCtrlQCraftingFix(source);
         }
         //判断该玩家是否为假玩家，此处必须为假玩家，只有假玩家类实现了假玩家动作接口
-        if (isFakePlayer(fakePlayer)) {
+        if (checkFakePlayer(fakePlayer)) {
             //将假玩家类型强转为假玩家动作接口
             FakePlayerActionInterface fakePlayerActionInterface = (FakePlayerActionInterface) fakePlayer;
             //如果假玩家动作类型是自定义物品合成，为数组中的每一个元素赋值
             switch (action) {
                 // 单个合成材料，在生存模式物品栏中合成，第一个元素填入指定物品，其他元素填入空气
                 case CRAFT_ONE -> {
-                    Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
-                    fakePlayerActionInterface.set2x2Craft(fillArray(item, new Item[4], false));
+                    Predicate<ItemStack> item = ItemPredicateArgumentType.getItemStackPredicate(context, "item");
+                    fakePlayerActionInterface.set2x2Craft(fillArray(new ItemMatcher(item), new ItemMatcher[4], false));
                 }
                 // 四个相同的合成材料，在生存模式物品栏合成，所有元素都填入指定物品
                 case CRAFT_FOUR -> {
-                    Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
-                    fakePlayerActionInterface.set2x2Craft(fillArray(item, new Item[4], true));
+                    Predicate<ItemStack> item = ItemPredicateArgumentType.getItemStackPredicate(context, "item");
+                    fakePlayerActionInterface.set2x2Craft(fillArray(new ItemMatcher(item), new ItemMatcher[4], true));
                 }
                 // 九个相同的合成材料，在工作台合成，所有元素都填入指定物品
                 case CRAFT_NINE -> {
-                    Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
-                    fakePlayerActionInterface.set3x3Craft(fillArray(item, new Item[9], true));
+                    Predicate<ItemStack> item = ItemPredicateArgumentType.getItemStackPredicate(context, "item");
+                    fakePlayerActionInterface.set3x3Craft(fillArray(new ItemMatcher(item), new ItemMatcher[9], true));
                 }
                 // 4个不同的合成材料，在生存模式物品栏合成，每个元素填入不同的物品
                 case CRAFT_2X2 -> {
-                    Item[] items = new Item[4];
+                    ItemMatcher[] items = new ItemMatcher[4];
                     for (int i = 1; i <= 4; i++) {
                         //获取每一个合成材料
-                        items[i - 1] = ItemStackArgumentType.getItemStackArgument(context, "item" + i).getItem();
+                        items[i - 1] = new ItemMatcher(ItemPredicateArgumentType.getItemStackPredicate(context, "item" + i));
                         fakePlayerActionInterface.set2x2Craft(items);
                     }
                 }
                 // 九个不同的合成材料，在工作台合成，每个元素填入不同的物品
                 case CRAFT_3X3 -> {
-                    Item[] items = new Item[9];
+                    ItemMatcher[] items = new ItemMatcher[9];
                     for (int i = 1; i <= 9; i++) {
-                        items[i - 1] = ItemStackArgumentType.getItemStackArgument(context, "item" + i).getItem();
+                        items[i - 1] = new ItemMatcher(ItemPredicateArgumentType.getItemStackPredicate(context, "item" + i));
                     }
                     fakePlayerActionInterface.set3x3Craft(items);
                 }
@@ -308,17 +311,17 @@ public class PlayerToolsCommand {
     }
 
     // 填充数组
-    private static Item[] fillArray(Item item, Item[] itemArr, boolean directFill) {
+    private static ItemMatcher[] fillArray(ItemMatcher itemMatcher, ItemMatcher[] itemArr, boolean directFill) {
         if (directFill) {
             // 直接使用元素填满整个数组
-            Arrays.fill(itemArr, item);
+            Arrays.fill(itemArr, itemMatcher);
         } else {
             // 第一个元素填入指定物品，其他元素填入空气
             for (int i = 0; i < itemArr.length; i++) {
                 if (i == 0) {
-                    itemArr[i] = item;
+                    itemArr[i] = itemMatcher;
                 } else {
-                    itemArr[i] = Items.AIR;
+                    itemArr[i] = ItemMatcher.AIR_ITEM_VALIDATOR;
                 }
             }
         }
@@ -361,7 +364,7 @@ public class PlayerToolsCommand {
     //获取假玩家操作类型
     private static int getAction(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer)
             throws CommandSyntaxException {
-        if (isFakePlayer(fakePlayer)) {
+        if (checkFakePlayer(fakePlayer)) {
             FakePlayerActionType action = ((FakePlayerActionInterface) fakePlayer).getAction();
             SendMessageUtils.sendListMessage(context.getSource(), action.getActionText(context, (EntityPlayerMPFake) fakePlayer));
         }
@@ -372,7 +375,7 @@ public class PlayerToolsCommand {
     private static int openFakePlayerCraftGui(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer)
             throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getPlayer(context);
-        if (isFakePlayer(fakePlayer)) {
+        if (checkFakePlayer(fakePlayer)) {
             // 打开合成GUI
             SimpleNamedScreenHandlerFactory screen = new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity)
                     -> new FakePlayerGuiCraftScreenHandler(i, playerInventory, (EntityPlayerMPFake) fakePlayer,
@@ -387,7 +390,7 @@ public class PlayerToolsCommand {
     private static int openFakePlayerInventory(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer)
             throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getPlayer(context);
-        if (isFakePlayer(fakePlayer)) {
+        if (checkFakePlayer(fakePlayer)) {
             SimpleNamedScreenHandlerFactory screen = new SimpleNamedScreenHandlerFactory((syncId, playerInventory, playerEntity)
                     -> new FakePlayerInventoryScreenHandler(syncId, playerInventory,
                     (EntityPlayerMPFake) fakePlayer), fakePlayer.getName());

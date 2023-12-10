@@ -49,10 +49,13 @@ public class RegisterCarpetCommands {
             //路径点管理器命令
             LocationsCommand.register(dispatcher);
 
+            // 预设管理器命令
+            // PresetsCommand.register(dispatcher);
+
             /*
               测试用命令
              */
-            //CarpetOrgAdditionTestCommand.register(dispatcher);
+            // CarpetOrgAdditionTestCommand.register(dispatcher, commandBuildContext);
 
             CarpetServer.extensions.forEach((e) -> e.registerCommands(dispatcher, commandBuildContext));
         }

@@ -20,12 +20,13 @@ public class SpectatorCommand {
                 .executes(SpectatorCommand::setGameMode));
     }
 
-    //更改游戏模式
+    // 更改游戏模式
     private static int setGameMode(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        // 如果玩家当前是旁观模式，就切换到生存模式，否则切换到旁观模式
         GameMode gameMode = player.isSpectator() ? GameMode.SURVIVAL : GameMode.SPECTATOR;
         player.changeGameMode(gameMode);
-        //发送命令反馈
+        // 发送命令反馈
         MutableText text = Text.translatable("gameMode." + gameMode.getName());
         player.sendMessage(Text.translatable("commands.gamemode.success.self", text), true);
         return gameMode == GameMode.SURVIVAL ? 1 : 0;

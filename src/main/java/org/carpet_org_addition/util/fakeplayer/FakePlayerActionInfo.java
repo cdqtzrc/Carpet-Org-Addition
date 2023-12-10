@@ -26,6 +26,7 @@ import net.minecraft.village.TradeOffer;
 import net.minecraft.world.World;
 import org.carpet_org_addition.util.StringUtils;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.helpers.ItemMatcher;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class FakePlayerActionInfo {
     // 显示工作台中物品合成的详细信息
     public static ArrayList<MutableText> showCraftingTableCraftInfo(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) {
         // 获取为假玩家设置的合成配方
-        Item[] arr = FakePlayerActionInterface.getInstance(fakePlayer).get3x3Craft();
+        ItemMatcher[] arr = FakePlayerActionInterface.getInstance(fakePlayer).get3x3Craft();
         // 创建一个集合用来存储可变文本对象，这个集合用来在聊天栏输出多行聊天信息，集合中的每个元素单独占一行
         ArrayList<MutableText> list = new ArrayList<>();
         // 将可变文本“<玩家>正在合成物品，配方:”添加到集合
@@ -84,7 +85,7 @@ public class FakePlayerActionInfo {
 
     // 显示生存模式物品栏中合成物品的详细信息
     public static ArrayList<MutableText> showSurvivalInventoryCraftInfo(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) {
-        Item[] arr = FakePlayerActionInterface.getInstance(fakePlayer).get2x2Craft();
+        ItemMatcher[] arr = FakePlayerActionInterface.getInstance(fakePlayer).get2x2Craft();
         // 创建一个集合用来存储可变文本对象，这个集合用来在聊天栏输出多行聊天信息，集合中的每个元素单独占一行
         ArrayList<MutableText> list = new ArrayList<>();
         // 获取假玩家的显示名称
@@ -278,6 +279,16 @@ public class FakePlayerActionInfo {
         // 获取物品ID的首字母，然后转为大写，再放进中括号里
         String capitalizeFirstLetter = "[" + String.valueOf(item.toString().charAt(0)).toUpperCase() + "]";
         return TextUtils.hoverText(Text.literal(capitalizeFirstLetter), item.getName(), null);
+    }    // 获取物品的可变文本形式
+
+    private static MutableText getHoverText(ItemMatcher item) {
+        if (item.isEmpty()) {
+            return TextUtils.hoverText(Text.literal("[A]"), Items.AIR.getName(), Formatting.DARK_GRAY);
+        }
+        // 获取物品ID的首字母，然后转为大写，再放进中括号里
+        String capitalizeFirstLetter = "[" + String.valueOf(item.toString().charAt(0)).toUpperCase() + "]";
+        return TextUtils.hoverText(Text.literal(capitalizeFirstLetter), item.isItem() ?
+                item.getItem().getName() : TextUtils.getTranslate("carpet.commands.playerTools.action.info.craft.item_tag"), null);
     }
 
     // 获取物品堆栈的可变文本形式：物品名称x堆叠数量
@@ -293,7 +304,7 @@ public class FakePlayerActionInfo {
 
     // 获取配方的输出物品
     @SuppressWarnings("ExtractMethodRecommender")
-    private static Item getCraftOutPut(CommandContext<ServerCommandSource> context, Item[] arr) {
+    private static Item getCraftOutPut(CommandContext<ServerCommandSource> context, ItemMatcher[] arr) {
         // 合成格的宽高，如果数组长度为9，则表示在工作台合成，所以宽高为3，否则，物品在生存模式物品栏合成，所以宽高为2
         int widthHeight = arr.length == 9 ? 3 : 2;
         // 获取一个合成物品栏的对象，重写方法仅仅是为了代码不报错
@@ -310,7 +321,21 @@ public class FakePlayerActionInfo {
         }, widthHeight, widthHeight);
         // 设置物品栏中每一个物品为配方中的物品
         for (int i = 0; i < arr.length; i++) {
-            craftingInventory.setStack(i, arr[i].getDefaultStack());
+            // 获取一个与对象匹配的物品堆栈对象
+            Object itemStack = arr[i].getDefaultStack();
+            // 如果物品为null，设置合成物品栏索引上的元素为空气
+            if (itemStack == null) {
+                craftingInventory.setStack(i, Items.AIR.getDefaultStack());
+                // 如果是物品，设置合成物品栏当前索引上的元素为该物品的默认物品堆栈
+            } else if (itemStack instanceof Item item) {
+                craftingInventory.setStack(i, item.getDefaultStack());
+                // 如果是物品堆栈，设置合成物品栏当前索引上的元素为当前物品堆栈
+            } else if (itemStack instanceof ItemStack) {
+                craftingInventory.setStack(i, (ItemStack) itemStack);
+            } else {
+                // 否则抛出异常
+                throw new IllegalStateException(itemStack.getClass().getName() + "#getDefaultStack()返回了一个异常的对象");
+            }
         }
         ServerCommandSource source = context.getSource();
         ServerWorld world = source.getWorld();

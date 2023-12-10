@@ -206,6 +206,7 @@
   "carpet.commands.playerTools.action.set.has_permission": "单击输入\"/carpet ctrlQCraftingFix true\"",
   "carpet.commands.playerTools.action.set.no_permission": "你没有足够的权限来执行此命令",
   "carpet.commands.playerTools.action.info.stop": "%s没有任何动作",
+  "carpet.commands.playerTools.action.info.craft.item_tag": "物品标签",
   "carpet.commands.playerTools.action.info.craft.no_crafting_table": "%s没有打开%s",
   "carpet.commands.playerTools.action.info.craft.recipe": "%s正在合成物品，配方:",
   "carpet.commands.playerTools.action.info.craft.state": "%s当前合成物品的状态:",

@@ -6,7 +6,6 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
@@ -18,6 +17,7 @@ import org.carpet_org_addition.exception.InfiniteLoopException;
 import org.carpet_org_addition.util.SendMessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.fakeplayer.*;
+import org.carpet_org_addition.util.helpers.ItemMatcher;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -67,23 +67,23 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
 
     // 假玩家3x3合成时的配方
     @Override
-    public Item[] get3x3Craft() {
+    public ItemMatcher[] get3x3Craft() {
         return ITEMS_3X3;
     }
 
     @Override
-    public void set3x3Craft(Item[] items) {
+    public void set3x3Craft(ItemMatcher[] items) {
         // 数组拷贝
         System.arraycopy(items, 0, ITEMS_3X3, 0, ITEMS_3X3.length);
     }
 
     @Override
-    public Item[] get2x2Craft() {
+    public ItemMatcher[] get2x2Craft() {
         return ITEMS_2X2;
     }
 
     @Override
-    public void set2x2Craft(Item[] items) {
+    public void set2x2Craft(ItemMatcher[] items) {
         System.arraycopy(items, 0, ITEMS_2X2, 0, ITEMS_2X2.length);
     }
 

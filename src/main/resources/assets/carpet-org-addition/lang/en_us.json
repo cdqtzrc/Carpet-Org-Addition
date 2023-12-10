@@ -152,6 +152,10 @@
   "carpet.rule.netherPortalHasCollisionBox.desc": "通过让下界传送门方块有碰撞箱来阻止玩家意外的进入传送门",
   "carpet.rule.message.disableRespawnBlocksExplode": "已禁用重生方块爆炸",
   "carpet.command.source.not_player": "期望一名玩家来执行此命令",
+  "carpet.command.file.json.file_already_exist": "json文件已存在",
+  "carpet.command.file.json.not_file": "找不到json文件",
+  "carpet.command.file.json.json_parse": "无法解析json文件",
+  "carpet.command.file.json.read": "无法读取json文件",
   "carpet.commands.blockFinder.timeout": "查找方块超时",
   "carpet.commands.blockFinder.too_much_blocks": "周围%s过多，无法统计（数量：%s）",
   "carpet.commands.blockFinder.not_found_block": "在指定范围内找不到%s",
@@ -206,6 +210,7 @@
   "carpet.commands.playerTools.action.set.has_permission": "单击输入\"/carpet ctrlQCraftingFix true\"",
   "carpet.commands.playerTools.action.set.no_permission": "你没有足够的权限来执行此命令",
   "carpet.commands.playerTools.action.info.stop": "%s没有任何动作",
+  "carpet.commands.playerTools.action.info.craft.item_tag": "物品标签",
   "carpet.commands.playerTools.action.info.craft.no_crafting_table": "%s没有打开%s",
   "carpet.commands.playerTools.action.info.craft.recipe": "%s正在合成物品，配方:",
   "carpet.commands.playerTools.action.info.craft.state": "%s当前合成物品的状态:",
@@ -261,5 +266,8 @@
   "carpet.commands.xpTransfer.all": "将%s所有的经验共%s转移给%s",
   "carpet.commands.xpTransfer.half": "将%s一半的经验共%s转移给%s",
   "carpet.commands.xpTransfer.point.fail": "%s没有这么多经验(%s>%s)",
-  "carpet.commands.xpTransfer.point": "将%s的%s点经验转移给%s"
+  "carpet.commands.xpTransfer.point": "将%s的%s点经验转移给%s",
+  "carpet.commands.presets.parse.string.fail": "无法解析字符串%s",
+  "carpet.commands.presets.parse.item.fail": "无法从文件[%s]中解析第%s个物品",
+  "carpet.commands.presets.parse.craft_presets.fail": "无法解析json文件%s"
 }
