@@ -64,7 +64,7 @@ public class BlockFinderCommand {
                     itemStack.toHoverableText(), list.size());
         }
         // 在一个单独的线程中处理数据
-        ItemFinderDataCollationThread sort = new ItemFinderDataCollationThread(context, sourceBlockPos, itemStack, list);
+        ItemFinderDataCollationThread sort = new ItemFinderDataCollationThread(context, itemStack, list);
         // 设置新线程的名字
         sort.setName("Item Finder Thread");
         // 启动线程
@@ -277,7 +277,7 @@ public class BlockFinderCommand {
         private final ItemStack itemStack;
         private final ArrayList<ItemStackFindResult> list;
 
-        ItemFinderDataCollationThread(CommandContext<ServerCommandSource> context, BlockPos sourceBlockPos, ItemStack itemStack, ArrayList<ItemStackFindResult> list) {
+        ItemFinderDataCollationThread(CommandContext<ServerCommandSource> context, ItemStack itemStack, ArrayList<ItemStackFindResult> list) {
             this.context = context;
             this.itemStack = itemStack;
             this.list = list;
