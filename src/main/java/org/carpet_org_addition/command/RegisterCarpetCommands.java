@@ -8,7 +8,7 @@ import net.minecraft.server.command.ServerCommandSource;
 
 public class RegisterCarpetCommands {
     //注册Carpet命令
-    public static void registerCarpetCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandManager.RegistrationEnvironment environment, CommandRegistryAccess commandBuildContext) {
+    public static void registerCarpetCommands(CommandDispatcher<ServerCommandSource> dispatcher, @SuppressWarnings("unused") CommandManager.RegistrationEnvironment environment, CommandRegistryAccess commandBuildContext) {
         if (CarpetServer.settingsManager != null) {
             CarpetServer.settingsManager.registerCommand(dispatcher, commandBuildContext);
             CarpetServer.extensions.forEach((e) -> {

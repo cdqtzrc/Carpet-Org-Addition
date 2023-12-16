@@ -18,7 +18,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     }
 
     //日志
-   public static final Logger LOGGER = LoggerFactory.getLogger("CarpetOrgAddition");
+    public static final Logger LOGGER = LoggerFactory.getLogger("CarpetOrgAddition");
 
     /**
      * Runs the mod initializer.
@@ -31,6 +31,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     //在游戏开始时
     @Override
     public void onGameStarted() {
+        // 解析Carpet设置
         CarpetServer.settingsManager.parseSettingsClass(CarpetOrgAdditionSettings.class);
     }
 
@@ -38,10 +39,13 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     @Override
     public void onPlayerLoggedIn(ServerPlayerEntity player) {
         CarpetExtension.super.onPlayerLoggedIn(player);
-        //假玩家生存时不保留上一次的击退
+        // 假玩家生成时不保留上一次的击退，着火时间，摔落高度
         if (CarpetOrgAdditionSettings.fakePlayerSpawnNotRetainKnockback && player instanceof EntityPlayerMPFake fakePlayer) {
+            // 清除速度
             fakePlayer.setVelocity(0, 0, 0);
+            // 清除着火时间
             fakePlayer.setFireTicks(0);
+            // 清除摔落高度
             fakePlayer.fallDistance = 0;
         }
     }

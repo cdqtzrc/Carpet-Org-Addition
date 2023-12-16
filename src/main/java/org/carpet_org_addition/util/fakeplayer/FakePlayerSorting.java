@@ -8,7 +8,6 @@ import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.math.Vec3d;
 import org.carpet_org_addition.exception.EmptyShulkerBoxException;
@@ -17,7 +16,7 @@ import org.carpet_org_addition.util.ShulkerBoxUtils;
 public class FakePlayerSorting {
     private FakePlayerSorting() {
     }
-    
+
     public static void sorting(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) {
         //获取要分拣的物品对象
         Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
@@ -40,7 +39,7 @@ public class FakePlayerSorting {
             } else {
                 //丢弃潜影盒内的物品
                 //判断当前物品是不是潜影盒
-                if (itemStack.isOf(Items.SHULKER_BOX)) {
+                if (ShulkerBoxUtils.isShulkerBoxItem(itemStack)) {
                     while (true) {
                         //一轮循环结束后，再重新将当前物品设置为物品栏中的潜影盒
                         itemStack = inventory.getStack(index);

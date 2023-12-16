@@ -7,8 +7,8 @@ import org.carpet_org_addition.util.MathUtils;
 import org.jetbrains.annotations.Nullable;
 
 //检查最大方块交互距离的合法性
-public class CheckMaxBlockPlaceDistance extends Validator<Double> {
-    private CheckMaxBlockPlaceDistance() {
+public class MaxBlockPlaceDistanceLegitimacyCheck extends Validator<Double> {
+    private MaxBlockPlaceDistanceLegitimacyCheck() {
     }
 
     /**

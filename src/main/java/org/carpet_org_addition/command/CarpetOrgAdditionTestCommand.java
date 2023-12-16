@@ -20,6 +20,7 @@ import java.util.function.Predicate;
 /**
  * 测试用，不会添加到游戏
  */
+@SuppressWarnings("unused")
 public class CarpetOrgAdditionTestCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("carpetOrgAdditionTest").requires(source -> false)

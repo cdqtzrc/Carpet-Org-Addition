@@ -321,7 +321,7 @@ public class PlayerToolsCommand {
                 if (i == 0) {
                     itemArr[i] = itemMatcher;
                 } else {
-                    itemArr[i] = ItemMatcher.AIR_ITEM_VALIDATOR;
+                    itemArr[i] = ItemMatcher.AIR_ITEM_MATCHER;
                 }
             }
         }
