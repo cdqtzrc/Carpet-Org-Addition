@@ -2,10 +2,7 @@ package org.carpet_org_addition;
 
 import carpet.api.settings.Rule;
 import carpet.api.settings.RuleCategory;
-import org.carpet_org_addition.rulevalidator.CheckBedrockHardness;
-import org.carpet_org_addition.rulevalidator.CheckEnderPearlSpawnEndermiteProbability;
-import org.carpet_org_addition.rulevalidator.CheckMaxBlockPlaceDistance;
-import org.carpet_org_addition.rulevalidator.CheckPortalSpawnZombifiedPiglinProbability;
+import org.carpet_org_addition.rulevalidator.*;
 
 public class CarpetOrgAdditionSettings {
     private CarpetOrgAdditionSettings() {
@@ -116,7 +113,7 @@ public class CarpetOrgAdditionSettings {
     //最大方块交互距离
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL, RuleCategory.FEATURE},
-            validators = {CheckMaxBlockPlaceDistance.class}
+            validators = {MaxBlockPlaceDistanceLegitimacyCheck.class, MaxBlockPlaceDistanceCompatibilityCheck.class}
     )
     public static double maxBlockPlaceDistance;
 

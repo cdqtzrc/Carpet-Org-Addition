@@ -1,11 +1,17 @@
 package org.carpet_org_addition.util;
 
+import net.minecraft.inventory.Inventories;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.util.collection.DefaultedList;
 import org.carpet_org_addition.exception.EmptyShulkerBoxException;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -20,7 +26,7 @@ public class ShulkerBoxUtils {
     }
 
     /**
-     * 取出潜影盒内容物的第一个非空气物品，堆叠的潜影盒会被视为空潜影盒。<br/>
+     * 取出并删除潜影盒内容物的第一个非空气物品，堆叠的潜影盒会被视为空潜影盒。<br/>
      * <br/>
      * 因为正常情况下有物品的潜影盒无法堆叠（原版的潜影盒不可堆叠，但是空潜影盒可以通过carpet或Tweakeroo的功能堆叠），即便是有物品，也不能使用
      * 本方法取出物品，如果需要取出，应该现将物品堆分开，否则如果直接取出，则堆叠的所有潜影盒都会受影响。假设有一个堆叠数为10的潜影盒，内含一组物品，
@@ -102,5 +108,71 @@ public class ShulkerBoxUtils {
             }
         }
         return true;
+    }
+
+    /**
+     * 获取潜影盒物品的物品栏
+     *
+     * @param shulkerBoxItemStack 要获取物品栏的潜影盒
+     * @return 潜影盒内的物品栏，如果物品不是潜影盒，或者潜影盒没有NBT，返回null
+     */
+    @Nullable
+    public static Inventory getInventory(ItemStack shulkerBoxItemStack) {
+        if (isShulkerBoxItem(shulkerBoxItemStack)) {
+            try {
+                // 获取潜影盒NBT
+                NbtCompound nbt = Objects.requireNonNull(shulkerBoxItemStack.getNbt()).getCompound(BLOCK_ENTITY_TAG);
+                if (nbt != null && nbt.contains(ITEMS, NbtElement.LIST_TYPE)) {
+                    DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
+                    // 读取潜影盒NBT
+                    Inventories.readNbt(nbt, defaultedList);
+                    // 创建一个物品栏接口的实现类对象
+                    SimpleInventory simpleInventory = new SimpleInventory(defaultedList.size());
+                    for (int index = 0; index < defaultedList.size(); index++) {
+                        // 将集合内的物品堆栈写入到物品栏
+                        simpleInventory.setStack(index, defaultedList.get(index));
+                    }
+                    return simpleInventory;
+                }
+            } catch (NullPointerException e) {
+                // 潜影盒物品没有NBT，说明该潜影盒物品为空
+                return null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 判断指定物品是否为潜影盒
+     *
+     * @param shulkerBoxItemStack 要判断是否为潜影盒的物品
+     * @return 指定物品是否是潜影盒
+     */
+    public static boolean isShulkerBoxItem(ItemStack shulkerBoxItemStack) {
+        Item[] arr = {
+                Items.SHULKER_BOX,
+                Items.WHITE_SHULKER_BOX,
+                Items.ORANGE_SHULKER_BOX,
+                Items.MAGENTA_SHULKER_BOX,
+                Items.LIGHT_BLUE_SHULKER_BOX,
+                Items.YELLOW_SHULKER_BOX,
+                Items.LIME_SHULKER_BOX,
+                Items.PINK_SHULKER_BOX,
+                Items.GRAY_SHULKER_BOX,
+                Items.LIGHT_GRAY_SHULKER_BOX,
+                Items.CYAN_SHULKER_BOX,
+                Items.PURPLE_SHULKER_BOX,
+                Items.BLUE_SHULKER_BOX,
+                Items.BROWN_SHULKER_BOX,
+                Items.GREEN_SHULKER_BOX,
+                Items.RED_SHULKER_BOX,
+                Items.BLACK_SHULKER_BOX
+        };
+        for (Item item : arr) {
+            if (shulkerBoxItemStack.isOf(item)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -4,16 +4,16 @@ import net.minecraft.entity.mob.AbstractPiglinEntity;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 //禁止猪灵僵尸化
 @Mixin(AbstractPiglinEntity.class)
 public class AbstractPiglinEntityMixin {
-    @Redirect(method = "mobTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/AbstractPiglinEntity;shouldZombify()Z"))
-    private boolean mobTick(AbstractPiglinEntity piglinEntity) {
+    @Inject(method = "shouldZombify", at = @At("HEAD"), cancellable = true)
+    private void shouldZombify(CallbackInfoReturnable<Boolean> cir) {
         if (CarpetOrgAdditionSettings.disablePiglinZombify) {
-            return false;
+            cir.setReturnValue(false);
         }
-        return piglinEntity.shouldZombify();
     }
 }

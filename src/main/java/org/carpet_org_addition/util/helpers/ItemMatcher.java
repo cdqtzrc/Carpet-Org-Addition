@@ -11,7 +11,7 @@ import java.util.function.Predicate;
  * 活塞等物品的合成材料中，木板不是指某一种物品，而是指一类包含指定物品标签物品，所有木板都可以用来合成活塞，因此使用指定标签的合成配方会比指定物品的配方更加灵活，但是使用/playerTools 玩家名 action craft gui命令指定的配方不能使用标签，只能指定物品，本类用来在遍历玩家物品栏时自动选择让物品使用物品谓词的测试，还是物品直接比较，这样就不用把合成物品的方法写两遍
  */
 public class ItemMatcher {
-    public static final ItemMatcher AIR_ITEM_VALIDATOR = new ItemMatcher(Items.AIR);
+    public static final ItemMatcher AIR_ITEM_MATCHER = new ItemMatcher(Items.AIR);
     private final Predicate<ItemStack> predicate;
     private final Item item;
 

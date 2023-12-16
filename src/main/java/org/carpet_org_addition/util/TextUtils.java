@@ -132,6 +132,25 @@ public class TextUtils {
     }
 
     /**
+     * @param original      原始的字符串
+     * @param color         字符串的颜色
+     * @param bold          是否带有粗体
+     * @param italic        是否带有斜体
+     * @param underlined    是否带有下划线
+     * @param strikethrough 是否带有删除线
+     * @return 只带有一些普通样式的可变文本对象
+     */
+    public static MutableText regularStyle(String original, Formatting color, boolean bold, boolean italic, boolean underlined, boolean strikethrough) {
+        MutableText text = Text.literal(original);
+        text.styled(style -> style.withColor(color)
+                .withBold(bold)
+                .withItalic(italic)
+                .withUnderline(underlined)
+                .withStrikethrough(strikethrough));
+        return text;
+    }
+
+    /**
      * 获取一个方块名称的可变文本形式
      *
      * @param block 要获取名称的方块
@@ -164,7 +183,7 @@ public class TextUtils {
             } else if (object instanceof Text text) {
                 mutableText.append(text);
             } else {
-                throw new IllegalArgumentException(object + "即便是可变文本对象，也不是字符串对象");
+                throw new IllegalArgumentException(object + "即不是可变文本对象，也不是字符串对象");
             }
         }
         return mutableText;

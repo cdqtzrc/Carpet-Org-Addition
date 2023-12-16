@@ -17,10 +17,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(HostileEntity.class)
 public class WitherSkeletonEntitySpawnMixin {
     @Inject(method = "canSpawnInDark", at = @At("HEAD"), cancellable = true)
-    private static void spawnLight(EntityType<? extends HostileEntity> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir) {
+    private static void spawnLight(EntityType<? extends HostileEntity> type, ServerWorldAccess world,
+                                   SpawnReason spawnReason, BlockPos pos, Random random,
+                                   CallbackInfoReturnable<Boolean> cir) {
         if (CarpetOrgAdditionSettings.witherSkeletonCanSpawnToPortal && type == EntityType.WITHER_SKELETON) {
-            boolean flag = world.getDifficulty() != Difficulty.PEACEFUL && HostileEntity.canMobSpawn(type, world, spawnReason, pos, random);
-            cir.setReturnValue(flag);
+            boolean canSpawn = world.getDifficulty() != Difficulty.PEACEFUL
+                    && HostileEntity.canMobSpawn(type, world, spawnReason, pos, random);
+            cir.setReturnValue(canSpawn);
         }
     }
 }

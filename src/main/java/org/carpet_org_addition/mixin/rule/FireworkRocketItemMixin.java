@@ -26,6 +26,7 @@ public abstract class FireworkRocketItemMixin {
         if (CarpetOrgAdditionSettings.flyingUseOnBlockFirework) {
             if (player.isFallFlying()) {
                 cir.setReturnValue(ActionResult.PASS);
+                return;
             }
         }
         //烟花火箭使用冷却(对方块使用)
