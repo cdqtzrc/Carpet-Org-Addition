@@ -43,6 +43,9 @@ public class ParticleLineCommand {
         double lineLengthSq = from.squaredDistanceTo(to);
         // 计算粒子线长度
         int distance = (int) Math.round(Math.sqrt(lineLengthSq));
+        if (distance == 0) {
+            return 0;
+        }
         // 计算暂停时间，绘制完粒子线的每一个点后暂停一会
         int waitTime = 500 / distance;
         // 在一个新的线程绘制粒子线
@@ -76,16 +79,14 @@ public class ParticleLineCommand {
         public void run() {
             // 在HUD发送箭头文本
             sendArrow();
-            if (lineLengthSq != 0.0) {
-                Vec3d incvec = to.subtract(from).normalize();
-                // 绘制粒子线
-                for (Vec3d delta = new Vec3d(0.0, 0.0, 0.0); delta.lengthSquared() < lineLengthSq; delta = delta.add(incvec.multiply(0.5))) {
-                    player.getServerWorld().spawnParticles(player, mainParticle, true, delta.x + from.x, delta.y + from.y, delta.z + from.z, 5, 0.0, 0.0, 0.0, 0.0);
-                    try {
-                        Thread.sleep(waitTime);
-                    } catch (InterruptedException e) {
-                        CarpetOrgAddition.LOGGER.warn("绘制粒子线任务时的线程等待出现问题", e);
-                    }
+            Vec3d incvec = to.subtract(from).normalize();
+            // 绘制粒子线
+            for (Vec3d delta = new Vec3d(0.0, 0.0, 0.0); delta.lengthSquared() < lineLengthSq; delta = delta.add(incvec.multiply(0.5))) {
+                player.getServerWorld().spawnParticles(player, mainParticle, true, delta.x + from.x, delta.y + from.y, delta.z + from.z, 5, 0.0, 0.0, 0.0, 0.0);
+                try {
+                    Thread.sleep(waitTime);
+                } catch (InterruptedException e) {
+                    CarpetOrgAddition.LOGGER.warn("绘制粒子线任务时的线程等待出现问题", e);
                 }
             }
         }

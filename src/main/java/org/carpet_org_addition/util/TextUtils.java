@@ -179,6 +179,7 @@ public class TextUtils {
      * @param color    字符串的颜色
      * @return 只带有一些普通样式的可变文本对象
      */
+    @SuppressWarnings("unused")
     public static MutableText regularStyle(String original, Formatting color) {
         MutableText text = Text.literal(original);
         text.styled(style -> style.withColor(color));
