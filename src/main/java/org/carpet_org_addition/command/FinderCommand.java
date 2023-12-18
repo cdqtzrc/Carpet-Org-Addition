@@ -26,21 +26,22 @@ import org.carpet_org_addition.util.*;
 
 import java.util.ArrayList;
 
-public class BlockFinderCommand {
+public class FinderCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("finder").requires(source ->
-                        CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandBlockFinder))
+                        CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandFinder))
                 .then(CommandManager.literal("block")
                         .then(CommandManager.argument("blockState", BlockStateArgumentType.blockState(commandBuildContext))
                                 .then(CommandManager.argument("radius", IntegerArgumentType.integer(0, 128))
-                                        .executes(BlockFinderCommand::blockFinder))))
+                                        .executes(FinderCommand::blockFinder))))
                 .then(CommandManager.literal("item")
                         .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(commandBuildContext))
                                 .then(CommandManager.argument("radius", IntegerArgumentType.integer(0, 128))
-                                        .executes(BlockFinderCommand::itemFinder))))
+                                        .executes(FinderCommand::itemFinder))))
         );
     }
 
+    // 物品查找
     private static int itemFinder(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         // 获取执行命令的玩家并非空判断
         ServerPlayerEntity player = CommandUtils.getPlayer(context);
@@ -194,6 +195,7 @@ public class BlockFinderCommand {
                                 }
                             }
                         }
+                        // 如果容器中有指定物品，就将查找结果添加进集合
                         if (count > 0) {
                             list.add(new ItemStackFindResult(currentPos, count, inTheShulkerBox,
                                     world.getBlockState(currentPos).getBlock().getTranslationKey(),
@@ -326,8 +328,11 @@ public class BlockFinderCommand {
     private record ItemStackFindResult(BlockPos blockPos, int count, boolean inTheShulkerBox,
                                        String blockName, ItemStack itemStack) {
         private MutableText toText() {
+            String command = "/particleLine ~ ~1 ~ " + ((double) blockPos.getX() + 0.5) + " "
+                    + ((double) blockPos.getY() + 0.5) + " " + ((double) blockPos.getZ() + 0.5);
             return TextUtils.getTranslate("carpet.commands.finder.item.each", TextUtils.blockPos(blockPos, Formatting.GREEN),
-                    TextUtils.getTranslate(blockName), showCount(itemStack, count, inTheShulkerBox));
+                    TextUtils.command(TextUtils.getTranslate(blockName), command, null, null, true),
+                    showCount(itemStack, count, inTheShulkerBox));
         }
     }
 

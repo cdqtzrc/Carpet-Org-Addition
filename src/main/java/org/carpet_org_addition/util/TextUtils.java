@@ -111,6 +111,30 @@ public class TextUtils {
     }
 
     /**
+     * 获取一个可以单击执行命令的可变文本组件
+     *
+     * @param underline 是否带有下划线
+     * @param text  原始的文本，直接显示在聊天栏中的文本
+     * @param command   点击后要执行的命令
+     * @param hoverText 悬停在原始文本上的内容
+     * @param color     文本的颜色
+     * @return 可以单击执行命令的可变文本组件
+     */
+    public static MutableText command(@NotNull MutableText text, @NotNull String command, @Nullable String hoverText, @Nullable Formatting color, boolean underline) {
+        //添加下划线
+        text.styled(style -> style.withUnderline(underline));
+        // 点击后执行命令
+        text.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command)));
+        if (hoverText != null) {
+            text.styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal(hoverText))));
+        }
+        if (color != null) {
+            text.styled(style -> style.withColor(color));
+        }
+        return text;
+    }
+
+    /**
      * 获取一个带有悬浮文本的可变文本对象
      *
      * @param text  要显示的文本
@@ -147,6 +171,17 @@ public class TextUtils {
                 .withItalic(italic)
                 .withUnderline(underlined)
                 .withStrikethrough(strikethrough));
+        return text;
+    }
+
+    /**
+     * @param original 原始的字符串
+     * @param color    字符串的颜色
+     * @return 只带有一些普通样式的可变文本对象
+     */
+    public static MutableText regularStyle(String original, Formatting color) {
+        MutableText text = Text.literal(original);
+        text.styled(style -> style.withColor(color));
         return text;
     }
 

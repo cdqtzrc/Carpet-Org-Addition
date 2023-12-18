@@ -2,7 +2,10 @@ package org.carpet_org_addition;
 
 import carpet.api.settings.Rule;
 import carpet.api.settings.RuleCategory;
-import org.carpet_org_addition.rulevalidator.*;
+import org.carpet_org_addition.rulevalidator.CheckBedrockHardness;
+import org.carpet_org_addition.rulevalidator.CheckEnderPearlSpawnEndermiteProbability;
+import org.carpet_org_addition.rulevalidator.CheckPortalSpawnZombifiedPiglinProbability;
+import org.carpet_org_addition.rulevalidator.MaxBlockPlaceDistanceLegitimacyCheck;
 
 public class CarpetOrgAdditionSettings {
     private CarpetOrgAdditionSettings() {
@@ -113,7 +116,7 @@ public class CarpetOrgAdditionSettings {
     //最大方块交互距离
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL, RuleCategory.FEATURE},
-            validators = {MaxBlockPlaceDistanceLegitimacyCheck.class, MaxBlockPlaceDistanceCompatibilityCheck.class}
+            validators = {MaxBlockPlaceDistanceLegitimacyCheck.class}
     )
     public static double maxBlockPlaceDistance;
 
@@ -399,7 +402,7 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.COMMAND},
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
-    public static String commandBlockFinder = "ops";
+    public static String commandFinder = "ops";
 
     //自杀
     @Rule(
@@ -474,4 +477,11 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean netherPortalHasCollisionBox = false;
+
+    //绘制粒子线命令
+    @Rule(
+            categories = {ORG, RuleCategory.COMMAND},
+            options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
+    )
+    public static String commandParticleLine = "true";// 默认为true，方便无权限玩家调用
 }

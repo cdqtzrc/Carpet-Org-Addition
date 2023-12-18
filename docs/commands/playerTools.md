@@ -28,7 +28,7 @@
 
 必须是玩家名或指向玩家的目标选择器，且只能选中一个玩家
 
-`item`,`item1~9`:item_stack
+`item`,`item1~9`:item_predicate
 
 一个指定的物品或存在物品形式的方块的ID
 
