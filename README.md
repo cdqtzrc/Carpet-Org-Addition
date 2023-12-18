@@ -638,7 +638,7 @@ CCE更新抑制器(CCEUpdateSuppression)
 
 - 在生存模式和旁观模式间切换
 
-[/blockFinder](docs/commands/blockFinder.md)
+[/blockFinder](docs/commands/finder.md)
 
 - 用来查找玩家周围的指定方块
 

@@ -2,13 +2,19 @@
 
 ## 语法
 
-`blockFinder <block> <radius>`
+`blockFinder block blockState <radius>`
+
+`blockFinder item itemStack <radius>`
 
 ## 参数
 
-`block`:block_state
+`blockState`:block_state
 
 要查找的方块
+
+`itemStack`:item_stack
+
+要查找的物品
 
 `radius`:integer
 
@@ -28,14 +34,24 @@
         <td>无法解析</td>
     </tr>
     <tr>
-        <td>blockFinder ...</td>
+        <td>finder block ...</td>
         <td>找到的方块过多</td>
         <td>执行失败，并在聊天栏输出找到的方块数量</td>
     </tr>
     <tr>
-        <td>任意</td>
+        <td>finder item ...</td>
+        <td>周围的容器过多</td>
+        <td>执行失败，并在聊天栏输出周围容器的数量</td>
+    </tr>
+    <tr>
+        <td>finder block ...</td>
         <td>执行成功</td>
-        <td>在聊天栏输出找到的方块数量</td>
+        <td>在聊天栏输出找到的方块数量和每一个或距离最近前十个方块的位置</td>
+    </tr>
+    <tr>
+        <td>finder item ...</td>
+        <td>执行成功</td>
+        <td>在聊天栏输出找到的物品数量和每一个或数量最多的前十个物品所在的容器方块的位置</td>
     </tr>
 </table>
 
@@ -50,22 +66,33 @@
         <th>返回值</th>
     </tr>
     <tr>
-      <td rowspan="2">任意</td>
+      <td>任意</td>
       <td>找到的方块过多</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
     </tr>
     <tr>
+      <td>finder block ...</td>
       <td>执行成功</td>
       <td>1</td>
       <td>1</td>
       <td>找到的方块数量</td>
+    </tr>
+    <tr>
+      <td>finder item ...</td>
+      <td>执行成功</td>
+      <td>1</td>
+      <td>1</td>
+      <td>周围包含指定物品的容器的数量</td>
     </tr>
 </table>
 
 ## 示例
 
 - 查找周围30格以内的黑曜石
-    - `/blockFinder minecraft:obsidian 30`
+    - `/finder block minecraft:obsidian 30`
+    -
+- 查找周围32格的容器内的烟花火箭
+    - `/finder item minecraft:firework_rocket 32`
 

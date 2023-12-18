@@ -41,13 +41,16 @@ public class RegisterCarpetCommands {
             SpectatorCommand.register(dispatcher);
 
             //方块查找器命令
-            BlockFinderCommand.register(dispatcher, commandBuildContext);
+            FinderCommand.register(dispatcher, commandBuildContext);
 
             //自杀命令
             KillMeCommand.register(dispatcher);
 
             //路径点管理器命令
             LocationsCommand.register(dispatcher);
+
+            // 绘制粒子线命令
+            ParticleLineCommand.register(dispatcher);
 
             // 预设管理器命令
             // PresetsCommand.register(dispatcher);
