@@ -513,9 +513,9 @@ CCE更新抑制器(CCEUpdateSuppression)
       `"3"`, `"4"`
     - 分类：`Org`，`命令`
 
-方块查找器(commandBlockFinder)
+查找器(commandFinder)
 
-- 启用/blockFinder命令用来在指定范围内查找特定方块
+- 启用/finder命令用来在指定范围内查找指定方块或物品
     - 类型：`字符串`
     - 默认值：`"ops"`
     - 参考选项：`"true"`, `“false”`, `"ops"`, `"0"`, `"1"`, `"2"`,
@@ -612,6 +612,15 @@ CCE更新抑制器(CCEUpdateSuppression)
     - 参考选项：`true`，`false`
     - 分类：`Org`，`特性`
 
+绘制粒子线命令(commandParticleLine)
+
+- 启用/particleLine命令用来使用粒子效果来绘制连接两点的线
+    - 类型：`字符串`
+    - 默认值：`"true"`
+    - 参考选项：`"true"`, `“false”`, `"ops"`, `"0"`, `"1"`, `"2"`,
+      `"3"`, `"4"`
+    - 分类：`Org`，`指令`
+
 ## 命令
 
 [/itemshadowing](docs/commands/itemshadowing.md)
@@ -638,9 +647,9 @@ CCE更新抑制器(CCEUpdateSuppression)
 
 - 在生存模式和旁观模式间切换
 
-[/blockFinder](docs/commands/finder.md)
+[/finder](docs/commands/finder.md)
 
-- 用来查找玩家周围的指定方块
+- 用来查找玩家周围的指定方块或物品
 
 [/killMe](docs/commands/killMe.md)
 
