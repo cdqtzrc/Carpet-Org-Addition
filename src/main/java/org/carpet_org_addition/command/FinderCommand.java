@@ -11,7 +11,9 @@ import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.command.argument.BlockStateArgumentType;
 import net.minecraft.command.argument.ItemStackArgument;
 import net.minecraft.command.argument.ItemStackArgumentType;
+import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -21,12 +23,19 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.village.TradeOffer;
+import net.minecraft.village.TradeOfferList;
+import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class FinderCommand {
+    // TODO 查找附近的村民实体，并找出有指定交易的村民
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("finder").requires(source ->
                         CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandFinder))
@@ -41,6 +50,7 @@ public class FinderCommand {
         );
     }
 
+    // TODO 物品查找支持掉落物和物品展示框
     // 物品查找
     private static int itemFinder(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         // 获取执行命令的玩家并非空判断
@@ -208,6 +218,34 @@ public class FinderCommand {
         return list;
     }
 
+    public static int tradeFinder(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        int range = IntegerArgumentType.getInteger(context, "range");
+        Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
+        BlockPos sourcePos = player.getBlockPos();
+        World world = player.getWorld();
+        ArrayList<TradeFindResult> findResults = findTrade(sourcePos, range, world, item);
+        return findResults.size();
+    }
+
+    @NotNull
+    private static ArrayList<TradeFindResult> findTrade(BlockPos sourcePos, int range, World world, Item item) {
+        Box box = new Box(sourcePos.getX() - range, world.getBottomY(), sourcePos.getZ() - range,
+                sourcePos.getX() + range, world.getTopY(), sourcePos.getZ() + range);
+        ArrayList<TradeFindResult> findResults = new ArrayList<>();
+        List<MerchantEntity> list = world.getNonSpectatingEntities(MerchantEntity.class, box);
+        for (MerchantEntity merchant : list) {
+            TradeOfferList offerList = merchant.getOffers();
+            for (int index = 0; index < offerList.size(); index++) {
+                if (offerList.get(index).getSellItem().isOf(item)) {
+                    findResults.add(new TradeFindResult(merchant, offerList.get(index), index + 1));
+                }
+            }
+        }
+        return findResults;
+    }
+
+
     //发送命令反馈
     public static void sendFeedback(CommandContext<ServerCommandSource> context, Block block, ArrayList<BlockPos> list,
                                     BlockPos sourceBlockPos) {
@@ -357,5 +395,8 @@ public class FinderCommand {
         } else {
             return TextUtils.hoverText(text, TextUtils.getTranslate("carpet.commands.finder.item.count", group, remainder), null);
         }
+    }
+
+    private record TradeFindResult(MerchantEntity merchant, TradeOffer tradeOffer, int tradeIndex) {
     }
 }
