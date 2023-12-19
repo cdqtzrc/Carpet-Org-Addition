@@ -658,3 +658,7 @@ CCE更新抑制器(CCEUpdateSuppression)
 [/locations](docs/commands/locations.md)
 
 路径点管理器，mcdr中!!loc的替代命令
+
+[/particleLine](docs/commands/particleLine.md)
+
+- 绘制粒子线
