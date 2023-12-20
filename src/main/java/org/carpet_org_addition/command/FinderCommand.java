@@ -2,19 +2,22 @@ package org.carpet_org_addition.command;
 
 import carpet.utils.CommandHelper;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.block.Block;
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.argument.BlockStateArgument;
-import net.minecraft.command.argument.BlockStateArgumentType;
-import net.minecraft.command.argument.ItemStackArgument;
-import net.minecraft.command.argument.ItemStackArgumentType;
+import net.minecraft.command.argument.*;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.Item;
+import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -22,20 +25,30 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
 import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
-import org.carpet_org_addition.util.*;
+import org.carpet_org_addition.util.CommandUtils;
+import org.carpet_org_addition.util.SendMessageUtils;
+import org.carpet_org_addition.util.ShulkerBoxUtils;
+import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.findtask.feedback.BlockFindFeedback;
+import org.carpet_org_addition.util.findtask.feedback.ItemFindFeedback;
+import org.carpet_org_addition.util.findtask.feedback.TradeEnchantedBookFeedback;
+import org.carpet_org_addition.util.findtask.feedback.TradeItemFindFeedback;
+import org.carpet_org_addition.util.findtask.result.BlockFindResult;
+import org.carpet_org_addition.util.findtask.result.ItemFindResult;
+import org.carpet_org_addition.util.findtask.result.TradeEnchantedBookResult;
+import org.carpet_org_addition.util.findtask.result.TradeItemFindResult;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FinderCommand {
-    // TODO 查找附近的村民实体，并找出有指定交易的村民
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("finder").requires(source ->
                         CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandFinder))
@@ -47,6 +60,17 @@ public class FinderCommand {
                         .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(commandBuildContext))
                                 .then(CommandManager.argument("radius", IntegerArgumentType.integer(0, 128))
                                         .executes(FinderCommand::itemFinder))))
+                .then(CommandManager.literal("trade")
+                        .then(CommandManager.literal("item")
+                                .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(commandBuildContext))
+                                        .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
+                                                .executes(FinderCommand::tradeItemFinder))))
+                        .then(CommandManager.literal("enchantedBook")
+                                .then(CommandManager.argument("enchantment", RegistryEntryArgumentType.registryEntry(commandBuildContext, RegistryKeys.ENCHANTMENT))
+                                        .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
+                                                .executes(FinderCommand::enchantedBookTradeFinder)
+                                                .then(CommandManager.argument("allLevels", BoolArgumentType.bool())
+                                                        .executes(FinderCommand::enchantedBookTradeFinder))))))
         );
     }
 
@@ -62,7 +86,7 @@ public class FinderCommand {
         // 获取玩家所在的位置，这是命令开始执行的坐标
         BlockPos sourceBlockPos = player.getBlockPos();
         // 查找周围容器中的物品
-        ArrayList<ItemStackFindResult> list = findItem(player.getServerWorld(), sourceBlockPos, itemStackArgument, radius);
+        ArrayList<ItemFindResult> list = findItem(player.getServerWorld(), sourceBlockPos, itemStackArgument, radius);
         ItemStack itemStack = itemStackArgument.createStack(1, true);
         if (list.isEmpty()) {
             // 在周围的容器中找不到指定物品
@@ -75,84 +99,15 @@ public class FinderCommand {
                     itemStack.toHoverableText(), list.size());
         }
         // 在一个单独的线程中处理数据
-        ItemFinderDataCollationThread sort = new ItemFinderDataCollationThread(context, itemStack, list);
-        // 设置新线程的名字
-        sort.setName("Item Finder Thread");
-        // 启动线程
-        sort.start();
+        new ItemFindFeedback(context, list, itemStack).start();
         return list.size();
     }
 
-    //方块查找
-    private static int blockFinder(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        // 获取执行命令的玩家并非空判断
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
-        // 获取要匹配的方块状态
-        BlockStateArgument blockStateArgument = BlockStateArgumentType.getBlockState(context, "blockState");
-        // 获取要查找方块的范围
-        int radius = IntegerArgumentType.getInteger(context, "radius");
-        // 获取命令执行时的方块坐标
-        final BlockPos sourceBlockPos = player.getBlockPos();
-        // 开始查找方块，然后返回查询结果
-        ArrayList<BlockPos> list = findBlock(player.getServerWorld(), sourceBlockPos, blockStateArgument, radius);
-        int count = list.size();
-        // 如果找到的方块数量过多，直接抛出异常结束方法，不再进行排序
-        if (count > 300000) {
-            throw CommandUtils.getException("carpet.commands.finder.block.too_much_blocks",
-                    TextUtils.getBlockName(blockStateArgument.getBlockState().getBlock()), count);
-        }
-        // 在一个单独的线程中对查找到的方块进行排序
-        BlockFinderDataCollationThread sort = new BlockFinderDataCollationThread(context, player, blockStateArgument, list);
-        // 设置多线程的名称
-        sort.setName("Block Finder Thread");
-        // 启动新的线程
-        sort.start();
-        return count;
-    }
-
-    /**
-     * 获取指定范围内所有指定方块的坐标
-     *
-     * @param world              要查找方块的世界对象
-     * @param blockPos           查找范围的中心坐标
-     * @param blockStateArgument 要查找的方块，支持方块状态
-     * @param radius             查找的范围，是一个边长为两倍radius，高度为整个世界高度的长方体
-     * @return 包含所有查找到的方块坐标和该方块距离源方块坐标的距离的集合，并且已经从近到远排序
-     */
-    public static ArrayList<BlockPos> findBlock(ServerWorld world, BlockPos blockPos, BlockStateArgument blockStateArgument,
-                                                int radius) throws CommandSyntaxException {
-        //创建ArrayList集合，用来记录找到的方块坐标
-        ArrayList<BlockPos> list = new ArrayList<>();
-        //获取三个坐标的最大值
-        int maxX = blockPos.getX() + radius;
-        int maxZ = blockPos.getZ() + radius;
-        int maxHeight = world.getHeight();
-        long currentTimeMillis = System.currentTimeMillis();
-        //创建可变坐标对象
-        BlockPos.Mutable mutableBlockPos = new BlockPos.Mutable();
-        //遍历整个三维空间，找到与目标方块匹配的方块
-        for (int minX = blockPos.getX() - radius; minX <= maxX; minX++) {
-            for (int minZ = blockPos.getZ() - radius; minZ <= maxZ; minZ++) {
-                for (int bottomY = world.getBottomY(); bottomY <= maxHeight; bottomY++) {
-                    if (System.currentTimeMillis() - currentTimeMillis > 3000) {
-                        //3秒内未完成方块查找，通过抛出异常结束方法
-                        throw CommandUtils.getException("carpet.commands.finder.timeout");
-                    }
-                    //修改可变坐标的值
-                    mutableBlockPos.set(minX, bottomY, minZ);
-                    if (blockStateArgument.test(world, mutableBlockPos)) {
-                        //将找到的方块坐标添加到集合
-                        list.add(new BlockPos(mutableBlockPos.getX(), mutableBlockPos.getY(), mutableBlockPos.getZ()));
-                    }
-                }
-            }
-        }
-        return list;
-    }
-
-    private static ArrayList<ItemStackFindResult> findItem(ServerWorld world, BlockPos blockPos, ItemStackArgument itemStackArgument, int radius) throws CommandSyntaxException {
+    // 开始查找物品
+    private static ArrayList<ItemFindResult> findItem(ServerWorld world, BlockPos blockPos, ItemStackArgument itemStackArgument,
+                                                      int radius) throws CommandSyntaxException {
         //创建ArrayList集合，用来记录找到的物品坐标
-        ArrayList<ItemStackFindResult> list = new ArrayList<>();
+        ArrayList<ItemFindResult> list = new ArrayList<>();
         //获取三个坐标的最大值
         int maxX = blockPos.getX() + radius;
         int maxZ = blockPos.getZ() + radius;
@@ -164,15 +119,12 @@ public class FinderCommand {
             for (int minZ = blockPos.getZ() - radius; minZ <= maxZ; minZ++) {
                 for (int bottomY = world.getBottomY(); bottomY <= maxHeight; bottomY++) {
                     // 检查时间是否超时
-                    if (System.currentTimeMillis() - currentTimeMillis > 3000) {
-                        //3秒内未完成方块查找，通过抛出异常结束方法
-                        throw CommandUtils.getException("carpet.commands.finder.timeout");
-                    }
+                    checkTimeOut(currentTimeMillis);
                     // 定义变量记录找到物品的数量
                     int count = 0;
                     // 定义变量记录是否有物品是在潜影盒内找到的
                     boolean inTheShulkerBox = false;
-                    // 当前的方块坐标
+                    // 当前正在查找物品的所在容器的方块坐标
                     BlockPos currentPos = new BlockPos(minX, bottomY, minZ);
                     // 判断当前的方块实体是不是容器
                     if (world.getBlockEntity(currentPos) instanceof Inventory inventory) {
@@ -207,7 +159,7 @@ public class FinderCommand {
                         }
                         // 如果容器中有指定物品，就将查找结果添加进集合
                         if (count > 0) {
-                            list.add(new ItemStackFindResult(currentPos, count, inTheShulkerBox,
+                            list.add(new ItemFindResult(currentPos, count, inTheShulkerBox,
                                     world.getBlockState(currentPos).getBlock().getTranslationKey(),
                                     itemStackArgument.createStack(1, true)));
                         }
@@ -218,160 +170,211 @@ public class FinderCommand {
         return list;
     }
 
-    public static int tradeFinder(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    //方块查找
+    private static int blockFinder(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        // 获取执行命令的玩家并非空判断
         ServerPlayerEntity player = CommandUtils.getPlayer(context);
-        int range = IntegerArgumentType.getInteger(context, "range");
-        Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
-        BlockPos sourcePos = player.getBlockPos();
-        World world = player.getWorld();
-        ArrayList<TradeFindResult> findResults = findTrade(sourcePos, range, world, item);
-        return findResults.size();
+        // 获取要匹配的方块状态
+        BlockStateArgument blockStateArgument = BlockStateArgumentType.getBlockState(context, "blockState");
+        // 获取要查找方块的范围
+        int radius = IntegerArgumentType.getInteger(context, "radius");
+        // 获取命令执行时的方块坐标
+        final BlockPos sourceBlockPos = player.getBlockPos();
+        // 开始查找方块，然后返回查询结果
+        ArrayList<BlockFindResult> list = findBlock(player.getServerWorld(), sourceBlockPos, blockStateArgument, radius);
+        int count = list.size();
+        // 如果找到的方块数量过多，直接抛出异常结束方法，不再进行排序
+        if (count > 300000) {
+            throw CommandUtils.getException("carpet.commands.finder.block.too_much_blocks",
+                    TextUtils.getBlockName(blockStateArgument.getBlockState().getBlock()), count);
+        }
+        //判断集合中是否有元素，如果没有，直接在聊天栏发送反馈并结束方法
+        if (list.isEmpty()) {
+            SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.not_found_block",
+                    TextUtils.getBlockName(blockStateArgument.getBlockState().getBlock()));
+            return 0;
+        }
+        // 在一个单独的线程中对查找到的方块进行排序和发送反馈
+        new BlockFindFeedback(context, list, sourceBlockPos, blockStateArgument.getBlockState().getBlock()).start();
+        return count;
     }
 
+    /**
+     * 获取指定范围内所有指定方块的坐标
+     *
+     * @param world              要查找方块的世界对象
+     * @param blockPos           查找范围的中心坐标
+     * @param blockStateArgument 要查找的方块，支持方块状态
+     * @param radius             查找的范围，是一个边长为两倍radius，高度为整个世界高度的长方体
+     * @return 包含所有查找到的方块坐标和该方块距离源方块坐标的距离的集合，并且已经从近到远排序
+     */
+    private static ArrayList<BlockFindResult> findBlock(ServerWorld world, BlockPos blockPos, BlockStateArgument blockStateArgument,
+                                                        int radius) throws CommandSyntaxException {
+        //创建ArrayList集合，用来记录找到的方块坐标
+        ArrayList<BlockFindResult> list = new ArrayList<>();
+        //获取三个坐标的最大值
+        int maxX = blockPos.getX() + radius;
+        int maxZ = blockPos.getZ() + radius;
+        int maxHeight = world.getHeight();
+        long currentTimeMillis = System.currentTimeMillis();
+        //创建可变坐标对象
+        BlockPos.Mutable mutableBlockPos = new BlockPos.Mutable();
+        //遍历整个三维空间，找到与目标方块匹配的方块
+        for (int minX = blockPos.getX() - radius; minX <= maxX; minX++) {
+            for (int minZ = blockPos.getZ() - radius; minZ <= maxZ; minZ++) {
+                for (int bottomY = world.getBottomY(); bottomY <= maxHeight; bottomY++) {
+                    checkTimeOut(currentTimeMillis);
+                    //修改可变坐标的值
+                    mutableBlockPos.set(minX, bottomY, minZ);
+                    if (blockStateArgument.test(world, mutableBlockPos)) {
+                        //将找到的方块坐标添加到集合
+                        list.add(new BlockFindResult(new BlockPos(mutableBlockPos.getX(), mutableBlockPos.getY(), mutableBlockPos.getZ()), blockPos));
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    // 检查查找是否超时
+    private static void checkTimeOut(long currentTimeMillis) throws CommandSyntaxException {
+        if (System.currentTimeMillis() - currentTimeMillis > 3000) {
+            //3秒内未完成方块查找，通过抛出异常结束方法
+            throw CommandUtils.getException("carpet.commands.finder.timeout");
+        }
+    }
+
+
+    // 准备根据物品查找交易项
+    private static int tradeItemFinder(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        // 获取执行命令的玩家对象
+        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        // 获取查找的范围
+        int range = IntegerArgumentType.getInteger(context, "range");
+        // 获取要匹配的物品
+        ItemStackArgument itemStackArgument = ItemStackArgumentType.getItemStackArgument(context, "itemStack");
+        // 获取玩家所在的坐标
+        BlockPos sourcePos = player.getBlockPos();
+        // 开始查找物品
+        ArrayList<TradeItemFindResult> list = findTradeItem(sourcePos, range, player.getWorld(), itemStackArgument);
+        ItemStack itemStack = itemStackArgument.createStack(1, true);
+        // 找不到出售指定物品的村民，直接结束方法
+        if (list.isEmpty()) {
+            SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.trade.find.not_trade",
+                    itemStack.toHoverableText(),
+                    TextUtils.getTranslate("entity.minecraft.villager"),
+                    TextUtils.getTranslate("entity.minecraft.wandering_trader"));
+            return 0;
+        }
+        // 在单独的线程中处理查找结果
+        new TradeItemFindFeedback(context, list, sourcePos, itemStack).start();
+        return list.size();
+    }
+
+    // 查找出售指定物品的交易选项
     @NotNull
-    private static ArrayList<TradeFindResult> findTrade(BlockPos sourcePos, int range, World world, Item item) {
+    private static ArrayList<TradeItemFindResult> findTradeItem(BlockPos sourcePos, int range, World world, ItemStackArgument itemStackArgument) {
+        // 创建一个盒子对象，以玩家所在的位置为中心，宽度为指定范围的两倍，高度为整个区块高度
         Box box = new Box(sourcePos.getX() - range, world.getBottomY(), sourcePos.getZ() - range,
                 sourcePos.getX() + range, world.getTopY(), sourcePos.getZ() + range);
-        ArrayList<TradeFindResult> findResults = new ArrayList<>();
+        // 创建一个集合存储查找到的交易的接货
+        ArrayList<TradeItemFindResult> findResults = new ArrayList<>();
+        // 根据之前的盒子对象获取所有在这个区域内商人实体对象（村民和流浪商人）
         List<MerchantEntity> list = world.getNonSpectatingEntities(MerchantEntity.class, box);
         for (MerchantEntity merchant : list) {
+            // 获取集合中的每一个实体，并获取每一个实体的交易选项
             TradeOfferList offerList = merchant.getOffers();
             for (int index = 0; index < offerList.size(); index++) {
-                if (offerList.get(index).getSellItem().isOf(item)) {
-                    findResults.add(new TradeFindResult(merchant, offerList.get(index), index + 1));
+                if (itemStackArgument.test(offerList.get(index).getSellItem())) {
+                    // 如果交易的输出物品与指定的物品匹配，则将该选项添加到集合
+                    findResults.add(new TradeItemFindResult(merchant, offerList.get(index), index + 1));
                 }
             }
         }
         return findResults;
     }
 
+    // 准备查找出售指定附魔书的村民
+    private static int enchantedBookTradeFinder(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        // 获取执行命令的玩家
+        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        // 获取要查找的范围
+        int range = IntegerArgumentType.getInteger(context, "range");
+        // 获取是否需要包含非满级附魔书
+        boolean allLevels;
+        try {
+            allLevels = BoolArgumentType.getBool(context, "allLevels");
+        } catch (IllegalArgumentException e) {
+            // 如果未指定，默认为false，即只统计满级附魔书
+            allLevels = false;
+        }
+        // 获取需要查找的附魔
+        Enchantment enchantment = RegistryEntryArgumentType.getEnchantment(context, "enchantment").value();
+        // 获取玩家所在的位置
+        BlockPos sourcePos = player.getBlockPos();
+        // 开始查找周围附近出售指定附魔书的村民
+        ArrayList<TradeEnchantedBookResult> list = tradeFinderEnchantedBook(sourcePos, range, player.getWorld(), enchantment, allLevels);
+        // 找不到出售指定物品的村民，直接结束方法
+        if (list.isEmpty()) {
+            MutableText mutableText = Text.translatable(enchantment.getTranslationKey());
+            // 如果是诅咒附魔，设置为红色
+            if (enchantment.isCursed()) {
+                mutableText.formatted(Formatting.RED);
+            } else {
+                mutableText.formatted(Formatting.GRAY);
+            }
+            SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.trade.find.not_trade",
+                    TextUtils.appendAll(mutableText, Items.ENCHANTED_BOOK.getName()),
+                    TextUtils.getTranslate("entity.minecraft.villager"),
+                    TextUtils.getTranslate("entity.minecraft.wandering_trader"));
+            return 0;
+        }
+        new TradeEnchantedBookFeedback(context, list, sourcePos, enchantment).start();
+        return list.size();
+    }
 
-    //发送命令反馈
-    public static void sendFeedback(CommandContext<ServerCommandSource> context, Block block, ArrayList<BlockPos> list,
-                                    BlockPos sourceBlockPos) {
-        int size = list.size();
-        //判断集合中是否有元素
-        if (size == 0) {
-            SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.not_found_block",
-                    TextUtils.getBlockName(block));
-        } else {
-            //在聊天栏输出方块坐标消息
-            int count = 0;
-            if (size > 10) {
-                SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.find", size,
-                        TextUtils.getBlockName(block));
-                for (BlockPos blockPos : list) {
-                    count++;
-                    if (count > 10) {
+    // 开始查找周围附近出售指定附魔书的村民
+    private static ArrayList<TradeEnchantedBookResult> tradeFinderEnchantedBook(BlockPos sourcePos, int range, World world, Enchantment enchantment, boolean allLevels) {
+        // 创建一个盒子对象，以玩家所在的位置为中心，宽度为指定范围的两倍，高度为整个区块高度
+        Box box = new Box(sourcePos.getX() - range, world.getBottomY(), sourcePos.getZ() - range,
+                sourcePos.getX() + range, world.getTopY(), sourcePos.getZ() + range);
+        // 创建一个集合存储查找到的交易的接货
+        ArrayList<TradeEnchantedBookResult> list = new ArrayList<>();
+        // 根据之前的盒子对象获取所有在这个区域内商人实体对象（村民和流浪商人）
+        List<MerchantEntity> entities = world.getNonSpectatingEntities(MerchantEntity.class, box);
+        for (MerchantEntity merchant : entities) {
+            // 获取每一个商人实体出售的物品
+            TradeOfferList offers = merchant.getOffers();
+            for (int i = 0; i < offers.size(); i++) {
+                // 判断出售的物品是不是附魔书
+                ItemStack itemStack = offers.get(i).getSellItem();
+                if (itemStack.isOf(Items.ENCHANTED_BOOK)) {
+                    int level = 0;
+                    // 获取附魔的注册id
+                    Identifier registryId = EnchantmentHelper.getEnchantmentId(enchantment);
+                    // 获取附魔书所有的附魔
+                    NbtList nbtList = EnchantedBookItem.getEnchantmentNbt(itemStack);
+                    for (int j = 0; j < nbtList.size(); j++) {
+                        // 获取每一个附魔的复合NBT标签
+                        NbtCompound nbtCompound = nbtList.getCompound(j);
+                        // 获取这本附魔书上附魔的id
+                        Identifier bookEnchantmentId = EnchantmentHelper.getIdFromNbt(nbtCompound);
+                        // 如果附魔书上附魔的id与指定id相同，跳出循环，获取等级
+                        if (bookEnchantmentId == null || !bookEnchantmentId.equals(registryId)) {
+                            continue;
+                        }
+                        // 获取附魔等级
+                        level = EnchantmentHelper.getLevelFromNbt(nbtCompound);
                         break;
                     }
-                    sendFeedback(context, sourceBlockPos, count, blockPos);
-                }
-            } else {
-                SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.find.not_more_than_ten",
-                        size, TextUtils.getBlockName(block));
-                for (BlockPos blockPos : list) {
-                    count++;
-                    sendFeedback(context, sourceBlockPos, count, blockPos);
+                    // 将符合条件的附魔书添加到集合
+                    if (level > 0 && (allLevels || level == enchantment.getMaxLevel())) {
+                        list.add(new TradeEnchantedBookResult(merchant, offers.get(i), (i + 1)));
+                    }
                 }
             }
         }
-    }
-
-    //发送反馈
-    private static void sendFeedback(CommandContext<ServerCommandSource> context, BlockPos sourceBlockPos, int count, BlockPos blockPos) {
-        SendMessageUtils.sendCommandFeedback(context.getSource(),
-                "carpet.commands.finder.block.feedback", count,
-                (int) MathUtils.getBlockDistance(sourceBlockPos, blockPos),
-                //如果规则可解析路径点启用，发送不带有特殊样式的文本
-                CarpetOrgAdditionSettings.canParseWayPoint
-                        ? StringUtils.getBracketedBlockPos(blockPos)
-                        : TextUtils.blockPos(blockPos, Formatting.GREEN));
-    }
-
-    static class BlockFinderDataCollationThread extends Thread {
-        private final CommandContext<ServerCommandSource> context;
-        private final BlockStateArgument blockStateArgument;
-        private final BlockPos sourceBlockPos;
-        private final ArrayList<BlockPos> list;
-
-        BlockFinderDataCollationThread(CommandContext<ServerCommandSource> context, ServerPlayerEntity player,
-                                       BlockStateArgument blockStateArgument, ArrayList<BlockPos> list) {
-            this.context = context;
-            this.blockStateArgument = blockStateArgument;
-            this.sourceBlockPos = player.getBlockPos();
-            this.list = list;
-        }
-
-        @Override
-        public void run() {
-            // 将集合中的元素排序
-            list.sort((o1, o2) -> MathUtils.compareBlockPos(sourceBlockPos, o1, o2));
-            // 发送命令反馈
-            sendFeedback(context, blockStateArgument.getBlockState().getBlock(), list, sourceBlockPos);
-        }
-    }
-
-    static class ItemFinderDataCollationThread extends Thread {
-        private final CommandContext<ServerCommandSource> context;
-        private final ItemStack itemStack;
-        private final ArrayList<ItemStackFindResult> list;
-
-        ItemFinderDataCollationThread(CommandContext<ServerCommandSource> context, ItemStack itemStack, ArrayList<ItemStackFindResult> list) {
-            this.context = context;
-            this.itemStack = itemStack;
-            this.list = list;
-        }
-
-        @Override
-        public void run() {
-            boolean inTheShulkerBox = false;
-            // 计算总共找到的物品数量
-            int count = 0;
-            for (ItemStackFindResult result : list) {
-                count += result.count;
-                if (result.inTheShulkerBox) {
-                    inTheShulkerBox = true;
-                }
-            }
-            // 为数量添加鼠标悬停效果
-            MutableText text = showCount(itemStack, count, inTheShulkerBox);
-            // 发送命令反馈
-            if (list.size() <= 10) {
-                // 数量较少，不排序
-                SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.item.find",
-                        list.size(), text, itemStack.toHoverableText());
-                for (ItemStackFindResult result : list) {
-                    SendMessageUtils.sendTextMessage(context.getSource(), result.toText());
-                }
-            } else {
-                SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.item.find.not_more_than_ten",
-                        list.size(), text, itemStack.toHoverableText());
-                // 按照容器内指定物品的数量从多到少排序
-                list.sort((o1, o2) -> o2.count - o1.count);
-                // 容器数量过多，只反馈前十个
-                for (int i = 0; i < 10; i++) {
-                    SendMessageUtils.sendTextMessage(context.getSource(), list.get(i).toText());
-                }
-            }
-        }
-    }
-
-    /**
-     * @param blockPos        物品所在容器的坐标
-     * @param count           物品的数量
-     * @param inTheShulkerBox 包含在潜影盒内找到的物品
-     * @param blockName       物品所在容器方块名称的翻译键
-     */
-    private record ItemStackFindResult(BlockPos blockPos, int count, boolean inTheShulkerBox,
-                                       String blockName, ItemStack itemStack) {
-        private MutableText toText() {
-            String command = "/particleLine ~ ~1 ~ " + ((double) blockPos.getX() + 0.5) + " "
-                    + ((double) blockPos.getY() + 0.5) + " " + ((double) blockPos.getZ() + 0.5);
-            return TextUtils.getTranslate("carpet.commands.finder.item.each", TextUtils.blockPos(blockPos, Formatting.GREEN),
-                    TextUtils.command(TextUtils.getTranslate(blockName), command, null, null, true),
-                    showCount(itemStack, count, inTheShulkerBox));
-        }
+        return list;
     }
 
     // 将物品数量转换为“多少组多少个”的形式
@@ -395,8 +398,5 @@ public class FinderCommand {
         } else {
             return TextUtils.hoverText(text, TextUtils.getTranslate("carpet.commands.finder.item.count", group, remainder), null);
         }
-    }
-
-    private record TradeFindResult(MerchantEntity merchant, TradeOffer tradeOffer, int tradeIndex) {
     }
 }
