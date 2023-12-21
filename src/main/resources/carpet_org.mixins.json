@@ -17,6 +17,7 @@
     "rule.DamageEnchantmentMixin",
     "rule.EndermanEntityMixin",
     "rule.EnderPearlEntityMixin",
+    "rule.EntityMixin",
     "rule.FarmlandBlockMixin",
     "rule.FireworkRocketItemMixin",
     "rule.FishingMixin",

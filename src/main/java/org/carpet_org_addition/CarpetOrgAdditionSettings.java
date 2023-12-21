@@ -484,4 +484,16 @@ public class CarpetOrgAdditionSettings {
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
     public static String commandParticleLine = "true";// 默认为true，方便无权限玩家调用
+
+    // 禁止特定生物在和平模式下被清除
+    @Rule(
+            categories = {ORG, RuleCategory.FEATURE}
+    )
+    public static boolean disableMobPeacefulDespawn = false;
+
+    // 船可以直接走向一格高的方块
+    @Rule(
+            categories = {ORG, RuleCategory.FEATURE}
+    )
+    public static boolean climbingBoat = false;
 }

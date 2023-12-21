@@ -570,7 +570,7 @@ CCE更新抑制器(CCEUpdateSuppression)
     - 类型：`布尔值`
     - 默认值：`false`
     - 参考选项：`true`，`false`
-- 分类：`Org`，`特性`
+    - 分类：`Org`，`特性`
 
 可解析路径点(canParseWayPoint)
 
