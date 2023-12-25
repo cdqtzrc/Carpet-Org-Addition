@@ -10,6 +10,7 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.*;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.EnchantedBookItem;
@@ -35,10 +36,7 @@ import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.SendMessageUtils;
 import org.carpet_org_addition.util.ShulkerBoxUtils;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.findtask.feedback.BlockFindFeedback;
-import org.carpet_org_addition.util.findtask.feedback.ItemFindFeedback;
-import org.carpet_org_addition.util.findtask.feedback.TradeEnchantedBookFeedback;
-import org.carpet_org_addition.util.findtask.feedback.TradeItemFindFeedback;
+import org.carpet_org_addition.util.findtask.feedback.*;
 import org.carpet_org_addition.util.findtask.result.BlockFindResult;
 import org.carpet_org_addition.util.findtask.result.ItemFindResult;
 import org.carpet_org_addition.util.findtask.result.TradeEnchantedBookResult;
@@ -74,7 +72,6 @@ public class FinderCommand {
         );
     }
 
-    // TODO 物品查找支持掉落物和物品展示框
     // 物品查找
     private static int itemFinder(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         // 获取执行命令的玩家并非空判断
@@ -106,15 +103,16 @@ public class FinderCommand {
     // 开始查找物品
     private static ArrayList<ItemFindResult> findItem(ServerWorld world, BlockPos blockPos, ItemStackArgument itemStackArgument,
                                                       int radius) throws CommandSyntaxException {
-        //创建ArrayList集合，用来记录找到的物品坐标
+        // 创建ArrayList集合，用来记录找到的物品坐标
         ArrayList<ItemFindResult> list = new ArrayList<>();
-        //获取三个坐标的最大值
+        // 获取三个坐标的最大值
         int maxX = blockPos.getX() + radius;
         int maxZ = blockPos.getZ() + radius;
         int maxHeight = world.getHeight();
         // 获取当前系统时间的毫秒值
         long currentTimeMillis = System.currentTimeMillis();
-        //遍历整个三维空间，找到与目标物品匹配的物品
+        // 查找世界上容器中的物品
+        // 遍历整个三维空间，找到与目标物品匹配的物品
         for (int minX = blockPos.getX() - radius; minX <= maxX; minX++) {
             for (int minZ = blockPos.getZ() - radius; minZ <= maxZ; minZ++) {
                 for (int bottomY = world.getBottomY(); bottomY <= maxHeight; bottomY++) {
@@ -164,6 +162,44 @@ public class FinderCommand {
                                     itemStackArgument.createStack(1, true)));
                         }
                     }
+                }
+            }
+        }
+        // 查找世界上的掉落物物品
+        Box box = new Box(blockPos.getX() - radius, world.getBottomY(), blockPos.getZ() - radius,
+                blockPos.getX() + radius, world.getTopY(), blockPos.getZ() + radius);
+        // 获取范围内所有掉落物的集合
+        List<ItemEntity> itemEntityList = world.getNonSpectatingEntities(ItemEntity.class, box);
+        // 掉落物的翻译键
+        String itemEntityName = "carpet.commands.finder.item.drops";
+        // 遍历集合内所有物品实体
+        for (ItemEntity item : itemEntityList) {
+            // 获取物品实体的物品堆栈
+            ItemStack itemStack = item.getStack();
+            // 检查该物品是否与指定物品匹配
+            if (itemStackArgument.test(itemStack)) {
+                // 如果匹配，将物品添加到集合
+                list.add(new ItemFindResult(item.getBlockPos(), itemStack.getCount(), false,
+                        itemEntityName, itemStack));
+            } else if (ShulkerBoxUtils.isShulkerBoxItem(itemStack)) {
+                // 否则，检查该物品实体是否为潜影盒掉落物，如果是，获取潜影盒的物品栏
+                Inventory inventory = ShulkerBoxUtils.getInventory(itemStack);
+                // 潜影盒没有NBT，直接结束本轮循环
+                if (inventory == null) {
+                    continue;
+                }
+                // 定义变量记录在潜影盒内找到物品的数量
+                int count = 0;
+                // 获取潜影盒内的每一个物品
+                for (int i = 0; i < inventory.size(); i++) {
+                    if (itemStackArgument.test(inventory.getStack(i))) {
+                        count += inventory.getStack(i).getCount();
+                    }
+                }
+                // 如果在潜影盒内有找到物品，将查找结果添加到集合
+                if (count > 0) {
+                    list.add(new ItemFindResult(item.getBlockPos(), count, true,
+                            itemEntityName, itemStackArgument.createStack(1, true)));
                 }
             }
         }
@@ -262,8 +298,8 @@ public class FinderCommand {
         if (list.isEmpty()) {
             SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.trade.find.not_trade",
                     itemStack.toHoverableText(),
-                    TextUtils.getTranslate("entity.minecraft.villager"),
-                    TextUtils.getTranslate("entity.minecraft.wandering_trader"));
+                    AbstractTradeFindFeedback.VILLAGER,
+                    AbstractTradeFindFeedback.WANDERING_TRADER);
             return 0;
         }
         // 在单独的线程中处理查找结果
@@ -305,8 +341,8 @@ public class FinderCommand {
         try {
             allLevels = BoolArgumentType.getBool(context, "allLevels");
         } catch (IllegalArgumentException e) {
-            // 如果未指定，默认为false，即只统计满级附魔书
-            allLevels = false;
+            // 如果未指定，默认为true，即统计所有附魔书
+            allLevels = true;
         }
         // 获取需要查找的附魔
         Enchantment enchantment = RegistryEntryArgumentType.getEnchantment(context, "enchantment").value();
@@ -369,7 +405,7 @@ public class FinderCommand {
                     }
                     // 将符合条件的附魔书添加到集合
                     if (level > 0 && (allLevels || level == enchantment.getMaxLevel())) {
-                        list.add(new TradeEnchantedBookResult(merchant, offers.get(i), (i + 1)));
+                        list.add(new TradeEnchantedBookResult(merchant, offers.get(i), (i + 1), enchantment, level));
                     }
                 }
             }
