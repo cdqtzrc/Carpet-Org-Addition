@@ -173,7 +173,7 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
             case TRADE -> FakePlayerTrade.trade(context, thisPlayer);
             //以上值都不匹配，设置操作类型为STOP（不应该出现都不匹配的情况）
             default -> {
-                CarpetOrgAddition.LOGGER.error(action + "的行为没有事先定义");
+                CarpetOrgAddition.LOGGER.error(action + "的行为没有预先定义");
                 action = FakePlayerActionType.STOP;
             }
         }

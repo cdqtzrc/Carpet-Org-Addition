@@ -496,4 +496,5 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean climbingBoat = false;
+    // TODO 删除一些没用的功能
 }
