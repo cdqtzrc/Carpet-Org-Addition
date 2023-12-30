@@ -9,7 +9,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
-import org.carpet_org_addition.util.SendMessageUtils;
+import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 
 //自杀命令
@@ -23,7 +23,7 @@ public class KillMeCommand {
     private static int killMe(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getPlayer(context);
         //广播自杀消息
-        SendMessageUtils.broadcastTextMessage(player, TextUtils.getTranslate("carpet.commands.killMe", player.getDisplayName()));
+        MessageUtils.broadcastTextMessage(player, TextUtils.getTranslate("carpet.commands.killMe", player.getDisplayName()));
         player.kill();
         return 1;
     }

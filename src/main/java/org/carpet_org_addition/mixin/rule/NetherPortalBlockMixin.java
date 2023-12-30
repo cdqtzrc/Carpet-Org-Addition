@@ -3,11 +3,8 @@ package org.carpet_org_addition.mixin.rule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.NetherPortalBlock;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.WorldAccess;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
@@ -43,14 +40,5 @@ public abstract class NetherPortalBlockMixin extends Block {
             return Math.min(probability, 1999);
         }
         return instance.getId();
-    }
-
-    // 下界传送门方块有碰撞箱
-    @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        if (CarpetOrgAdditionSettings.netherPortalHasCollisionBox) {
-            return Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 16.0, 16.0);
-        }
-        return super.getCollisionShape(state, world, pos, context);
     }
 }

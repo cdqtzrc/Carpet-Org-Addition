@@ -15,7 +15,7 @@ import net.minecraft.util.math.MathHelper;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MathUtils;
-import org.carpet_org_addition.util.SendMessageUtils;
+import org.carpet_org_addition.util.MessageUtils;
 import org.jetbrains.annotations.Nullable;
 
 public class XpTransferCommand {
@@ -54,7 +54,7 @@ public class XpTransferCommand {
             //把经验给输入玩家
             inputPlayer.addExperience(totalExperience);
             if (serverCommandSourcePlayer != null) {
-                SendMessageUtils.sendCommandFeedback(source, "carpet.commands.xpTransfer.all",
+                MessageUtils.sendCommandFeedback(source, "carpet.commands.xpTransfer.all",
                         outputPlayer.getDisplayName(),
                         totalExperience, inputPlayer.getDisplayName());
             }
@@ -90,7 +90,7 @@ public class XpTransferCommand {
             //将另一半经验再转移回输出玩家身上
             outputPlayer.addExperience(totalExperience - halfExperience);
             if (serverCommandSourcePlayer != null) {
-                SendMessageUtils.sendCommandFeedback(source, "carpet.commands.xpTransfer.half", outputPlayer.getDisplayName(), halfExperience, inputPlayer.getDisplayName());
+                MessageUtils.sendCommandFeedback(source, "carpet.commands.xpTransfer.half", outputPlayer.getDisplayName(), halfExperience, inputPlayer.getDisplayName());
             }
             return halfExperience;
         } else {
@@ -127,7 +127,7 @@ public class XpTransferCommand {
             inputPlayer.addExperience(xpNumber);
             //将剩余的经验再添加回输出玩家
             outputPlayer.addExperience(totalExperience - xpNumber);
-            SendMessageUtils.sendCommandFeedback(source, "carpet.commands.xpTransfer.point", outputPlayer.getDisplayName(), xpNumber, inputPlayer.getDisplayName());
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.xpTransfer.point", outputPlayer.getDisplayName(), xpNumber, inputPlayer.getDisplayName());
             return xpNumber;
         } else {
             //发送消息：只允许操作自己或假玩家

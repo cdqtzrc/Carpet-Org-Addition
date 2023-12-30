@@ -9,7 +9,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
-import org.carpet_org_addition.util.SendMessageUtils;
+import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,7 +24,7 @@ public class BedBlockMixin {
     private void onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit,
                        CallbackInfoReturnable<ActionResult> cir) {
         if (CarpetOrgAdditionSettings.disableRespawnBlocksExplode && !BedBlock.isBedWorking(world)) {
-            SendMessageUtils.sendTextMessageToHud(player, TextUtils.getTranslate("carpet.rule.message.disableRespawnBlocksExplode"));
+            MessageUtils.sendTextMessageToHud(player, TextUtils.getTranslate("carpet.rule.message.disableRespawnBlocksExplode"));
             cir.setReturnValue(ActionResult.SUCCESS);
         }
     }

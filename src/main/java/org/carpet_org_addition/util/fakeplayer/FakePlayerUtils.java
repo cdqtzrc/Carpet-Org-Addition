@@ -6,7 +6,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
-import org.carpet_org_addition.util.SendMessageUtils;
+import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 
 public class FakePlayerUtils {
@@ -86,7 +86,7 @@ public class FakePlayerUtils {
      */
     public static void stopAction(ServerCommandSource source, EntityPlayerMPFake playerMPFake, String key, Object... obj) {
         ((FakePlayerActionInterface) playerMPFake).setAction(FakePlayerActionType.STOP);
-        SendMessageUtils.broadcastTextMessage(source, TextUtils.appendAll(playerMPFake.getDisplayName(), ": ",
+        MessageUtils.broadcastTextMessage(source, TextUtils.appendAll(playerMPFake.getDisplayName(), ": ",
                 TextUtils.getTranslate(key, obj)));
     }
 

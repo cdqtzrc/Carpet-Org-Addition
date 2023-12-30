@@ -40,7 +40,7 @@ public class RegisterCarpetCommands {
             //生存旁观切换命令
             SpectatorCommand.register(dispatcher);
 
-            //方块查找器命令
+            //查找器命令
             FinderCommand.register(dispatcher, commandBuildContext);
 
             //自杀命令

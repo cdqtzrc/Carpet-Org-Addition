@@ -10,8 +10,8 @@ import org.carpet_org_addition.CarpetOrgAddition;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class SendMessageUtils {
-    private SendMessageUtils() {
+public class MessageUtils {
+    private MessageUtils() {
     }
 
     /**
@@ -108,7 +108,7 @@ public class SendMessageUtils {
      * 发送一条可以被翻译的消息做为命令的执行反馈，消息内容仅消息发送者可见
      */
     public static void sendCommandFeedback(ServerCommandSource source, String key, Object... obj) {
-        SendMessageUtils.sendTextMessage(source, TextUtils.getTranslate(key, obj));
+        MessageUtils.sendTextMessage(source, TextUtils.getTranslate(key, obj));
     }
 
     /**

@@ -7,7 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import org.carpet_org_addition.util.SendMessageUtils;
+import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.helpers.CraftPresets;
 
 import java.io.File;
@@ -50,7 +50,7 @@ public class PresetsCommand {
                 }
                 String fileName = CraftPresets.extractFileName(files[i].getName());
                 // 列出目录下的每一个文件
-                SendMessageUtils.sendTextMessage(context.getSource(), Text.literal(fileName));
+                MessageUtils.sendTextMessage(context.getSource(), Text.literal(fileName));
             }
         }
         return i;

@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
-import org.carpet_org_addition.util.SendMessageUtils;
+import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.StringUtils;
 import org.carpet_org_addition.util.helpers.Location;
 import org.jetbrains.annotations.NotNull;
@@ -132,7 +132,7 @@ public class LocationsCommand {
             //添加路径点并写入本地文件
             Location.saveLoc(file, location, name);
             //成功添加路径点
-            SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.locations.add.success", name, StringUtils.getBlockPosString(blockPos));
+            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.locations.add.success", name, StringUtils.getBlockPosString(blockPos));
         } catch (IOException e) {
             CarpetOrgAddition.LOGGER.error(StringUtils.getPlayerName(player) + "在尝试将路径点写入本地文件时出现意外问题:", e);
         }
@@ -148,7 +148,7 @@ public class LocationsCommand {
         int count = 0;
         if (files != null) {
             ServerCommandSource source = context.getSource();
-            SendMessageUtils.sendStringMessage(source, "------------------------------");
+            MessageUtils.sendStringMessage(source, "------------------------------");
             for (File f : files) {
                 try {
                     String name = f.getName();
@@ -162,18 +162,18 @@ public class LocationsCommand {
                         location = Location.loadLoc(file, name);
                     } catch (JsonParseException e) {
                         //无法解析坐标
-                        SendMessageUtils.sendCommandFeedback(source, "carpet.commands.locations.list.parse", removeExtension(name));
+                        MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.list.parse", removeExtension(name));
                         continue;
                     }
                     //删除文件扩展名，然后在聊天栏输出路径点的文本
                     name = removeExtension(name);
-                    SendMessageUtils.sendTextMessage(source, location.getText("[" + name + "] "));
+                    MessageUtils.sendTextMessage(source, location.getText("[" + name + "] "));
                     count++;
                 } catch (IOException e) {
                     CarpetOrgAddition.LOGGER.error(StringUtils.getPlayerName(player) + "在尝试将列出路径点时出现意外问题:", e);
                 }
             }
-            SendMessageUtils.sendStringMessage(source, "------------------------------");
+            MessageUtils.sendStringMessage(source, "------------------------------");
         }
         return count;
     }
@@ -197,10 +197,10 @@ public class LocationsCommand {
             Location.saveLoc(getFile(player.getWorld()), location, name);
             if (remove) {
                 //移除路径点的说明文本
-                SendMessageUtils.sendCommandFeedback(source, "carpet.commands.locations.illustrate.remove", name);
+                MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.illustrate.remove", name);
             } else {
                 //为路径点添加说明文本
-                SendMessageUtils.sendCommandFeedback(source, "carpet.commands.locations.illustrate.add", illustrate, name);
+                MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.illustrate.add", illustrate, name);
             }
         } catch (JsonParseException e) {
             //无法解析坐标
@@ -230,10 +230,10 @@ public class LocationsCommand {
                 //将路径点对象写入本地文件
                 Location.saveLoc(getFile(player.getWorld()), location, name);
                 //添加对向坐标
-                SendMessageUtils.sendCommandFeedback(source, "carpet.commands.locations.another.add");
+                MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.another.add");
             } catch (UnsupportedOperationException e) {
                 //不能为末地坐标添加对向坐标
-                SendMessageUtils.sendCommandFeedback(source, "carpet.commands.locations.another.add.not");
+                MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.another.add.not");
             }
         } catch (JsonParseException e) {
             //无法解析坐标
@@ -279,7 +279,7 @@ public class LocationsCommand {
         boolean successRemove = file.delete();
         if (successRemove) {
             //成功删除
-            SendMessageUtils.sendCommandFeedback(source, "carpet.commands.locations.remove.success", delete);
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.remove.success", delete);
         } else {
             //删除失败
             throw CommandUtils.getException("carpet.commands.locations.remove.fail", delete);
@@ -303,7 +303,7 @@ public class LocationsCommand {
             //将路径点写入本地文件
             Location.saveLoc(getFile(player.getWorld()), location, fileName);
             //发送命令执行后的反馈
-            SendMessageUtils.sendCommandFeedback(source, "carpet.commands.locations.set", fileName);
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.set", fileName);
         } catch (JsonParseException e) {
             throw CommandUtils.getException("carpet.commands.locations.set.parse", fileName);
         } catch (IOException e) {

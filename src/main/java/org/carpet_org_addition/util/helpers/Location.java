@@ -12,7 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionTypes;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.MathUtils;
-import org.carpet_org_addition.util.SendMessageUtils;
+import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.StringUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.jetbrains.annotations.Nullable;
@@ -183,27 +183,27 @@ public class Location {
 
     //显示详细信息
     public void showInfo(ServerCommandSource source, PlayerEntity player, String name) {
-        SendMessageUtils.sendTextMessage(player, getText("[" + name + "]"));
+        MessageUtils.sendTextMessage(player, getText("[" + name + "]"));
         if (illustrate != null) {
-            SendMessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.illustrate", illustrate);
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.illustrate", illustrate);
         }
-        SendMessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.creator_player_name", creatorPlayerName);
-        SendMessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.creator_time", creatorTime);
+        MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.creator_player_name", creatorPlayerName);
+        MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.creator_time", creatorTime);
         Identifier value = player.getWorld().getDimensionKey().getValue();
         if (value.equals(DimensionTypes.OVERWORLD_ID)
             && (locType == LocationType.OVERWORLD
                 || locType == LocationType.OVERWORLD_AND_THE_NETHER
                 || locType == LocationType.THE_NETHER_AND_OVERWORLD)) {
-            SendMessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance"
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance"
                     , (int) MathUtils.getBlockDistance(player.getBlockPos(), getOverworldPos()));
         } else if (value.equals(DimensionTypes.THE_NETHER_ID)
                    && (locType == LocationType.THE_NETHER
                        || locType == LocationType.THE_NETHER_AND_OVERWORLD
                        || locType == LocationType.OVERWORLD_AND_THE_NETHER)) {
-            SendMessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance"
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance"
                     , (int) MathUtils.getBlockDistance(player.getBlockPos(), getTheNetherPos()));
         } else if (value.equals(DimensionTypes.THE_END_ID) && locType == LocationType.THE_END) {
-            SendMessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance"
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance"
                     , (int) MathUtils.getBlockDistance(player.getBlockPos(), getTheEndPos()));
         }
     }

@@ -10,8 +10,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.math.Vec3d;
-import org.carpet_org_addition.exception.EmptyShulkerBoxException;
-import org.carpet_org_addition.util.ShulkerBoxUtils;
+import org.carpet_org_addition.exception.NoNbtException;
+import org.carpet_org_addition.util.InventoryUtils;
 
 public class FakePlayerSorting {
     private FakePlayerSorting() {
@@ -39,17 +39,17 @@ public class FakePlayerSorting {
             } else {
                 //丢弃潜影盒内的物品
                 //判断当前物品是不是潜影盒
-                if (ShulkerBoxUtils.isShulkerBoxItem(itemStack)) {
+                if (InventoryUtils.isShulkerBoxItem(itemStack)) {
                     while (true) {
                         //一轮循环结束后，再重新将当前物品设置为物品栏中的潜影盒
                         itemStack = inventory.getStack(index);
                         //判断潜影盒是否为空
-                        if (!ShulkerBoxUtils.isEmptyShulkerBox(itemStack)) {
+                        if (!InventoryUtils.isEmptyShulkerBox(itemStack)) {
                             //获取潜影盒内第一个非空气物品，获取后，该物品会在潜影盒内删除
                             //设置当前物品为潜影盒内容物的第一个非空物品
                             try {
-                                itemStack = ShulkerBoxUtils.getShulkerBoxItem(itemStack);
-                            } catch (EmptyShulkerBoxException e) {
+                                itemStack = InventoryUtils.getShulkerBoxItem(itemStack);
+                            } catch (NoNbtException e) {
                                 //空潜影盒异常，潜影盒可能没有NBT，如直接从创造模式物品栏中拿取出的潜影盒
                                 //丢出这个异常的潜影盒
                                 itemStack = inventory.getStack(index);

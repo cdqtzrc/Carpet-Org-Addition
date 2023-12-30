@@ -20,7 +20,7 @@ import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.exception.NotFoundPlayerException;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.GameUtils;
-import org.carpet_org_addition.util.SendMessageUtils;
+import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerProtectManager;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerProtectType;
@@ -35,8 +35,7 @@ public class ProtectCommand {
             return CommandSource.suggestMatching(
                     list.stream().filter(player -> player instanceof EntityPlayerMPFake fakePlayer
                                                    && FakePlayerProtectManager.isProtect(fakePlayer))
-                            .map(player -> player.getName().getString())
-                    , builder);
+                            .map(player -> player.getName().getString()), builder);
         };
     }
 
@@ -74,13 +73,13 @@ public class ProtectCommand {
         List<ServerPlayerEntity> list = source.getServer().getPlayerManager().getPlayerList();
         int count = getProtectPlayerCount(source.getServer());
         if (count == 0) {
-            SendMessageUtils.sendCommandFeedback(source, "carpet.commands.protect.list.no_players");
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.protect.list.no_players");
         } else {
-            SendMessageUtils.sendCommandFeedback(source, "carpet.commands.protect.list", count);
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.protect.list", count);
         }
         for (ServerPlayerEntity player : list) {
             if (player instanceof EntityPlayerMPFake fakePlayer && FakePlayerProtectManager.isProtect(fakePlayer)) {
-                SendMessageUtils.sendTextMessage(source, TextUtils.appendAll(fakePlayer.getDisplayName()+ ": "
+                MessageUtils.sendTextMessage(source, TextUtils.appendAll(fakePlayer.getDisplayName()+ ": "
                         , FakePlayerProtectManager.getProtect(fakePlayer).getText()));
             }
         }
@@ -108,16 +107,16 @@ public class ProtectCommand {
         if (FakePlayerProtectManager.isProtect(fakePlayer)) {
             boolean flag = FakePlayerProtectManager.setProtect(fakePlayer, protectType);
             if (flag) {
-                SendMessageUtils.sendCommandFeedback(source, "carpet.commands.protect.modify", playerName, type);
+                MessageUtils.sendCommandFeedback(source, "carpet.commands.protect.modify", playerName, type);
                 return 1;
             } else {
-                SendMessageUtils.sendCommandFeedback(source, "carpet.commands.protect.already", playerName, type);
+                MessageUtils.sendCommandFeedback(source, "carpet.commands.protect.already", playerName, type);
                 return 0;
             }
         } else {
             FakePlayerProtectManager.setProtect(fakePlayer, protectType);
             // 将%s加入受保护玩家列表(类型:%s)
-            SendMessageUtils.sendCommandFeedback(source, "carpet.commands.protect.add", playerName, type);
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.protect.add", playerName, type);
             return 1;
         }
     }
@@ -127,10 +126,10 @@ public class ProtectCommand {
         Text playerName = fakePlayer.getDisplayName();
         if (FakePlayerProtectManager.isProtect(fakePlayer)) {
             FakePlayerProtectManager.setProtect(fakePlayer, FakePlayerProtectType.NONE);
-            SendMessageUtils.sendCommandFeedback(source, "carpet.commands.protect.remove", playerName);
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.protect.remove", playerName);
             return 1;
         } else {
-            SendMessageUtils.sendCommandFeedback(source, "carpet.commands.protect.not_found");
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.protect.not_found");
             return 0;
         }
     }
@@ -146,9 +145,9 @@ public class ProtectCommand {
             }
         }
         if (count == 0) {
-            SendMessageUtils.sendCommandFeedback(source, "carpet.commands.protect.remove.all.no_players");
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.protect.remove.all.no_players");
         } else {
-            SendMessageUtils.sendCommandFeedback(source, "carpet.commands.protect.remove.all", count);
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.protect.remove.all", count);
         }
         return count;
     }
