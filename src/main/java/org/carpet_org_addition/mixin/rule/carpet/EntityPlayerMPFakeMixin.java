@@ -13,8 +13,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
-import org.carpet_org_addition.exception.InfiniteLoopException;
-import org.carpet_org_addition.util.SendMessageUtils;
+import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.fakeplayer.*;
 import org.carpet_org_addition.util.helpers.ItemMatcher;
@@ -110,36 +109,18 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
                 thisPlayer.heal(1);
             }
         }
-        //根据假玩家操作类型执行操作
         try {
+            //根据假玩家操作类型执行操作
             if (action != FakePlayerActionType.STOP && context != null) {
                 this.fakePlayerAction();
             }
-        } catch (NullPointerException e) {//空指针异常
-            //将错误信息写入日志
-            CarpetOrgAddition.LOGGER.error(thisPlayer.getName().getString() + "在执行操作“" + this.action.toString() + "”时抛出空指针异常:", e);
-            //让假玩家停止当前操作
-            this.action = FakePlayerActionType.STOP;
-            //向聊天栏发送错误消息的反馈
-            SendMessageUtils.broadcastTextMessage(thisPlayer, TextUtils.appendAll(
-                    thisPlayer.getDisplayName(), ": ",
-                    TextUtils.getTranslate("carpet.commands.playerTools.action.exception.null_pointer")));
-        } catch (InfiniteLoopException e) {
-            //将错误信息写入日志
-            CarpetOrgAddition.LOGGER.error(thisPlayer.getName().getString() + "在执行操作“" + this.action.toString() + "”时进入了死循环:", e);
-            //让假玩家停止当前操作
-            this.action = FakePlayerActionType.STOP;
-            //向聊天栏发送错误消息的反馈
-            SendMessageUtils.broadcastTextMessage(thisPlayer, TextUtils.appendAll(
-                    thisPlayer.getDisplayName(), ": ",
-                    TextUtils.getTranslate("carpet.commands.playerTools.action.exception.infinite_loop")));
         } catch (RuntimeException e) {
             //将错误信息写入日志
             CarpetOrgAddition.LOGGER.error(thisPlayer.getName().getString() + "在执行操作“" + this.action.toString() + "”时遇到意外错误:", e);
             //让假玩家停止当前操作
             this.action = FakePlayerActionType.STOP;
             //向聊天栏发送错误消息的反馈
-            SendMessageUtils.broadcastTextMessage(thisPlayer,
+            MessageUtils.broadcastTextMessage(thisPlayer,
                     TextUtils.getTranslate("carpet.commands.playerTools.action.exception.runtime",
                             thisPlayer.getDisplayName()));
         }

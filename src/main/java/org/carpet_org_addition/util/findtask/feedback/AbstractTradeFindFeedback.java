@@ -5,7 +5,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
-import org.carpet_org_addition.util.SendMessageUtils;
+import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.findtask.result.AbstractTradeFindResult;
 
@@ -42,23 +42,23 @@ public abstract class AbstractTradeFindFeedback<T extends AbstractTradeFindResul
         // 打印输出
         if (list.size() <= 10) {
             // 数量小于等于10，直接输出
-            SendMessageUtils.sendCommandFeedback(context.getSource(),
+            MessageUtils.sendCommandFeedback(context.getSource(),
                     "carpet.commands.finder.trade.result", merchantCount,
                     getFindItemText(),
                     VILLAGER,// 村民和流浪商人的翻译键
                     WANDERING_TRADER);
             for (T result : list) {
-                SendMessageUtils.sendTextMessage(context.getSource(), result.toText());
+                MessageUtils.sendTextMessage(context.getSource(), result.toText());
             }
         } else {
             // 数量大于10，只输出距离最近的前十个
-            SendMessageUtils.sendCommandFeedback(context.getSource(),
+            MessageUtils.sendCommandFeedback(context.getSource(),
                     getTranslateKey(), merchantCount,
                     getFindItemText(),
                     VILLAGER,
                     WANDERING_TRADER);
             for (int i = 0; i < 10; i++) {
-                SendMessageUtils.sendTextMessage(context.getSource(), list.get(i).toText());
+                MessageUtils.sendTextMessage(context.getSource(), list.get(i).toText());
             }
         }
     }

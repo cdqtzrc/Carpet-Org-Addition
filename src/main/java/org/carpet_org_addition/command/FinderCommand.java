@@ -33,8 +33,8 @@ import net.minecraft.village.TradeOfferList;
 import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
-import org.carpet_org_addition.util.SendMessageUtils;
-import org.carpet_org_addition.util.ShulkerBoxUtils;
+import org.carpet_org_addition.util.MessageUtils;
+import org.carpet_org_addition.util.InventoryUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.findtask.feedback.*;
 import org.carpet_org_addition.util.findtask.result.BlockFindResult;
@@ -87,7 +87,7 @@ public class FinderCommand {
         ItemStack itemStack = itemStackArgument.createStack(1, true);
         if (list.isEmpty()) {
             // 在周围的容器中找不到指定物品
-            SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.item.find.not_item",
+            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.item.find.not_item",
                     itemStack.toHoverableText());
             return 0;
         } else if (list.size() > 300000) {
@@ -136,9 +136,9 @@ public class FinderCommand {
                                 continue;
                             }
                             // 判断当前物品是否为潜影盒
-                            if (ShulkerBoxUtils.isShulkerBoxItem(itemStack)) {
+                            if (InventoryUtils.isShulkerBoxItem(itemStack)) {
                                 // 获取潜影盒内的物品栏
-                                Inventory shulkerBoxInventory = ShulkerBoxUtils.getInventory(itemStack);
+                                Inventory shulkerBoxInventory = InventoryUtils.getInventory(itemStack);
                                 if (shulkerBoxInventory == null) {
                                     // 潜影盒没有NBT，直接结束本轮循环，不进人潜影盒内查找物品
                                     continue;
@@ -181,9 +181,9 @@ public class FinderCommand {
                 // 如果匹配，将物品添加到集合
                 list.add(new ItemFindResult(item.getBlockPos(), itemStack.getCount(), false,
                         itemEntityName, itemStack));
-            } else if (ShulkerBoxUtils.isShulkerBoxItem(itemStack)) {
+            } else if (InventoryUtils.isShulkerBoxItem(itemStack)) {
                 // 否则，检查该物品实体是否为潜影盒掉落物，如果是，获取潜影盒的物品栏
-                Inventory inventory = ShulkerBoxUtils.getInventory(itemStack);
+                Inventory inventory = InventoryUtils.getInventory(itemStack);
                 // 潜影盒没有NBT，直接结束本轮循环
                 if (inventory == null) {
                     continue;
@@ -226,7 +226,7 @@ public class FinderCommand {
         }
         //判断集合中是否有元素，如果没有，直接在聊天栏发送反馈并结束方法
         if (list.isEmpty()) {
-            SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.not_found_block",
+            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.not_found_block",
                     TextUtils.getBlockName(blockStateArgument.getBlockState().getBlock()));
             return 0;
         }
@@ -296,7 +296,7 @@ public class FinderCommand {
         ItemStack itemStack = itemStackArgument.createStack(1, true);
         // 找不到出售指定物品的村民，直接结束方法
         if (list.isEmpty()) {
-            SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.trade.find.not_trade",
+            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.trade.find.not_trade",
                     itemStack.toHoverableText(),
                     AbstractTradeFindFeedback.VILLAGER,
                     AbstractTradeFindFeedback.WANDERING_TRADER);
@@ -359,7 +359,7 @@ public class FinderCommand {
             } else {
                 mutableText.formatted(Formatting.GRAY);
             }
-            SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.trade.find.not_trade",
+            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.trade.find.not_trade",
                     TextUtils.appendAll(mutableText, Items.ENCHANTED_BOOK.getName()),
                     TextUtils.getTranslate("entity.minecraft.villager"),
                     TextUtils.getTranslate("entity.minecraft.wandering_trader"));

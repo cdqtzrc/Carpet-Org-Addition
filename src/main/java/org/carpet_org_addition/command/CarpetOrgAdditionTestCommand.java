@@ -12,7 +12,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
-import org.carpet_org_addition.util.SendMessageUtils;
+import org.carpet_org_addition.util.MessageUtils;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -54,7 +54,7 @@ public class CarpetOrgAdditionTestCommand {
         DefaultedList<ItemStack> main = player.getInventory().main;
         for (int index = 0; index < main.size(); index++) {
             if (item.test(main.get(index))) {
-                SendMessageUtils.sendTextMessage(player, Text.literal(main.get(index).getName().getString() + "在索引" + index));
+                MessageUtils.sendTextMessage(player, Text.literal(main.get(index).getName().getString() + "在索引" + index));
                 return index;
             }
         }

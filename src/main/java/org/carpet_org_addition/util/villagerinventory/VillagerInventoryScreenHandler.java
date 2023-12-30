@@ -11,12 +11,12 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import org.carpet_org_addition.util.helpers.DisabledSlot;
 
-public class VillagerContainerScreenHandler extends ScreenHandler {
+public class VillagerInventoryScreenHandler extends ScreenHandler {
     // 物品栏的大小
     private static final int SIZE = 8;
     private final VillagerEntity villagerEntity;
 
-    public VillagerContainerScreenHandler(int syncId, PlayerInventory playerInventory, VillagerEntity villagerEntity) {
+    public VillagerInventoryScreenHandler(int syncId, PlayerInventory playerInventory, VillagerEntity villagerEntity) {
         super(ScreenHandlerType.GENERIC_3X3, syncId);
         this.villagerEntity = villagerEntity;
         Inventory inventory = villagerEntity.getInventory();

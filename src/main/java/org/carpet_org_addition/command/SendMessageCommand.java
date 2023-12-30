@@ -16,6 +16,14 @@ import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.*;
 
 public class SendMessageCommand {
+    /*
+         TODO:
+          功能过于简单，应该对功能进行扩展
+              比如允许玩家发送一条彩色的消息
+              允许玩家发送一条可以被格式化的消息等（使用其他符号代替分节符§）
+              允许玩家发送一条各种组件组装的消息，使用append子命令追加，使用send发送，可以发送各种颜色的文字，方块，物品实体的名称
+              允许玩家发送一条可翻译的文本
+    */
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("sendMessage")
                 .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandSendMessage))
@@ -43,7 +51,7 @@ public class SendMessageCommand {
             Text name = serverPlayerEntity.getDisplayName();
             copy = name.copy().append(": ").append(copy);
         }
-        SendMessageUtils.broadcastTextMessage(source, copy);
+        MessageUtils.broadcastTextMessage(source, copy);
         return 1;
     }
 
@@ -59,7 +67,7 @@ public class SendMessageCommand {
             MutableText playerNameText = serverPlayerEntity.getDisplayName().copy();
             url = playerNameText.append(": ").append(url);
         }
-        SendMessageUtils.broadcastTextMessage(source, url);
+        MessageUtils.broadcastTextMessage(source, url);
         return 1;
     }
 
@@ -85,9 +93,9 @@ public class SendMessageCommand {
                     TextUtils.blockPos(blockPos, null));
         };
         if (CarpetOrgAdditionSettings.canParseWayPoint) {
-            SendMessageUtils.broadcastStringMessage(player, mutableText.getString(), false);
+            MessageUtils.broadcastStringMessage(player, mutableText.getString(), false);
         } else {
-            SendMessageUtils.broadcastTextMessage(player, mutableText);
+            MessageUtils.broadcastTextMessage(player, mutableText);
         }
         return 1;
     }

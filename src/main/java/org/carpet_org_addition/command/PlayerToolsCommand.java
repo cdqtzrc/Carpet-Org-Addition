@@ -37,7 +37,7 @@ import net.minecraft.world.dimension.DimensionTypes;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MathUtils;
-import org.carpet_org_addition.util.SendMessageUtils;
+import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.fakeplayer.*;
 import org.carpet_org_addition.util.helpers.ItemMatcher;
@@ -119,7 +119,7 @@ public class PlayerToolsCommand {
             fakePlayer.heal(fakePlayer.getMaxHealth());
             fakePlayer.getHungerManager().setFoodLevel(20);
             //发送血量回复完后的命令反馈
-            SendMessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.heal", fakePlayer.getDisplayName());
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.heal", fakePlayer.getDisplayName());
             return (int) health;
         }
         return 0;
@@ -170,7 +170,7 @@ public class PlayerToolsCommand {
         //传送
         teleport(fakePlayer, serverWorld, player.getX(), player.getY(), player.getZ(), set, player.getYaw(), player.getPitch());
         //在聊天栏显示命令反馈
-        SendMessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.tp.success", fakePlayerName, playerName);
+        MessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.tp.success", fakePlayerName, playerName);
         return 1;
     }
 
@@ -203,10 +203,10 @@ public class PlayerToolsCommand {
     private static int isFakePlayer(ServerCommandSource source, PlayerEntity fakePlayer) {
         Text playerName = fakePlayer.getDisplayName();
         if (fakePlayer instanceof EntityPlayerMPFake) {
-            SendMessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.is_fake_player", playerName);
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.is_fake_player", playerName);
             return 0;
         } else {
-            SendMessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.is_player", playerName);
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.is_player", playerName);
             return 1;
         }
     }
@@ -219,7 +219,7 @@ public class PlayerToolsCommand {
                     -> style.withColor(Formatting.GREEN).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD,
                             fakePlayer.getBlockX() + " " + fakePlayer.getBlockY() + " " + fakePlayer.getBlockZ()))
                     .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.translatable("chat.copy.click"))));
-            SendMessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.pos", fakePlayer.getDisplayName(),
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.pos", fakePlayer.getDisplayName(),
                     getDimensionText(fakePlayer.getWorld()).getString(), CarpetOrgAdditionSettings.canParseWayPoint ?
                             text.getString() : text);
             ServerPlayerEntity player = source.getPlayer();
@@ -347,7 +347,7 @@ public class PlayerToolsCommand {
                     null, TextUtils.getTranslate("carpet.commands.playerTools.action.set.no_permission"),
                     Formatting.RED);
         }
-        SendMessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.action.set", suggest);
+        MessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.action.set", suggest);
     }
 
     //获取执行carpet命令需要的权限等级
@@ -366,7 +366,7 @@ public class PlayerToolsCommand {
             throws CommandSyntaxException {
         if (checkFakePlayer(fakePlayer)) {
             FakePlayerActionType action = ((FakePlayerActionInterface) fakePlayer).getAction();
-            SendMessageUtils.sendListMessage(context.getSource(), action.getActionText(context, (EntityPlayerMPFake) fakePlayer));
+            MessageUtils.sendListMessage(context.getSource(), action.getActionText(context, (EntityPlayerMPFake) fakePlayer));
         }
         return 1;
     }

@@ -32,5 +32,4 @@ public class TradeEnchantedBookResult extends AbstractTradeFindResult {
         return TextUtils.getTranslate("carpet.commands.finder.trade.enchanted_book.each",
                 TextUtils.blockPos(merchant.getBlockPos(), Formatting.GREEN), merchantName, tradeIndex, enchantment.getName(level));
     }
-
 }

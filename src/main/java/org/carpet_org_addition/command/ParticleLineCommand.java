@@ -17,7 +17,7 @@ import net.minecraft.util.math.Vec3d;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
-import org.carpet_org_addition.util.SendMessageUtils;
+import org.carpet_org_addition.util.MessageUtils;
 
 public class ParticleLineCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -108,9 +108,9 @@ public class ParticleLineCommand {
             double f = -vec3d2.dotProduct(vec3d5);
             if (f <= 0.5) {
                 if (verticalAngle > 0.0) {
-                    SendMessageUtils.sendTextMessageToHud(player, Text.literal("-->"));
+                    MessageUtils.sendTextMessageToHud(player, Text.literal("-->"));
                 } else if (verticalAngle < 0.0) {
-                    SendMessageUtils.sendTextMessageToHud(player, Text.literal("<--"));
+                    MessageUtils.sendTextMessageToHud(player, Text.literal("<--"));
                 }
             }
         }

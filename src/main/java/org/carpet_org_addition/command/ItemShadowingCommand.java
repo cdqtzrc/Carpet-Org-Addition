@@ -2,8 +2,8 @@ package org.carpet_org_addition.command;
 
 import carpet.utils.CommandHelper;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -18,14 +18,14 @@ public class ItemShadowingCommand {
 
     //注册用于制作物品分身的/itemshadowing命令
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        dispatcher.register((CommandManager.literal("itemshadowing").requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandItemShadowing)).executes(context -> {
-            ServerPlayerEntity player = CommandUtils.getPlayer(context);
-            return itemShadowing(player);
-        })));
+        dispatcher.register((CommandManager.literal("itemshadowing")
+                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandItemShadowing))
+                .executes(ItemShadowingCommand::itemShadowing)));
     }
 
     //制作物品分身
-    private static int itemShadowing(PlayerEntity player) throws CommandSyntaxException {
+    private static int itemShadowing(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerPlayerEntity player = CommandUtils.getPlayer(context);
         // 获取主副手上的物品
         ItemStack main = player.getMainHandStack();
         ItemStack off = player.getOffHandStack();

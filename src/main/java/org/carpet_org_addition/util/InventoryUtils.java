@@ -10,19 +10,19 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.util.collection.DefaultedList;
-import org.carpet_org_addition.exception.EmptyShulkerBoxException;
+import org.carpet_org_addition.exception.NoNbtException;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class ShulkerBoxUtils {
+public class InventoryUtils {
     private static final String BLOCK_ENTITY_TAG = "BlockEntityTag";
     private static final String ITEMS = "Items";
 
     /**
      * 潜影盒工具类，私有化构造方法
      */
-    private ShulkerBoxUtils() {
+    private InventoryUtils() {
     }
 
     /**
@@ -46,7 +46,7 @@ public class ShulkerBoxUtils {
         try {
             list = Objects.requireNonNull(nbt).getCompound(BLOCK_ENTITY_TAG).getList(ITEMS, NbtElement.COMPOUND_TYPE);
         } catch (NullPointerException e) {
-            throw new EmptyShulkerBoxException();
+            throw new NoNbtException();
         }
         // 依次遍历潜影盒内部每一个槽位
         for (int index = 0; index < list.size(); index++) {

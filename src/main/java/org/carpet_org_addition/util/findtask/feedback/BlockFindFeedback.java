@@ -5,7 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.math.BlockPos;
 import org.carpet_org_addition.util.MathUtils;
-import org.carpet_org_addition.util.SendMessageUtils;
+import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.findtask.result.AbstractFindResult;
 import org.carpet_org_addition.util.findtask.result.BlockFindResult;
@@ -42,17 +42,17 @@ public class BlockFindFeedback extends AbstractFindFeedback<BlockFindResult> {
         int size = list.size();
         //在聊天栏输出方块坐标消息
         if (size > 10) {
-            SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.find", size,
+            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.find", size,
                     TextUtils.getBlockName(block));
             for (int i = 0; i < 10; i++) {
-                SendMessageUtils.sendTextMessage(context.getSource(), list.get(i).toText());
+                MessageUtils.sendTextMessage(context.getSource(), list.get(i).toText());
             }
         } else {
             // 数量过多，只输出距离最近的前十个
-            SendMessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.find.not_more_than_ten",
+            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.find.not_more_than_ten",
                     size, TextUtils.getBlockName(block));
             for (AbstractFindResult result : list) {
-                SendMessageUtils.sendTextMessage(context.getSource(), result.toText());
+                MessageUtils.sendTextMessage(context.getSource(), result.toText());
             }
         }
     }

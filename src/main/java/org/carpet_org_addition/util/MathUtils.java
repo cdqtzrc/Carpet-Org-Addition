@@ -38,7 +38,7 @@ public class MathUtils {
         else {
             totalExp = (int) (4.5 * level * level - 162.5 * level + 2220);
         }
-        //防止数值溢出
+        // 防止数值溢出
         int sum = totalExp + xp;
         return sum < 0 ? totalExp : sum;
     }

@@ -3,7 +3,6 @@ package org.carpet_org_addition;
 import carpet.api.settings.Rule;
 import carpet.api.settings.RuleCategory;
 import org.carpet_org_addition.rulevalidator.CheckBedrockHardness;
-import org.carpet_org_addition.rulevalidator.CheckEnderPearlSpawnEndermiteProbability;
 import org.carpet_org_addition.rulevalidator.CheckPortalSpawnZombifiedPiglinProbability;
 import org.carpet_org_addition.rulevalidator.MaxBlockPlaceDistanceLegitimacyCheck;
 
@@ -14,7 +13,6 @@ public class CarpetOrgAdditionSettings {
     static {
         setBedrockHardness = -1;
         maxBlockPlaceDistance = -1;
-        enderPearlSpawnEndermiteProbability = -1;
         portalSpawnZombifiedPiglinProbability = -1;
     }
 
@@ -131,13 +129,6 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean channelingIgnoreWeather = false;
-
-    //末影珍珠落地生成末影螨概率
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE},
-            validators = {CheckEnderPearlSpawnEndermiteProbability.class}
-    )
-    public static float enderPearlSpawnEndermiteProbability;
 
     //破坏冰时总是变成水
     @Rule(
@@ -289,12 +280,6 @@ public class CarpetOrgAdditionSettings {
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
     public static String commandPlayerTools = "ops";
-
-    //高精度弓
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE}
-    )
-    public static boolean highPrecisionBow = false;
 
     //禁止岩浆怪生成于下界荒地
     @Rule(
@@ -472,12 +457,6 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean fakePlayerCraftKeepItem = false;
 
-    //下界传送门有碰撞箱
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE}
-    )
-    public static boolean netherPortalHasCollisionBox = false;
-
     //绘制粒子线命令
     @Rule(
             categories = {ORG, RuleCategory.COMMAND},
@@ -496,5 +475,4 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean climbingBoat = false;
-    // TODO 删除一些没用的功能
 }
