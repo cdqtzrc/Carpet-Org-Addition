@@ -6,9 +6,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 
-import java.util.Comparator;
-import java.util.List;
-
 public class MathUtils {
     /**
      * 数学工具类，私有化构造方法
@@ -81,7 +78,6 @@ public class MathUtils {
 
     /**
      * 在集合中从近到远排序<br/>
-     * 计算两个方块坐标与源坐标的距离，用于在{@link java.util.TreeSet<BlockPos>}集合和{@link java.util.TreeMap<BlockPos>}集合或者{@link java.util.Collections#sort(List, Comparator)}方法中将两个方块坐标与原坐标的距离进行由近到远排序，分别计算两个方块坐标与原坐标的距离，根据结果返回整数，如果大于或等于0，返回1，如果小于0，返回-1，这个方法比较的结果永远不会返回0，因为返回0，集合会认为这两个键是相同对象的而不存储，但距离相等不代表两个方块坐标是同一个坐标。
      *
      * @param blockPos   源方块坐标
      * @param o1BlockPos 要在集合中添加的方块坐标
@@ -94,9 +90,7 @@ public class MathUtils {
         // 坐标2到原坐标的距离
         double distance2 = getBlockSquareDistance(blockPos, o2BlockPos);
         // 比较两个距离的大小
-        int compare = Double.compare(distance1, distance2);
-        // 距离相等不代表两个方块坐标是同一个
-        return compare == 0 ? 1 : compare;
+        return Double.compare(distance1, distance2);
     }
 
     /**

@@ -8,7 +8,8 @@
     "cdqtzrc"
   ],
   "contact": {
-    "sources": "https://github.com/cdqtzrc/Carpet-Org-Addition"
+    "sources": "https://github.com/cdqtzrc/Carpet-Org-Addition",
+    "issues": "https://github.com/cdqtzrc/Carpet-Org-Addition/issues"
   },
   "license": "MIT",
   "icon": "assets/carpet-org-addition/icon.png",

@@ -17,8 +17,8 @@ import java.util.ArrayList;
 public class TradeEnchantedBookFeedback extends AbstractTradeFindFeedback<TradeEnchantedBookResult> {
     private final Enchantment enchantment;
 
-    public TradeEnchantedBookFeedback(CommandContext<ServerCommandSource> context, ArrayList<TradeEnchantedBookResult> list, BlockPos sourceBlockPos, Enchantment enchantment) {
-        super(context, list, sourceBlockPos);
+    public TradeEnchantedBookFeedback(CommandContext<ServerCommandSource> context, ArrayList<TradeEnchantedBookResult> list, BlockPos sourceBlockPos, Enchantment enchantment, int maxCount) {
+        super(context, list, sourceBlockPos, maxCount);
         this.enchantment = enchantment;
         this.setName("TradeEnchantedBookFindFeedbackThread");
     }
@@ -38,7 +38,7 @@ public class TradeEnchantedBookFeedback extends AbstractTradeFindFeedback<TradeE
 
     @Override
     protected String getTranslateKey() {
-        return "carpet.commands.finder.trade.enchanted_book.result.not_more_than_ten";
+        return "carpet.commands.finder.trade.enchanted_book.result.limit";
     }
 
     @Override

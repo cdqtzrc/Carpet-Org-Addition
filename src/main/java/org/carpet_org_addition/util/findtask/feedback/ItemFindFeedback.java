@@ -9,6 +9,7 @@ import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.findtask.result.ItemFindResult;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 public class ItemFindFeedback extends AbstractFindFeedback<ItemFindResult> {
     /**
@@ -24,8 +25,8 @@ public class ItemFindFeedback extends AbstractFindFeedback<ItemFindResult> {
      */
     private int count = 0;
 
-    public ItemFindFeedback(CommandContext<ServerCommandSource> context, ArrayList<ItemFindResult> list, ItemStack itemStack) {
-        super(context, list);
+    public ItemFindFeedback(CommandContext<ServerCommandSource> context, ArrayList<ItemFindResult> list, ItemStack itemStack, int maxCount) {
+        super(context, list, maxCount);
         this.itemStack = itemStack;
         this.setName("ItemFindFeedbackThread");
     }
@@ -40,28 +41,33 @@ public class ItemFindFeedback extends AbstractFindFeedback<ItemFindResult> {
                 this.inTheShulkerBox = true;
             }
         }
-        sendFeedback();
+        // 按照容器内指定物品的数量从多到少排序
+        list.sort((o1, o2) -> o2.getCount() - o1.getCount());
+        try {
+            sendFeedback();
+        } catch (TimeoutException e) {
+            MessageUtils.sendCommandFeedback(context.getSource(), AbstractFindFeedback.TIME_OUT);
+        }
     }
 
     @Override
-    protected void sendFeedback() {
+    protected void sendFeedback() throws TimeoutException {
         // 为数量添加鼠标悬停效果
         MutableText text = FinderCommand.showCount(itemStack, count, inTheShulkerBox);
         // 发送命令反馈
-        if (list.size() <= 10) {
-            // 数量较少，不排序，直接输出
+        if (list.size() <= this.maxCount) {
             MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.item.find",
                     list.size(), text, itemStack.toHoverableText());
             for (ItemFindResult result : list) {
+                checkTimeOut();
                 MessageUtils.sendTextMessage(context.getSource(), result.toText());
             }
         } else {
-            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.item.find.not_more_than_ten",
-                    list.size(), text, itemStack.toHoverableText());
-            // 按照容器内指定物品的数量从多到少排序
-            list.sort((o1, o2) -> o2.getCount() - o1.getCount());
+            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.item.find.limit",
+                    list.size(), text, itemStack.toHoverableText(), this.maxCount);
             // 容器数量过多，只反馈前十个
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < this.maxCount; i++) {
+                checkTimeOut();
                 MessageUtils.sendTextMessage(context.getSource(), list.get(i).toText());
             }
         }

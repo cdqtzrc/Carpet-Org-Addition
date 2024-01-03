@@ -13,8 +13,8 @@ import java.util.ArrayList;
 public class TradeItemFindFeedback extends AbstractTradeFindFeedback<TradeItemFindResult> {
     protected final ItemStack itemStack;
 
-    public TradeItemFindFeedback(CommandContext<ServerCommandSource> context, ArrayList<TradeItemFindResult> list, BlockPos sourceBlockPos, ItemStack itemStack) {
-        super(context, list, sourceBlockPos);
+    public TradeItemFindFeedback(CommandContext<ServerCommandSource> context, ArrayList<TradeItemFindResult> list, BlockPos sourceBlockPos, ItemStack itemStack, int maxCount) {
+        super(context, list, sourceBlockPos, maxCount);
         this.itemStack = itemStack;
         this.setName("TradeItemFindFeedbackThread");
     }
@@ -28,7 +28,7 @@ public class TradeItemFindFeedback extends AbstractTradeFindFeedback<TradeItemFi
 
     @Override
     protected String getTranslateKey() {
-        return "carpet.commands.finder.trade.result.not_more_than_ten";
+        return "carpet.commands.finder.trade.result.limit";
     }
 
     @Override
