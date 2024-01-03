@@ -2,7 +2,7 @@
 
 ## 规则
 
-制作物品分身(makeItemShadowing)
+制作物品分身(commandItemShadowing)
 
 - 启用命令/itemshadowing以制作物品分身
     - 类型：`字符串`
@@ -58,7 +58,7 @@
 
 - 被保护的假玩家不会被/player `<玩家名称>` kill杀死
     - 保护类型
-        - none：默认，假玩家不受baoh
+        - none：默认，假玩家不受保护
         - kill：假玩家不能被/player命令杀死
         - damage：假玩家只会受到直接来自玩家的伤害和具有"bypasses_invulnerability"标签的伤害
         - death：假玩家只会被直接来自玩家的伤害和具有"bypasses_invulnerability"标签的伤害杀死

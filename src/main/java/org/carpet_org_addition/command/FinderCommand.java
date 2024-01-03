@@ -2,7 +2,6 @@ package org.carpet_org_addition.command;
 
 import carpet.utils.CommandHelper;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -33,8 +32,8 @@ import net.minecraft.village.TradeOfferList;
 import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
-import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.InventoryUtils;
+import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.findtask.feedback.*;
 import org.carpet_org_addition.util.findtask.result.BlockFindResult;
@@ -52,38 +51,54 @@ public class FinderCommand {
                         CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandFinder))
                 .then(CommandManager.literal("block")
                         .then(CommandManager.argument("blockState", BlockStateArgumentType.blockState(commandBuildContext))
-                                .then(CommandManager.argument("radius", IntegerArgumentType.integer(0, 128))
-                                        .executes(FinderCommand::blockFinder))))
+                                .executes(context -> blockFinder(context, 32, 10))
+                                .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
+                                        .executes(context -> blockFinder(context, -1, 10))
+                                        .then(CommandManager.argument("maxCount", IntegerArgumentType.integer(1))
+                                                .executes(context -> blockFinder(context, -1, -1))))))
                 .then(CommandManager.literal("item")
                         .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(commandBuildContext))
-                                .then(CommandManager.argument("radius", IntegerArgumentType.integer(0, 128))
-                                        .executes(FinderCommand::itemFinder))))
+                                .executes(context -> itemFinder(context, 32, 10))
+                                .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
+                                        .executes(context -> itemFinder(context, -1, 10))
+                                        .then(CommandManager.argument("maxCount", IntegerArgumentType.integer(1))
+                                                .executes(context -> itemFinder(context, -1, -1))))))
                 .then(CommandManager.literal("trade")
                         .then(CommandManager.literal("item")
                                 .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(commandBuildContext))
+                                        .executes(context -> tradeItemFinder(context, 32, 10))
                                         .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
-                                                .executes(FinderCommand::tradeItemFinder))))
+                                                .executes(context -> tradeItemFinder(context, -1, 10))
+                                                .then(CommandManager.argument("maxCount", IntegerArgumentType.integer(1))
+                                                        .executes(context -> tradeItemFinder(context, -1, -1))))))
                         .then(CommandManager.literal("enchantedBook")
                                 .then(CommandManager.argument("enchantment", RegistryEntryArgumentType.registryEntry(commandBuildContext, RegistryKeys.ENCHANTMENT))
+                                        .executes(context -> enchantedBookTradeFinder(context, 32, 10))
                                         .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
-                                                .executes(FinderCommand::enchantedBookTradeFinder)
-                                                .then(CommandManager.argument("allLevels", BoolArgumentType.bool())
-                                                        .executes(FinderCommand::enchantedBookTradeFinder))))))
+                                                .executes(context -> enchantedBookTradeFinder(context, -1, 10))
+                                                .then(CommandManager.argument("maxCount", IntegerArgumentType.integer(1))
+                                                        .executes(context -> enchantedBookTradeFinder(context, -1, -1)))))))
         );
     }
 
     // 物品查找
-    private static int itemFinder(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private static int itemFinder(CommandContext<ServerCommandSource> context, int range, int maxCount) throws CommandSyntaxException {
         // 获取执行命令的玩家并非空判断
         ServerPlayerEntity player = CommandUtils.getPlayer(context);
         // 获取要查找的物品堆栈
         ItemStackArgument itemStackArgument = ItemStackArgumentType.getItemStackArgument(context, "itemStack");
-        // 获取要查找方块的范围
-        int radius = IntegerArgumentType.getInteger(context, "radius");
+        if (range == -1) {
+            // 获取要查找方块的范围
+            range = IntegerArgumentType.getInteger(context, "range");
+        }
+        if (maxCount == -1) {
+            // 设置最多显示几条消息
+            maxCount = IntegerArgumentType.getInteger(context, "maxCount");
+        }
         // 获取玩家所在的位置，这是命令开始执行的坐标
         BlockPos sourceBlockPos = player.getBlockPos();
         // 查找周围容器中的物品
-        ArrayList<ItemFindResult> list = findItem(player.getServerWorld(), sourceBlockPos, itemStackArgument, radius);
+        ArrayList<ItemFindResult> list = findItem(player.getServerWorld(), sourceBlockPos, itemStackArgument, range);
         ItemStack itemStack = itemStackArgument.createStack(1, true);
         if (list.isEmpty()) {
             // 在周围的容器中找不到指定物品
@@ -96,25 +111,25 @@ public class FinderCommand {
                     itemStack.toHoverableText(), list.size());
         }
         // 在一个单独的线程中处理数据
-        new ItemFindFeedback(context, list, itemStack).start();
+        new ItemFindFeedback(context, list, itemStack, maxCount).start();
         return list.size();
     }
 
     // 开始查找物品
     private static ArrayList<ItemFindResult> findItem(ServerWorld world, BlockPos blockPos, ItemStackArgument itemStackArgument,
-                                                      int radius) throws CommandSyntaxException {
+                                                      int range) throws CommandSyntaxException {
         // 创建ArrayList集合，用来记录找到的物品坐标
         ArrayList<ItemFindResult> list = new ArrayList<>();
         // 获取三个坐标的最大值
-        int maxX = blockPos.getX() + radius;
-        int maxZ = blockPos.getZ() + radius;
+        int maxX = blockPos.getX() + range;
+        int maxZ = blockPos.getZ() + range;
         int maxHeight = world.getHeight();
         // 获取当前系统时间的毫秒值
         long currentTimeMillis = System.currentTimeMillis();
         // 查找世界上容器中的物品
         // 遍历整个三维空间，找到与目标物品匹配的物品
-        for (int minX = blockPos.getX() - radius; minX <= maxX; minX++) {
-            for (int minZ = blockPos.getZ() - radius; minZ <= maxZ; minZ++) {
+        for (int minX = blockPos.getX() - range; minX <= maxX; minX++) {
+            for (int minZ = blockPos.getZ() - range; minZ <= maxZ; minZ++) {
                 for (int bottomY = world.getBottomY(); bottomY <= maxHeight; bottomY++) {
                     // 检查时间是否超时
                     checkTimeOut(currentTimeMillis);
@@ -166,8 +181,8 @@ public class FinderCommand {
             }
         }
         // 查找世界上的掉落物物品
-        Box box = new Box(blockPos.getX() - radius, world.getBottomY(), blockPos.getZ() - radius,
-                blockPos.getX() + radius, world.getTopY(), blockPos.getZ() + radius);
+        Box box = new Box(blockPos.getX() - range, world.getBottomY(), blockPos.getZ() - range,
+                blockPos.getX() + range, world.getTopY(), blockPos.getZ() + range);
         // 获取范围内所有掉落物的集合
         List<ItemEntity> itemEntityList = world.getNonSpectatingEntities(ItemEntity.class, box);
         // 掉落物的翻译键
@@ -207,17 +222,23 @@ public class FinderCommand {
     }
 
     //方块查找
-    private static int blockFinder(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private static int blockFinder(CommandContext<ServerCommandSource> context, int range, int maxCount) throws CommandSyntaxException {
         // 获取执行命令的玩家并非空判断
         ServerPlayerEntity player = CommandUtils.getPlayer(context);
         // 获取要匹配的方块状态
         BlockStateArgument blockStateArgument = BlockStateArgumentType.getBlockState(context, "blockState");
-        // 获取要查找方块的范围
-        int radius = IntegerArgumentType.getInteger(context, "radius");
+        if (range == -1) {
+            // 获取要查找方块的范围
+            range = IntegerArgumentType.getInteger(context, "range");
+        }
+        if (maxCount == -1) {
+            // 设置最多显示几条消息
+            maxCount = IntegerArgumentType.getInteger(context, "maxCount");
+        }
         // 获取命令执行时的方块坐标
         final BlockPos sourceBlockPos = player.getBlockPos();
         // 开始查找方块，然后返回查询结果
-        ArrayList<BlockFindResult> list = findBlock(player.getServerWorld(), sourceBlockPos, blockStateArgument, radius);
+        ArrayList<BlockFindResult> list = findBlock(player.getServerWorld(), sourceBlockPos, blockStateArgument, range);
         int count = list.size();
         // 如果找到的方块数量过多，直接抛出异常结束方法，不再进行排序
         if (count > 300000) {
@@ -231,7 +252,7 @@ public class FinderCommand {
             return 0;
         }
         // 在一个单独的线程中对查找到的方块进行排序和发送反馈
-        new BlockFindFeedback(context, list, sourceBlockPos, blockStateArgument.getBlockState().getBlock()).start();
+        new BlockFindFeedback(context, list, sourceBlockPos, blockStateArgument.getBlockState().getBlock(), maxCount).start();
         return count;
     }
 
@@ -241,23 +262,23 @@ public class FinderCommand {
      * @param world              要查找方块的世界对象
      * @param blockPos           查找范围的中心坐标
      * @param blockStateArgument 要查找的方块，支持方块状态
-     * @param radius             查找的范围，是一个边长为两倍radius，高度为整个世界高度的长方体
+     * @param range              查找的范围，是一个边长为两倍range，高度为整个世界高度的长方体
      * @return 包含所有查找到的方块坐标和该方块距离源方块坐标的距离的集合，并且已经从近到远排序
      */
     private static ArrayList<BlockFindResult> findBlock(ServerWorld world, BlockPos blockPos, BlockStateArgument blockStateArgument,
-                                                        int radius) throws CommandSyntaxException {
+                                                        int range) throws CommandSyntaxException {
         //创建ArrayList集合，用来记录找到的方块坐标
         ArrayList<BlockFindResult> list = new ArrayList<>();
         //获取三个坐标的最大值
-        int maxX = blockPos.getX() + radius;
-        int maxZ = blockPos.getZ() + radius;
+        int maxX = blockPos.getX() + range;
+        int maxZ = blockPos.getZ() + range;
         int maxHeight = world.getHeight();
         long currentTimeMillis = System.currentTimeMillis();
         //创建可变坐标对象
         BlockPos.Mutable mutableBlockPos = new BlockPos.Mutable();
         //遍历整个三维空间，找到与目标方块匹配的方块
-        for (int minX = blockPos.getX() - radius; minX <= maxX; minX++) {
-            for (int minZ = blockPos.getZ() - radius; minZ <= maxZ; minZ++) {
+        for (int minX = blockPos.getX() - range; minX <= maxX; minX++) {
+            for (int minZ = blockPos.getZ() - range; minZ <= maxZ; minZ++) {
                 for (int bottomY = world.getBottomY(); bottomY <= maxHeight; bottomY++) {
                     checkTimeOut(currentTimeMillis);
                     //修改可变坐标的值
@@ -276,17 +297,23 @@ public class FinderCommand {
     private static void checkTimeOut(long currentTimeMillis) throws CommandSyntaxException {
         if (System.currentTimeMillis() - currentTimeMillis > 3000) {
             //3秒内未完成方块查找，通过抛出异常结束方法
-            throw CommandUtils.getException("carpet.commands.finder.timeout");
+            throw CommandUtils.getException(AbstractFindFeedback.TIME_OUT);
         }
     }
 
 
     // 准备根据物品查找交易项
-    private static int tradeItemFinder(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private static int tradeItemFinder(CommandContext<ServerCommandSource> context, int range, int maxCount) throws CommandSyntaxException {
         // 获取执行命令的玩家对象
         ServerPlayerEntity player = CommandUtils.getPlayer(context);
-        // 获取查找的范围
-        int range = IntegerArgumentType.getInteger(context, "range");
+        if (range == -1) {
+            // 获取要查找方块的范围
+            range = IntegerArgumentType.getInteger(context, "range");
+        }
+        if (maxCount == -1) {
+            // 设置最多显示几条消息
+            maxCount = IntegerArgumentType.getInteger(context, "maxCount");
+        }
         // 获取要匹配的物品
         ItemStackArgument itemStackArgument = ItemStackArgumentType.getItemStackArgument(context, "itemStack");
         // 获取玩家所在的坐标
@@ -303,7 +330,7 @@ public class FinderCommand {
             return 0;
         }
         // 在单独的线程中处理查找结果
-        new TradeItemFindFeedback(context, list, sourcePos, itemStack).start();
+        new TradeItemFindFeedback(context, list, sourcePos, itemStack, maxCount).start();
         return list.size();
     }
 
@@ -331,25 +358,23 @@ public class FinderCommand {
     }
 
     // 准备查找出售指定附魔书的村民
-    private static int enchantedBookTradeFinder(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private static int enchantedBookTradeFinder(CommandContext<ServerCommandSource> context, int range, int maxCount) throws CommandSyntaxException {
         // 获取执行命令的玩家
         ServerPlayerEntity player = CommandUtils.getPlayer(context);
-        // 获取要查找的范围
-        int range = IntegerArgumentType.getInteger(context, "range");
-        // 获取是否需要包含非满级附魔书
-        boolean allLevels;
-        try {
-            allLevels = BoolArgumentType.getBool(context, "allLevels");
-        } catch (IllegalArgumentException e) {
-            // 如果未指定，默认为true，即统计所有附魔书
-            allLevels = true;
+        if (range == -1) {
+            // 获取要查找方块的范围
+            range = IntegerArgumentType.getInteger(context, "range");
+        }
+        if (maxCount == -1) {
+            // 设置最多显示几条消息
+            maxCount = IntegerArgumentType.getInteger(context, "maxCount");
         }
         // 获取需要查找的附魔
         Enchantment enchantment = RegistryEntryArgumentType.getEnchantment(context, "enchantment").value();
         // 获取玩家所在的位置
         BlockPos sourcePos = player.getBlockPos();
         // 开始查找周围附近出售指定附魔书的村民
-        ArrayList<TradeEnchantedBookResult> list = tradeFinderEnchantedBook(sourcePos, range, player.getWorld(), enchantment, allLevels);
+        ArrayList<TradeEnchantedBookResult> list = tradeFinderEnchantedBook(sourcePos, range, player.getWorld(), enchantment);
         // 找不到出售指定物品的村民，直接结束方法
         if (list.isEmpty()) {
             MutableText mutableText = Text.translatable(enchantment.getTranslationKey());
@@ -365,12 +390,12 @@ public class FinderCommand {
                     TextUtils.getTranslate("entity.minecraft.wandering_trader"));
             return 0;
         }
-        new TradeEnchantedBookFeedback(context, list, sourcePos, enchantment).start();
+        new TradeEnchantedBookFeedback(context, list, sourcePos, enchantment, maxCount).start();
         return list.size();
     }
 
     // 开始查找周围附近出售指定附魔书的村民
-    private static ArrayList<TradeEnchantedBookResult> tradeFinderEnchantedBook(BlockPos sourcePos, int range, World world, Enchantment enchantment, boolean allLevels) {
+    private static ArrayList<TradeEnchantedBookResult> tradeFinderEnchantedBook(BlockPos sourcePos, int range, World world, Enchantment enchantment) {
         // 创建一个盒子对象，以玩家所在的位置为中心，宽度为指定范围的两倍，高度为整个区块高度
         Box box = new Box(sourcePos.getX() - range, world.getBottomY(), sourcePos.getZ() - range,
                 sourcePos.getX() + range, world.getTopY(), sourcePos.getZ() + range);
@@ -404,7 +429,7 @@ public class FinderCommand {
                         break;
                     }
                     // 将符合条件的附魔书添加到集合
-                    if (level > 0 && (allLevels || level == enchantment.getMaxLevel())) {
+                    if (level > 0) {
                         list.add(new TradeEnchantedBookResult(merchant, offers.get(i), (i + 1), enchantment, level));
                     }
                 }

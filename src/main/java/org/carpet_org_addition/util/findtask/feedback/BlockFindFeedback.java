@@ -11,6 +11,7 @@ import org.carpet_org_addition.util.findtask.result.AbstractFindResult;
 import org.carpet_org_addition.util.findtask.result.BlockFindResult;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 public class BlockFindFeedback extends AbstractFindFeedback<BlockFindResult> {
     /**
@@ -22,8 +23,8 @@ public class BlockFindFeedback extends AbstractFindFeedback<BlockFindResult> {
      */
     private final Block block;
 
-    public BlockFindFeedback(CommandContext<ServerCommandSource> context, ArrayList<BlockFindResult> list, BlockPos sourcePos, Block block) {
-        super(context, list);
+    public BlockFindFeedback(CommandContext<ServerCommandSource> context, ArrayList<BlockFindResult> list, BlockPos sourcePos, Block block, int maxCount) {
+        super(context, list, maxCount);
         this.sourcePos = sourcePos;
         this.block = block;
         this.setName("BlockFindFeedbackThread");
@@ -34,25 +35,31 @@ public class BlockFindFeedback extends AbstractFindFeedback<BlockFindResult> {
         // 将集合中的元素排序
         list.sort((o1, o2) -> MathUtils.compareBlockPos(sourcePos, o1.getBlockPos(), o2.getBlockPos()));
         // 发送命令反馈
-        sendFeedback();
+        try {
+            sendFeedback();
+        } catch (TimeoutException e) {
+            MessageUtils.sendCommandFeedback(context.getSource(), AbstractFindFeedback.TIME_OUT);
+        }
     }
 
     @Override
-    public void sendFeedback() {
+    public void sendFeedback() throws TimeoutException {
         int size = list.size();
         //在聊天栏输出方块坐标消息
-        if (size > 10) {
+        if (size <= this.maxCount) {
             MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.find", size,
                     TextUtils.getBlockName(block));
-            for (int i = 0; i < 10; i++) {
-                MessageUtils.sendTextMessage(context.getSource(), list.get(i).toText());
+            for (AbstractFindResult result : list) {
+                checkTimeOut();
+                MessageUtils.sendTextMessage(context.getSource(), result.toText());
             }
         } else {
             // 数量过多，只输出距离最近的前十个
-            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.find.not_more_than_ten",
-                    size, TextUtils.getBlockName(block));
-            for (AbstractFindResult result : list) {
-                MessageUtils.sendTextMessage(context.getSource(), result.toText());
+            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.find.limit",
+                    size, TextUtils.getBlockName(block), this.maxCount);
+            for (int i = 0; i < this.maxCount; i++) {
+                checkTimeOut();
+                MessageUtils.sendTextMessage(context.getSource(), list.get(i).toText());
             }
         }
     }
