@@ -28,8 +28,8 @@ public class MagmaCubeEntityMixin extends SlimeEntity {
     private void canSpawn(WorldView world, CallbackInfoReturnable<Boolean> cir) {
         if (CarpetOrgAdditionSettings.disableMagmaCubeSpawnNetherWastes) {
             // boolean b = world.getBiome(BlockPos.ofFloored(this.getPos())) == BiomeKeys.NETHER_WASTES;
-            boolean b = Objects.equals(world.getBiome(BlockPos.ofFloored(this.getPos())).getKey(), Optional.of(BiomeKeys.NETHER_WASTES));
-            if (b) {
+            boolean canSpawn = Objects.equals(world.getBiome(BlockPos.ofFloored(this.getPos())).getKey(), Optional.of(BiomeKeys.NETHER_WASTES));
+            if (canSpawn) {
                 cir.setReturnValue(false);
             }
         }
