@@ -8,6 +8,12 @@
 
 `sendMessage url <url>`
 
+`sendMessage color <color> <text>`
+
+`sendMessage strikethrough <text>`
+
+`sendMessage formatting <text>`
+
 ## 参数
 
 `text`
@@ -26,16 +32,19 @@
          <th>命令</th>
          <th>触发条件</th>
          <th>结果</th>
+         <th>备注</th>
         </tr>
         <tr>
          <td>任意</td>
          <td>参数不正确</td>
          <td>无法解析</td>
+         <td></td>
         </tr>
         <tr>
          <td>/sendMessage copy ...</td>
          <td>执行成功</td>
-         <td>在聊天栏发送一条可以单击复制的文本，如果命令执行者是玩家，还会在文本前追加玩家名</td>
+         <td>在聊天栏发送一条可以单击复制的文本</td>
+         <td rowspan="7">如果命令执行者是玩家，还会在文本前追加玩家名</td>
         </tr>
         <tr>
          <td>/sendMessage location</td>
@@ -44,18 +53,24 @@
         </tr>
         <tr>
          <td>/sendMessage location</td>
-         <td>命令执行者不是玩家</td>
-         <td>执行失败</td>
-        </tr>
-        <tr>
-         <td>/sendMessage location</td>
-         <td>执行成功</td>
+         <td rowspan="5">执行成功</td>
          <td>在聊天栏发送一条包含自己所在维度和坐标，以及对应的主世界或下界坐标的文本</td>
         </tr>
         <tr>
          <td>/sendMessage url ...</td>
-         <td>执行成功</td>
          <td>在聊天栏发送一条可以单击打开的网页链接，如果命令执行者是玩家，还会在链接文本前追加玩家名</td>
+        </tr>
+        <tr>
+         <td>/sendMessage color ...</td>
+         <td>在聊天栏发送一条带颜色的消息</td>
+        </tr>
+        <tr>
+         <td>/sendMessage strikethrough ...</td>
+         <td>在聊天栏发送一条带删除线的消息</td>
+        </tr>
+        <tr>
+         <td>/sendMessage formatting ...</td>
+         <td>在聊天栏发送一条可以被格式化的消息，使用"$"代替"§"</td>
         </tr>
     </tbody>
 </table>
@@ -95,3 +110,6 @@
 
 - 在聊天栏发送自己的位置
     - `/sendMessage location`
+
+- 使用绿色的字发“你好”
+    - `/sendMessage color green "你好"`

@@ -7,7 +7,6 @@ import net.minecraft.util.math.Box;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(BeaconBlockEntity.class)
 //大范围信标
