@@ -93,6 +93,10 @@ public class MathUtils {
         return Double.compare(distance1, distance2);
     }
 
+    public static boolean isDefaultDistance() {
+        return CarpetOrgAdditionSettings.maxBlockPlaceDistance == -1;
+    }
+
     /**
      * 获取Carpet Org Addition设置的玩家最大交互距离并进行判断，小于0的值会被视为6.0，超过128的值会被视为128.0
      *
@@ -113,15 +117,6 @@ public class MathUtils {
      */
     public static double getMaxBreakSquaredDistance() {
         return MathHelper.square(getPlayerMaxInteractionDistance());
-    }
-
-    /**
-     * 获取游戏默认的交互距离的平方
-     *
-     * @return 默认的交互距离，取平方距离
-     */
-    public static double getDefaultInteractionDistance() {
-        return ServerPlayNetworkHandler.MAX_BREAK_SQUARED_DISTANCE;
     }
 
     /**

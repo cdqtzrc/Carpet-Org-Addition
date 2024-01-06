@@ -1,5 +1,7 @@
 package org.carpet_org_addition.mixin.rule;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.entity.ItemEntity;
 import org.objectweb.asm.Opcodes;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
@@ -14,13 +16,13 @@ public class ItemEntityMixin {
     @Shadow
     private int itemAge;
 
-    @Redirect(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/ItemEntity;itemAge:I", opcode = Opcodes.GETFIELD))
-    private int itemTick(ItemEntity instance) {
+    @WrapOperation(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/ItemEntity;itemAge:I", opcode = Opcodes.GETFIELD))
+    private int itemTick(ItemEntity instance, Operation<Integer> original) {
         if (CarpetOrgAdditionSettings.itemNeverDespawn) {
             if (itemAge > 5995) {
                 itemAge--;
             }
         }
-        return itemAge;
+        return original.call(instance);
     }
 }

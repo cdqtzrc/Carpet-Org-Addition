@@ -1,5 +1,7 @@
 package org.carpet_org_addition.mixin.rule;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.NetherPortalBlock;
@@ -33,12 +35,12 @@ public abstract class NetherPortalBlockMixin extends Block {
         }
     }
 
-    @Redirect(method = "randomTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/Difficulty;getId()I"))
-    private int getId(Difficulty instance) {
+    @WrapOperation(method = "randomTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/Difficulty;getId()I"))
+    private int getId(Difficulty instance, Operation<Integer> original) {
         int probability = CarpetOrgAdditionSettings.portalSpawnZombifiedPiglinProbability;
         if (probability >= 0) {
             return Math.min(probability, 1999);
         }
-        return instance.getId();
+        return original.call(instance);
     }
 }
