@@ -8,7 +8,6 @@ import net.minecraft.block.RedstoneWireBlock;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 //红石线不会连接到打开的活板门上的红石线
 @Mixin(RedstoneWireBlock.class)

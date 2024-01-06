@@ -1,7 +1,6 @@
 package org.carpet_org_addition.util;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;

@@ -475,5 +475,4 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean climbingBoat = false;
-    // TODO 更新README.md文档
 }

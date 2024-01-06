@@ -166,14 +166,6 @@
     - 参考选项：`true`，`false`
     - 分类：`Org`，`特性`
 
-末影珍珠生成末影螨概率(enderPearlSpawnEndermiteProbability)
-
-- 设置末影珍珠生成末影螨的概率值
-- 值必须介于0-1直接，或者-1
-    - 类型：`单精度浮点数`
-    - 默认值：`-1`
-    - 分类：`Org`，`特性`
-
 破坏冰时总是变成水(iceBreakPlaceWater)
 
 - 破坏冰时不需要下方为可阻止移动方块或液体就可以变成水
@@ -378,14 +370,6 @@
     - 参考选项：`"true"`, `“false”`, `"ops"`, `"0"`, `"1"`, `"2"`,
       `"3"`, `"4"`
     - 分类：`Org`，`命令`
-
-高精度弓(highPrecisionBow)
-
-- 弓射出的箭不会产生随机偏移
-    - 类型：`布尔值`
-    - 默认值：`false`
-    - 参考选项：`true`，`false`
-    - 分类：`Org`，`特性`
 
 禁止岩浆怪生成在下界荒地(disableMagmaCubeSpawnNetherWastes)
 
@@ -604,14 +588,6 @@ CCE更新抑制器(CCEUpdateSuppression)
     - 参考选项：`true`，`false`
     - 分类：`Org`，`生存`
 
-下界传送门有碰撞箱(NetherPortalHasCollisionBox)
-
-- 通过让下界传送门方块有碰撞箱来阻止玩家意外的进入传送门
-    - 类型：`布尔值`
-    - 默认值：`false`
-    - 参考选项：`true`，`false`
-    - 分类：`Org`，`特性`
-
 绘制粒子线命令(commandParticleLine)
 
 - 启用/particleLine命令用来使用粒子效果来绘制连接两点的线
@@ -620,6 +596,22 @@ CCE更新抑制器(CCEUpdateSuppression)
     - 参考选项：`"true"`, `“false”`, `"ops"`, `"0"`, `"1"`, `"2"`,
       `"3"`, `"4"`
     - 分类：`Org`，`指令`
+
+禁止和平模式下持久生物被清除(disableMobPeacefulDespawn)
+
+- 通过命名或其他方式获得PersistenceRequired标签的生物在和平模式下也不会消失
+    - 类型：`布尔值`
+    - 默认值：`false`
+    - 参考选项：`true`，`false`
+    - 分类：`Org`，`特性`
+
+登山船(climbingBoat)
+
+- 玩家驾驶的船可以直接爬上一格高的方块
+    - 类型：`布尔值`
+    - 默认值：`false`
+    - 参考选项：`true`，`false`
+    - 分类：`Org`，`特性`
 
 ## 命令
 
