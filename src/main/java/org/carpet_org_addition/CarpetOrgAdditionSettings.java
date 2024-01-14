@@ -475,4 +475,10 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean climbingBoat = false;
+
+    // 可重复使用的锻造模板
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean reusableSmithingTemplate = false;
 }

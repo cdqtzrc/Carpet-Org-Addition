@@ -41,6 +41,7 @@
     "rule.SeedCommandMixin",
     "rule.ServerPlayNetworkHandlerMixin",
     "rule.ShulkerBoxBlockMixin",
+    "rule.SmithingScreenHandlerMixin",
     "rule.SnowGolemEntityMixin",
     "rule.SpawnerBlockMixin",
     "rule.StatusEffectMixin",
