@@ -103,6 +103,7 @@ public class PlayerToolsCommand {
                                 .then(CommandManager.literal("stonecutting").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
                                         .then(CommandManager.argument("button", IntegerArgumentType.integer(1))
                                                 .executes(context -> setAction(context, getPlayerEntity(context), FakePlayerActionType.STONECUTTING)))))
+                                .then(CommandManager.literal("farming").executes(context -> setAction(context, getPlayerEntity(context), FakePlayerActionType.FARMING)))
                         )
                 ));
     }
