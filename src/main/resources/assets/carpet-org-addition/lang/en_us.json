@@ -259,6 +259,8 @@
   "carpet.commands.playerTools.action.craft": "无法合成物品，停止合成",
   "carpet.commands.playerTools.action.rename.not_experience": "经验不足，停止重命名",
   "carpet.commands.playerTools.action.rename": "无法重命名，操作自动停止",
+  "carpet.commands.playerTools.action.farming": "%s正在种植%s",
+  "carpet.commands.playerTools.action.farming.none": "%s未在种植农作物",
   "carpet.commands.playerTools.action.exception.null_pointer": "空指针异常，停止操作",
   "carpet.commands.playerTools.action.exception.infinite_loop": "游戏进入死循环，停止操作",
   "carpet.commands.playerTools.action.exception.runtime": "%s在执行操作时遇到意外错误",

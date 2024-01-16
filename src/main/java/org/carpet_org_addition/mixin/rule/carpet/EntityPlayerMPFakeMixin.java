@@ -130,28 +130,30 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
     @Unique
     private void fakePlayerAction() {
         switch (action) {
-            //假玩家分拣
+            // 假玩家分拣
             case SORTING -> FakePlayerSorting.sorting(context, thisPlayer);
-            //假玩家清空容器
+            // 假玩家清空容器
             case CLEAN -> FakePlayerClean.clean(thisPlayer);
-            //假玩家填充容器
+            // 假玩家填充容器
             case FILL -> FakePlayerMoveItem.moveItem(context, thisPlayer);
-            //假玩家自动合成物品（单个材料）
+            // 假玩家自动合成物品（单个材料）
             case CRAFT_ONE -> FakePlayerCraft.craftOne(context, thisPlayer, ITEMS_2X2);
-            //假玩家自动合成物品（四个相同的材料）
+            // 假玩家自动合成物品（四个相同的材料）
             case CRAFT_FOUR -> FakePlayerCraft.craftFour(context, thisPlayer, ITEMS_2X2);
-            //假玩家自动合成物品（九个相同的材料）
+            // 假玩家自动合成物品（九个相同的材料）
             case CRAFT_NINE -> FakePlayerCraft.craftNine(context, thisPlayer, ITEMS_3X3);
-            //假玩家自动合成物品（9x9自定义物品）
+            // 假玩家自动合成物品（9x9自定义物品）
             case CRAFT_3X3 -> FakePlayerCraft.craft3x3(context, thisPlayer, ITEMS_3X3);
-            //假玩家自动合成物品（4x4自定义物品）
+            // 假玩家自动合成物品（4x4自定义物品）
             case CRAFT_2X2 -> FakePlayerCraft.craft2x2(context, thisPlayer, ITEMS_2X2);
-            //假玩家自动重命名
+            // 假玩家自动重命名
             case RENAME -> FakePlayerRename.rename(context, thisPlayer);
-            //假玩家切石机
+            // 假玩家切石机
             case STONECUTTING -> FakePlayerStonecutting.stonecutting(context, thisPlayer);
-            //假玩家交易
+            // 假玩家交易
             case TRADE -> FakePlayerTrade.trade(context, thisPlayer);
+            // 假人自动种植
+            case FARMING -> FakePlayerFarming.farming(thisPlayer);
             //以上值都不匹配，设置操作类型为STOP（不应该出现都不匹配的情况）
             default -> {
                 CarpetOrgAddition.LOGGER.error(action + "的行为没有预先定义");

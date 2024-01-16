@@ -4,6 +4,7 @@ import carpet.patches.EntityPlayerMPFake;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.block.Blocks;
 import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -262,6 +263,25 @@ public class FakePlayerActionInfo {
         } else {
             // 将假玩家没有打开交易界面的消息添加到集合中
             list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.trade.no_villager", fakePlayer.getDisplayName()));
+        }
+        return list;
+    }
+
+    // 显示假玩家自动种植的详细信息
+    public static ArrayList<MutableText> showFarmingInfo(EntityPlayerMPFake fakePlayer) {
+        // TODO 改一下
+        ArrayList<MutableText> list = new ArrayList<>();
+        ItemStack offHandStack = fakePlayer.getOffHandStack();
+        if (offHandStack.isOf(Items.WHEAT_SEEDS)) {
+            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.farming", fakePlayer.getDisplayName(), Blocks.WHEAT.getName()));
+        } else if (offHandStack.isOf(Items.POTATO)) {
+            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.farming", fakePlayer.getDisplayName(), Blocks.POTATOES.getName()));
+        } else if (offHandStack.isOf(Items.CARROT)) {
+            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.farming", fakePlayer.getDisplayName(), Blocks.CARROTS.getName()));
+        } else if (offHandStack.isOf(Items.BEETROOT_SEEDS)) {
+            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.farming", fakePlayer.getDisplayName(), Blocks.BEETROOTS.getName()));
+        } else {
+            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.farming.none", fakePlayer.getDisplayName()));
         }
         return list;
     }

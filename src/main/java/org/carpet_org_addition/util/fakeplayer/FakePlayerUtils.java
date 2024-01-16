@@ -65,14 +65,13 @@ public class FakePlayerUtils {
 
     /**
      * 与快捷栏中的物品交互位置<br/>
-     * 如果当前操作的槽位索引为0，数字键为1，表示0索引槽位的物品与玩家1号快捷栏的物品交换位置
+     * 如果当前操作的槽位索引为0，快捷栏索引为1，表示0索引槽位的物品与玩家2号快捷栏的物品交换位置
      *
      * @param screenHandler 假玩家当前打开的GUI
      * @param slotIndex     假玩家当前操作槽位的索引
-     * @param key           模拟按下的数字键
+     * @param key           快捷栏的索引
      * @param player        当前操作的假玩家
      */
-    @SuppressWarnings("unused")
     public static void swapItem(ScreenHandler screenHandler, int slotIndex, int key, EntityPlayerMPFake player) {
         screenHandler.onSlotClick(slotIndex, key, SlotActionType.SWAP, player);
     }
@@ -118,6 +117,7 @@ public class FakePlayerUtils {
      *
      * @param screenHandler 玩家当前打开的GUI
      * @param fromIndex     玩家拿取物品槽位的索引索引
+     * @param toIndex       玩家放置物品的槽位所以
      * @param player        当前操作GUI的假玩家
      */
     public static void pickupAndMoveItemStack(ScreenHandler screenHandler, int fromIndex,
@@ -131,6 +131,26 @@ public class FakePlayerUtils {
         if (CarpetOrgAdditionSettings.fakePlayerCraftKeepItem && screenHandler.getCursorStack().getMaxCount() > 1) {
             screenHandler.onSlotClick(fromIndex, PICKUP_RIGHT_CLICK, SlotActionType.PICKUP, player);
         }
+        screenHandler.onSlotClick(toIndex, PICKUP_LEFT_CLICK, SlotActionType.PICKUP, player);
+    }
+
+    /**
+     * 功能与{@link FakePlayerUtils#pickupAndMoveItemStack(ScreenHandler, int, int, EntityPlayerMPFake)}基本一致，只是本方法使用右键拿取物品，即一次拿取一半的物品
+     *
+     * @param screenHandler 玩家当前打开的GUI
+     * @param fromIndex     从哪个槽位拿取物品
+     * @param toIndex       将物品放在哪个槽位
+     * @param player        操作GUI的假玩家
+     */
+    public static void pickupAndMoveHalfItemStack(ScreenHandler screenHandler, int fromIndex,
+                                                  int toIndex, EntityPlayerMPFake player) {
+        // 如果鼠标光标上有物品，先把光标上的物品丢弃
+        if (!screenHandler.getCursorStack().isEmpty()) {
+            screenHandler.onSlotClick(EMPTY_SPACE_SLOT_INDEX, PICKUP_LEFT_CLICK, SlotActionType.PICKUP, player);
+        }
+        // 右击拾取物品
+        screenHandler.onSlotClick(fromIndex, PICKUP_RIGHT_CLICK, SlotActionType.PICKUP, player);
+        // 放置物品依然是左键单击
         screenHandler.onSlotClick(toIndex, PICKUP_LEFT_CLICK, SlotActionType.PICKUP, player);
     }
 
