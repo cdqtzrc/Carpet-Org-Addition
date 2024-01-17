@@ -6,6 +6,7 @@ import org.carpet_org_addition.rulevalidator.CheckBedrockHardness;
 import org.carpet_org_addition.rulevalidator.CheckPortalSpawnZombifiedPiglinProbability;
 import org.carpet_org_addition.rulevalidator.MaxBlockPlaceDistanceLegitimacyCheck;
 
+@SuppressWarnings("CommentedOutCode")
 public class CarpetOrgAdditionSettings {
     private CarpetOrgAdditionSettings() {
     }

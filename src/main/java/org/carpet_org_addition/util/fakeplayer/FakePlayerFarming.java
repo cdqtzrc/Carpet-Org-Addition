@@ -2,6 +2,7 @@ package org.carpet_org_addition.util.fakeplayer;
 
 import carpet.patches.EntityPlayerMPFake;
 import net.minecraft.block.*;
+import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.item.*;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.registry.tag.BlockTags;
@@ -13,6 +14,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.carpet_org_addition.util.WorldUtils;
 
@@ -61,8 +63,7 @@ public class FakePlayerFarming {
             // 如果耕地上方方块是空气，种植农作物
             if (blockState.isAir()) {
                 // 种植农作物
-                fakePlayer.interactionManager.interactBlock(fakePlayer, world, itemStack, Hand.OFF_HAND,
-                        new BlockHitResult(blockPos.toCenterPos(), Direction.UP, upPos, false));
+                plant(fakePlayer, world, itemStack, blockPos, upPos);
             }
             // 种植农作物后，收集或催熟
             Block block = blockState.getBlock();
@@ -119,8 +120,7 @@ public class FakePlayerFarming {
             Block block = blockState.getBlock();
             if (blockState.isAir()) {
                 // 种植竹子
-                fakePlayer.interactionManager.interactBlock(fakePlayer, world, itemStack, Hand.OFF_HAND,
-                        new BlockHitResult(blockPos.toCenterPos(), Direction.UP, upPos, false));
+                plant(fakePlayer, world, itemStack, blockPos, upPos);
             } else if (block instanceof BambooSaplingBlock) {
                 // 竹笋方块，直接使用骨粉
                 fertilize(fakePlayer, playerScreenHandler, world, upPos);
@@ -132,9 +132,15 @@ public class FakePlayerFarming {
                     int airCount = 0;
                     // 一个标记，从这个标记变为true开始，记录上方空气的数量
                     boolean hasAir = false;
-                    // 从当前竹子根的位置向上找16格，判断上方是否有上次砍伐但没来得及掉落的竹子
-                    for (int i = 2; i <= 18; i++) {
-                        BlockState tempBlockState = world.getBlockState(new BlockPos(blockPos.getX(), blockPos.getY() + i, blockPos.getZ()));
+                    /*
+                      从当前竹子根的位置向上找16格，判断上方是否有上次砍伐但没来得及掉落的竹子。
+                      竹子被砍断后不会立即掉落所有的竹子，而且从砍断的位置开始向上逐个掉落，
+                      如果在掉落前立即撒骨粉施肥，那么新的竹子极有可能与之前的竹子连接，之前的竹子不会掉落，会白白浪费骨粉。
+                      对竹子使用骨粉时会让竹子向上生长1-2格，所以，要想让新的竹子不会与旧的竹子相连接，新竹子距离之前的竹子至少要距离3格
+                      从第二格开始找是因为竹子是从第二格开始砍断的，第零格是支撑竹子的方块，第一格是竹子的根，所以底下这两格一定不是空气。
+                     */
+                    for (int height = 2; height <= 16; height++) {
+                        BlockState tempBlockState = world.getBlockState(new BlockPos(blockPos.getX(), blockPos.getY() + height, blockPos.getZ()));
                         if (tempBlockState.isAir()) {
                             hasAir = true;
                             airCount++;
@@ -144,10 +150,19 @@ public class FakePlayerFarming {
                             if (airCount >= 3) {
                                 fertilize(fakePlayer, playerScreenHandler, world, upPos);
                                 break;
-                            } else if (!tempBlockState.isAir()) {
+                            } else if (tempBlockState.isOf(Blocks.BAMBOO)) {
                                 // 如果上方连续的空气方块数量小于3，不能施肥，跳出循环
                                 break;
                             }
+                        }
+                        if (height == 16) {
+                         /*
+                            检查到了第16格，直接施肥
+                            如果第15格是空气，那么判断第16格时：
+                            1.如果第16格是竹子，则代码会在上面检查airCount>=3时，条件不会成立，会进入else if判断然后跳出循环，代码不会执行到这里
+                            2.如果第16格是空气，那么15格16格是空气，17格超出了竹子的最大生长高度所以一定也是空气，连续3格空气，可以施肥。
+                          */
+                            fertilize(fakePlayer, playerScreenHandler, world, upPos);
                         }
                     }
                 } else {
@@ -158,9 +173,18 @@ public class FakePlayerFarming {
         }
     }
 
+    // 种植
+    private static void plant(EntityPlayerMPFake fakePlayer, World world, ItemStack itemStack, BlockPos blockPos, BlockPos upPos) {
+        // 让假玩家看向该位置（这不是必须的）
+        fakePlayer.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, upPos.toCenterPos());
+        fakePlayer.interactionManager.interactBlock(fakePlayer, world, itemStack, Hand.OFF_HAND,
+                new BlockHitResult(blockPos.toCenterPos(), Direction.UP, upPos, false));
+        // 摆动手
+        fakePlayer.swingHand(Hand.OFF_HAND, true);
+    }
+
     // 撒骨粉催熟
     private static void fertilize(EntityPlayerMPFake fakePlayer, PlayerScreenHandler playerScreenHandler, World world, BlockPos upPos) {
-        // 农作物没有成熟，撒骨粉
         if (!fakePlayer.getMainHandStack().isOf(Items.BONE_MEAL)) {
             // 如果假玩家主手上没有骨粉，就从背包内获取骨粉
             DefaultedList<Slot> slots = playerScreenHandler.slots;
@@ -173,11 +197,20 @@ public class FakePlayerFarming {
                 }
             }
         }
-        // 如果手上有多余一个的骨粉，就使用骨粉
+        if (!fakePlayer.getMainHandStack().isOf(Items.BONE_MEAL)) {
+            // 玩家手上仍然没有骨粉，直接结束方法
+            return;
+        }
         if (fakePlayer.getMainHandStack().getCount() > 1) {
+            // 如果手上有多余一个的骨粉，就使用骨粉
+            Vec3d centerPos = upPos.toCenterPos();
+            // 让假玩家看向该位置（这不是必须的）
+            fakePlayer.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, centerPos);
             // 使用骨粉
             fakePlayer.interactionManager.interactBlock(fakePlayer, world, fakePlayer.getMainHandStack(), Hand.MAIN_HAND,
-                    new BlockHitResult(upPos.toCenterPos(), Direction.DOWN, upPos, true));
+                    new BlockHitResult(centerPos, Direction.DOWN, upPos, true));
+            // 摆动手
+            fakePlayer.swingHand(Hand.MAIN_HAND, true);
         } else {
             replenishment(fakePlayer, fakePlayer.getInventory().selectedSlot + 36, Items.BONE_MEAL, playerScreenHandler);
         }
@@ -185,9 +218,12 @@ public class FakePlayerFarming {
 
     // 收集农作物（需要保证方块能瞬间破坏）
     private static void breakBlock(EntityPlayerMPFake fakePlayer, BlockPos pos, World world) {
-        fakePlayer.interactionManager.processBlockBreakingAction(pos,
-                PlayerActionC2SPacket.Action.START_DESTROY_BLOCK,
+        // 让假玩家看向该位置（这不是必须的）
+        fakePlayer.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, pos.toCenterPos());
+        fakePlayer.interactionManager.processBlockBreakingAction(pos, PlayerActionC2SPacket.Action.START_DESTROY_BLOCK,
                 Direction.DOWN, world.getHeight(), -1);
+        // 摆动手
+        fakePlayer.swingHand(Hand.MAIN_HAND, true);
     }
 
     // 使用工具破坏硬度大于0的方块
@@ -198,11 +234,15 @@ public class FakePlayerFarming {
             // 竹子应该从第二格开始破坏
             pos = pos.up();
         }
-        // 如果玩家是创造模式，无需切换工具
-        if (fakePlayer.isCreative()) {
+        // 如果玩家是创造模式，或者玩家手上的工具已经能够瞬间破坏方块，那么就无需切换工具，直接破坏方块即可
+        // 对于竹子，如果玩家手上是剑，那么也无需切换工具
+        if (fakePlayer.isCreative()
+                || (breakBamboo && fakePlayer.getMainHandStack().getItem() instanceof SwordItem)
+                || world.getBlockState(pos).calcBlockBreakingDelta(fakePlayer, world, pos) >= 1.0F) {
             breakBlock(fakePlayer, pos, world);
+            return;
         }
-        // 获取应该在键盘上按下的数字键，用来与快捷栏的物品交换位置
+        // 获取玩家当前选择的快捷栏id，用来与让物品栏与快捷栏中的物品交换位置
         int numberKey = fakePlayer.getInventory().selectedSlot;
         for (int index = 9; index < playerScreenHandler.slots.size() - 1; index++) {
             if (playerScreenHandler.getSlot(index).getStack().getItem() instanceof ToolItem toolItem) {
@@ -211,10 +251,8 @@ public class FakePlayerFarming {
                 // 剑可以瞬间破坏竹子，无需计算挖掘速度
                 if ((breakBamboo && toolItem instanceof SwordItem)
                         // 判断当前工具能否瞬间破坏竹子
-                        || world.getBlockState(pos).calcBlockBreakingDelta(fakePlayer, world, pos) >= 1.0) {
+                        || world.getBlockState(pos).calcBlockBreakingDelta(fakePlayer, world, pos) >= 1.0F) {
                     breakBlock(fakePlayer, pos, world);
-                    // 工具使用完后，把工具放回原处
-                    FakePlayerUtils.swapItem(playerScreenHandler, index, numberKey, fakePlayer);
                     return;
                 }
                 // 如果不能瞬间破坏，就把工具放回原处
@@ -223,7 +261,7 @@ public class FakePlayerFarming {
         }
     }
 
-    // 自动补货
+    // 自动补货，返回值表示是否补货失败
     private static boolean replenishment(EntityPlayerMPFake fakePlayer, int slotIndex, Item item, PlayerScreenHandler playerScreenHandler) {
         DefaultedList<Slot> slots = playerScreenHandler.slots;
         // 遍历玩家物品栏，找到需要的物品
@@ -247,9 +285,21 @@ public class FakePlayerFarming {
     }
 
     private enum FarmingType {
+        /**
+         * 种植普通农作物，小麦、土豆、胡萝卜，甜菜，以及火把花，瓶子草
+         */
         CROPS,
+        /**
+         * 种植竹子
+         */
         BAMBOO,
+        /**
+         * 种植可可豆
+         */
         COCOA,
+        /**
+         * 一个占位符，表示什么都不种植
+         */
         NONE;
 
         private static FarmingType getFarmingType(ItemStack itemStack) {

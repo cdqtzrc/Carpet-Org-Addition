@@ -269,7 +269,7 @@ public class FakePlayerActionInfo {
 
     // 显示假玩家自动种植的详细信息
     public static ArrayList<MutableText> showFarmingInfo(EntityPlayerMPFake fakePlayer) {
-        // TODO 改一下
+        // TODO 代码改了，这里需要更新
         ArrayList<MutableText> list = new ArrayList<>();
         ItemStack offHandStack = fakePlayer.getOffHandStack();
         if (offHandStack.isOf(Items.WHEAT_SEEDS)) {

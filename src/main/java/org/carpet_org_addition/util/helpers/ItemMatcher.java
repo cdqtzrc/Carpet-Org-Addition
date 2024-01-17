@@ -107,7 +107,6 @@ public class ItemMatcher {
                 return defaultStack;
             }
         }
-        // TODO 需要测试如果物品标签中不包含任何物品会怎么样
         return null;
     }
 }
