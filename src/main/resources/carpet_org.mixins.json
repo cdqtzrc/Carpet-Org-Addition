@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "rule.AbstractBlockMixin",
+    "rule.AbstractBlockStateMixin",
     "rule.AbstractPiglinEntityMixin",
     "rule.AbstractPlantStemBlockMixin",
     "rule.AnvilScreenHandlerMixin",

@@ -284,7 +284,7 @@ public class FakePlayerFarming {
         return true;
     }
 
-    private enum FarmingType {
+    public enum FarmingType {
         /**
          * 种植普通农作物，小麦、土豆、胡萝卜，甜菜，以及火把花，瓶子草
          */
@@ -296,13 +296,14 @@ public class FakePlayerFarming {
         /**
          * 种植可可豆
          */
+        @SuppressWarnings("unused")
         COCOA,
         /**
          * 一个占位符，表示什么都不种植
          */
         NONE;
 
-        private static FarmingType getFarmingType(ItemStack itemStack) {
+        public static FarmingType getFarmingType(ItemStack itemStack) {
             if ((itemStack.isOf(Items.WHEAT_SEEDS)
                     || itemStack.isOf(Items.POTATO)
                     || itemStack.isOf(Items.CARROT)

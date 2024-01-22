@@ -488,4 +488,22 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.COMMAND}
     )
     public static boolean openTpPermissions = false;
+
+    // 易碎深板岩
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean softDeepslate = false;
+
+    // 易碎黑曜石
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean softObsidian = false;
+
+    // 易碎矿石
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean softOres = false;
 }
