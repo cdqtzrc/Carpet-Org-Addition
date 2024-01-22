@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Translate {
-    // TODO 用集合改进
     public static final HashMap<String, Map<String, String>> TRANSLATE = new HashMap<>();
 
     //获取翻译

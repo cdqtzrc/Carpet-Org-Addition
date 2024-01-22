@@ -269,19 +269,31 @@ public class FakePlayerActionInfo {
 
     // 显示假玩家自动种植的详细信息
     public static ArrayList<MutableText> showFarmingInfo(EntityPlayerMPFake fakePlayer) {
-        // TODO 代码改了，这里需要更新
-        ArrayList<MutableText> list = new ArrayList<>();
         ItemStack offHandStack = fakePlayer.getOffHandStack();
-        if (offHandStack.isOf(Items.WHEAT_SEEDS)) {
-            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.farming", fakePlayer.getDisplayName(), Blocks.WHEAT.getName()));
-        } else if (offHandStack.isOf(Items.POTATO)) {
-            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.farming", fakePlayer.getDisplayName(), Blocks.POTATOES.getName()));
-        } else if (offHandStack.isOf(Items.CARROT)) {
-            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.farming", fakePlayer.getDisplayName(), Blocks.CARROTS.getName()));
-        } else if (offHandStack.isOf(Items.BEETROOT_SEEDS)) {
-            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.farming", fakePlayer.getDisplayName(), Blocks.BEETROOTS.getName()));
-        } else {
+        FakePlayerFarming.FarmingType farmingType = FakePlayerFarming.FarmingType.getFarmingType(offHandStack);
+        ArrayList<MutableText> list = new ArrayList<>();
+        if (farmingType == FakePlayerFarming.FarmingType.NONE) {
             list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.farming.none", fakePlayer.getDisplayName()));
+            return list;
+        }
+        MutableText blockName = null;
+        if (offHandStack.isOf(Items.WHEAT_SEEDS)) {
+            blockName = Items.WHEAT.getName().copy();
+        } else if (offHandStack.isOf(Items.POTATO)) {
+            blockName = Blocks.POTATOES.getName();
+        } else if (offHandStack.isOf(Items.CARROT)) {
+            blockName = Blocks.CARROTS.getName();
+        } else if (offHandStack.isOf(Items.BEETROOT_SEEDS)) {
+            blockName = Blocks.BEETROOTS.getName();
+        } else if (offHandStack.isOf(Items.TORCHFLOWER_SEEDS)) {
+            blockName = Blocks.TORCHFLOWER.getName();
+        } else if (offHandStack.isOf(Items.PITCHER_POD)) {
+            blockName = Blocks.PITCHER_PLANT.getName();
+        } else if (offHandStack.isOf(Items.BAMBOO)) {
+            blockName = Blocks.BAMBOO.getName();
+        }
+        if (blockName != null) {
+            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.farming", fakePlayer.getDisplayName(), blockName));
         }
         return list;
     }
