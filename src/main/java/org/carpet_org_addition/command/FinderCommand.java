@@ -31,6 +31,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.village.TradeOfferList;
 import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
+import org.carpet_org_addition.exception.NoNbtException;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.InventoryUtils;
 import org.carpet_org_addition.util.MessageUtils;
@@ -40,6 +41,7 @@ import org.carpet_org_addition.util.findtask.result.BlockFindResult;
 import org.carpet_org_addition.util.findtask.result.ItemFindResult;
 import org.carpet_org_addition.util.findtask.result.TradeEnchantedBookResult;
 import org.carpet_org_addition.util.findtask.result.TradeItemFindResult;
+import org.carpet_org_addition.util.helpers.ImmutableInventory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -153,8 +155,10 @@ public class FinderCommand {
                             // 判断当前物品是否为潜影盒
                             if (InventoryUtils.isShulkerBoxItem(itemStack)) {
                                 // 获取潜影盒内的物品栏
-                                Inventory shulkerBoxInventory = InventoryUtils.getInventory(itemStack);
-                                if (shulkerBoxInventory == null) {
+                                ImmutableInventory shulkerBoxInventory;
+                                try {
+                                    shulkerBoxInventory = InventoryUtils.getInventory(itemStack);
+                                } catch (NoNbtException e) {
                                     // 潜影盒没有NBT，直接结束本轮循环，不进人潜影盒内查找物品
                                     continue;
                                 }
@@ -198,9 +202,11 @@ public class FinderCommand {
                         itemEntityName, itemStack));
             } else if (InventoryUtils.isShulkerBoxItem(itemStack)) {
                 // 否则，检查该物品实体是否为潜影盒掉落物，如果是，获取潜影盒的物品栏
-                Inventory inventory = InventoryUtils.getInventory(itemStack);
-                // 潜影盒没有NBT，直接结束本轮循环
-                if (inventory == null) {
+                ImmutableInventory inventory;
+                try {
+                    inventory = InventoryUtils.getInventory(itemStack);
+                } catch (NoNbtException e) {
+                    // 潜影盒没有NBT，直接结束本轮循环
                     continue;
                 }
                 // 定义变量记录在潜影盒内找到物品的数量

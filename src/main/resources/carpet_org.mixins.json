@@ -46,6 +46,7 @@
     "rule.SpawnerBlockMixin",
     "rule.StatusEffectMixin",
     "rule.SwiftSneakEnchantmentMixin",
+    "rule.TeleportCommandMixin",
     "rule.ThornsEnchantmentMixin",
     "rule.TradeOfferMixin",
     "rule.TridentItemMixin",

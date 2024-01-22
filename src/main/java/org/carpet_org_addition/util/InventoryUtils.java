@@ -1,8 +1,6 @@
 package org.carpet_org_addition.util;
 
 import net.minecraft.inventory.Inventories;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -11,7 +9,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.util.collection.DefaultedList;
 import org.carpet_org_addition.exception.NoNbtException;
-import org.jetbrains.annotations.Nullable;
+import org.carpet_org_addition.util.helpers.ImmutableInventory;
 
 import java.util.Objects;
 
@@ -36,9 +34,13 @@ public class InventoryUtils {
      * @param shulkerBoxItemStack 当前要操作的潜影盒
      * @return 潜影盒内第一个非空气物品，如果潜影盒内没有物品，返回ItemStack.EMPTY
      */
-    public static ItemStack getShulkerBoxItem(ItemStack shulkerBoxItemStack) {
+    public static ItemStack getShulkerBoxItem(ItemStack shulkerBoxItemStack) throws NoNbtException {
+        if (!InventoryUtils.isShulkerBoxItem(shulkerBoxItemStack)) {
+            // 物品不是潜影盒，自然不会有潜影盒的NBT
+            throw new NoNbtException();
+        }
         // 正常情况下有物品的潜影盒不可堆叠，所以可堆叠的潜影盒内部没有物品
-        if (!shulkerBoxItemStack.isOf(Items.SHULKER_BOX) || shulkerBoxItemStack.getCount() != 1) {
+        if (shulkerBoxItemStack.getCount() != 1) {
             return ItemStack.EMPTY;
         }
         NbtCompound nbt = shulkerBoxItemStack.getNbt();
@@ -114,10 +116,10 @@ public class InventoryUtils {
      * 获取潜影盒物品的物品栏
      *
      * @param shulkerBoxItemStack 要获取物品栏的潜影盒
-     * @return 潜影盒内的物品栏，如果物品不是潜影盒，或者潜影盒没有NBT，返回null
+     * @return 潜影盒内的物品栏
+     * @throws NoNbtException 物品不是潜影盒，或者潜影盒没有NBT时抛出
      */
-    @Nullable
-    public static Inventory getInventory(ItemStack shulkerBoxItemStack) {
+    public static ImmutableInventory getInventory(ItemStack shulkerBoxItemStack) throws NoNbtException {
         if (isShulkerBoxItem(shulkerBoxItemStack)) {
             try {
                 // 获取潜影盒NBT
@@ -126,20 +128,14 @@ public class InventoryUtils {
                     DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
                     // 读取潜影盒NBT
                     Inventories.readNbt(nbt, defaultedList);
-                    // 创建一个物品栏接口的实现类对象
-                    SimpleInventory simpleInventory = new SimpleInventory(defaultedList.size());
-                    for (int index = 0; index < defaultedList.size(); index++) {
-                        // 将集合内的物品堆栈写入到物品栏
-                        simpleInventory.setStack(index, defaultedList.get(index));
-                    }
-                    return simpleInventory;
+                    return new ImmutableInventory(defaultedList);
                 }
             } catch (NullPointerException e) {
                 // 潜影盒物品没有NBT，说明该潜影盒物品为空
-                return null;
+                throw new NoNbtException();
             }
         }
-        return null;
+        throw new NoNbtException();
     }
 
     /**

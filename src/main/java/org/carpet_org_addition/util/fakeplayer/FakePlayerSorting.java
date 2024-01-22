@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.math.Vec3d;
+import org.carpet_org_addition.exception.InfiniteLoopException;
 import org.carpet_org_addition.exception.NoNbtException;
 import org.carpet_org_addition.util.InventoryUtils;
 
@@ -40,7 +41,12 @@ public class FakePlayerSorting {
                 //丢弃潜影盒内的物品
                 //判断当前物品是不是潜影盒
                 if (InventoryUtils.isShulkerBoxItem(itemStack)) {
+                    int loopCount = 0;
                     while (true) {
+                        if (loopCount > 100) {
+                            throw new InfiniteLoopException(fakePlayer.getName().getString() + "在拆解潜影盒时循环了" + loopCount + "次");
+                        }
+                        loopCount++;
                         //一轮循环结束后，再重新将当前物品设置为物品栏中的潜影盒
                         itemStack = inventory.getStack(index);
                         //判断潜影盒是否为空

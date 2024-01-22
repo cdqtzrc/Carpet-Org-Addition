@@ -482,4 +482,10 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean reusableSmithingTemplate = false;
+
+    // 开放/tp命令权限
+    @Rule(
+            categories = {ORG, RuleCategory.COMMAND}
+    )
+    public static boolean openTpPermissions = false;
 }

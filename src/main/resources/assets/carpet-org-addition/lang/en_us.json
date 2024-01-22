@@ -158,6 +158,8 @@
   "carpet.rule.climbingBoat.desc": "玩家驾驶的船可以直接爬上一格高的方块",
   "carpet.rule.reusableSmithingTemplate.name": "可重复使用的锻造模板",
   "carpet.rule.reusableSmithingTemplate.desc": "在锻造台合成物品不会消耗锻造模板",
+  "carpet.rule.openTpPermissions.name": "开放/tp命令权限",
+  "carpet.rule.openTpPermissions.desc": "允许无权限玩家使用/tp命令",
   "carpet.rule.message.disableRespawnBlocksExplode": "已禁用重生方块爆炸",
   "carpet.command.source.not_player": "期望一名玩家来执行此命令",
   "carpet.command.file.json.file_already_exist": "json文件已存在",
