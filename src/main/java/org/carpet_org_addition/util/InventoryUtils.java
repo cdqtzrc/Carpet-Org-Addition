@@ -16,6 +16,25 @@ import java.util.Objects;
 public class InventoryUtils {
     private static final String BLOCK_ENTITY_TAG = "BlockEntityTag";
     private static final String ITEMS = "Items";
+    private static final Item[] SHULKER_BOX_ALL = {
+            Items.SHULKER_BOX,
+            Items.WHITE_SHULKER_BOX,
+            Items.ORANGE_SHULKER_BOX,
+            Items.MAGENTA_SHULKER_BOX,
+            Items.LIGHT_BLUE_SHULKER_BOX,
+            Items.YELLOW_SHULKER_BOX,
+            Items.LIME_SHULKER_BOX,
+            Items.PINK_SHULKER_BOX,
+            Items.GRAY_SHULKER_BOX,
+            Items.LIGHT_GRAY_SHULKER_BOX,
+            Items.CYAN_SHULKER_BOX,
+            Items.PURPLE_SHULKER_BOX,
+            Items.BLUE_SHULKER_BOX,
+            Items.BROWN_SHULKER_BOX,
+            Items.GREEN_SHULKER_BOX,
+            Items.RED_SHULKER_BOX,
+            Items.BLACK_SHULKER_BOX
+    };
 
     /**
      * 潜影盒工具类，私有化构造方法
@@ -145,26 +164,7 @@ public class InventoryUtils {
      * @return 指定物品是否是潜影盒
      */
     public static boolean isShulkerBoxItem(ItemStack shulkerBoxItemStack) {
-        Item[] arr = {
-                Items.SHULKER_BOX,
-                Items.WHITE_SHULKER_BOX,
-                Items.ORANGE_SHULKER_BOX,
-                Items.MAGENTA_SHULKER_BOX,
-                Items.LIGHT_BLUE_SHULKER_BOX,
-                Items.YELLOW_SHULKER_BOX,
-                Items.LIME_SHULKER_BOX,
-                Items.PINK_SHULKER_BOX,
-                Items.GRAY_SHULKER_BOX,
-                Items.LIGHT_GRAY_SHULKER_BOX,
-                Items.CYAN_SHULKER_BOX,
-                Items.PURPLE_SHULKER_BOX,
-                Items.BLUE_SHULKER_BOX,
-                Items.BROWN_SHULKER_BOX,
-                Items.GREEN_SHULKER_BOX,
-                Items.RED_SHULKER_BOX,
-                Items.BLACK_SHULKER_BOX
-        };
-        for (Item item : arr) {
+        for (Item item : SHULKER_BOX_ALL) {
             if (shulkerBoxItemStack.isOf(item)) {
                 return true;
             }

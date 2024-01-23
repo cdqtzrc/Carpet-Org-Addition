@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
 
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * 不可变的物品栏，一旦创建，里面的内容都是不可以改变的，只能进行查询操作，否则抛出{@link UnsupportedOperationException}
@@ -63,5 +64,31 @@ public class ImmutableInventory extends SimpleInventory implements Inventory {
     @Override
     public ItemStack addStack(ItemStack stack) {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 潜影盒内的物品共占了多少个槽位，不是指潜影盒内物品的总数
+     */
+    public int itemCount() {
+        int count = 0;
+        for (int index = 0; index < this.size(); index++) {
+            if (!this.getStack(index).isEmpty()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public String toString() {
+        StringJoiner inventory = new StringJoiner(", ", "{", "}");
+        for (int index = 0; index < this.size(); index++) {
+            ItemStack itemStack = this.getStack(index);
+            if (itemStack.isEmpty()) {
+                continue;
+            }
+            inventory.add(itemStack.getItem().toString() + "*" + itemStack.getCount());
+        }
+        return inventory.toString();
     }
 }

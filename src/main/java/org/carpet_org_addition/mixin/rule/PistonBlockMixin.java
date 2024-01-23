@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class PistonBlockMixin {
     /**
      * 防止修改硬度的基岩被活塞推动
-     * {@link AbstractBlockMixin}
+     * {@link AbstractBlockStateMixin}
      */
     @WrapOperation(method = "isMovable", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getHardness(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)F"))
     private static float canMove(BlockState instance, BlockView blockView, BlockPos blockPos, Operation<Float> original) {
