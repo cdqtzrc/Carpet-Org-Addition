@@ -121,7 +121,7 @@ public class FakePlayerFarming {
             if (blockState.isAir()) {
                 // 种植竹子
                 plant(fakePlayer, world, itemStack, blockPos, upPos);
-            } else if (block instanceof BambooShootBlock) {
+            } else if (block instanceof BambooSaplingBlock) {
                 // 竹笋方块，直接使用骨粉
                 fertilize(fakePlayer, playerScreenHandler, world, upPos);
             } else if (block instanceof BambooBlock bambooBlock) {
