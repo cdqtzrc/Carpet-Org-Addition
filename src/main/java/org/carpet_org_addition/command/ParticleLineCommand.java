@@ -5,7 +5,6 @@ import carpet.utils.CommandHelper;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.registry.RegistryKeys;
@@ -82,7 +81,7 @@ public class ParticleLineCommand {
             Vec3d incvec = to.subtract(from).normalize();
             // 绘制粒子线
             for (Vec3d delta = new Vec3d(0.0, 0.0, 0.0); delta.lengthSquared() < lineLengthSq; delta = delta.add(incvec.multiply(0.5))) {
-                player.getServerWorld().spawnParticles(player, mainParticle, true, delta.x + from.x, delta.y + from.y, delta.z + from.z, 5, 0.0, 0.0, 0.0, 0.0);
+                player.getWorld().spawnParticles(player, mainParticle, true, delta.x + from.x, delta.y + from.y, delta.z + from.z, 5, 0.0, 0.0, 0.0, 0.0);
                 try {
                     Thread.sleep(waitTime);
                 } catch (InterruptedException e) {
@@ -93,8 +92,6 @@ public class ParticleLineCommand {
 
         /**
          * 发送箭头文本用来指示方向
-         *
-         * @see net.minecraft.client.gui.hud.SubtitlesHud#render(DrawContext)
          */
         private void sendArrow() {
             // 获取玩家眼睛的位置

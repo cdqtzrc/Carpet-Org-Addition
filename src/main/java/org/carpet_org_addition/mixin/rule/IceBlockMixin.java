@@ -1,29 +1,22 @@
 package org.carpet_org_addition.mixin.rule;
 
-import net.minecraft.block.BlockState;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.block.IceBlock;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.block.Material;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 
 @Mixin(IceBlock.class)
 public class IceBlockMixin {
     //冰被破坏时不需要下方为可阻止移动的方块就可以变成水
-    @SuppressWarnings("deprecation")
-    @Inject(method = "afterBreak", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;blocksMovement()Z"), cancellable = true)
-    private void afterBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack tool, CallbackInfo ci) {
-        BlockState blockState = world.getBlockState(pos.down());
-        if ((CarpetOrgAdditionSettings.iceBreakPlaceWater || blockState.blocksMovement()) || blockState.isLiquid()) {
-            world.setBlockState(pos, IceBlock.getMeltedState());
+    @WrapOperation(method = "afterBreak", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Material;blocksMovement()Z"))
+    private boolean afterBreak(Material instance, Operation<Boolean> original) {
+        if (CarpetOrgAdditionSettings.iceBreakPlaceWater) {
+            return true;
         }
-        ci.cancel();
+        return original.call(instance);
     }
 }

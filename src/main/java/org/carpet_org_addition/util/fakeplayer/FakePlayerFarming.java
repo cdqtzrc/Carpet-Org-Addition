@@ -76,19 +76,6 @@ public class FakePlayerFarming {
                 } else {
                     fertilize(fakePlayer, playerScreenHandler, world, upPos);
                 }
-            } else if (block instanceof PitcherCropBlock pitcherCropBlock) {
-                // 处理瓶子草
-                // 判断瓶子草是否可以施肥，如果可以，就施肥，否则瓶子草可能已经成熟，破坏瓶子草
-                if (pitcherCropBlock.isFertilizable(world, upPos, blockState, false)) {
-                    // 施肥
-                    fertilize(fakePlayer, playerScreenHandler, world, upPos);
-                } else {
-                    // 收集瓶子草
-                    breakBlock(fakePlayer, upPos, world);
-                }
-            } else if (block == Blocks.TORCHFLOWER) {
-                // 收集火把花
-                breakBlock(fakePlayer, upPos, world);
             }
         }
     }
@@ -307,9 +294,7 @@ public class FakePlayerFarming {
             if ((itemStack.isOf(Items.WHEAT_SEEDS)
                     || itemStack.isOf(Items.POTATO)
                     || itemStack.isOf(Items.CARROT)
-                    || itemStack.isOf(Items.BEETROOT_SEEDS)
-                    || itemStack.isOf(Items.TORCHFLOWER_SEEDS)
-                    || itemStack.isOf(Items.PITCHER_POD))) {
+                    || itemStack.isOf(Items.BEETROOT_SEEDS))) {
                 return CROPS;
             }
             if (itemStack.isOf(Items.BAMBOO)) {

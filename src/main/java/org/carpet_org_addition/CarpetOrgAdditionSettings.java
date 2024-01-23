@@ -119,12 +119,6 @@ public class CarpetOrgAdditionSettings {
     )
     public static double maxBlockPlaceDistance;
 
-    //简易更新跳略器
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE}
-    )
-    public static boolean simpleUpdateSkipper = false;
-
     //强化引雷
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
@@ -476,12 +470,6 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean climbingBoat = false;
-
-    // 可重复使用的锻造模板
-    @Rule(
-            categories = {ORG, RuleCategory.SURVIVAL}
-    )
-    public static boolean reusableSmithingTemplate = false;
 
     // 开放/tp命令权限
     @Rule(

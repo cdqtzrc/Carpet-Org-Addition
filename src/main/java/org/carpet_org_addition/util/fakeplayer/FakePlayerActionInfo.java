@@ -287,10 +287,6 @@ public class FakePlayerActionInfo {
             blockName = Blocks.BEETROOTS.getName();
         } else if (offHandStack.isOf(Items.TORCHFLOWER_SEEDS)) {
             blockName = Blocks.TORCHFLOWER.getName();
-        } else if (offHandStack.isOf(Items.PITCHER_POD)) {
-            blockName = Blocks.PITCHER_PLANT.getName();
-        } else if (offHandStack.isOf(Items.BAMBOO)) {
-            blockName = Blocks.BAMBOO.getName();
         }
         if (blockName != null) {
             list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.farming", fakePlayer.getDisplayName(), blockName));
