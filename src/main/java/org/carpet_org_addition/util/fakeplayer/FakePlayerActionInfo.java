@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.CraftingRecipe;
+import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.StonecuttingRecipe;
 import net.minecraft.screen.*;
@@ -199,7 +200,7 @@ public class FakePlayerActionInfo {
         try {
             // 获取与材料和按钮索引对应的配方对象
             StonecuttingRecipe stonecuttingRecipe = world.getRecipeManager().getAllMatches(RecipeType.STONECUTTING,
-                    simpleInventory, world).get(buttonIndex);
+                    simpleInventory, world).get(buttonIndex).value();
             // 获取与配方对应的物品
             outputItemStack = stonecuttingRecipe.craft(simpleInventory, world.getRegistryManager());
         } catch (IndexOutOfBoundsException e) {
@@ -372,7 +373,7 @@ public class FakePlayerActionInfo {
         ServerCommandSource source = context.getSource();
         ServerWorld world = source.getWorld();
         // 获取配方的输出
-        Optional<CraftingRecipe> optional = source.getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingInventory, world);
-        return optional.map(craftingRecipe -> craftingRecipe.craft(craftingInventory, world.getRegistryManager()).getItem()).orElse(Items.AIR);
+        Optional<RecipeEntry<CraftingRecipe>> optional = source.getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingInventory, world);
+        return optional.map(craftingRecipe -> craftingRecipe.value().craft(craftingInventory, world.getRegistryManager()).getItem()).orElse(Items.AIR);
     }
 }

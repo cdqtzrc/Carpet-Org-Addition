@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
@@ -38,8 +39,8 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
     private FakePlayerProtectType protect = FakePlayerProtectType.NONE;
 
     //私有化构造方法，防止被创建对象
-    private EntityPlayerMPFakeMixin(MinecraftServer server, ServerWorld world, GameProfile profile) {
-        super(server, world, profile);
+    private EntityPlayerMPFakeMixin(MinecraftServer server, ServerWorld world, GameProfile profile, SyncedClientOptions clientOptions) {
+        super(server, world, profile, clientOptions);
     }
 
     //命令上下文

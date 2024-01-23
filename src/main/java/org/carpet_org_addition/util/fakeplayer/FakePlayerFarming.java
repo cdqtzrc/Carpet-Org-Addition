@@ -79,7 +79,7 @@ public class FakePlayerFarming {
             } else if (block instanceof PitcherCropBlock pitcherCropBlock) {
                 // 处理瓶子草
                 // 判断瓶子草是否可以施肥，如果可以，就施肥，否则瓶子草可能已经成熟，破坏瓶子草
-                if (pitcherCropBlock.isFertilizable(world, upPos, blockState, false)) {
+                if (pitcherCropBlock.isFertilizable(world, upPos, blockState)) {
                     // 施肥
                     fertilize(fakePlayer, playerScreenHandler, world, upPos);
                 } else {
@@ -121,12 +121,12 @@ public class FakePlayerFarming {
             if (blockState.isAir()) {
                 // 种植竹子
                 plant(fakePlayer, world, itemStack, blockPos, upPos);
-            } else if (block instanceof BambooSaplingBlock) {
+            } else if (block instanceof BambooShootBlock) {
                 // 竹笋方块，直接使用骨粉
                 fertilize(fakePlayer, playerScreenHandler, world, upPos);
             } else if (block instanceof BambooBlock bambooBlock) {
                 // 判断竹子是否可以施肥
-                if (bambooBlock.isFertilizable(world, upPos, blockState, false)) {
+                if (bambooBlock.isFertilizable(world, upPos, blockState)) {
                     // 可以施肥
                     // 竹子上方第一个空气方块开始，向上空气方块的数量
                     int airCount = 0;
