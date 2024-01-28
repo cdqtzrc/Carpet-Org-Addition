@@ -50,6 +50,7 @@ import java.util.function.Predicate;
 
 @SuppressWarnings("SameReturnValue")
 public class PlayerToolsCommand {
+    // TODO 拆分为两条命令
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("playerTools").requires(source ->
                         CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerTools))

@@ -166,6 +166,8 @@
   "carpet.rule.softObsidian.desc": "启用后黑曜石与末地石有相同的硬度",
   "carpet.rule.softOres.name": "易碎矿石",
   "carpet.rule.softOres.desc": "启用后矿石与对应的石头，深板岩或下界岩有相同的硬度",
+  "carpet.rule.betterTotemOfUndying.name": "更好的不死图腾",
+  "carpet.rule.betterTotemOfUndying.desc": "玩家死亡时只要物品栏内有不死图腾就能生效，而不需要放在手上",
   "carpet.rule.message.disableRespawnBlocksExplode": "已禁用重生方块爆炸",
   "carpet.command.source.not_player": "期望一名玩家来执行此命令",
   "carpet.command.file.json.file_already_exist": "json文件已存在",
