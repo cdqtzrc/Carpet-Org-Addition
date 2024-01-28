@@ -2,14 +2,27 @@ package org.carpet_org_addition.mixin.rule;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import net.minecraft.advancement.criterion.Criteria;
+import net.minecraft.entity.EntityStatuses;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.registry.tag.DamageTypeTags;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.stat.Stats;
+import net.minecraft.util.Hand;
+import net.minecraft.util.collection.DefaultedList;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
@@ -33,5 +46,48 @@ public class LivingEntityMixin {
             return 0;
         }
         return original.call(instance);
+    }
+
+    // 增强不死图腾
+    @Inject(method = "tryUseTotem", at = @At("HEAD"), cancellable = true)
+    private void tryUseTotem(DamageSource source, CallbackInfoReturnable<Boolean> cir) {
+        LivingEntity thisLivingEntity = (LivingEntity) (Object) this;
+        if (source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+            cir.setReturnValue(false);
+            return;
+        }
+        ItemStack itemStack = null;
+        for (Hand hand : Hand.values()) {
+            ItemStack itemStack2 = thisLivingEntity.getStackInHand(hand);
+            if (!itemStack2.isOf(Items.TOTEM_OF_UNDYING)) continue;
+            itemStack = itemStack2.copy();
+            itemStack2.decrement(1);
+            break;
+        }
+        // 从玩家物品栏寻找不死图腾
+        if (CarpetOrgAdditionSettings.betterTotemOfUndying && itemStack == null
+                && thisLivingEntity instanceof PlayerEntity playerEntity) {
+            DefaultedList<ItemStack> mainInventory = playerEntity.getInventory().main;
+            for (ItemStack totemOfUndying : mainInventory) {
+                if (totemOfUndying.isOf(Items.TOTEM_OF_UNDYING)) {
+                    itemStack = totemOfUndying.copy();
+                    totemOfUndying.decrement(1);
+                    break;
+                }
+            }
+        }
+        if (itemStack != null) {
+            if (thisLivingEntity instanceof ServerPlayerEntity serverPlayerEntity) {
+                serverPlayerEntity.incrementStat(Stats.USED.getOrCreateStat(Items.TOTEM_OF_UNDYING));
+                Criteria.USED_TOTEM.trigger(serverPlayerEntity, itemStack);
+            }
+            thisLivingEntity.setHealth(1.0f);
+            thisLivingEntity.clearStatusEffects();
+            thisLivingEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 900, 1));
+            thisLivingEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 100, 1));
+            thisLivingEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 800, 0));
+            thisLivingEntity.getWorld().sendEntityStatus(thisLivingEntity, EntityStatuses.USE_TOTEM_OF_UNDYING);
+        }
+        cir.setReturnValue(itemStack != null);
     }
 }

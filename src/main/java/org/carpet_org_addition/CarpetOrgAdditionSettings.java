@@ -506,4 +506,10 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean softOres = false;
+
+    // 更好的不死图腾
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean betterTotemOfUndying = false;
 }
