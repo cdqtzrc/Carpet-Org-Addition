@@ -57,7 +57,7 @@ public class ProtectCommand {
                                             try {
                                                 return setFakePlayerProtectType(context.getSource(), GameUtils.getPlayer(context.getSource().getServer(), name), FakePlayerProtectType.NONE);
                                             } catch (NotFoundPlayerException e) {
-                                                throw CommandUtils.getException("carpet.commands.protect.remove.not_found", name);
+                                                throw CommandUtils.createException("carpet.commands.protect.remove.not_found", name);
                                             }
                                         }))
                                 ).then(CommandManager.literal("all").executes(context -> fromProtectListRemoveAllPlayer(context.getSource()))
@@ -97,7 +97,7 @@ public class ProtectCommand {
             }
         } else {
             //不是假玩家的反馈消息
-            throw CommandUtils.getException("carpet.commands.protect.not_fake_player", player.getDisplayName());
+            throw CommandUtils.createException("carpet.command.not_fake_player", player.getDisplayName());
         }
     }
 

@@ -26,7 +26,7 @@ class PlayerCommandMixin {
             MinecraftServer server = context.getSource().getServer();
             ServerPlayerEntity player = server.getPlayerManager().getPlayer(playerName);
             if (player instanceof EntityPlayerMPFake fakePlayer && FakePlayerProtectManager.isNotKill(fakePlayer)) {
-                throw CommandUtils.getException("carpet.commands.protect.player.command");
+                throw CommandUtils.createException("carpet.commands.protect.player.command");
             }
         }
     }

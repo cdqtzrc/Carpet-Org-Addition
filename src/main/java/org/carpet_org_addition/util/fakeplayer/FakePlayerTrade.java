@@ -12,6 +12,7 @@ import org.carpet_org_addition.exception.InfiniteLoopException;
 import org.carpet_org_addition.util.StringUtils;
 
 public class FakePlayerTrade {
+    // TODO 重构！！
     //假玩家交易
     public static void trade(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) {
         //获取按钮的索引，减去1
