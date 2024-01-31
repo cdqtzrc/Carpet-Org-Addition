@@ -16,25 +16,6 @@ import java.util.Objects;
 public class InventoryUtils {
     private static final String BLOCK_ENTITY_TAG = "BlockEntityTag";
     private static final String ITEMS = "Items";
-    private static final Item[] SHULKER_BOX_ALL = {
-            Items.SHULKER_BOX,
-            Items.WHITE_SHULKER_BOX,
-            Items.ORANGE_SHULKER_BOX,
-            Items.MAGENTA_SHULKER_BOX,
-            Items.LIGHT_BLUE_SHULKER_BOX,
-            Items.YELLOW_SHULKER_BOX,
-            Items.LIME_SHULKER_BOX,
-            Items.PINK_SHULKER_BOX,
-            Items.GRAY_SHULKER_BOX,
-            Items.LIGHT_GRAY_SHULKER_BOX,
-            Items.CYAN_SHULKER_BOX,
-            Items.PURPLE_SHULKER_BOX,
-            Items.BLUE_SHULKER_BOX,
-            Items.BROWN_SHULKER_BOX,
-            Items.GREEN_SHULKER_BOX,
-            Items.RED_SHULKER_BOX,
-            Items.BLACK_SHULKER_BOX
-    };
 
     /**
      * 潜影盒工具类，私有化构造方法
@@ -139,6 +120,7 @@ public class InventoryUtils {
      * @throws NoNbtException 物品不是潜影盒，或者潜影盒没有NBT时抛出
      */
     public static ImmutableInventory getInventory(ItemStack shulkerBoxItemStack) throws NoNbtException {
+        // TODO 判断不应该写在方法里面
         if (isShulkerBoxItem(shulkerBoxItemStack)) {
             try {
                 // 获取潜影盒NBT
@@ -164,7 +146,25 @@ public class InventoryUtils {
      * @return 指定物品是否是潜影盒
      */
     public static boolean isShulkerBoxItem(ItemStack shulkerBoxItemStack) {
-        for (Item item : SHULKER_BOX_ALL) {
+        for (Item item : new Item[]{
+                Items.SHULKER_BOX,
+                Items.WHITE_SHULKER_BOX,
+                Items.ORANGE_SHULKER_BOX,
+                Items.MAGENTA_SHULKER_BOX,
+                Items.LIGHT_BLUE_SHULKER_BOX,
+                Items.YELLOW_SHULKER_BOX,
+                Items.LIME_SHULKER_BOX,
+                Items.PINK_SHULKER_BOX,
+                Items.GRAY_SHULKER_BOX,
+                Items.LIGHT_GRAY_SHULKER_BOX,
+                Items.CYAN_SHULKER_BOX,
+                Items.PURPLE_SHULKER_BOX,
+                Items.BLUE_SHULKER_BOX,
+                Items.BROWN_SHULKER_BOX,
+                Items.GREEN_SHULKER_BOX,
+                Items.RED_SHULKER_BOX,
+                Items.BLACK_SHULKER_BOX
+        }) {
             if (shulkerBoxItemStack.isOf(item)) {
                 return true;
             }

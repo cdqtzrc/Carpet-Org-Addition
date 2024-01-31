@@ -34,7 +34,7 @@ public class ItemShadowingCommand {
         ItemStack off = player.getOffHandStack();
         if (main.isEmpty()) {
             // 主手不能为空
-            throw CommandUtils.getException("carpet.commands.itemshadowing.main_hand_is_empty");
+            throw CommandUtils.createException("carpet.commands.itemshadowing.main_hand_is_empty");
         } else if (off.isEmpty()) {
             player.setStackInHand(Hand.OFF_HAND, main);
             // 广播制作物品分身的消息
@@ -43,6 +43,7 @@ public class ItemShadowingCommand {
                             player.getDisplayName(), main.toHoverableText()));
             // 将玩家制作物品分身的消息写入日志
             try {
+                // TODO 不要这样用try...catch
                 ImmutableInventory inventory = InventoryUtils.getInventory(main);
                 CarpetOrgAddition.LOGGER.info(player.getName().getString() + "制作了一个"
                         + main.getItem().getName().getString() + "的物品分身，包含" + inventory.itemCount()
@@ -58,7 +59,7 @@ public class ItemShadowingCommand {
             return 1;
         } else {
             // 副手必须为空
-            throw CommandUtils.getException("carpet.commands.itemshadowing.off_hand_not_empty");
+            throw CommandUtils.createException("carpet.commands.itemshadowing.off_hand_not_empty");
         }
     }
 }

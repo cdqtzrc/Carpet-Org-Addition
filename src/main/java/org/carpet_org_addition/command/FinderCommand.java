@@ -109,7 +109,7 @@ public class FinderCommand {
             return 0;
         } else if (list.size() > 300000) {
             // 容器太多，无法统计
-            throw CommandUtils.getException("carpet.commands.finder.item.too_much_container",
+            throw CommandUtils.createException("carpet.commands.finder.item.too_much_container",
                     itemStack.toHoverableText(), list.size());
         }
         // 在一个单独的线程中处理数据
@@ -248,7 +248,7 @@ public class FinderCommand {
         int count = list.size();
         // 如果找到的方块数量过多，直接抛出异常结束方法，不再进行排序
         if (count > 300000) {
-            throw CommandUtils.getException("carpet.commands.finder.block.too_much_blocks",
+            throw CommandUtils.createException("carpet.commands.finder.block.too_much_blocks",
                     TextUtils.getBlockName(blockStateArgument.getBlockState().getBlock()), count);
         }
         //判断集合中是否有元素，如果没有，直接在聊天栏发送反馈并结束方法
@@ -303,7 +303,7 @@ public class FinderCommand {
     private static void checkTimeOut(long currentTimeMillis) throws CommandSyntaxException {
         if (System.currentTimeMillis() - currentTimeMillis > 3000) {
             //3秒内未完成方块查找，通过抛出异常结束方法
-            throw CommandUtils.getException(AbstractFindFeedback.TIME_OUT);
+            throw CommandUtils.createException(AbstractFindFeedback.TIME_OUT);
         }
     }
 

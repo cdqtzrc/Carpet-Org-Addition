@@ -10,7 +10,7 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.Generic3x3ContainerScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.server.command.ServerCommandSource;
-import org.carpet_org_addition.command.PlayerToolsCommand;
+import org.carpet_org_addition.command.PlayerActionCommand;
 import org.carpet_org_addition.util.helpers.ItemMatcher;
 
 public class FakePlayerGuiCraftScreenHandler extends Generic3x3ContainerScreenHandler {
@@ -65,7 +65,7 @@ public class FakePlayerGuiCraftScreenHandler extends Generic3x3ContainerScreenHa
         // 关闭GUI后，物品回到玩家背包
         this.screenHandlerContext.run((world, pos) -> this.dropInventory(player, fakePlayerCraftInventory));
         // 提示启用Ctrl+Q合成修复
-        PlayerToolsCommand.promptToEnableCtrlQCraftingFix(context.getSource());
+        PlayerActionCommand.promptToEnableCtrlQCraftingFix(context.getSource());
     }
 
     // 设置假玩家合成动作
