@@ -21,9 +21,9 @@ public class ItemShadowingCommand {
 
     //注册用于制作物品分身的/itemshadowing命令
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        dispatcher.register((CommandManager.literal("itemshadowing")
+        dispatcher.register(CommandManager.literal("itemshadowing")
                 .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandItemShadowing))
-                .executes(ItemShadowingCommand::itemShadowing)));
+                .executes(ItemShadowingCommand::itemShadowing));
     }
 
     //制作物品分身
@@ -42,16 +42,22 @@ public class ItemShadowingCommand {
                     TextUtils.getTranslate("carpet.commands.itemshadowing.broadcast",
                             player.getDisplayName(), main.toHoverableText()));
             // 将玩家制作物品分身的消息写入日志
-            try {
-                // TODO 不要这样用try...catch
-                ImmutableInventory inventory = InventoryUtils.getInventory(main);
-                CarpetOrgAddition.LOGGER.info(player.getName().getString() + "制作了一个"
-                        + main.getItem().getName().getString() + "的物品分身，包含" + inventory.itemCount()
-                        + "个物品，分别是：" + inventory + "，在"
-                        + StringUtils.getDimensionId(player.getWorld()) + "，坐标:["
-                        + StringUtils.getBlockPosString(player.getBlockPos()) + "]");
-            } catch (NoNbtException e) {
-                CarpetOrgAddition.LOGGER.info(player.getName().getString() + "制作了一个["
+            if (InventoryUtils.isShulkerBoxItem(main)) {
+                try {
+                    ImmutableInventory inventory = InventoryUtils.getInventory(main);
+                    CarpetOrgAddition.LOGGER.info(StringUtils.getPlayerName(player) + "制作了一个"
+                            + main.getItem().getName().getString() + "的物品分身，包含" + inventory.itemCount()
+                            + "个物品，分别是：" + inventory + "，在"
+                            + StringUtils.getDimensionId(player.getWorld()) + "，坐标:["
+                            + StringUtils.getBlockPosString(player.getBlockPos()) + "]");
+                } catch (NoNbtException e) {
+                    CarpetOrgAddition.LOGGER.info(StringUtils.getPlayerName(player) + "制作了一个空["
+                            + main.getItem().getName().getString() + "]的物品分身，在"
+                            + StringUtils.getDimensionId(player.getWorld()) + "，坐标:["
+                            + StringUtils.getBlockPosString(player.getBlockPos()) + "]");
+                }
+            } else {
+                CarpetOrgAddition.LOGGER.info(StringUtils.getPlayerName(player) + "制作了一个["
                         + main.getItem().getName().getString() + "]的物品分身，在"
                         + StringUtils.getDimensionId(player.getWorld()) + "，坐标:["
                         + StringUtils.getBlockPosString(player.getBlockPos()) + "]");

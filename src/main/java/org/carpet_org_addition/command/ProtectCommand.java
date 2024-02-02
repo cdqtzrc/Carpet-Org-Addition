@@ -79,7 +79,7 @@ public class ProtectCommand {
         }
         for (ServerPlayerEntity player : list) {
             if (player instanceof EntityPlayerMPFake fakePlayer && FakePlayerProtectManager.isProtect(fakePlayer)) {
-                MessageUtils.sendTextMessage(source, TextUtils.appendAll(fakePlayer.getDisplayName()+ ": "
+                MessageUtils.sendTextMessage(source, TextUtils.appendAll(fakePlayer.getDisplayName(), ": "
                         , FakePlayerProtectManager.getProtect(fakePlayer).getText()));
             }
         }

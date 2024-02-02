@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
-    // TODO 检查fabric.json中是否有carpet作为前置，无carpet时是否能启动游戏
     static {
         //carpet org扩展
         CarpetServer.manageExtension(new CarpetOrgAddition());

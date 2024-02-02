@@ -79,7 +79,12 @@ public class ItemMatcher {
     }
 
     /**
-     * 获取物品匹配器的字符串形式，如果是物品，返回物品的ID，否则返回“#”
+     * 获取物品匹配器的字符串形式，如果是物品，返回物品的ID，否则返回“#”<br/>
+     * <br/>
+     * 成员变量{@link ItemMatcher#predicate}是一个
+     * {@link net.minecraft.command.argument.ItemPredicateArgumentType.ItemStackPredicateArgument}
+     * 的实现类对象，这个类是用lambda表达式定义的，它没有类名，连$0,$1这样的名字也没有，所以不能通过常规的方式用{@link org.spongepowered.asm.mixin.Mixin}混合，
+     * 在这个类中，有一个成员变量，它记录了物品标签的命名空间和id，如果有办法能获取到这个成员变量，本方法就可以返回玩家输入的物品谓词的字符串形式而不是“#”
      *
      * @return 物品名称或“#”
      */
@@ -88,7 +93,6 @@ public class ItemMatcher {
         if (this.item != null) {
             return this.item.toString();
         }
-
         return "#";
     }
 

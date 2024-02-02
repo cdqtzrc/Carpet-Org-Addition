@@ -6,7 +6,6 @@ import org.carpet_org_addition.rulevalidator.CheckBedrockHardness;
 import org.carpet_org_addition.rulevalidator.CheckPortalSpawnZombifiedPiglinProbability;
 import org.carpet_org_addition.rulevalidator.MaxBlockPlaceDistanceLegitimacyCheck;
 
-@SuppressWarnings("CommentedOutCode")
 public class CarpetOrgAdditionSettings {
     private CarpetOrgAdditionSettings() {
     }
@@ -56,12 +55,6 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean villagerImmediatelyRestock = false;
-
-    //假玩家保护
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE}
-    )
-    public static boolean fakePlayerProtect = false;
 
     //保护玩家列表控制命令
     @Rule(
@@ -355,13 +348,6 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean openVillagerInventory = false;
-/*
-    //播放苦力怕音效
-    @Rule(
-            categories = {ORG, RuleCategory.COMMAND},
-            options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
-    )
-    public static String commandCreeper = "ops";*/
 
     //和平的苦力怕
     @Rule(

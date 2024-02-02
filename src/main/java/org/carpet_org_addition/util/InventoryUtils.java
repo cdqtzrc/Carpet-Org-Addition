@@ -1,7 +1,6 @@
 package org.carpet_org_addition.util;
 
 import net.minecraft.inventory.Inventories;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -120,23 +119,20 @@ public class InventoryUtils {
      * @throws NoNbtException 物品不是潜影盒，或者潜影盒没有NBT时抛出
      */
     public static ImmutableInventory getInventory(ItemStack shulkerBoxItemStack) throws NoNbtException {
-        // TODO 判断不应该写在方法里面
-        if (isShulkerBoxItem(shulkerBoxItemStack)) {
-            try {
-                // 获取潜影盒NBT
-                NbtCompound nbt = Objects.requireNonNull(shulkerBoxItemStack.getNbt()).getCompound(BLOCK_ENTITY_TAG);
-                if (nbt != null && nbt.contains(ITEMS, NbtElement.LIST_TYPE)) {
-                    DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
-                    // 读取潜影盒NBT
-                    Inventories.readNbt(nbt, defaultedList);
-                    return new ImmutableInventory(defaultedList);
-                }
-            } catch (NullPointerException e) {
-                // 潜影盒物品没有NBT，说明该潜影盒物品为空
-                throw new NoNbtException();
+        try {
+            // 获取潜影盒NBT
+            NbtCompound nbt = Objects.requireNonNull(shulkerBoxItemStack.getNbt()).getCompound(BLOCK_ENTITY_TAG);
+            if (nbt != null && nbt.contains(ITEMS, NbtElement.LIST_TYPE)) {
+                DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
+                // 读取潜影盒NBT
+                Inventories.readNbt(nbt, defaultedList);
+                return new ImmutableInventory(defaultedList);
             }
+            throw new NoNbtException();
+        } catch (NullPointerException e) {
+            // 潜影盒物品没有NBT，说明该潜影盒物品为空
+            throw new NoNbtException();
         }
-        throw new NoNbtException();
     }
 
     /**
@@ -146,29 +142,22 @@ public class InventoryUtils {
      * @return 指定物品是否是潜影盒
      */
     public static boolean isShulkerBoxItem(ItemStack shulkerBoxItemStack) {
-        for (Item item : new Item[]{
-                Items.SHULKER_BOX,
-                Items.WHITE_SHULKER_BOX,
-                Items.ORANGE_SHULKER_BOX,
-                Items.MAGENTA_SHULKER_BOX,
-                Items.LIGHT_BLUE_SHULKER_BOX,
-                Items.YELLOW_SHULKER_BOX,
-                Items.LIME_SHULKER_BOX,
-                Items.PINK_SHULKER_BOX,
-                Items.GRAY_SHULKER_BOX,
-                Items.LIGHT_GRAY_SHULKER_BOX,
-                Items.CYAN_SHULKER_BOX,
-                Items.PURPLE_SHULKER_BOX,
-                Items.BLUE_SHULKER_BOX,
-                Items.BROWN_SHULKER_BOX,
-                Items.GREEN_SHULKER_BOX,
-                Items.RED_SHULKER_BOX,
-                Items.BLACK_SHULKER_BOX
-        }) {
-            if (shulkerBoxItemStack.isOf(item)) {
-                return true;
-            }
-        }
-        return false;
+        return shulkerBoxItemStack.isOf(Items.SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.WHITE_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.ORANGE_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.MAGENTA_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.LIGHT_BLUE_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.YELLOW_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.LIME_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.PINK_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.GRAY_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.LIGHT_GRAY_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.CYAN_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.PURPLE_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.BLUE_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.BROWN_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.GREEN_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.RED_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.BLACK_SHULKER_BOX);
     }
 }

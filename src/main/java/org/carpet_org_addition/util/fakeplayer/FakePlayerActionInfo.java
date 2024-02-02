@@ -4,7 +4,6 @@ import carpet.patches.EntityPlayerMPFake;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.block.Blocks;
 import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -263,37 +262,6 @@ public class FakePlayerActionInfo {
         } else {
             // 将假玩家没有打开交易界面的消息添加到集合中
             list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.trade.no_villager", fakePlayer.getDisplayName()));
-        }
-        return list;
-    }
-
-    // 显示假玩家自动种植的详细信息
-    public static ArrayList<MutableText> showFarmingInfo(EntityPlayerMPFake fakePlayer) {
-        ItemStack offHandStack = fakePlayer.getOffHandStack();
-        FakePlayerFarming.FarmingType farmingType = FakePlayerFarming.FarmingType.getFarmingType(offHandStack);
-        ArrayList<MutableText> list = new ArrayList<>();
-        if (farmingType == FakePlayerFarming.FarmingType.NONE) {
-            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.farming.none", fakePlayer.getDisplayName()));
-            return list;
-        }
-        MutableText blockName = null;
-        if (offHandStack.isOf(Items.WHEAT_SEEDS)) {
-            blockName = Items.WHEAT.getName().copy();
-        } else if (offHandStack.isOf(Items.POTATO)) {
-            blockName = Blocks.POTATOES.getName();
-        } else if (offHandStack.isOf(Items.CARROT)) {
-            blockName = Blocks.CARROTS.getName();
-        } else if (offHandStack.isOf(Items.BEETROOT_SEEDS)) {
-            blockName = Blocks.BEETROOTS.getName();
-        } else if (offHandStack.isOf(Items.TORCHFLOWER_SEEDS)) {
-            blockName = Blocks.TORCHFLOWER.getName();
-        } else if (offHandStack.isOf(Items.PITCHER_POD)) {
-            blockName = Blocks.PITCHER_PLANT.getName();
-        } else if (offHandStack.isOf(Items.BAMBOO)) {
-            blockName = Blocks.BAMBOO.getName();
-        }
-        if (blockName != null) {
-            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.farming", fakePlayer.getDisplayName(), blockName));
         }
         return list;
     }
