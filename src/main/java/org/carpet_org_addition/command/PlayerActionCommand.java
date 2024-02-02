@@ -35,13 +35,10 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 public class PlayerActionCommand {
-    // TODO 修改翻译键，为此命令定义一个新规则，更新文档
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
-        dispatcher.register(CommandManager.literal("playerAction").requires(source ->
-                        CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerAction))
+        dispatcher.register(CommandManager.literal("playerAction").requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerAction))
                 .then(CommandManager.argument("player", EntityArgumentType.player())
-                        .then(CommandManager
-                                .literal("sorting").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext)).then(CommandManager.argument("this", Vec3ArgumentType.vec3())
+                        .then(CommandManager.literal("sorting").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext)).then(CommandManager.argument("this", Vec3ArgumentType.vec3())
                                         .then(CommandManager.argument("other", Vec3ArgumentType.vec3()).executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.SORTING))))))
                         .then(CommandManager.literal("clean").executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.CLEAN)))
                         .then(CommandManager.literal("fill").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
@@ -64,16 +61,14 @@ public class PlayerActionCommand {
                                                                                         .then(CommandManager.argument("item7", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                                                                 .then(CommandManager.argument("item8", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                                                                         .then(CommandManager.argument("item9", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                                                                .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.CRAFT_3X3))
-                                                                                                        ))))))))))
+                                                                                                                .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.CRAFT_3X3))))))))))))
                                 .then(CommandManager.literal("2x2")
                                         .then(CommandManager.argument("item1", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                 .then(CommandManager.argument("item2", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                         .then(CommandManager.argument("item3", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                                 .then(CommandManager.argument("item4", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                                         .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.CRAFT_2X2)))))))
-                                .then(CommandManager.literal("gui").executes(context -> openFakePlayerCraftGui(context, CommandUtils.getPlayerEntity(context))))
-                        )
+                                .then(CommandManager.literal("gui").executes(context -> openFakePlayerCraftGui(context, CommandUtils.getPlayerEntity(context)))))
                         .then(CommandManager.literal("trade").then(CommandManager.argument("index", IntegerArgumentType.integer(1))
                                 .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.TRADE))))
                         .then(CommandManager.literal("info").executes(context -> getAction(context, CommandUtils.getPlayerEntity(context))))
@@ -83,7 +78,6 @@ public class PlayerActionCommand {
                         .then(CommandManager.literal("stonecutting").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
                                 .then(CommandManager.argument("button", IntegerArgumentType.integer(1))
                                         .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.STONECUTTING)))))
-                        .then(CommandManager.literal("farming").executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.FARMING)))
                 )
         );
     }

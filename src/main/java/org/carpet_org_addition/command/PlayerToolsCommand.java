@@ -39,7 +39,6 @@ import java.util.Set;
 
 @SuppressWarnings("SameReturnValue")
 public class PlayerToolsCommand {
-    // TODO 拆分为两条命令
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("playerTools").requires(source ->
                         CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerTools))
@@ -92,7 +91,7 @@ public class PlayerToolsCommand {
         Text playerName = player.getDisplayName();
         //判断被执行的玩家是否为假玩家
         if (CommandUtils.checkFakePlayer(fakePlayer)) {
-            if (CarpetOrgAdditionSettings.fakePlayerProtect && FakePlayerProtectManager.isProtect((EntityPlayerMPFake) fakePlayer)) {
+            if (FakePlayerProtectManager.isProtect((EntityPlayerMPFake) fakePlayer)) {
                 //不能传送受保护的假玩家
                 throw CommandUtils.createException("carpet.commands.playerTools.tp.protected_fake_player");
             }
