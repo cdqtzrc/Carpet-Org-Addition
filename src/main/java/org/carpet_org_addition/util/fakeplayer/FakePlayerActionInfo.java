@@ -37,7 +37,7 @@ public class FakePlayerActionInfo {
     public static ArrayList<MutableText> showStopInfo(EntityPlayerMPFake fakePlayer) {
         ArrayList<MutableText> list = new ArrayList<>();
         // 直接将假玩家没有任何动作的信息加入集合然后返回
-        list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.stop", fakePlayer.getDisplayName()));
+        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.stop", fakePlayer.getDisplayName()));
         return list;
     }
 
@@ -48,7 +48,7 @@ public class FakePlayerActionInfo {
         // 创建一个集合用来存储可变文本对象，这个集合用来在聊天栏输出多行聊天信息，集合中的每个元素单独占一行
         ArrayList<MutableText> list = new ArrayList<>();
         // 将可变文本“<玩家>正在合成物品，配方:”添加到集合
-        list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.craft.recipe", fakePlayer.getDisplayName()));
+        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.craft.recipe", fakePlayer.getDisplayName()));
         // 将每一个合成材料以及配方的输出组装成一个大的可变文本对象并添加到集合中
         list.add(TextUtils.appendAll("    ", getHoverText(arr[0]), " ", getHoverText(arr[1]), " ", getHoverText(arr[2])));
         list.add(TextUtils.appendAll("    ", getHoverText(arr[3]), " ", getHoverText(arr[4]), " ", getHoverText(arr[5]),
@@ -57,7 +57,7 @@ public class FakePlayerActionInfo {
         // 判断假玩家是否打开了一个工作台
         if (fakePlayer.currentScreenHandler instanceof CraftingScreenHandler currentScreenHandler) {
             // 将可变文本“<玩家>当前合成物品的状态:”添加到集合中
-            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.craft.state", fakePlayer.getDisplayName()));
+            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.craft.state", fakePlayer.getDisplayName()));
             // 如果打开了，将每一个合成槽位（包括输出槽位）中的物品的名称和堆叠数组装成一个可变文本对象并添加到集合
             // 合成格第一排
             list.add(TextUtils.appendAll(
@@ -77,7 +77,7 @@ public class FakePlayerActionInfo {
                     " ", getWithCountHoverText(currentScreenHandler.getSlot(9).getStack())));
         } else {
             // 如果没有打开工作台，将未打开工作台的信息添加到集合
-            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.craft.no_crafting_table",
+            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.craft.no_crafting_table",
                     fakePlayer.getDisplayName(), Items.CRAFTING_TABLE.getName()));
         }
         return list;
@@ -91,13 +91,13 @@ public class FakePlayerActionInfo {
         // 获取假玩家的显示名称
         Text PlayerName = fakePlayer.getDisplayName();
         // 将可变文本“<玩家>正在合成物品，配方:”添加到集合
-        list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.craft.recipe", PlayerName));
+        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.craft.recipe", PlayerName));
         // 将每一个合成材料以及配方的输出组装成一个大的可变文本对象并添加到集合中
         list.add(TextUtils.appendAll("    ", getHoverText(arr[0]), " ", getHoverText(arr[1])));
         list.add(TextUtils.appendAll("    ", getHoverText(arr[2]), " ", getHoverText(arr[3]),
                 " -> ", getHoverText(getCraftOutPut(context, arr))));
         // 将可变文本“<玩家>当前合成物品的状态:”添加到集合中
-        list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.craft.state", PlayerName));
+        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.craft.state", PlayerName));
         // 获取玩家的生存模式物品栏对象
         PlayerScreenHandler playerScreenHandler = fakePlayer.playerScreenHandler;
         // 将每一个合成槽位（包括输出槽位）中的物品的名称和堆叠数组装成一个可变文本对象并添加到集合
@@ -122,7 +122,7 @@ public class FakePlayerActionInfo {
         // 获取假玩家的显示名称
         Text fakeName = fakePlayer.getDisplayName();
         // 将假玩家正在分拣物品的消息添加到集合中
-        list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.sorting.item", fakeName, itemName));
+        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.sorting.item", fakeName, itemName));
         // 获取分拣物品要丢出的方向
         Vec3d thisVec = Vec3ArgumentType.getVec3(context, "this");
         MutableText thisPos = Text.literal(StringUtils.keepTwoDecimalPlaces(thisVec.getX(), thisVec.getY(), thisVec.getZ()));
@@ -130,9 +130,9 @@ public class FakePlayerActionInfo {
         Vec3d otherVec = Vec3ArgumentType.getVec3(context, "other");
         MutableText otherPos = Text.literal(StringUtils.keepTwoDecimalPlaces(otherVec.getX(), otherVec.getY(), otherVec.getZ()));
         // 将丢要分拣物品的方向的信息添加到集合
-        list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.sorting.this", itemName, thisPos));
+        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.sorting.this", itemName, thisPos));
         // 将丢其他物品的方向的信息添加到集合
-        list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.sorting.other", otherPos));
+        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.sorting.other", otherPos));
         return list;
     }
 
@@ -140,7 +140,7 @@ public class FakePlayerActionInfo {
     public static ArrayList<MutableText> showCleanInfo(EntityPlayerMPFake fakePlayer) {
         ArrayList<MutableText> list = new ArrayList<>();
         // 将玩家清空潜影盒的信息添加到集合
-        list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.clean.item",
+        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.clean.item",
                 fakePlayer.getDisplayName(),
                 Items.SHULKER_BOX.getName()));
         return list;
@@ -150,7 +150,7 @@ public class FakePlayerActionInfo {
     public static ArrayList<MutableText> showFillInfo(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) {
         ArrayList<MutableText> list = new ArrayList<>();
         // 将“<玩家名> 正在向 潜影盒 填充 [item] 物品”信息添加到集合
-        list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.fill.item",
+        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.fill.item",
                 fakePlayer.getDisplayName(), Items.SHULKER_BOX.getName(), getItemStatsName(context)));
         return list;
     }
@@ -163,10 +163,10 @@ public class FakePlayerActionInfo {
         // 获取物品重命名后的名称
         String newName = StringArgumentType.getString(context, "name");
         // 将假玩家要重命名的物品和物品新名称的信息添加到集合
-        list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.rename.item",
+        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.rename.item",
                 playerName, getItemStatsName(context), newName));
         // 将假玩家剩余经验的信息添加到集合
-        list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.rename.xp",
+        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.rename.xp",
                 fakePlayer.experienceLevel));
         if (fakePlayer.currentScreenHandler instanceof AnvilScreenHandler anvilScreenHandler) {
             // 将铁砧GUI上的物品信息添加到集合
@@ -176,7 +176,7 @@ public class FakePlayerActionInfo {
                     getWithCountHoverText(anvilScreenHandler.getSlot(2).getStack())));
         } else {
             // 将假玩家没有打开铁砧的信息添加到集合
-            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.rename.no_anvil",
+            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.rename.no_anvil",
                     playerName, Items.ANVIL.getName()));
         }
         return list;
@@ -214,11 +214,11 @@ public class FakePlayerActionInfo {
             itemName = outputItemStack.toHoverableText();
         }
         ArrayList<MutableText> list = new ArrayList<>();
-        list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.stonecutting.item",
+        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.stonecutting.item",
                 fakePlayer.getDisplayName(), Items.STONECUTTER.getName(), getItemStatsName(context), itemName));
         if (fakePlayer.currentScreenHandler instanceof StonecutterScreenHandler stonecutterScreenHandler) {
             // 将按钮索引的信息添加到集合，按钮在之前减去了1，这里再加回来
-            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.stonecutting.button",
+            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.stonecutting.button",
                     (buttonIndex + 1)));
             // 将切石机当前的状态的信息添加到集合
             list.add(TextUtils.appendAll("    ",
@@ -226,7 +226,7 @@ public class FakePlayerActionInfo {
                     getWithCountHoverText(stonecutterScreenHandler.getSlot(1).getStack())));
         } else {
             // 将假玩家没有打开切石机的消息添加到集合
-            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.stonecutting.no_stonecutting",
+            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.stonecutting.no_stonecutting",
                     fakePlayer.getDisplayName(), Items.STONECUTTER.getName()));
         }
         return list;
@@ -237,12 +237,12 @@ public class FakePlayerActionInfo {
         ArrayList<MutableText> list = new ArrayList<>();
         // 获取按钮的索引，从1开始
         int index = IntegerArgumentType.getInteger(context, "index");
-        list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.trade.item", fakePlayer.getDisplayName(), index));
+        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.trade.item", fakePlayer.getDisplayName(), index));
         if (fakePlayer.currentScreenHandler instanceof MerchantScreenHandler merchantScreenHandler) {
             // 获取当前交易内容的对象，因为按钮索引从1开始，所以此处减去1
             TradeOffer tradeOffer = merchantScreenHandler.getRecipes().get(index - 1);
             // 将“交易选项”文本信息添加到集合中
-            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.trade.option", index));
+            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.trade.option", index));
             // 将交易的物品和价格添加到集合中
             list.add(TextUtils.appendAll("    ",
                     getWithCountHoverText(tradeOffer.getAdjustedFirstBuyItem()), " ",
@@ -250,18 +250,18 @@ public class FakePlayerActionInfo {
                     getWithCountHoverText(tradeOffer.getSellItem())));
             // 如果当前交易已禁用，将交易已禁用的消息添加到集合，然后直接结束方法并返回集合
             if (tradeOffer.isDisabled()) {
-                list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.trade.disabled"));
+                list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.trade.disabled"));
                 return list;
             }
             // 将“交易状态”文本信息添加到集合中
-            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.trade.state"));
+            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.trade.state"));
             list.add(TextUtils.appendAll("    ",
                     getWithCountHoverText(merchantScreenHandler.getSlot(0).getStack()), " ",
                     getWithCountHoverText(merchantScreenHandler.getSlot(1).getStack()), " -> ",
                     getWithCountHoverText(merchantScreenHandler.getSlot(2).getStack())));
         } else {
             // 将假玩家没有打开交易界面的消息添加到集合中
-            list.add(TextUtils.getTranslate("carpet.commands.playerTools.action.info.trade.no_villager", fakePlayer.getDisplayName()));
+            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.trade.no_villager", fakePlayer.getDisplayName()));
         }
         return list;
     }
@@ -288,7 +288,7 @@ public class FakePlayerActionInfo {
         // 获取物品ID的首字母，然后转为大写，再放进中括号里
         String capitalizeFirstLetter = "[" + String.valueOf(item.toString().charAt(0)).toUpperCase() + "]";
         return TextUtils.hoverText(Text.literal(capitalizeFirstLetter), item.isItem() ?
-                item.getItem().getName() : TextUtils.getTranslate("carpet.commands.playerTools.action.info.craft.item_tag"), null);
+                item.getItem().getName() : TextUtils.getTranslate("carpet.commands.playerAction.info.craft.item_tag"), null);
     }
 
     // 获取物品堆栈的可变文本形式：物品名称x堆叠数量

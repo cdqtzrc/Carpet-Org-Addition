@@ -5,12 +5,9 @@ import net.minecraft.item.Item;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
-import org.carpet_org_addition.CarpetOrgAdditionSettings;
-import org.carpet_org_addition.carpet.tools.text.Translate;
+import org.carpet_org_addition.translate.TranslatableText;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 public class TextUtils {
     private TextUtils() {
@@ -23,10 +20,6 @@ public class TextUtils {
      */
     public static MutableText blockPos(BlockPos blockPos, @Nullable Formatting color) {
         MutableText pos = Texts.bracketed(Text.translatable("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
-        if (CarpetOrgAdditionSettings.canParseWayPoint) {
-            //如果启用了“可解析路径点”，直接返回不带特殊样式的路径点
-            return pos;
-        }
         //添加单击事件，复制方块坐标
         pos.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, StringUtils.getBlockPosString(blockPos))));
         //添加光标悬停事件：单击复制到剪贴板
@@ -242,12 +235,6 @@ public class TextUtils {
      * @return 可翻译文本
      */
     public static MutableText getTranslate(String key, Object... obj) {
-        String value;
-        try {
-            value = Objects.requireNonNull(Translate.getTranslate()).get(key);
-        } catch (NullPointerException e) {
-            value = null;
-        }
-        return Text.translatableWithFallback(key, value, obj);
+        return MutableText.of(new TranslatableText(key, null, obj));
     }
 }

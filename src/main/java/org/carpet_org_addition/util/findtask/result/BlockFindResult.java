@@ -3,9 +3,7 @@ package org.carpet_org_addition.util.findtask.result;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
-import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.MathUtils;
-import org.carpet_org_addition.util.StringUtils;
 import org.carpet_org_addition.util.TextUtils;
 
 public class BlockFindResult extends AbstractFindResult {
@@ -32,9 +30,6 @@ public class BlockFindResult extends AbstractFindResult {
         return TextUtils.getTranslate(
                 "carpet.commands.finder.block.feedback",
                 MathUtils.getBlockIntegerDistance(sourceBlockPos, blockPos),
-                //如果规则可解析路径点启用，发送不带有特殊样式的文本
-                CarpetOrgAdditionSettings.canParseWayPoint
-                        ? StringUtils.getBracketedBlockPos(blockPos)
-                        : TextUtils.blockPos(blockPos, Formatting.GREEN));
+                TextUtils.blockPos(blockPos, Formatting.GREEN));
     }
 }

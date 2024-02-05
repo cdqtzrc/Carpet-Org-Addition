@@ -1,4 +1,4 @@
-package org.carpet_org_addition.carpet.tools.text;
+package org.carpet_org_addition.translate;
 
 import carpet.CarpetSettings;
 import com.google.gson.Gson;

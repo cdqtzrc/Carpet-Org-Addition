@@ -49,6 +49,7 @@
     "rule.TeleportCommandMixin",
     "rule.ThornsEnchantmentMixin",
     "rule.TradeOfferMixin",
+    "rule.TranslatableTextContentMixin",
     "rule.TridentItemMixin",
     "rule.TurtleEggBlockMixin",
     "rule.VillagerEntityMixin",
