@@ -121,7 +121,7 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
             this.action = FakePlayerActionType.STOP;
             //向聊天栏发送错误消息的反馈
             MessageUtils.broadcastTextMessage(thisPlayer,
-                    TextUtils.getTranslate("carpet.commands.playerTools.action.exception.runtime",
+                    TextUtils.getTranslate("carpet.commands.playerAction.exception.runtime",
                             thisPlayer.getDisplayName()));
         }
     }

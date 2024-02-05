@@ -72,6 +72,7 @@ public class FakePlayerUtils {
      * @param key           快捷栏的索引
      * @param player        当前操作的假玩家
      */
+    @SuppressWarnings("unused")
     public static void swapItem(ScreenHandler screenHandler, int slotIndex, int key, EntityPlayerMPFake player) {
         screenHandler.onSlotClick(slotIndex, key, SlotActionType.SWAP, player);
     }
@@ -142,6 +143,7 @@ public class FakePlayerUtils {
      * @param toIndex       将物品放在哪个槽位
      * @param player        操作GUI的假玩家
      */
+    @SuppressWarnings("unused")
     public static void pickupAndMoveHalfItemStack(ScreenHandler screenHandler, int fromIndex,
                                                   int toIndex, EntityPlayerMPFake player) {
         // 如果鼠标光标上有物品，先把光标上的物品丢弃
@@ -166,5 +168,32 @@ public class FakePlayerUtils {
         while (screenHandler.getSlot(slotIndex).hasStack()) {
             screenHandler.onSlotClick(slotIndex, THROW_Q, SlotActionType.THROW, player);
         }
+    }
+
+    /**
+     * 丢弃光标上的物品<br/>
+     * 该物品是玩家鼠标光标上正在被拎起的物品，它会影响玩家对GUI的其它操作，在进行其他操作如向光标上放置物品前应先丢弃光标上的物品
+     *
+     * @param screenHandler 玩家当前打开的GUI
+     * @param fakePlayer    当前操作该GUI的玩家
+     */
+    public static void dropCursorStack(ScreenHandler screenHandler, EntityPlayerMPFake fakePlayer) {
+        ItemStack itemStack = screenHandler.getCursorStack();
+        if (itemStack.isEmpty()) {
+            return;
+        }
+        screenHandler.onSlotClick(EMPTY_SPACE_SLOT_INDEX, PICKUP_LEFT_CLICK, SlotActionType.PICKUP, fakePlayer);
+    }
+
+    /**
+     * 将光标上的物品放置在槽位中<br/>
+     * 此方法不会检查对应槽位上有没有物品，因此使用该方法前应保证要放置物品的槽位上没有物品
+     *
+     * @param screenHandler 玩家当前打开的GUI
+     * @param index         要放置物品的槽位索引
+     * @param fakePlayer    当前操作该GUI的玩家
+     */
+    public static void pickupCursorStack(ScreenHandler screenHandler, int index, EntityPlayerMPFake fakePlayer) {
+        screenHandler.onSlotClick(index, PICKUP_LEFT_CLICK, SlotActionType.PICKUP, fakePlayer);
     }
 }

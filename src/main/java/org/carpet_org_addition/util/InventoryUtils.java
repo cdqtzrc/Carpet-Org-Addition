@@ -9,6 +9,7 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.util.collection.DefaultedList;
 import org.carpet_org_addition.exception.NoNbtException;
 import org.carpet_org_addition.util.helpers.ImmutableInventory;
+import org.carpet_org_addition.util.helpers.ItemMatcher;
 
 import java.util.Objects;
 
@@ -58,29 +59,47 @@ public class InventoryUtils {
                 continue;
             }
             // 如果有物品，才将潜影盒内的物品删除，再将该物品的对象作为方法返回值返回
-            removeFirstStack(list, shulkerBoxItemStack);
+            list.remove(index);
+            if (isEmptyShulkerBox(shulkerBoxItemStack)) {
+                shulkerBoxItemStack.removeSubNbt(BLOCK_ENTITY_TAG);
+            }
             return itemStack;
         }
         return ItemStack.EMPTY;
     }
 
     /**
-     * 删除潜影盒中第一个物品，需要确保潜影盒堆叠数为1
+     * 从物品形式的潜影盒中获取第一个指定的物品
      *
-     * @param list                要删除物品的列表，这是潜影盒NBT中的一个Items列表
-     * @param shulkerBoxItemStack 要删除物品的潜影盒
+     * @param shulkerBoxItemStack 潜影盒物品
+     * @param itemMatcher         一个物品匹配器对象，用来指定要从潜影盒中拿取的物品
+     * @return 潜影盒中获取的指定物品
      */
-    private static void removeFirstStack(NbtList list, ItemStack shulkerBoxItemStack) {
-        for (int index = 0; index < list.size(); index++) {
-            if (ItemStack.fromNbt(list.getCompound(index)).isEmpty()) {
-                continue;
-            }
-            list.remove(index);
-            return;
-        }
+    public static ItemStack fromShulkerBoxPickItem(ItemStack shulkerBoxItemStack, ItemMatcher itemMatcher) {
+        // 判断潜影盒是否为空，空潜影盒直接返回空物品
         if (isEmptyShulkerBox(shulkerBoxItemStack)) {
-            shulkerBoxItemStack.removeSubNbt(BLOCK_ENTITY_TAG);
+            return ItemStack.EMPTY;
         }
+        NbtCompound nbt = shulkerBoxItemStack.getNbt();
+        NbtList list;
+        try {
+            list = Objects.requireNonNull(nbt).getCompound(BLOCK_ENTITY_TAG).getList(ITEMS, NbtElement.COMPOUND_TYPE);
+        } catch (NullPointerException e) {
+            return ItemStack.EMPTY;
+        }
+        for (int index = 0; index < list.size(); index++) {
+            ItemStack itemStack = ItemStack.fromNbt(list.getCompound(index));
+            // 依次检查潜影盒内每个物品是否为指定物品，如果是，从NBT中删除该物品，并将该物品的副本返回
+            if (itemMatcher.test(itemStack)) {
+                list.remove(index);
+                // 如果潜影盒最后一个物品被取出，就删除潜影盒的“BlockEntityTag”标签以保证潜影盒堆叠的正常运行
+                if (isEmptyShulkerBox(shulkerBoxItemStack)) {
+                    shulkerBoxItemStack.removeSubNbt(BLOCK_ENTITY_TAG);
+                }
+                return itemStack;
+            }
+        }
+        return ItemStack.EMPTY;
     }
 
     /**

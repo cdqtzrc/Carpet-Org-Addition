@@ -160,8 +160,7 @@ public class PlayerToolsCommand {
                             fakePlayer.getBlockX() + " " + fakePlayer.getBlockY() + " " + fakePlayer.getBlockZ()))
                     .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.translatable("chat.copy.click"))));
             MessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.pos", fakePlayer.getDisplayName(),
-                    getDimensionText(fakePlayer.getWorld()).getString(), CarpetOrgAdditionSettings.canParseWayPoint ?
-                            text.getString() : text);
+                    getDimensionText(fakePlayer.getWorld()).getString(), text);
             ServerPlayerEntity player = source.getPlayer();
             if (player != null) {
                 return MathUtils.getBlockIntegerDistance(player.getBlockPos(), fakePlayer.getBlockPos());

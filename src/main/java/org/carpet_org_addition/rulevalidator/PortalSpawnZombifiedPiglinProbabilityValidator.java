@@ -3,10 +3,11 @@ package org.carpet_org_addition.rulevalidator;
 import carpet.api.settings.CarpetRule;
 import carpet.api.settings.Validator;
 import net.minecraft.server.command.ServerCommandSource;
+import org.carpet_org_addition.util.TextUtils;
 import org.jetbrains.annotations.Nullable;
 
-public class CheckPortalSpawnZombifiedPiglinProbability extends Validator<Integer> {
-    private CheckPortalSpawnZombifiedPiglinProbability() {
+public class PortalSpawnZombifiedPiglinProbabilityValidator extends Validator<Integer> {
+    private PortalSpawnZombifiedPiglinProbabilityValidator() {
     }
 
     /**
@@ -25,6 +26,6 @@ public class CheckPortalSpawnZombifiedPiglinProbability extends Validator<Intege
 
     @Override
     public String description() {
-        return "值必须介于0-2000之间，或者-1";
+        return TextUtils.getTranslate("carpet.rule.validate.portalSpawnZombifiedPiglinProbability").getString();
     }
 }

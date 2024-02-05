@@ -39,7 +39,7 @@ public class PlayerActionCommand {
         dispatcher.register(CommandManager.literal("playerAction").requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerAction))
                 .then(CommandManager.argument("player", EntityArgumentType.player())
                         .then(CommandManager.literal("sorting").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext)).then(CommandManager.argument("this", Vec3ArgumentType.vec3())
-                                        .then(CommandManager.argument("other", Vec3ArgumentType.vec3()).executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.SORTING))))))
+                                .then(CommandManager.argument("other", Vec3ArgumentType.vec3()).executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.SORTING))))))
                         .then(CommandManager.literal("clean").executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.CLEAN)))
                         .then(CommandManager.literal("fill").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
                                 .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.FILL))))
@@ -177,7 +177,7 @@ public class PlayerActionCommand {
             SimpleNamedScreenHandlerFactory screen = new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity)
                     -> new FakePlayerGuiCraftScreenHandler(i, playerInventory, (EntityPlayerMPFake) fakePlayer,
                     ScreenHandlerContext.create(player.getWorld(), player.getBlockPos()), new SimpleInventory(9), context),
-                    TextUtils.getTranslate("carpet.commands.playerTools.action.info.craft.gui"));
+                    TextUtils.getTranslate("carpet.commands.playerAction.info.craft.gui"));
             player.openHandledScreen(screen);
         }
         return 1;
@@ -192,17 +192,17 @@ public class PlayerActionCommand {
         boolean hasPermission = source.hasPermissionLevel(getCarpetPermissionLevel(source));
         MutableText suggest;
         if (hasPermission) {
-            suggest = TextUtils.suggest(TextUtils.getTranslate("carpet.commands.playerTools.action.set.here")
+            suggest = TextUtils.suggest(TextUtils.getTranslate("carpet.commands.playerAction.set.here")
                             .getString(), "/carpet ctrlQCraftingFix true",
-                    TextUtils.getTranslate("carpet.commands.playerTools.action.set.has_permission"),
+                    TextUtils.getTranslate("carpet.commands.playerAction.set.has_permission"),
                     Formatting.AQUA);
         } else {
             suggest = TextUtils.suggest(
-                    TextUtils.getTranslate("carpet.commands.playerTools.action.set.here").getString(),
-                    null, TextUtils.getTranslate("carpet.commands.playerTools.action.set.no_permission"),
+                    TextUtils.getTranslate("carpet.commands.playerAction.set.here").getString(),
+                    null, TextUtils.getTranslate("carpet.commands.playerAction.set.no_permission"),
                     Formatting.RED);
         }
-        MessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.action.set", suggest);
+        MessageUtils.sendCommandFeedback(source, "carpet.commands.playerAction.set", suggest);
     }
 
     //获取执行carpet命令需要的权限等级

@@ -4,11 +4,12 @@ import carpet.api.settings.CarpetRule;
 import carpet.api.settings.Validator;
 import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.util.MathUtils;
+import org.carpet_org_addition.util.TextUtils;
 import org.jetbrains.annotations.Nullable;
 
 //检查最大方块交互距离的合法性
-public class MaxBlockPlaceDistanceLegitimacyCheck extends Validator<Double> {
-    private MaxBlockPlaceDistanceLegitimacyCheck() {
+public class MaxBlockPlaceDistanceLegitimacyValidator extends Validator<Double> {
+    private MaxBlockPlaceDistanceLegitimacyValidator() {
     }
 
     /**
@@ -27,6 +28,6 @@ public class MaxBlockPlaceDistanceLegitimacyCheck extends Validator<Double> {
 
     @Override
     public String description() {
-        return "值必须介于0-128之间，或者-1";
+        return TextUtils.getTranslate("carpet.rule.validate.maxBlockPlaceDistance").getString();
     }
 }
