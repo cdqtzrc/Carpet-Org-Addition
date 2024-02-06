@@ -281,14 +281,13 @@ public class FakePlayerActionInfo {
         return TextUtils.hoverText(Text.literal(capitalizeFirstLetter), item.getName(), null);
     }    // 获取物品的可变文本形式
 
-    private static MutableText getHoverText(ItemMatcher item) {
-        if (item.isEmpty()) {
+    private static MutableText getHoverText(ItemMatcher itemMatcher) {
+        if (itemMatcher.isEmpty()) {
             return TextUtils.hoverText(Text.literal("[A]"), Items.AIR.getName(), Formatting.DARK_GRAY);
         }
         // 获取物品ID的首字母，然后转为大写，再放进中括号里
-        String capitalizeFirstLetter = "[" + String.valueOf(item.toString().charAt(0)).toUpperCase() + "]";
-        return TextUtils.hoverText(Text.literal(capitalizeFirstLetter), item.isItem() ?
-                item.getItem().getName() : TextUtils.getTranslate("carpet.commands.playerAction.info.craft.item_tag"), null);
+        String capitalizeFirstLetter = "[" + String.valueOf(itemMatcher.toString().charAt(0)).toUpperCase() + "]";
+        return TextUtils.hoverText(Text.literal(capitalizeFirstLetter), itemMatcher.getName(), null);
     }
 
     // 获取物品堆栈的可变文本形式：物品名称x堆叠数量
