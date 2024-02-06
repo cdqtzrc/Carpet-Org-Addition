@@ -36,7 +36,6 @@
     "rule.PlayerEntityMixin",
     "rule.ProtectionEnchantmentMixin",
     "rule.RedstoneWireBlockMixin",
-    "rule.RegisterCarpetCommandsMixin",
     "rule.SculkShriekerBlockMixin",
     "rule.SeedCommandMixin",
     "rule.ServerPlayNetworkHandlerMixin",
@@ -49,7 +48,6 @@
     "rule.TeleportCommandMixin",
     "rule.ThornsEnchantmentMixin",
     "rule.TradeOfferMixin",
-    "rule.TranslatableTextContentMixin",
     "rule.TridentItemMixin",
     "rule.TurtleEggBlockMixin",
     "rule.VillagerEntityMixin",
@@ -62,7 +60,10 @@
     "rule.playerinteraction.ServerPlayerInteractionManagerMixin",
     "rule.playerinteraction.ServerPlayNetworkHandlerMixin",
     "rule.respawnblocksexplode.BedBlockMixin",
-    "rule.respawnblocksexplode.RespawnAnchorBlockMixin"
+    "rule.respawnblocksexplode.RespawnAnchorBlockMixin",
+    "util.ItemPredicateArgumentTypeMixin",
+    "util.RegisterCarpetCommandsMixin",
+    "util.TranslatableTextContentMixin"
   ],
   "client": [
     "rule.client.carpet.SettingsManagerMixin"

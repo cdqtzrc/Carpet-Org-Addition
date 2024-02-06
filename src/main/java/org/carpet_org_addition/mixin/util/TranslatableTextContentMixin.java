@@ -1,4 +1,4 @@
-package org.carpet_org_addition.mixin.rule;
+package org.carpet_org_addition.mixin.util;
 
 import carpet.CarpetSettings;
 import com.google.common.collect.ImmutableList;
@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+/**
+ * 为{@link TranslatableText}重写私有方法
+ */
 @Mixin(TranslatableTextContent.class)
 public abstract class TranslatableTextContentMixin {
     @Shadow
