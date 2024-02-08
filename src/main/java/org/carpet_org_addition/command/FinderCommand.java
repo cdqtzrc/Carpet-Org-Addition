@@ -41,11 +41,14 @@ import org.carpet_org_addition.util.findtask.result.BlockFindResult;
 import org.carpet_org_addition.util.findtask.result.ItemFindResult;
 import org.carpet_org_addition.util.findtask.result.TradeEnchantedBookResult;
 import org.carpet_org_addition.util.findtask.result.TradeItemFindResult;
+import org.carpet_org_addition.util.helpers.Counter;
 import org.carpet_org_addition.util.helpers.ImmutableInventory;
+import org.carpet_org_addition.util.helpers.ItemMatcher;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class FinderCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
@@ -59,7 +62,7 @@ public class FinderCommand {
                                         .then(CommandManager.argument("maxCount", IntegerArgumentType.integer(1))
                                                 .executes(context -> blockFinder(context, -1, -1))))))
                 .then(CommandManager.literal("item")
-                        .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(commandBuildContext))
+                        .then(CommandManager.argument("itemStack", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                 .executes(context -> itemFinder(context, 32, 10))
                                 .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
                                         .executes(context -> itemFinder(context, -1, 10))
@@ -88,7 +91,7 @@ public class FinderCommand {
         // 获取执行命令的玩家并非空判断
         ServerPlayerEntity player = CommandUtils.getPlayer(context);
         // 获取要查找的物品堆栈
-        ItemStackArgument itemStackArgument = ItemStackArgumentType.getItemStackArgument(context, "itemStack");
+        Predicate<ItemStack> predicate = ItemPredicateArgumentType.getItemStackPredicate(context, "itemStack");
         if (range == -1) {
             // 获取要查找方块的范围
             range = IntegerArgumentType.getInteger(context, "range");
@@ -100,25 +103,25 @@ public class FinderCommand {
         // 获取玩家所在的位置，这是命令开始执行的坐标
         BlockPos sourceBlockPos = player.getBlockPos();
         // 查找周围容器中的物品
-        ArrayList<ItemFindResult> list = findItem(player.getServerWorld(), sourceBlockPos, itemStackArgument, range);
-        ItemStack itemStack = itemStackArgument.createStack(1, true);
+        ItemMatcher itemMatcher = new ItemMatcher(predicate);
+        ArrayList<ItemFindResult> list = findItem(player.getServerWorld(), sourceBlockPos, itemMatcher, range);
         if (list.isEmpty()) {
             // 在周围的容器中找不到指定物品
             MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.item.find.not_item",
-                    itemStack.toHoverableText());
+                    itemMatcher.toText());
             return 0;
         } else if (list.size() > 300000) {
             // 容器太多，无法统计
             throw CommandUtils.createException("carpet.commands.finder.item.too_much_container",
-                    itemStack.toHoverableText(), list.size());
+                    itemMatcher.toText(), list.size());
         }
         // 在一个单独的线程中处理数据
-        new ItemFindFeedback(context, list, itemStack, maxCount).start();
+        new ItemFindFeedback(context, list, itemMatcher, maxCount).start();
         return list.size();
     }
 
     // 开始查找物品
-    private static ArrayList<ItemFindResult> findItem(ServerWorld world, BlockPos blockPos, ItemStackArgument itemStackArgument,
+    private static ArrayList<ItemFindResult> findItem(ServerWorld world, BlockPos blockPos, ItemMatcher itemMatcher,
                                                       int range) throws CommandSyntaxException {
         // 创建ArrayList集合，用来记录找到的物品坐标
         ArrayList<ItemFindResult> list = new ArrayList<>();
@@ -136,7 +139,7 @@ public class FinderCommand {
                     // 检查时间是否超时
                     checkTimeOut(currentTimeMillis);
                     // 定义变量记录找到物品的数量
-                    int count = 0;
+                    Counter<ItemMatcher> counter = new Counter<>();
                     // 定义变量记录是否有物品是在潜影盒内找到的
                     boolean inTheShulkerBox = false;
                     // 当前正在查找物品的所在容器的方块坐标
@@ -147,8 +150,8 @@ public class FinderCommand {
                             // 获取当前准备比较的物品堆栈对象
                             ItemStack itemStack = inventory.getStack(index);
                             // 如果物品栏中的物品与指定物品匹配，找到物品的数量增加
-                            if (itemStackArgument.test(itemStack)) {
-                                count += itemStack.getCount();
+                            if (itemMatcher.test(itemStack)) {
+                                counter.add(new ItemMatcher(itemStack), itemStack.getCount());
                                 // 不再判断本物品是否为潜影盒
                                 continue;
                             }
@@ -165,20 +168,20 @@ public class FinderCommand {
                                 // 在潜影盒内寻找物品
                                 for (int i = 0; i < shulkerBoxInventory.size(); i++) {
                                     ItemStack shulkerBoxItemStack = shulkerBoxInventory.getStack(i);
-                                    if (itemStackArgument.test(shulkerBoxItemStack)) {
+                                    if (itemMatcher.test(shulkerBoxItemStack)) {
                                         // 在潜影盒内找到物品的数量增加
                                         inTheShulkerBox = true;
                                         // 找到物品的数量增加
-                                        count += shulkerBoxItemStack.getCount();
+                                        counter.add(new ItemMatcher(shulkerBoxItemStack), shulkerBoxItemStack.getCount());
                                     }
                                 }
                             }
                         }
                         // 如果容器中有指定物品，就将查找结果添加进集合
-                        if (count > 0) {
-                            list.add(new ItemFindResult(currentPos, count, inTheShulkerBox,
+                        for (ItemMatcher matcher : counter) {
+                            list.add(new ItemFindResult(currentPos, counter.getCount(matcher), inTheShulkerBox,
                                     world.getBlockState(currentPos).getBlock().getTranslationKey(),
-                                    itemStackArgument.createStack(1, true)));
+                                    matcher));
                         }
                     }
                 }
@@ -196,10 +199,10 @@ public class FinderCommand {
             // 获取物品实体的物品堆栈
             ItemStack itemStack = item.getStack();
             // 检查该物品是否与指定物品匹配
-            if (itemStackArgument.test(itemStack)) {
+            if (itemMatcher.test(itemStack)) {
                 // 如果匹配，将物品添加到集合
                 list.add(new ItemFindResult(item.getBlockPos(), itemStack.getCount(), false,
-                        itemEntityName, itemStack));
+                        itemEntityName, itemMatcher));
             } else if (InventoryUtils.isShulkerBoxItem(itemStack)) {
                 // 否则，检查该物品实体是否为潜影盒掉落物，如果是，获取潜影盒的物品栏
                 ImmutableInventory inventory;
@@ -210,17 +213,18 @@ public class FinderCommand {
                     continue;
                 }
                 // 定义变量记录在潜影盒内找到物品的数量
-                int count = 0;
+                Counter<ItemMatcher> counter = new Counter<>();
                 // 获取潜影盒内的每一个物品
                 for (int i = 0; i < inventory.size(); i++) {
-                    if (itemStackArgument.test(inventory.getStack(i))) {
-                        count += inventory.getStack(i).getCount();
+                    ItemStack shulkerBoxItemStack = inventory.getStack(i);
+                    if (itemMatcher.test(shulkerBoxItemStack)) {
+                        counter.add(new ItemMatcher(shulkerBoxItemStack), shulkerBoxItemStack.getCount());
                     }
                 }
                 // 如果在潜影盒内有找到物品，将查找结果添加到集合
-                if (count > 0) {
-                    list.add(new ItemFindResult(item.getBlockPos(), count, true,
-                            itemEntityName, itemStackArgument.createStack(1, true)));
+                for (ItemMatcher matcher : counter) {
+                    list.add(new ItemFindResult(item.getBlockPos(), counter.getCount(matcher), true,
+                            itemEntityName, matcher));
                 }
             }
         }

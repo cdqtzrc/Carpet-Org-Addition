@@ -19,6 +19,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * {@link net.minecraft.command.argument.ItemPredicateArgumentType.ItemStackPredicateArgument}的重新实现
+ *
+ * @see AbstractItemStackPredicate
  */
 @Mixin(ItemPredicateArgumentType.class)
 public class ItemPredicateArgumentTypeMixin {
