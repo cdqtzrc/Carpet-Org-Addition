@@ -32,7 +32,7 @@ public abstract class AbstractFindFeedback<T extends AbstractFindResult> extends
     // 检查查找是否超时
     protected final void checkTimeOut() throws TimeoutException {
         if (System.currentTimeMillis() - startTime > 1000) {
-            //一秒内没有输出完所有消息，直接中段当前线程执行
+            //一秒内没有输出完所有消息，直接中断当前线程执行
             throw new TimeoutException();
         }
     }

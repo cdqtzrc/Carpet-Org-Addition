@@ -4,6 +4,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.carpet_org_addition.CarpetOrgAddition;
@@ -36,6 +37,10 @@ public class ItemMatcher {
         this.item = item;
     }
 
+    public ItemMatcher(ItemStack itemStack) {
+        this(itemStack.getItem());
+    }
+
     /**
      * 使用空气物品匹配物品
      */
@@ -63,16 +68,16 @@ public class ItemMatcher {
      * @return 物品是否与空气匹配
      */
     public boolean isEmpty() {
-        if (this.predicate == null) {
-            return this.item == Items.AIR;
-        }
-        return this.predicate.test(ItemStack.EMPTY) || this.predicate.test(Items.AIR.getDefaultStack());
+        return this.test(Items.AIR.getDefaultStack());
     }
 
     /**
      * @return 当前物品匹配器是否存储的是物品
      */
     public boolean isItem() {
+        if (this.predicate instanceof AbstractItemStackPredicate itemStackPredicate) {
+            return !itemStackPredicate.toString().startsWith("#");
+        }
         return this.item != null;
     }
 
@@ -80,7 +85,14 @@ public class ItemMatcher {
      * 获取当前物品匹配器存储的物品
      */
     public Item getItem() {
-        return this.item;
+        if (this.predicate instanceof AbstractItemStackPredicate itemStackPredicate) {
+            String itemOrTag = itemStackPredicate.toString();
+            if (itemOrTag.startsWith("#")) {
+                return ItemStack.EMPTY.getItem();
+            }
+            return asItem(itemOrTag);
+        }
+        return this.item == null ? ItemStack.EMPTY.getItem() : this.item;
     }
 
     /**
@@ -101,11 +113,11 @@ public class ItemMatcher {
             String[] split = string.split(":");
             return split.length == 2 ? split[1] : split[0];
         }
-        return "#";
+        return Items.AIR.toString();
     }
 
     public Text getName() {
-        if (this.item != null) {
+        if (this.isItem()) {
             return this.item.getName();
         }
         if (this.predicate instanceof AbstractItemStackPredicate itemStackPredicate) {
@@ -120,8 +132,8 @@ public class ItemMatcher {
      * @return 如果是物品，然后物品默认的物品堆栈对象，否则返回null
      */
     public Object getDefaultStack() {
-        if (this.item != null) {
-            return this.item;
+        if (this.isItem()) {
+            return this.getItem();
         }
         for (Item item : Registries.ITEM) {
             ItemStack defaultStack = item.getDefaultStack();
@@ -129,7 +141,7 @@ public class ItemMatcher {
                 return defaultStack;
             }
         }
-        return null;
+        return ItemStack.EMPTY;
     }
 
     public static Item asItem(String id) {
@@ -139,5 +151,39 @@ public class ItemMatcher {
             throw new IllegalArgumentException();
         }
         return Registries.ITEM.get(new Identifier(split[0], split[1]));
+    }
+
+    public MutableText toText() {
+        if (this.item == null) {
+            if (this.predicate instanceof AbstractItemStackPredicate itemStackPredicate) {
+                String itemOrTag = itemStackPredicate.toString();
+                if (itemOrTag.startsWith("#")) {
+                    return TextUtils.createText(itemOrTag);
+                } else {
+                    return ItemMatcher.asItem(itemOrTag).getDefaultStack().toHoverableText().copy();
+                }
+            }
+            return TextUtils.getTranslate("carpet.commands.playerAction.info.craft.item_tag");
+        }
+        return this.item.getDefaultStack().toHoverableText().copy();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof ItemMatcher itemMatcher) {
+            if (this.isItem() && this.isItem() && this.item == itemMatcher.getItem()) {
+                return true;
+            }
+            return this.predicate != null && this.predicate == itemMatcher.predicate;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.toString().hashCode();
     }
 }

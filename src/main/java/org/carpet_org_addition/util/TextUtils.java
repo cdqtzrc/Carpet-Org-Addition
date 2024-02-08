@@ -190,6 +190,13 @@ public class TextUtils {
     }
 
     /**
+     * 创建一个不包含任何内容的可变文本对象
+     */
+    public static MutableText createEmpty() {
+        return Text.literal("");
+    }
+
+    /**
      * 获取一个方块名称的可变文本形式
      *
      * @param block 要获取名称的方块
@@ -215,7 +222,7 @@ public class TextUtils {
      * @return 拼接后的可变文本对象
      */
     public static MutableText appendAll(Object... objects) {
-        MutableText mutableText = Text.literal("");
+        MutableText mutableText = TextUtils.createEmpty();
         for (Object object : objects) {
             if (object instanceof String str) {
                 mutableText.append(Text.literal(str));
