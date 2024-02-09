@@ -40,7 +40,7 @@ public class CraftPresets {
         String[] split = this.presets.split("[ ,，]+");
         if (split.length != 9) {
             CarpetOrgAddition.LOGGER.warn("无法解析字符串:“" + this.presets + "”");
-            throw CommandUtils.getException("carpet.commands.presets.parse.string.fail", presets);
+            throw CommandUtils.createException("carpet.commands.presets.parse.string.fail", presets);
         }
         // 填充数组，填充前源数组中的元素去除头尾的空格（虽然可能不会有空格）
         for (int index = 0; index < split.length; index++) {
@@ -130,7 +130,7 @@ public class CraftPresets {
                     item = Registries.ITEM.get(Identifier.of(split[0], split[1]));
                 } else {
                     // 否则抛出异常
-                    throw CommandUtils.getException("carpet.commands.presets.parse.item.fail", extractFileName(fileName), (index + 1));
+                    throw CommandUtils.createException("carpet.commands.presets.parse.item.fail", extractFileName(fileName), (index + 1));
                 }
                 // 创建一个直接以物品匹配物品的物品匹配器对象并添加进数组
                 itemMatcherArr[index] = new ItemMatcher(item);

@@ -33,8 +33,7 @@ public enum FakePlayerActionType {
     //假玩家切石机
     STONECUTTING,
     //假玩家自动交易
-    TRADE,
-    FARMING;
+    TRADE;
 
     //获取假玩家操作类型的字符串或可变文本形式
     public ArrayList<MutableText> getActionText(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) throws CommandSyntaxException {
@@ -42,7 +41,7 @@ public enum FakePlayerActionType {
         if (context == null) {
             return FakePlayerActionInfo.showStopInfo(fakePlayer);
         }
-        // 现在的命令执行上下文来自/playerTools <玩家名> action query，这条命令的命令执行上下文对象中只记录了假玩家玩家的基本信息，但是没有动作相关的信息
+        // 现在的命令执行上下文来自/playerAction <玩家名> action info，这条命令的命令执行上下文对象记录只的是本条info命令的信息，并没有动作相关的信息
         // 需要获取该玩家的对象，然后根据这个假玩家获取假玩家当前的命令执行上下文，这一个命令执行上下文对象中才有获取文本所需要的信息
         fakePlayerActionInterface = (FakePlayerActionInterface) EntityArgumentType.getPlayer(context, "player");
         context = fakePlayerActionInterface.getContext();
@@ -57,7 +56,6 @@ public enum FakePlayerActionType {
             case RENAME -> FakePlayerActionInfo.showRenameInfo(context, fakePlayer);
             case STONECUTTING -> FakePlayerActionInfo.showStoneCuttingInfo(context, fakePlayer);
             case TRADE -> FakePlayerActionInfo.showTradeInfo(context, fakePlayer);
-            case FARMING -> FakePlayerActionInfo.showFarmingInfo(fakePlayer);
         };
     }
 
@@ -81,7 +79,6 @@ public enum FakePlayerActionType {
             case RENAME -> "重命名";
             case STONECUTTING -> "切石";
             case TRADE -> "交易";
-            case FARMING -> "种植";
         };
     }
 }

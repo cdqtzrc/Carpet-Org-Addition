@@ -1,7 +1,6 @@
 package org.carpet_org_addition.util;
 
 import net.minecraft.inventory.Inventories;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -10,31 +9,13 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.util.collection.DefaultedList;
 import org.carpet_org_addition.exception.NoNbtException;
 import org.carpet_org_addition.util.helpers.ImmutableInventory;
+import org.carpet_org_addition.util.helpers.ItemMatcher;
 
 import java.util.Objects;
 
 public class InventoryUtils {
     private static final String BLOCK_ENTITY_TAG = "BlockEntityTag";
     private static final String ITEMS = "Items";
-    private static final Item[] SHULKER_BOX_ALL = {
-            Items.SHULKER_BOX,
-            Items.WHITE_SHULKER_BOX,
-            Items.ORANGE_SHULKER_BOX,
-            Items.MAGENTA_SHULKER_BOX,
-            Items.LIGHT_BLUE_SHULKER_BOX,
-            Items.YELLOW_SHULKER_BOX,
-            Items.LIME_SHULKER_BOX,
-            Items.PINK_SHULKER_BOX,
-            Items.GRAY_SHULKER_BOX,
-            Items.LIGHT_GRAY_SHULKER_BOX,
-            Items.CYAN_SHULKER_BOX,
-            Items.PURPLE_SHULKER_BOX,
-            Items.BLUE_SHULKER_BOX,
-            Items.BROWN_SHULKER_BOX,
-            Items.GREEN_SHULKER_BOX,
-            Items.RED_SHULKER_BOX,
-            Items.BLACK_SHULKER_BOX
-    };
 
     /**
      * 潜影盒工具类，私有化构造方法
@@ -78,29 +59,47 @@ public class InventoryUtils {
                 continue;
             }
             // 如果有物品，才将潜影盒内的物品删除，再将该物品的对象作为方法返回值返回
-            removeFirstStack(list, shulkerBoxItemStack);
+            list.remove(index);
+            if (isEmptyShulkerBox(shulkerBoxItemStack)) {
+                shulkerBoxItemStack.removeSubNbt(BLOCK_ENTITY_TAG);
+            }
             return itemStack;
         }
         return ItemStack.EMPTY;
     }
 
     /**
-     * 删除潜影盒中第一个物品，需要确保潜影盒堆叠数为1
+     * 从物品形式的潜影盒中获取第一个指定的物品
      *
-     * @param list                要删除物品的列表，这是潜影盒NBT中的一个Items列表
-     * @param shulkerBoxItemStack 要删除物品的潜影盒
+     * @param shulkerBoxItemStack 潜影盒物品
+     * @param itemMatcher         一个物品匹配器对象，用来指定要从潜影盒中拿取的物品
+     * @return 潜影盒中获取的指定物品
      */
-    private static void removeFirstStack(NbtList list, ItemStack shulkerBoxItemStack) {
-        for (int index = 0; index < list.size(); index++) {
-            if (ItemStack.fromNbt(list.getCompound(index)).isEmpty()) {
-                continue;
-            }
-            list.remove(index);
-            return;
-        }
+    public static ItemStack fromShulkerBoxPickItem(ItemStack shulkerBoxItemStack, ItemMatcher itemMatcher) {
+        // 判断潜影盒是否为空，空潜影盒直接返回空物品
         if (isEmptyShulkerBox(shulkerBoxItemStack)) {
-            shulkerBoxItemStack.removeSubNbt(BLOCK_ENTITY_TAG);
+            return ItemStack.EMPTY;
         }
+        NbtCompound nbt = shulkerBoxItemStack.getNbt();
+        NbtList list;
+        try {
+            list = Objects.requireNonNull(nbt).getCompound(BLOCK_ENTITY_TAG).getList(ITEMS, NbtElement.COMPOUND_TYPE);
+        } catch (NullPointerException e) {
+            return ItemStack.EMPTY;
+        }
+        for (int index = 0; index < list.size(); index++) {
+            ItemStack itemStack = ItemStack.fromNbt(list.getCompound(index));
+            // 依次检查潜影盒内每个物品是否为指定物品，如果是，从NBT中删除该物品，并将该物品的副本返回
+            if (itemMatcher.test(itemStack)) {
+                list.remove(index);
+                // 如果潜影盒最后一个物品被取出，就删除潜影盒的“BlockEntityTag”标签以保证潜影盒堆叠的正常运行
+                if (isEmptyShulkerBox(shulkerBoxItemStack)) {
+                    shulkerBoxItemStack.removeSubNbt(BLOCK_ENTITY_TAG);
+                }
+                return itemStack;
+            }
+        }
+        return ItemStack.EMPTY;
     }
 
     /**
@@ -139,22 +138,20 @@ public class InventoryUtils {
      * @throws NoNbtException 物品不是潜影盒，或者潜影盒没有NBT时抛出
      */
     public static ImmutableInventory getInventory(ItemStack shulkerBoxItemStack) throws NoNbtException {
-        if (isShulkerBoxItem(shulkerBoxItemStack)) {
-            try {
-                // 获取潜影盒NBT
-                NbtCompound nbt = Objects.requireNonNull(shulkerBoxItemStack.getNbt()).getCompound(BLOCK_ENTITY_TAG);
-                if (nbt != null && nbt.contains(ITEMS, NbtElement.LIST_TYPE)) {
-                    DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
-                    // 读取潜影盒NBT
-                    Inventories.readNbt(nbt, defaultedList);
-                    return new ImmutableInventory(defaultedList);
-                }
-            } catch (NullPointerException e) {
-                // 潜影盒物品没有NBT，说明该潜影盒物品为空
-                throw new NoNbtException();
+        try {
+            // 获取潜影盒NBT
+            NbtCompound nbt = Objects.requireNonNull(shulkerBoxItemStack.getNbt()).getCompound(BLOCK_ENTITY_TAG);
+            if (nbt != null && nbt.contains(ITEMS, NbtElement.LIST_TYPE)) {
+                DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
+                // 读取潜影盒NBT
+                Inventories.readNbt(nbt, defaultedList);
+                return new ImmutableInventory(defaultedList);
             }
+            throw new NoNbtException();
+        } catch (NullPointerException e) {
+            // 潜影盒物品没有NBT，说明该潜影盒物品为空
+            throw new NoNbtException();
         }
-        throw new NoNbtException();
     }
 
     /**
@@ -164,11 +161,22 @@ public class InventoryUtils {
      * @return 指定物品是否是潜影盒
      */
     public static boolean isShulkerBoxItem(ItemStack shulkerBoxItemStack) {
-        for (Item item : SHULKER_BOX_ALL) {
-            if (shulkerBoxItemStack.isOf(item)) {
-                return true;
-            }
-        }
-        return false;
+        return shulkerBoxItemStack.isOf(Items.SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.WHITE_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.ORANGE_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.MAGENTA_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.LIGHT_BLUE_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.YELLOW_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.LIME_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.PINK_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.GRAY_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.LIGHT_GRAY_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.CYAN_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.PURPLE_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.BLUE_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.BROWN_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.GREEN_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.RED_SHULKER_BOX)
+                || shulkerBoxItemStack.isOf(Items.BLACK_SHULKER_BOX);
     }
 }

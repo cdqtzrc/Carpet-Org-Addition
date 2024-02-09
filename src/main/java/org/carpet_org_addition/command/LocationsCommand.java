@@ -113,7 +113,7 @@ public class LocationsCommand {
             location = new Location(blockPos, StringUtils.getDimensionId(player.getWorld()), player);
         } catch (IllegalArgumentException e) {
             //不能为自定义维度添加路径点
-            throw CommandUtils.getException("carpet.commands.locations.add.fail.unknown_dimension");
+            throw CommandUtils.createException("carpet.commands.locations.add.fail.unknown_dimension");
         }
         //获取文件对象
         File file = getFile(player.getWorld());
@@ -124,7 +124,7 @@ public class LocationsCommand {
             for (File f : files) {
                 if (tempName.equals(f.getName())) {
                     //路径点已存在
-                    throw CommandUtils.getException("carpet.commands.locations.add.fail.already_exists", name);
+                    throw CommandUtils.createException("carpet.commands.locations.add.fail.already_exists", name);
                 }
             }
         }
@@ -204,11 +204,11 @@ public class LocationsCommand {
             }
         } catch (JsonParseException e) {
             //无法解析坐标
-            throw CommandUtils.getException("carpet.commands.locations.illustrate.parse");
+            throw CommandUtils.createException("carpet.commands.locations.illustrate.parse");
         } catch (IOException e) {
             //无法添加说明文本
             CarpetOrgAddition.LOGGER.error("无法为路径点[" + name + "]添加说明文本", e);
-            throw CommandUtils.getException("carpet.commands.locations.illustrate.io", name);
+            throw CommandUtils.createException("carpet.commands.locations.illustrate.io", name);
         }
         return 1;
     }
@@ -237,10 +237,10 @@ public class LocationsCommand {
             }
         } catch (JsonParseException e) {
             //无法解析坐标
-            throw CommandUtils.getException("carpet.commands.locations.another.parse");
+            throw CommandUtils.createException("carpet.commands.locations.another.parse");
         } catch (IOException e) {
             CarpetOrgAddition.LOGGER.error("无法解析路径点[" + name + "]:", e);
-            throw CommandUtils.getException("carpet.commands.locations.another.io", name);
+            throw CommandUtils.createException("carpet.commands.locations.another.io", name);
         }
         return 1;
     }
@@ -257,11 +257,11 @@ public class LocationsCommand {
             location.showInfo(source, player, name);
         } catch (JsonParseException e) {
             //无法解析坐标
-            throw CommandUtils.getException("carpet.commands.locations.info.parse");
+            throw CommandUtils.createException("carpet.commands.locations.info.parse");
         } catch (IOException e) {
             //无法显示路径点的详细信息
             CarpetOrgAddition.LOGGER.error("无法显示路径点详细信息:", e);
-            throw CommandUtils.getException("carpet.commands.locations.info.io");
+            throw CommandUtils.createException("carpet.commands.locations.info.io");
         }
         return 1;
     }
@@ -282,7 +282,7 @@ public class LocationsCommand {
             MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.remove.success", delete);
         } else {
             //删除失败
-            throw CommandUtils.getException("carpet.commands.locations.remove.fail", delete);
+            throw CommandUtils.createException("carpet.commands.locations.remove.fail", delete);
         }
         return 1;
     }
@@ -305,9 +305,9 @@ public class LocationsCommand {
             //发送命令执行后的反馈
             MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.set", fileName);
         } catch (JsonParseException e) {
-            throw CommandUtils.getException("carpet.commands.locations.set.parse", fileName);
+            throw CommandUtils.createException("carpet.commands.locations.set.parse", fileName);
         } catch (IOException e) {
-            throw CommandUtils.getException("carpet.commands.locations.set.io", fileName);
+            throw CommandUtils.createException("carpet.commands.locations.set.io", fileName);
         }
         return 1;
     }

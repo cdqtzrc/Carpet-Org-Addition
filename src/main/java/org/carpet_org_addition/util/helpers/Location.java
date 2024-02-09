@@ -10,7 +10,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionTypes;
-import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.StringUtils;
@@ -160,9 +159,6 @@ public class Location {
         } else {
             mutableText = Text.literal(name).append(mutableText);
         }
-        if (CarpetOrgAdditionSettings.canParseWayPoint) {
-            return Text.literal(mutableText.getString());
-        }
         return mutableText;
     }
 
@@ -191,15 +187,15 @@ public class Location {
         MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.creator_time", creatorTime);
         Identifier value = player.getWorld().getDimensionKey().getValue();
         if (value.equals(DimensionTypes.OVERWORLD_ID)
-            && (locType == LocationType.OVERWORLD
+                && (locType == LocationType.OVERWORLD
                 || locType == LocationType.OVERWORLD_AND_THE_NETHER
                 || locType == LocationType.THE_NETHER_AND_OVERWORLD)) {
             MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance"
                     , (int) MathUtils.getBlockDistance(player.getBlockPos(), getOverworldPos()));
         } else if (value.equals(DimensionTypes.THE_NETHER_ID)
-                   && (locType == LocationType.THE_NETHER
-                       || locType == LocationType.THE_NETHER_AND_OVERWORLD
-                       || locType == LocationType.OVERWORLD_AND_THE_NETHER)) {
+                && (locType == LocationType.THE_NETHER
+                || locType == LocationType.THE_NETHER_AND_OVERWORLD
+                || locType == LocationType.OVERWORLD_AND_THE_NETHER)) {
             MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance"
                     , (int) MathUtils.getBlockDistance(player.getBlockPos(), getTheNetherPos()));
         } else if (value.equals(DimensionTypes.THE_END_ID) && locType == LocationType.THE_END) {

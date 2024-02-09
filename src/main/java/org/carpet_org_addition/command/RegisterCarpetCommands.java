@@ -26,7 +26,7 @@ public class RegisterCarpetCommands {
             ProtectCommand.register(dispatcher);
 
             //假玩家工具命令
-            PlayerToolsCommand.register(dispatcher, commandBuildContext);
+            PlayerToolsCommand.register(dispatcher);
 
             //发送消息命令
             SendMessageCommand.register(dispatcher);
@@ -51,6 +51,9 @@ public class RegisterCarpetCommands {
 
             // 绘制粒子线命令
             ParticleLineCommand.register(dispatcher);
+
+            // 假玩家动作命令
+            PlayerActionCommand.register(dispatcher, commandBuildContext);
 
             // 预设管理器命令
             // PresetsCommand.register(dispatcher);

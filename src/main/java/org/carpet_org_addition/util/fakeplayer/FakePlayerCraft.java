@@ -10,6 +10,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.exception.InfiniteLoopException;
+import org.carpet_org_addition.util.InventoryUtils;
 import org.carpet_org_addition.util.StringUtils;
 import org.carpet_org_addition.util.helpers.ItemMatcher;
 
@@ -87,6 +88,19 @@ public class FakePlayerCraft {
                                 // 找到正确合成材料的次数自增
                                 successCount++;
                                 break;
+                            } else if (CarpetOrgAdditionSettings.fakePlayerCraftPickItemFromShulkerBox
+                                    && InventoryUtils.isShulkerBoxItem(itemStack)) {
+                                ItemStack contentItemStack = InventoryUtils.fromShulkerBoxPickItem(itemStack, itemMatcher);
+                                if (!contentItemStack.isEmpty()) {
+                                    // 丢弃光标上的物品（如果有）
+                                    FakePlayerUtils.dropCursorStack(craftingScreenHandler, fakePlayer);
+                                    // 将光标上的物品设置为从潜影盒中取出来的物品
+                                    craftingScreenHandler.setCursorStack(contentItemStack);
+                                    // 将光标上的物品放在合成方格的槽位上
+                                    FakePlayerUtils.pickupCursorStack(craftingScreenHandler, index, fakePlayer);
+                                    successCount++;
+                                    break;
+                                }
                             }
                             //合成格没有遍历完毕，继续查找下一个合成材料
                             //合成格遍历完毕，并且物品栏找不到需要的合成材料，结束方法
@@ -169,6 +183,19 @@ public class FakePlayerCraft {
                                 inventoryIndex, craftIndex, fakePlayer);
                         successCount++;
                         break;
+                    } else if (CarpetOrgAdditionSettings.fakePlayerCraftPickItemFromShulkerBox
+                            && InventoryUtils.isShulkerBoxItem(itemStack)) {
+                        ItemStack contentItemStack = InventoryUtils.fromShulkerBoxPickItem(itemStack, itemMatcher);
+                        if (!contentItemStack.isEmpty()) {
+                            // 丢弃光标上的物品（如果有）
+                            FakePlayerUtils.dropCursorStack(playerScreenHandler, fakePlayer);
+                            // 将光标上的物品设置为从潜影盒中取出来的物品
+                            playerScreenHandler.setCursorStack(contentItemStack);
+                            // 将光标上的物品放在合成方格的槽位上
+                            FakePlayerUtils.pickupCursorStack(playerScreenHandler, craftIndex, fakePlayer);
+                            successCount++;
+                            break;
+                        }
                     }
                     //如果遍历完物品栏还没有找到指定物品，认为玩家身上已经没有该物品，结束方法
                     if (craftIndex == 4 && inventoryIndex == size - 1) {
@@ -205,6 +232,6 @@ public class FakePlayerCraft {
      * @param playerMPFake 需要停止操作的假玩家
      */
     private static void stopCraftAction(ServerCommandSource source, EntityPlayerMPFake playerMPFake) {
-        FakePlayerUtils.stopAction(source, playerMPFake, "carpet.commands.playerTools.action.craft");
+        FakePlayerUtils.stopAction(source, playerMPFake, "carpet.commands.playerAction.craft");
     }
 }

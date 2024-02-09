@@ -1,4 +1,4 @@
-package org.carpet_org_addition.mixin.rule;
+package org.carpet_org_addition.mixin.util;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.command.CommandRegistryAccess;
