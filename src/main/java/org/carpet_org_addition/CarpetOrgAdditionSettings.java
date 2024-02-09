@@ -3,8 +3,8 @@ package org.carpet_org_addition;
 import carpet.api.settings.Rule;
 import carpet.api.settings.RuleCategory;
 import org.carpet_org_addition.rulevalidator.BedrockHardnessValidator;
-import org.carpet_org_addition.rulevalidator.PortalSpawnZombifiedPiglinProbabilityValidator;
 import org.carpet_org_addition.rulevalidator.MaxBlockPlaceDistanceLegitimacyValidator;
+import org.carpet_org_addition.rulevalidator.PortalSpawnZombifiedPiglinProbabilityValidator;
 
 public class CarpetOrgAdditionSettings {
     private CarpetOrgAdditionSettings() {
