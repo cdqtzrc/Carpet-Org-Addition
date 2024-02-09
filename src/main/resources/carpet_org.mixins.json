@@ -39,6 +39,7 @@
     "rule.SculkShriekerBlockMixin",
     "rule.SeedCommandMixin",
     "rule.ServerPlayNetworkHandlerMixin",
+    "rule.ServerWorldMixin",
     "rule.ShulkerBoxBlockMixin",
     "rule.SmithingScreenHandlerMixin",
     "rule.SnowGolemEntityMixin",
