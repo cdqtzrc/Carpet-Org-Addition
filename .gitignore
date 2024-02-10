@@ -1,0 +1,10 @@
+.fabric/
+.gradle/
+.idea/
+.vscode/
+build/
+logs/
+mods/
+run/
+更新日志/
+zh_cn.json

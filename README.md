@@ -613,6 +613,46 @@ CCE更新抑制器(CCEUpdateSuppression)
     - 参考选项：`true`，`false`
     - 分类：`Org`，`特性`
 
+可重复使用的锻造模板(reusableSmithingTemplate)
+
+- 在锻造台合成物品不会消耗锻造模板
+    - 类型：`布尔值`
+    - 默认值：`false`
+    - 参考选项：`true`，`false`
+    - 分类：`Org`，`生存`
+
+开放/tp命令权限
+
+- 允许无权限玩家使用/tp命令
+    - 类型：`布尔值`
+    - 默认值：`false`
+    - 参考选项：`true`，`false`
+    - 分类：`Org`，`命令`
+
+易碎深板岩(softDeepslate)
+
+- 启用后深板岩及其变种与石头或圆石有相同的硬度
+    - 类型：`布尔值`
+    - 默认值：`false`
+    - 参考选项：`true`，`false`
+    - 分类：`Org`，`生存`
+
+易碎黑曜石(softObsidian)
+
+- 启用后黑曜石与末地石有相同的硬度
+    - 类型：`布尔值`
+    - 默认值：`false`
+    - 参考选项：`true`，`false`
+    - 分类：`Org`，`生存`
+
+易碎矿石(softOres)
+
+- 启用后矿石与对应的石头，深板岩或下界岩有相同的硬度
+    - 类型：`布尔值`
+    - 默认值：`false`
+    - 参考选项：`true`，`false`
+    - 分类：`Org`，`生存`
+
 ## 命令
 
 [/itemshadowing](docs/commands/itemshadowing.md)

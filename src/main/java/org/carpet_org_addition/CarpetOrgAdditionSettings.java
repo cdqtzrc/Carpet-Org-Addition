@@ -2,11 +2,10 @@ package org.carpet_org_addition;
 
 import carpet.api.settings.Rule;
 import carpet.api.settings.RuleCategory;
-import org.carpet_org_addition.rulevalidator.CheckBedrockHardness;
-import org.carpet_org_addition.rulevalidator.CheckPortalSpawnZombifiedPiglinProbability;
-import org.carpet_org_addition.rulevalidator.MaxBlockPlaceDistanceLegitimacyCheck;
+import org.carpet_org_addition.rulevalidator.BedrockHardnessValidator;
+import org.carpet_org_addition.rulevalidator.MaxBlockPlaceDistanceLegitimacyValidator;
+import org.carpet_org_addition.rulevalidator.PortalSpawnZombifiedPiglinProbabilityValidator;
 
-@SuppressWarnings("CommentedOutCode")
 public class CarpetOrgAdditionSettings {
     private CarpetOrgAdditionSettings() {
     }
@@ -29,7 +28,7 @@ public class CarpetOrgAdditionSettings {
     //设置基岩硬度
     @Rule(
             categories = {ORG},
-            validators = {CheckBedrockHardness.class}
+            validators = {BedrockHardnessValidator.class}
     )
     public static float setBedrockHardness;
 
@@ -56,12 +55,6 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean villagerImmediatelyRestock = false;
-
-    //假玩家保护
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE}
-    )
-    public static boolean fakePlayerProtect = false;
 
     //保护玩家列表控制命令
     @Rule(
@@ -115,7 +108,7 @@ public class CarpetOrgAdditionSettings {
     //最大方块交互距离
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL, RuleCategory.FEATURE},
-            validators = {MaxBlockPlaceDistanceLegitimacyCheck.class}
+            validators = {MaxBlockPlaceDistanceLegitimacyValidator.class}
     )
     public static double maxBlockPlaceDistance;
 
@@ -297,7 +290,7 @@ public class CarpetOrgAdditionSettings {
     //传送门生成僵尸猪灵概率
     @Rule(
             categories = {ORG, RuleCategory.FEATURE},
-            validators = {CheckPortalSpawnZombifiedPiglinProbability.class}
+            validators = {PortalSpawnZombifiedPiglinProbabilityValidator.class}
     )
     public static int portalSpawnZombifiedPiglinProbability;
 
@@ -349,13 +342,6 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean openVillagerInventory = false;
-/*
-    //播放苦力怕音效
-    @Rule(
-            categories = {ORG, RuleCategory.COMMAND},
-            options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
-    )
-    public static String commandCreeper = "ops";*/
 
     //和平的苦力怕
     @Rule(
@@ -416,23 +402,17 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean canMineSpawner = false;
 
-    //假玩家生成时不保留击退
+    //假玩家生成时无击退
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
     )
-    public static boolean fakePlayerSpawnNotRetainKnockback = false;
+    public static boolean fakePlayerSpawnNoKnockback = false;
 
     //可激活侦测器
     @Rule(
             categories = {ORG, RuleCategory.FEATURE, RuleCategory.SURVIVAL}
     )
     public static boolean canActivatesObserver = false;
-
-    //可解析路径点
-    @Rule(
-            categories = {ORG, RuleCategory.SURVIVAL}
-    )
-    public static boolean canParseWayPoint = false;
 
     //禁用聊天数据包顺序检查
     @Rule(
@@ -494,4 +474,23 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean softOres = false;
+
+    // 更好的不死图腾
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean betterTotemOfUndying = false;
+
+    //假玩家动作命令
+    @Rule(
+            categories = {ORG, RuleCategory.COMMAND},
+            options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
+    )
+    public static String commandPlayerAction = "ops";
+
+    // 假玩家合成支持潜影盒
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean fakePlayerCraftPickItemFromShulkerBox = false;
 }

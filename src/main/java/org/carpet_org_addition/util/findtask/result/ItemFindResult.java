@@ -1,11 +1,11 @@
 package org.carpet_org_addition.util.findtask.result;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import org.carpet_org_addition.command.FinderCommand;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.helpers.ItemMatcher;
 
 public class ItemFindResult extends AbstractFindResult {
     /**
@@ -24,17 +24,22 @@ public class ItemFindResult extends AbstractFindResult {
      * 容器方块名称的翻译键
      */
     private final String blockName;
+
+    public ItemMatcher getItemMatcher() {
+        return itemMatcher;
+    }
+
     /**
      * 要查找的物品
      */
-    private final ItemStack itemStack;
+    private final ItemMatcher itemMatcher;
 
-    public ItemFindResult(BlockPos blockPos, int count, boolean inTheShulkerBox, String blockName, ItemStack itemStack) {
+    public ItemFindResult(BlockPos blockPos, int count, boolean inTheShulkerBox, String blockName, ItemMatcher itemMatcher) {
         this.blockPos = blockPos;
         this.count = count;
         this.inTheShulkerBox = inTheShulkerBox;
         this.blockName = blockName;
-        this.itemStack = itemStack;
+        this.itemMatcher = itemMatcher;
     }
 
     public int getCount() {
@@ -51,6 +56,8 @@ public class ItemFindResult extends AbstractFindResult {
                 + ((double) blockPos.getY() + 0.5) + " " + ((double) blockPos.getZ() + 0.5);
         return TextUtils.getTranslate("carpet.commands.finder.item.each", TextUtils.blockPos(blockPos, Formatting.GREEN),
                 TextUtils.command(TextUtils.getTranslate(blockName), command, null, null, true),
-                FinderCommand.showCount(itemStack, count, inTheShulkerBox));
+                itemMatcher.isItem()
+                        ? FinderCommand.showCount(itemMatcher.getItem().getDefaultStack(), count, inTheShulkerBox)
+                        : itemMatcher.toText());
     }
 }

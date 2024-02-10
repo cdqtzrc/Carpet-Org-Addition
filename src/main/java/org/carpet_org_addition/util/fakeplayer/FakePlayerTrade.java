@@ -21,7 +21,7 @@ public class FakePlayerTrade {
             //判断按钮索引是否越界
             if (merchantScreenHandler.getRecipes().size() <= index) {
                 FakePlayerUtils.stopAction(context.getSource(), fakePlayer,
-                        "carpet.commands.playerTools.action.trade");
+                        "carpet.commands.playerAction.trade");
                 return;
             }
             int loopCount = 0;
