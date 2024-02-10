@@ -653,6 +653,31 @@ CCE更新抑制器(CCEUpdateSuppression)
     - 参考选项：`true`，`false`
     - 分类：`Org`，`生存`
 
+更好的不死图腾(betterTotemOfUndying)
+
+- 玩家死亡时只要物品栏内有不死图腾就能生效，而不需要放在手上
+    - 类型：`布尔值`
+    - 默认值：`false`
+    - 参考选项：`true`，`false`
+    - 分类：`Org`，`生存`
+
+假玩家动作命令(commandPlayerAction)
+
+- 启用/playerAction命令用来让假玩家自动执行一些动作
+    - 类型：`字符串`
+    - 默认值：`"ops"`
+    - 参考选项：`"true"`, `“false”`, `"ops"`, `"0"`, `"1"`, `"2"`,
+      `"3"`, `"4"`
+    - 分类：`Org`，`指令`
+
+假玩家合成从潜影盒取物(fakePlayerCraftPickItemFromShulkerBox)
+
+- 假玩家合成物品时支持从潜影盒中拿取物品
+    - 类型：`布尔值`
+    - 默认值：`false`
+    - 参考选项：`true`，`false`
+    - 分类：`Org`，`生存`
+
 ## 命令
 
 [/itemshadowing](docs/commands/itemshadowing.md)
@@ -694,3 +719,7 @@ CCE更新抑制器(CCEUpdateSuppression)
 [/particleLine](docs/commands/particleLine.md)
 
 - 绘制粒子线
+
+[/playerAction](docs/commands/playerAction.md)
+
+- 假玩家动作命令，控制假玩家的行为
