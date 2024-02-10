@@ -5,9 +5,11 @@ import net.minecraft.item.Item;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
-import org.carpet_org_addition.translate.TranslatableText;
+import org.carpet_org_addition.translate.Translate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 public class TextUtils {
     private TextUtils() {
@@ -242,6 +244,12 @@ public class TextUtils {
      * @return 可翻译文本
      */
     public static MutableText getTranslate(String key, Object... obj) {
-        return MutableText.of(new TranslatableText(key, null, obj));
+        String value;
+        try {
+            value = Objects.requireNonNull(Translate.getTranslate()).get(key);
+        } catch (NullPointerException e) {
+            value = null;
+        }
+        return Text.translatableWithFallback(key, value, obj);
     }
 }
