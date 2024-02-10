@@ -21,7 +21,7 @@ public class FakePlayerRename {
             // 如果假玩家没有足够的经验，直接介绍方法，创造玩家给物品重命名不需要消耗经验
             if (fakePlayer.experienceLevel < 1 && !fakePlayer.isCreative()) {
                 FakePlayerUtils.stopAction(context.getSource(), fakePlayer,
-                        "carpet.commands.playerTools.action.rename.not_experience");
+                        "carpet.commands.playerAction.rename.not_experience");
                 return;
             }
             //获取当前要操作的物品和要重命名的字符串
@@ -83,7 +83,7 @@ public class FakePlayerRename {
                 } else {
                     //如果不能取出，可能玩家已经没有经验，停止重命名
                     FakePlayerUtils.stopAction(context.getSource(), fakePlayer,
-                            "carpet.commands.playerTools.action.rename");
+                            "carpet.commands.playerAction.rename");
                 }
             }
         }

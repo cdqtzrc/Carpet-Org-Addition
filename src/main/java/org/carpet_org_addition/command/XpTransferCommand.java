@@ -61,7 +61,7 @@ public class XpTransferCommand {
             return totalExperience;
         } else {
             //发送需要目标是自己或假玩家消息
-            throw CommandUtils.getException("carpet.commands.xpTransfer.self_or_fake_player");
+            throw CommandUtils.createException("carpet.commands.xpTransfer.self_or_fake_player");
         }
     }
 
@@ -95,7 +95,7 @@ public class XpTransferCommand {
             return halfExperience;
         } else {
             //发送消息：只允许操作自己或假玩家
-            throw CommandUtils.getException("carpet.commands.xpTransfer.self_or_fake_player");
+            throw CommandUtils.createException("carpet.commands.xpTransfer.self_or_fake_player");
         }
     }
 
@@ -118,7 +118,7 @@ public class XpTransferCommand {
             int totalExperience = MathUtils.getTotalExperience(outputPlayer.experienceLevel, points);
             // 要转移经验的数量不能多于玩家的总经验
             if (xpNumber > totalExperience) {
-                throw CommandUtils.getException("carpet.commands.xpTransfer.point.fail", outputPlayer.getDisplayName(), xpNumber, totalExperience);
+                throw CommandUtils.createException("carpet.commands.xpTransfer.point.fail", outputPlayer.getDisplayName(), xpNumber, totalExperience);
             }
             //清除两个玩家的所有经验
             outputPlayer.setExperienceLevel(0);
@@ -131,7 +131,7 @@ public class XpTransferCommand {
             return xpNumber;
         } else {
             //发送消息：只允许操作自己或假玩家
-            throw CommandUtils.getException("carpet.commands.xpTransfer.self_or_fake_player");
+            throw CommandUtils.createException("carpet.commands.xpTransfer.self_or_fake_player");
         }
     }
 

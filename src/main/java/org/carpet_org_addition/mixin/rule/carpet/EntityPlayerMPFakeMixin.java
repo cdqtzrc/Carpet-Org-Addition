@@ -122,7 +122,7 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
             this.action = FakePlayerActionType.STOP;
             //向聊天栏发送错误消息的反馈
             MessageUtils.broadcastTextMessage(thisPlayer,
-                    TextUtils.getTranslate("carpet.commands.playerTools.action.exception.runtime",
+                    TextUtils.getTranslate("carpet.commands.playerAction.exception.runtime",
                             thisPlayer.getDisplayName()));
         }
     }
@@ -153,9 +153,7 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
             case STONECUTTING -> FakePlayerStonecutting.stonecutting(context, thisPlayer);
             // 假玩家交易
             case TRADE -> FakePlayerTrade.trade(context, thisPlayer);
-            // 假人自动种植
-            case FARMING -> FakePlayerFarming.farming(thisPlayer);
-            //以上值都不匹配，设置操作类型为STOP（不应该出现都不匹配的情况）
+            // 以上值都不匹配，设置操作类型为STOP（不应该出现都不匹配的情况）
             default -> {
                 CarpetOrgAddition.LOGGER.error(action + "的行为没有预先定义");
                 action = FakePlayerActionType.STOP;
@@ -166,8 +164,8 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
     //阻止受保护的假玩家受到伤害
     @Override
     public boolean damage(DamageSource source, float amount) {
-        if (CarpetOrgAdditionSettings.fakePlayerProtect && FakePlayerProtectManager.isNotDamage(thisPlayer)
-                && !(source.getSource() instanceof PlayerEntity) && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+        if (FakePlayerProtectManager.isNotDamage(thisPlayer) && !(source.getSource() instanceof PlayerEntity)
+                && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return false;
         }
         return super.damage(source, amount);
@@ -176,8 +174,8 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
     //阻止受保护的假玩家死亡
     @Inject(method = "onDeath", at = @At("HEAD"), cancellable = true)
     private void onDeath(DamageSource source, CallbackInfo ci) {
-        if (CarpetOrgAdditionSettings.fakePlayerProtect && FakePlayerProtectManager.isNotDeath(thisPlayer)
-                && !(source.getSource() instanceof PlayerEntity) && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+        if (FakePlayerProtectManager.isNotDeath(thisPlayer) && !(source.getSource() instanceof PlayerEntity)
+                && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             this.setHealth(this.getMaxHealth());
             HungerManager hungerManager = this.getHungerManager();
             hungerManager.setFoodLevel(20);

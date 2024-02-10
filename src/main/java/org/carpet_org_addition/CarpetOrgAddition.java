@@ -5,7 +5,7 @@ import carpet.CarpetServer;
 import carpet.patches.EntityPlayerMPFake;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import org.carpet_org_addition.carpet.tools.text.Translate;
+import org.carpet_org_addition.translate.Translate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +40,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     public void onPlayerLoggedIn(ServerPlayerEntity player) {
         CarpetExtension.super.onPlayerLoggedIn(player);
         // 假玩家生成时不保留上一次的击退，着火时间，摔落高度
-        if (CarpetOrgAdditionSettings.fakePlayerSpawnNotRetainKnockback && player instanceof EntityPlayerMPFake fakePlayer) {
+        if (CarpetOrgAdditionSettings.fakePlayerSpawnNoKnockback && player instanceof EntityPlayerMPFake fakePlayer) {
             // 清除速度
             fakePlayer.setVelocity(0, 0, 0);
             // 清除着火时间

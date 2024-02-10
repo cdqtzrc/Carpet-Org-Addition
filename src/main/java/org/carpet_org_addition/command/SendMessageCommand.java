@@ -84,11 +84,7 @@ public class SendMessageCommand {
                     StringUtils.getDimensionId(player.getWorld()),
                     TextUtils.blockPos(blockPos, null));
         };
-        if (CarpetOrgAdditionSettings.canParseWayPoint) {
-            MessageUtils.broadcastStringMessage(player, mutableText.getString(), false);
-        } else {
-            MessageUtils.broadcastTextMessage(player, mutableText);
-        }
+        MessageUtils.broadcastTextMessage(player, mutableText);
         return 1;
     }
 

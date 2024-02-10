@@ -5,8 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
-import org.carpet_org_addition.CarpetOrgAdditionSettings;
-import org.carpet_org_addition.carpet.tools.text.Translate;
+import org.carpet_org_addition.translate.Translate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,10 +22,6 @@ public class TextUtils {
      */
     public static MutableText blockPos(BlockPos blockPos, @Nullable Formatting color) {
         MutableText pos = Texts.bracketed(Text.translatable("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
-        if (CarpetOrgAdditionSettings.canParseWayPoint) {
-            //如果启用了“可解析路径点”，直接返回不带特殊样式的路径点
-            return pos;
-        }
         //添加单击事件，复制方块坐标
         pos.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, StringUtils.getBlockPosString(blockPos))));
         //添加光标悬停事件：单击复制到剪贴板
@@ -197,6 +192,13 @@ public class TextUtils {
     }
 
     /**
+     * 创建一个不包含任何内容的可变文本对象
+     */
+    public static MutableText createEmpty() {
+        return Text.literal("");
+    }
+
+    /**
      * 获取一个方块名称的可变文本形式
      *
      * @param block 要获取名称的方块
@@ -222,7 +224,7 @@ public class TextUtils {
      * @return 拼接后的可变文本对象
      */
     public static MutableText appendAll(Object... objects) {
-        MutableText mutableText = Text.literal("");
+        MutableText mutableText = TextUtils.createEmpty();
         for (Object object : objects) {
             if (object instanceof String str) {
                 mutableText.append(Text.literal(str));

@@ -73,7 +73,7 @@ public class FakePlayerStonecutting {
                 } else {
                     //否则，认为前面的操作有误，停止合成，结束方法
                     FakePlayerUtils.stopAction(context.getSource(), fakePlayer,
-                            "carpet.commands.playerTools.action.stone_cutting");
+                            "carpet.commands.playerAction.stone_cutting");
                     return;
                 }
             }
