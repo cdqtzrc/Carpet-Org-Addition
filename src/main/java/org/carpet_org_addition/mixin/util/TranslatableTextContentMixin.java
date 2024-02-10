@@ -1,31 +1,16 @@
 package org.carpet_org_addition.mixin.util;
 
-import carpet.CarpetSettings;
-import com.google.common.collect.ImmutableList;
-import net.minecraft.text.StringVisitable;
 import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.text.TranslationException;
-import net.minecraft.util.Language;
-import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.translate.TranslatableText;
-import org.carpet_org_addition.translate.Translate;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Consumer;
 
 /**
  * 为{@link TranslatableText}重写私有方法
  */
+@SuppressWarnings("GrazieInspection")
 @Mixin(TranslatableTextContent.class)
 public abstract class TranslatableTextContentMixin {
-    @Shadow
+/*    @Shadow
     protected abstract void forEachPart(String translation, Consumer<StringVisitable> partsConsumer);
 
     @Shadow
@@ -47,7 +32,7 @@ public abstract class TranslatableTextContentMixin {
                     return;
                 }
                 this.languageCache = language;
-                String string = language.get(this.key);
+                String string = language.get(this.key, translatableText.getFallback());
                 if (string == null) {
                     if (translatableText.getFallback() == null) {
                         try {
@@ -74,5 +59,5 @@ public abstract class TranslatableTextContentMixin {
                 ci.cancel();
             }
         }
-    }
+}*/
 }

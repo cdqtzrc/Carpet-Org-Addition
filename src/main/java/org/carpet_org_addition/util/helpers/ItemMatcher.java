@@ -118,7 +118,7 @@ public class ItemMatcher {
 
     public Text getName() {
         if (this.isItem()) {
-            return this.item.getName();
+            return this.getItem().getName();
         }
         if (this.predicate instanceof AbstractItemStackPredicate itemStackPredicate) {
             return ItemMatcher.asItem(itemStackPredicate.toString()).getName();
