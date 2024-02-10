@@ -35,10 +35,10 @@
     "rule.PistonBlockMixin",
     "rule.PlayerEntityMixin",
     "rule.ProtectionEnchantmentMixin",
-    "rule.RegisterCarpetCommandsMixin",
     "rule.SculkShriekerBlockMixin",
     "rule.SeedCommandMixin",
     "rule.ServerPlayNetworkHandlerMixin",
+    "rule.ServerWorldMixin",
     "rule.ShulkerBoxBlockMixin",
     "rule.SnowGolemEntityMixin",
     "rule.SpawnerBlockMixin",
@@ -59,7 +59,10 @@
     "rule.playerinteraction.ServerPlayerInteractionManagerMixin",
     "rule.playerinteraction.ServerPlayNetworkHandlerMixin",
     "rule.respawnblocksexplode.BedBlockMixin",
-    "rule.respawnblocksexplode.RespawnAnchorBlockMixin"
+    "rule.respawnblocksexplode.RespawnAnchorBlockMixin",
+    "util.ItemPredicateArgumentTypeMixin",
+    "util.RegisterCarpetCommandsMixin",
+    "util.TranslatableTextContentMixin"
   ],
   "client": [
     "rule.client.carpet.SettingsManagerMixin"
