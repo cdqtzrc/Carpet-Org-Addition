@@ -1,11 +1,17 @@
 package org.carpet_org_addition.util;
 
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("unused")
 public class WorldUtils {
+    public static final String OVERWORLD = "minecraft:overworld";
+    public static final String THE_NETHER = "minecraft:the_nether";
+    public static final String THE_END = "minecraft:the_end";
+
     /**
      * 获取区域内所有方块坐标的集合
      *
@@ -25,5 +31,18 @@ public class WorldUtils {
             }
         }
         return list;
+    }
+
+    @SuppressWarnings("unused")
+    public static Formatting getColor(String dimension) {
+        if (dimension == null) {
+            return Formatting.GREEN;
+        }
+        return switch (dimension) {
+            case OVERWORLD -> Formatting.GREEN;
+            case THE_NETHER -> Formatting.RED;
+            case THE_END -> Formatting.DARK_PURPLE;
+            default -> Formatting.WHITE;
+        };
     }
 }

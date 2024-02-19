@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.text.Text;
 import net.minecraft.text.Texts;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -34,7 +35,9 @@ public class StringUtils {
      *
      * @param blockPos 要转换为字符串形式的方块位置对象
      * @return 方块坐标的带括号字符串形式
+     * @see TextUtils#blockPos(BlockPos, Formatting)
      */
+    @Deprecated
     public static String getBracketedBlockPos(BlockPos blockPos) {
         return Texts.bracketed(Text.translatable("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ())).getString();
     }

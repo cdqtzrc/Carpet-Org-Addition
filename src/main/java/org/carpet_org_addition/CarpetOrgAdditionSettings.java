@@ -4,6 +4,7 @@ import carpet.api.settings.Rule;
 import carpet.api.settings.RuleCategory;
 import org.carpet_org_addition.rulevalidator.BedrockHardnessValidator;
 import org.carpet_org_addition.rulevalidator.MaxBlockPlaceDistanceLegitimacyValidator;
+import org.carpet_org_addition.rulevalidator.PiglinBarteringTimeValidator;
 import org.carpet_org_addition.rulevalidator.PortalSpawnZombifiedPiglinProbabilityValidator;
 
 public class CarpetOrgAdditionSettings {
@@ -220,11 +221,11 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean disablePiglinZombify = false;
 
-    //猪灵快速交易
+/*    //猪灵快速交易
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
     )
-    public static boolean piglinFastBarter = false;
+    public static boolean piglinFastBarter = false;*/
 
     //禁止村民女巫化
     @Rule(
@@ -505,4 +506,11 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean fakePlayerCraftPickItemFromShulkerBox = false;
+
+    // 自定义猪灵交易时间
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL},
+            validators = PiglinBarteringTimeValidator.class
+    )
+    public static long customPiglinBarteringTime = -1;
 }

@@ -430,11 +430,10 @@ public class FinderCommand {
                         NbtCompound nbtCompound = nbtList.getCompound(j);
                         // 获取这本附魔书上附魔的id
                         Identifier bookEnchantmentId = EnchantmentHelper.getIdFromNbt(nbtCompound);
-                        // 如果附魔书上附魔的id与指定id相同，跳出循环，获取等级
                         if (bookEnchantmentId == null || !bookEnchantmentId.equals(registryId)) {
                             continue;
                         }
-                        // 获取附魔等级
+                        // 如果附魔书上附魔的id与指定id相同，获取等级，跳出循环
                         level = EnchantmentHelper.getLevelFromNbt(nbtCompound);
                         break;
                     }

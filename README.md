@@ -54,27 +54,9 @@
     - 参考选项：`true`，`false`
     - 分类：`Org`，`特性`
 
-假玩家保护(fakePlayerProtect)
+假玩家保护命令(commandProtect)
 
-- 被保护的假玩家不会被/player `<玩家名称>` kill杀死
-    - 保护类型
-        - none：默认，假玩家不受保护
-        - kill：假玩家不能被/player命令杀死
-        - damage：假玩家只会受到直接来自玩家的伤害和具有"bypasses_invulnerability"标签的伤害
-        - death：假玩家只会被直接来自玩家的伤害和具有"bypasses_invulnerability"标签的伤害杀死
-            - 类型：`布尔值`
-            - 默认值：`false`
-            - 参考选项：`true`，`false`
-            - 分类：`Org`，`特性`
-
-受保护玩家列表控制(commandProtect)
-
-- 启用/protect命令用来管理受保护玩家列表
-- 不能重复添加
-- 必须是假玩家
-- 假玩家必须存在于世界中
-- 尝试使用/player `<玩家名称>`
-  kill击杀受保护的假玩家会失败并显示一条错误提示，但直接使用/kill命令可以杀死
+- 启用/protect命令用来保护特定的假玩家
     - 类型：`字符串`
     - 默认值：`"ops"`
     - 参考选项：`"true"`, `“false”`, `"ops"`, `"0"`, `"1"`, `"2"`,
@@ -548,7 +530,7 @@ CCE更新抑制器(CCEUpdateSuppression)
     - 参考选项：`true`，`false`
     - 分类：`Org`，`生存`
 
-假玩家生成时不保留击退(fakePlayerSpawnNotRetainKnockback)
+假玩家生成无击退(fakePlayerSpawnNoKnockback)
 
 - 假玩家生成时不会保留上一次的击退、着火时间，摔落距离
     - 类型：`布尔值`
@@ -686,7 +668,7 @@ CCE更新抑制器(CCEUpdateSuppression)
 
 [/protect](docs/commands/protect.md)
 
-- 用来管理规则“假玩家保护”的受保护的玩家列表
+- 用来管理受保护的玩家列表
 
 [/playerTools](docs/commands/playerTools.md)
 
