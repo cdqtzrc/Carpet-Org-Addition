@@ -121,7 +121,11 @@ public class ItemMatcher {
             return this.getItem().getName();
         }
         if (this.predicate instanceof AbstractItemStackPredicate itemStackPredicate) {
-            return ItemMatcher.asItem(itemStackPredicate.toString()).getName();
+            String nameOrTag = itemStackPredicate.toString();
+            if (nameOrTag.startsWith("#")) {
+                return TextUtils.createText(nameOrTag);
+            }
+            return ItemMatcher.asItem(nameOrTag).getName();
         }
         return TextUtils.getTranslate("carpet.commands.playerAction.info.craft.item_tag");
     }

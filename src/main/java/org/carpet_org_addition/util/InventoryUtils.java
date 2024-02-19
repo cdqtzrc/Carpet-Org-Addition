@@ -16,6 +16,7 @@ import java.util.Objects;
 public class InventoryUtils {
     private static final String BLOCK_ENTITY_TAG = "BlockEntityTag";
     private static final String ITEMS = "Items";
+    private static final String INVENTORY = "Inventory";
 
     /**
      * 潜影盒工具类，私有化构造方法
@@ -152,6 +153,22 @@ public class InventoryUtils {
             // 潜影盒物品没有NBT，说明该潜影盒物品为空
             throw new NoNbtException();
         }
+    }
+
+    /**
+     * 从NBT中获取一个物品栏对象
+     *
+     * @param nbt 从这个NBT中获取物品栏
+     */
+    @SuppressWarnings("unused")
+    public static ImmutableInventory getInventoryFromNbt(NbtCompound nbt) {
+        NbtList inventory = nbt.getList(INVENTORY, NbtElement.COMPOUND_TYPE);
+        int size = inventory.size();
+        DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(size, ItemStack.EMPTY);
+        for (int index = 0; index < size; index++) {
+            defaultedList.set(index, ItemStack.fromNbt(inventory.getCompound(index)));
+        }
+        return new ImmutableInventory(defaultedList);
     }
 
     /**

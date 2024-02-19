@@ -8,6 +8,7 @@ public class FakePlayerClean {
     }
 
     public static void clean(EntityPlayerMPFake fakePlayer) {
+        // TODO 清空容器不局限于潜影盒
         //判断假玩家打开的界面是不是潜影盒的GUI
         if (fakePlayer.currentScreenHandler instanceof ShulkerBoxScreenHandler shulkerBoxScreenHandler) {
             // 使用循环一个个丢出潜影盒中的物品

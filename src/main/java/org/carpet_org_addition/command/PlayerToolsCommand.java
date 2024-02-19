@@ -6,22 +6,15 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionTypes;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
@@ -32,10 +25,6 @@ import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerEnderChestScreenHandler;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerInventoryScreenHandler;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerProtectManager;
-
-import java.util.EnumSet;
-import java.util.Objects;
-import java.util.Set;
 
 @SuppressWarnings("SameReturnValue")
 public class PlayerToolsCommand {
@@ -84,7 +73,7 @@ public class PlayerToolsCommand {
     }
 
     //假玩家传送
-    private static int fakePlayerTp(ServerCommandSource source, PlayerEntity fakePlayer) throws CommandSyntaxException {
+    private static int fakePlayerTp(ServerCommandSource source, ServerPlayerEntity fakePlayer) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getPlayer(source);
         //获取假玩家名和命令执行玩家名
         Text fakePlayerName = fakePlayer.getDisplayName();
@@ -97,46 +86,13 @@ public class PlayerToolsCommand {
             }
         }
         //不需要return，程序在执行到上面的判断是否为假玩家时，只有是假玩家才能正常返回，非假玩家会直接抛出异常
-        ServerWorld serverWorld;
-        try {
-            serverWorld = Objects.requireNonNull(player.getServer()).getWorld(player.getWorld().getRegistryKey());
-        } catch (NullPointerException n) {
-            return 1;
-        }
-        Set<PositionFlag> set = EnumSet.noneOf(PositionFlag.class);
         //在假玩家位置播放潜影贝传送音效
         fakePlayer.getWorld().playSound(null, fakePlayer.prevX, fakePlayer.prevY, fakePlayer.prevZ,
                 SoundEvents.ENTITY_SHULKER_TELEPORT, fakePlayer.getSoundCategory(), 1.0f, 1.0f);
-        //传送
-        teleport(fakePlayer, serverWorld, player.getX(), player.getY(), player.getZ(), set, player.getYaw(), player.getPitch());
+        fakePlayer.teleport(player.getServerWorld(), player.getX(), player.getY(), player.getZ(), player.getYaw(), player.getPitch());
         //在聊天栏显示命令反馈
         MessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.tp.success", fakePlayerName, playerName);
         return 1;
-    }
-
-    //传送 原版/tp命令中的方法，复制粘贴过来再改一下
-    private static void teleport(Entity target, ServerWorld world, double x, double y, double z,
-                                 Set<PositionFlag> movementFlags, float yaw, float pitch) {
-        BlockPos blockPos = BlockPos.ofFloored(x, y, z);
-        if (World.isValid(blockPos)) {
-            float f = MathHelper.wrapDegrees(yaw);
-            float g = MathHelper.wrapDegrees(pitch);
-            if (target.teleport(world, x, y, z, movementFlags, f, g)) {
-                label23:
-                {
-                    if (target instanceof LivingEntity livingEntity) {
-                        if (livingEntity.isFallFlying()) {
-                            break label23;
-                        }
-                    }
-                    target.setVelocity(target.getVelocity().multiply(1.0, 0.0, 1.0));
-                    target.setOnGround(true);
-                }
-                if (target instanceof PathAwareEntity pathAwareEntity) {
-                    pathAwareEntity.getNavigation().stop();
-                }
-            }
-        }
     }
 
     //判断玩家是否为假玩家
