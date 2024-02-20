@@ -25,7 +25,7 @@ public class FakePlayerProtectManager {
      * @param player 判断能否被伤害的假玩家
      * @return 假玩家能否受到伤害
      */
-    public static boolean isNotDamage(EntityPlayerMPFake player) {
+    public static boolean isInvincible(EntityPlayerMPFake player) {
         return getProtectInterface(player).getProtect() == FakePlayerProtectType.DAMAGE;
     }
 
@@ -35,7 +35,7 @@ public class FakePlayerProtectManager {
      * @param player 判断是否不会死亡的假玩家
      * @return 假玩家是否不会死亡
      */
-    public static boolean isNotDeath(EntityPlayerMPFake player) {
+    public static boolean isImmortal(EntityPlayerMPFake player) {
         return getProtectInterface(player).getProtect() == FakePlayerProtectType.DEATH;
     }
 
@@ -45,7 +45,7 @@ public class FakePlayerProtectManager {
      * @param player 要判断是否受保护的假玩家
      * @return 该假玩家是否受保护
      */
-    public static boolean isProtect(EntityPlayerMPFake player) {
+    public static boolean isProtected(EntityPlayerMPFake player) {
         return getProtectInterface(player).getProtect() != FakePlayerProtectType.NONE;
     }
 
@@ -81,7 +81,7 @@ public class FakePlayerProtectManager {
      * @param player 要获取保护类型的假玩家
      * @return 假玩家的保护类型
      */
-    public static FakePlayerProtectType getProtect(EntityPlayerMPFake player) {
+    public static FakePlayerProtectType getProtectType(EntityPlayerMPFake player) {
         return getProtectInterface(player).getProtect();
     }
 }

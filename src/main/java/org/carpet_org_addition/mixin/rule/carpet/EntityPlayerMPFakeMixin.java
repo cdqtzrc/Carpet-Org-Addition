@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("AddedMixinMembersNamePattern")
 @Mixin(EntityPlayerMPFake.class)
 public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakePlayerActionInterface, FakePlayerProtectInterface {
     @Unique
@@ -163,7 +164,7 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
     //阻止受保护的假玩家受到伤害
     @Override
     public boolean damage(DamageSource source, float amount) {
-        if (FakePlayerProtectManager.isNotDamage(thisPlayer) && !(source.getSource() instanceof PlayerEntity)
+        if (FakePlayerProtectManager.isInvincible(thisPlayer) && !(source.getSource() instanceof PlayerEntity)
                 && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return false;
         }
@@ -173,7 +174,7 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
     //阻止受保护的假玩家死亡
     @Inject(method = "onDeath", at = @At("HEAD"), cancellable = true)
     private void onDeath(DamageSource source, CallbackInfo ci) {
-        if (FakePlayerProtectManager.isNotDeath(thisPlayer) && !(source.getSource() instanceof PlayerEntity)
+        if (FakePlayerProtectManager.isImmortal(thisPlayer) && !(source.getSource() instanceof PlayerEntity)
                 && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             this.setHealth(this.getMaxHealth());
             HungerManager hungerManager = this.getHungerManager();
