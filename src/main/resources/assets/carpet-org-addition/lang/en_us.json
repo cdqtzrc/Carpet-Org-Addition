@@ -70,8 +70,6 @@
   "carpet.rule.riptideIgnoreWeather.desc": "使用激流时忽略天气",
   "carpet.rule.disablePiglinZombify.name": "禁止猪灵僵尸化",
   "carpet.rule.disablePiglinZombify.desc": "阻止猪灵位于下界以外的维度时被僵尸化",
-  "carpet.rule.piglinFastBarter.name": "猪灵快速交易",
-  "carpet.rule.piglinFastBarter.desc": "猪灵完成以物易物只需要8个游戏刻",
   "carpet.rule.disableVillagerWitch.name": "阻止村民女巫化",
   "carpet.rule.disableVillagerWitch.desc": "村民被闪电劈中时不会变成女巫",
   "carpet.rule.disableIronGolemAttackPlayer.name": "禁止铁傀儡攻击玩家",

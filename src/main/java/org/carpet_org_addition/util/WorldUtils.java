@@ -33,7 +33,6 @@ public class WorldUtils {
         return list;
     }
 
-    @SuppressWarnings("unused")
     public static Formatting getColor(String dimension) {
         if (dimension == null) {
             return Formatting.GREEN;

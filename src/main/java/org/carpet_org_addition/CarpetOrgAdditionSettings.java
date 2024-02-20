@@ -221,12 +221,6 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean disablePiglinZombify = false;
 
-/*    //猪灵快速交易
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE}
-    )
-    public static boolean piglinFastBarter = false;*/
-
     //禁止村民女巫化
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}

@@ -12,9 +12,10 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.*;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionTypes;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
@@ -32,37 +33,37 @@ public class PlayerToolsCommand {
         dispatcher.register(CommandManager.literal("playerTools").requires(source ->
                         CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerTools))
                 .then(CommandManager.argument("player", EntityArgumentType.player())
-                        .then(CommandManager.literal("enderChest").executes(context -> openEnderChest(context.getSource(), CommandUtils.getPlayerEntity(context))))
+                        .then(CommandManager.literal("enderChest").executes(context -> openEnderChest(context, CommandUtils.getPlayerEntity(context))))
                         .then(CommandManager.literal("inventory").executes(context -> openFakePlayerInventory(context, CommandUtils.getPlayerEntity(context))))
-                        .then(CommandManager.literal("teleport").executes(context -> fakePlayerTp(context.getSource(), CommandUtils.getPlayerEntity(context))))
-                        .then(CommandManager.literal("isFakePlayer").executes(context -> isFakePlayer(context.getSource(), CommandUtils.getPlayerEntity(context))))
-                        .then(CommandManager.literal("position").executes(context -> getFakePlayerPos(context.getSource(), CommandUtils.getPlayerEntity(context))))
-                        .then(CommandManager.literal("heal").executes(context -> fakePlayerHeal(context.getSource(), CommandUtils.getPlayerEntity(context))))
+                        .then(CommandManager.literal("teleport").executes(context -> fakePlayerTp(context, CommandUtils.getPlayerEntity(context))))
+                        .then(CommandManager.literal("isFakePlayer").executes(context -> isFakePlayer(context, CommandUtils.getPlayerEntity(context))))
+                        .then(CommandManager.literal("position").executes(context -> getFakePlayerPos(context, CommandUtils.getPlayerEntity(context))))
+                        .then(CommandManager.literal("heal").executes(context -> fakePlayerHeal(context, CommandUtils.getPlayerEntity(context))))
                 ));
     }
 
     //假玩家治疗
-    private static int fakePlayerHeal(ServerCommandSource source, PlayerEntity fakePlayer) throws CommandSyntaxException {
+    private static int fakePlayerHeal(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer) throws CommandSyntaxException {
         if (CommandUtils.checkFakePlayer(fakePlayer)) {
             float health = fakePlayer.getMaxHealth() - fakePlayer.getHealth();
             fakePlayer.heal(fakePlayer.getMaxHealth());
             fakePlayer.getHungerManager().setFoodLevel(20);
             //发送血量回复完后的命令反馈
-            MessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.heal", fakePlayer.getDisplayName());
+            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.playerTools.heal", fakePlayer.getDisplayName());
             return (int) health;
         }
         return 0;
     }
 
     //打开玩家末影箱
-    private static int openEnderChest(ServerCommandSource source, ServerPlayerEntity playerEntity) throws CommandSyntaxException {
-        PlayerEntity player = CommandUtils.getPlayer(source);
+    private static int openEnderChest(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer) throws CommandSyntaxException {
+        PlayerEntity player = CommandUtils.getPlayer(context);
         //检查玩家是否是假玩家或自己
-        if (playerEntity instanceof EntityPlayerMPFake || playerEntity == player) {
+        if (fakePlayer instanceof EntityPlayerMPFake || fakePlayer == player) {
             //创建GUI对象
             SimpleNamedScreenHandlerFactory screen = new SimpleNamedScreenHandlerFactory((i, inventory, playerEntity1) ->
                     new FakePlayerEnderChestScreenHandler(i, inventory,
-                            playerEntity.getEnderChestInventory(), playerEntity), playerEntity.getName());
+                            fakePlayer.getEnderChestInventory(), fakePlayer), fakePlayer.getName());
             //打开末影箱GUI
             player.openHandledScreen(screen);
         } else {
@@ -73,14 +74,14 @@ public class PlayerToolsCommand {
     }
 
     //假玩家传送
-    private static int fakePlayerTp(ServerCommandSource source, ServerPlayerEntity fakePlayer) throws CommandSyntaxException {
-        ServerPlayerEntity player = CommandUtils.getPlayer(source);
+    private static int fakePlayerTp(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer) throws CommandSyntaxException {
+        ServerPlayerEntity player = CommandUtils.getPlayer(context);
         //获取假玩家名和命令执行玩家名
         Text fakePlayerName = fakePlayer.getDisplayName();
         Text playerName = player.getDisplayName();
         //判断被执行的玩家是否为假玩家
         if (CommandUtils.checkFakePlayer(fakePlayer)) {
-            if (FakePlayerProtectManager.isProtect((EntityPlayerMPFake) fakePlayer)) {
+            if (FakePlayerProtectManager.isProtected((EntityPlayerMPFake) fakePlayer)) {
                 //不能传送受保护的假玩家
                 throw CommandUtils.createException("carpet.commands.playerTools.tp.protected_fake_player");
             }
@@ -91,13 +92,14 @@ public class PlayerToolsCommand {
                 SoundEvents.ENTITY_SHULKER_TELEPORT, fakePlayer.getSoundCategory(), 1.0f, 1.0f);
         fakePlayer.teleport(player.getServerWorld(), player.getX(), player.getY(), player.getZ(), player.getYaw(), player.getPitch());
         //在聊天栏显示命令反馈
-        MessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.tp.success", fakePlayerName, playerName);
+        MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.playerTools.tp.success", fakePlayerName, playerName);
         return 1;
     }
 
     //判断玩家是否为假玩家
-    private static int isFakePlayer(ServerCommandSource source, PlayerEntity fakePlayer) {
+    private static int isFakePlayer(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer) {
         Text playerName = fakePlayer.getDisplayName();
+        ServerCommandSource source = context.getSource();
         if (fakePlayer instanceof EntityPlayerMPFake) {
             MessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.is_fake_player", playerName);
             return 0;
@@ -108,15 +110,12 @@ public class PlayerToolsCommand {
     }
 
     //获取假玩家位置
-    private static int getFakePlayerPos(ServerCommandSource source, PlayerEntity fakePlayer) throws CommandSyntaxException {
+    private static int getFakePlayerPos(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer) throws CommandSyntaxException {
         if (CommandUtils.checkFakePlayer(fakePlayer)) {
-            MutableText text = Texts.bracketed(Text.translatable("chat.coordinates", fakePlayer.getBlockX(),
-                    fakePlayer.getBlockY(), fakePlayer.getBlockZ())).styled((Style style)
-                    -> style.withColor(Formatting.GREEN).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD,
-                            fakePlayer.getBlockX() + " " + fakePlayer.getBlockY() + " " + fakePlayer.getBlockZ()))
-                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.translatable("chat.copy.click"))));
+            ServerCommandSource source = context.getSource();
             MessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.pos", fakePlayer.getDisplayName(),
-                    getDimensionText(fakePlayer.getWorld()).getString(), text);
+                    getDimensionText(fakePlayer.getWorld()).getString(),
+                    TextUtils.blockPos(new BlockPos(fakePlayer.getBlockPos()), Formatting.GREEN));
             ServerPlayerEntity player = source.getPlayer();
             if (player != null) {
                 return MathUtils.getBlockIntegerDistance(player.getBlockPos(), fakePlayer.getBlockPos());
