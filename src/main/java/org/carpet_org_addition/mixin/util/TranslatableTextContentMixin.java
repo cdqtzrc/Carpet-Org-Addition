@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 /**
  * 为{@link TranslatableText}重写私有方法
  */
-@SuppressWarnings("GrazieInspection")
+@SuppressWarnings("all")
 @Mixin(TranslatableTextContent.class)
 public abstract class TranslatableTextContentMixin {
 /*    @Shadow

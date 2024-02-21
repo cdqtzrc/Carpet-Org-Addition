@@ -22,9 +22,17 @@ public class Counter<E> implements Iterable<E> {
         add(element, 1);
     }
 
+    public void decrement(E element) {
+        add(element, -1);
+    }
+
     public void add(E element, int count) {
         Integer i = this.COUNTER.get(element);
         this.COUNTER.put(element, i == null ? count : i + count);
+    }
+
+    public void set(E element, int count) {
+        this.COUNTER.put(element, count);
     }
 
     public int getCount(E element) {
@@ -34,6 +42,10 @@ public class Counter<E> implements Iterable<E> {
 
     public int size() {
         return COUNTER.size();
+    }
+
+    public boolean hasElement(E element) {
+        return this.getCount(element) > 0;
     }
 
     @NotNull

@@ -29,6 +29,7 @@ import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionInterface;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionType;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerGuiCraftScreenHandler;
+import org.carpet_org_addition.util.helpers.Counter;
 import org.carpet_org_addition.util.helpers.ItemMatcher;
 
 import java.util.Arrays;
@@ -70,7 +71,9 @@ public class PlayerActionCommand {
                                                                         .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.CRAFT_2X2)))))))
                                 .then(CommandManager.literal("gui").executes(context -> openFakePlayerCraftGui(context, CommandUtils.getPlayerEntity(context)))))
                         .then(CommandManager.literal("trade").then(CommandManager.argument("index", IntegerArgumentType.integer(1))
-                                .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.TRADE))))
+                                .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.TRADE))
+                                .then(CommandManager.literal("void")
+                                        .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.VOID_TRADE)))))
                         .then(CommandManager.literal("info").executes(context -> getAction(context, CommandUtils.getPlayerEntity(context))))
                         .then(CommandManager.literal("rename").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
                                 .then(CommandManager.argument("name", StringArgumentType.string())
@@ -127,6 +130,10 @@ public class PlayerActionCommand {
                         items[i - 1] = new ItemMatcher(ItemPredicateArgumentType.getItemStackPredicate(context, "item" + i));
                     }
                     fakePlayerActionInterface.set3x3Craft(items);
+                }
+                case VOID_TRADE -> {
+                    Counter<FakePlayerActionType> tickCount = fakePlayerActionInterface.getTickCounter();
+                    tickCount.set(FakePlayerActionType.VOID_TRADE, 5);
                 }
                 default -> {
                     // 什么也不做

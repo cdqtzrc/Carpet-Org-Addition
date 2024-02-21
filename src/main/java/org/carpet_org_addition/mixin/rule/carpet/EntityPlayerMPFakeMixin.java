@@ -16,6 +16,7 @@ import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.fakeplayer.*;
+import org.carpet_org_addition.util.helpers.Counter;
 import org.carpet_org_addition.util.helpers.ItemMatcher;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -37,6 +38,9 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
     //假玩家保护类型
     @Unique
     private FakePlayerProtectType protect = FakePlayerProtectType.NONE;
+
+    @Unique
+    private final Counter<FakePlayerActionType> counter = new Counter<>();
 
     //私有化构造方法，防止被创建对象
     private EntityPlayerMPFakeMixin(MinecraftServer server, ServerWorld world, GameProfile profile) {
@@ -85,6 +89,11 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
     @Override
     public void set2x2Craft(ItemMatcher[] items) {
         System.arraycopy(items, 0, ITEMS_2X2, 0, ITEMS_2X2.length);
+    }
+
+    @Override
+    public Counter<FakePlayerActionType> getTickCounter() {
+        return counter;
     }
 
     //假玩家保护类型
@@ -152,7 +161,9 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
             // 假玩家切石机
             case STONECUTTING -> FakePlayerStonecutting.stonecutting(context, thisPlayer);
             // 假玩家交易
-            case TRADE -> FakePlayerTrade.trade(context, thisPlayer);
+            case TRADE -> FakePlayerTrade.trade(context, thisPlayer, false);
+            // 假玩家虚空交易
+            case VOID_TRADE -> FakePlayerTrade.trade(context, thisPlayer, true);
             // 以上值都不匹配，设置操作类型为STOP（不应该出现都不匹配的情况）
             default -> {
                 CarpetOrgAddition.LOGGER.error(action + "的行为没有预先定义");

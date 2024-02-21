@@ -3,6 +3,7 @@ package org.carpet_org_addition.util.fakeplayer;
 import carpet.patches.EntityPlayerMPFake;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.server.command.ServerCommandSource;
+import org.carpet_org_addition.util.helpers.Counter;
 import org.carpet_org_addition.util.helpers.ItemMatcher;
 
 //假玩家动作接口
@@ -32,6 +33,8 @@ public interface FakePlayerActionInterface {
     ItemMatcher[] get2x2Craft();
 
     void set2x2Craft(ItemMatcher[] items);
+
+    Counter<FakePlayerActionType> getTickCounter();
 
     // 将假玩家类型强转为假玩家动作接口类型
     static FakePlayerActionInterface getInstance(EntityPlayerMPFake fakePlayer) {

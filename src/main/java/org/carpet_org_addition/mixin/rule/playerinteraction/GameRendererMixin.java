@@ -14,6 +14,7 @@ import net.minecraft.util.math.Vec3d;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.MathUtils;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -22,6 +23,7 @@ import java.util.Objects;
 
 @Mixin(net.minecraft.client.render.GameRenderer.class)
 public class GameRendererMixin {
+    @Unique
     private final GameRenderer thisGameRenderer = (GameRenderer) (Object) this;
 
     //最大方块交互距离适用于实体
