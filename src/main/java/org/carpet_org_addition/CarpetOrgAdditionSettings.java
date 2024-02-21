@@ -125,12 +125,6 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean channelingIgnoreWeather = false;
 
-    //破坏冰时总是变成水
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE}
-    )
-    public static boolean iceBreakPlaceWater = false;
-
     //无伤末影珍珠
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}

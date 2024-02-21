@@ -66,6 +66,7 @@ public class FakePlayerInventoryScreenHandler extends ScreenHandler {
         return index;
     }
 
+    // TODO 从假玩家物品栏向自己的物品栏移动物品的逻辑有问题：物品不会通过快速移动进入自己的物品栏左上角的槽位
     // 按住Shift键移动物品
     @Override
     public ItemStack quickMove(PlayerEntity player, int slotIndex) {
