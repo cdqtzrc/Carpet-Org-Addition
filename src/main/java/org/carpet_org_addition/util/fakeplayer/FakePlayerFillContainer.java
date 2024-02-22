@@ -9,14 +9,14 @@ import net.minecraft.screen.ShulkerBoxScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.command.ServerCommandSource;
 
-public class FakePlayerMoveItem {
-    private FakePlayerMoveItem() {
+public class FakePlayerFillContainer {
+    private FakePlayerFillContainer() {
     }
 
-    public static void moveItem(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) {
+    public static void fillContainer(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer, boolean allItem) {
         if (fakePlayer.currentScreenHandler instanceof ShulkerBoxScreenHandler shulkerBoxScreenHandler) {
             //获取要装在潜影盒的物品
-            Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
+            Item item = allItem ? null : ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
             //只遍历玩家物品栏，不遍历潜影盒容器
             //前27个格子是潜影盒的槽位
             // 定义变量记录潜影盒是否已满
@@ -26,7 +26,7 @@ public class FakePlayerMoveItem {
                 // 检查槽位内是否有物品
                 if (slot.hasStack()) {
                     ItemStack itemStack = slot.getStack();
-                    if (itemStack.isOf(item)) {
+                    if ((allItem && itemStack.getItem().canBeNested()) || itemStack.isOf(item)) {
                         //相当于按住Shift键移动物品
                         FakePlayerUtils.quickMove(shulkerBoxScreenHandler, index, fakePlayer);
                         // 继续判断槽位内是否有物品，如果有说明潜影盒已满，关闭潜影盒，然后直接结束方法
