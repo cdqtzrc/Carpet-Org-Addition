@@ -6,6 +6,7 @@ import org.carpet_org_addition.rulevalidator.BedrockHardnessValidator;
 import org.carpet_org_addition.rulevalidator.MaxBlockPlaceDistanceLegitimacyValidator;
 import org.carpet_org_addition.rulevalidator.PiglinBarteringTimeValidator;
 import org.carpet_org_addition.rulevalidator.PortalSpawnZombifiedPiglinProbabilityValidator;
+import org.carpet_org_addition.rulevalue.QuickSettingFakePlayerCraft;
 
 public class CarpetOrgAdditionSettings {
     private CarpetOrgAdditionSettings() {
@@ -501,4 +502,10 @@ public class CarpetOrgAdditionSettings {
             validators = PiglinBarteringTimeValidator.class
     )
     public static long customPiglinBarteringTime = -1;
+
+    // 快速设置假玩家合成
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static QuickSettingFakePlayerCraft quickSettingFakePlayerCraft = QuickSettingFakePlayerCraft.FALSE;
 }
