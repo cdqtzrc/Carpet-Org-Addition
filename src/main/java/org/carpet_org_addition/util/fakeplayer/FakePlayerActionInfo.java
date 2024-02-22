@@ -153,6 +153,14 @@ public class FakePlayerActionInfo {
         list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.fill.item",
                 fakePlayer.getDisplayName(), Items.SHULKER_BOX.getName(), getItemStatsName(context)));
         return list;
+    }    // 显示假玩家填充潜影盒的详细信息
+
+    public static ArrayList<MutableText> showFillAllInfo(EntityPlayerMPFake fakePlayer) {
+        ArrayList<MutableText> list = new ArrayList<>();
+        // 将“<玩家名> 正在向 潜影盒 填充 [item] 物品”信息添加到集合
+        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.fill_all.item",
+                fakePlayer.getDisplayName(), Items.SHULKER_BOX.getName()));
+        return list;
     }
 
     // 显示重命名的详细信息

@@ -3,7 +3,6 @@ package org.carpet_org_addition.mixin.rule.carpet;
 import carpet.patches.EntityPlayerMPFake;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,8 +11,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.MessageUtils;
@@ -148,7 +145,9 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
             // 假玩家清空容器
             case CLEAN -> FakePlayerClean.clean(thisPlayer);
             // 假玩家填充容器
-            case FILL -> FakePlayerMoveItem.moveItem(context, thisPlayer);
+            case FILL -> FakePlayerFillContainer.fillContainer(context, thisPlayer, false);
+            // 假玩家填充任意物品到容器
+            case FILL_ALL -> FakePlayerFillContainer.fillContainer(context, thisPlayer, true);
             // 假玩家自动合成物品（单个材料）
             case CRAFT_ONE -> FakePlayerCraft.craftOne(context, thisPlayer, ITEMS_2X2);
             // 假玩家自动合成物品（四个相同的材料）

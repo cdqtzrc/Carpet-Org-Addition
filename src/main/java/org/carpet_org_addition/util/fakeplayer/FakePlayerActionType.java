@@ -27,6 +27,10 @@ public enum FakePlayerActionType {
      */
     FILL,
     /**
+     * 假玩家自动向容器内填充所有物品
+     */
+    FILL_ALL,
+    /**
      * 假玩家自动合成物品（单个材料）
      */
     CRAFT_ONE,
@@ -78,6 +82,7 @@ public enum FakePlayerActionType {
             case SORTING -> FakePlayerActionInfo.showSortingInfo(context, fakePlayer);
             case CLEAN -> FakePlayerActionInfo.showCleanInfo(fakePlayer);
             case FILL -> FakePlayerActionInfo.showFillInfo(context, fakePlayer);
+            case FILL_ALL -> FakePlayerActionInfo.showFillAllInfo(fakePlayer);
             case CRAFT_NINE, CRAFT_3X3 -> FakePlayerActionInfo.showCraftingTableCraftInfo(context, fakePlayer);
             case CRAFT_ONE, CRAFT_FOUR, CRAFT_2X2 ->
                     FakePlayerActionInfo.showSurvivalInventoryCraftInfo(context, fakePlayer);
@@ -108,6 +113,7 @@ public enum FakePlayerActionType {
             case STONECUTTING -> "切石";
             case TRADE -> "交易";
             case VOID_TRADE -> "虚空交易";
+            case FILL_ALL -> "填充任意物品到潜影盒";
         };
     }
 }
