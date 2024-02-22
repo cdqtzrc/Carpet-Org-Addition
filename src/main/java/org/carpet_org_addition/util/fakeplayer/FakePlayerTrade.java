@@ -8,8 +8,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.MerchantScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.village.Merchant;
+import net.minecraft.village.TradeOffer;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.exception.InfiniteLoopException;
 import org.carpet_org_addition.mixin.rule.MerchantScreenHandlerAccessor;
@@ -32,9 +34,8 @@ public class FakePlayerTrade {
                 Merchant merchant = accessor.getMerchant();
                 if (merchant instanceof MerchantEntity merchantEntity) {
                     ChunkPos chunkPos = merchantEntity.getChunkPos();
-                    // 如果村民位于已加载区块内，直接结束方法
                     if (merchantEntity.getWorld().isChunkLoaded(chunkPos.x, chunkPos.z)) {
-                        // 村民位于加载区块内，重置计数器
+                        // 如果村民位于已加载区块内，重置计数器，然后直接结束方法
                         tickCounter.set(FakePlayerActionType.VOID_TRADE, 5);
                         return;
                     }
@@ -55,70 +56,114 @@ public class FakePlayerTrade {
                         "carpet.commands.playerAction.trade");
                 return;
             }
-            int loopCount = 0;
-            try {
-                //如果村民无限交易未启用，则只循环一次
-                do {
-                    loopCount++;
-                    if (loopCount > 1000) {
-                        //无限循环异常
-                        throw new InfiniteLoopException(StringUtils.getPlayerName(fakePlayer)
-                                + "在与村民交易时循环了" + loopCount + "次("
-                                + StringUtils.getDimensionId(fakePlayer.getWorld()) + ":["
-                                + StringUtils.getBlockPosString(fakePlayer.getBlockPos()) + "])");
-                    }
-                    //如果当前交易以锁定，直接结束方法
-                    if (merchantScreenHandler.getRecipes().get(index).isDisabled()) {
-                        return;
-                    }
-                    //模拟单击左侧交易选项的按钮
-                    merchantScreenHandler.setRecipeIndex(index);
-                    merchantScreenHandler.switchTo(index);
-                    //判断输出槽是否有物品，如果有，丢出物品，否则结束方法
-                    if (merchantScreenHandler.getSlot(2).hasStack()) {
-                        FakePlayerUtils.loopThrowItem(merchantScreenHandler, 2, fakePlayer);
-                    } else {
-                        // 如果假玩家背包已满，且村民交易槽位上还有物品，并且交易槽上的物品不足以交易物品
-                        // 这时由于原版漏洞，假玩家单击交易选项按钮时，物品不会自动填充到交易槽位
-                        // 这虽然不至于导致游戏进入死循环，但是假玩家交易会卡住，所以当无法获取输出物品时，要先尝试丢出交易槽位的物品，如果仍然无法获取输出物品才结束方法
-                        if (inventoryIsFull(fakePlayer)) {
-                            // 第一个交易槽位
-                            Slot slot0 = merchantScreenHandler.getSlot(0);
-                            if (slot0.hasStack()) {
-                                FakePlayerUtils.quickMove(merchantScreenHandler, 0, fakePlayer);
-                                if (slot0.hasStack()) {
-                                    FakePlayerUtils.throwItem(merchantScreenHandler, 0, fakePlayer);
-                                }
-                            }
-                            // 第二个交易槽位
-                            Slot slot1 = merchantScreenHandler.getSlot(1);
-                            if (slot1.hasStack()) {
-                                FakePlayerUtils.throwItem(merchantScreenHandler, 1, fakePlayer);
-                                if (slot1.hasStack()) {
-                                    FakePlayerUtils.throwItem(merchantScreenHandler, 1, fakePlayer);
-                                }
-                            }
-                        } else {
-                            return;
-                        }
-                    }
-                } while (CarpetOrgAdditionSettings.villagerInfiniteTrade);
-            } finally {
-                if (voidTrade) {
-                    // 如果是虚空交易，交易完毕后关闭交易GUI
-                    fakePlayer.closeHandledScreen();
-                }
+            // 尝试交易物品
+            tryTrade(context, fakePlayer, merchantScreenHandler, index);
+            if (voidTrade) {
+                // 如果是虚空交易，交易完毕后关闭交易GUI
+                fakePlayer.closeHandledScreen();
             }
         }
     }
 
-    // 判断玩家物品栏是否已满
-    private static boolean inventoryIsFull(EntityPlayerMPFake fakePlayer) {
-        for (ItemStack itemStack : fakePlayer.getInventory().main) {
-            if (itemStack.isEmpty()) {
-                return false;
+    // 尝试交易物品
+    private static void tryTrade(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer,
+                                 MerchantScreenHandler merchantScreenHandler, int index) {
+        int loopCount = 0;
+        //如果村民无限交易未启用，则只循环一次
+        do {
+            loopCount++;
+            if (loopCount > 1000) {
+                //无限循环异常
+                throw new InfiniteLoopException(StringUtils.getPlayerName(fakePlayer)
+                        + "在与村民交易时循环了" + loopCount + "次("
+                        + StringUtils.getDimensionId(fakePlayer.getWorld()) + ":["
+                        + StringUtils.getBlockPosString(fakePlayer.getBlockPos()) + "])");
+            }
+            //如果当前交易以锁定，直接结束方法
+            TradeOffer tradeOffer = merchantScreenHandler.getRecipes().get(index);
+            if (tradeOffer.isDisabled()) {
+                return;
+            }
+            // 选择要交易物品的索引
+            merchantScreenHandler.setRecipeIndex(index);
+            // 填充交易槽位
+            if (switchItem(fakePlayer, merchantScreenHandler, tradeOffer)) {
+                // 判断输出槽是否有物品，如果有，丢出物品，否则停止交易，结束方法
+                if (merchantScreenHandler.getSlot(2).hasStack()) {
+                    FakePlayerUtils.loopThrowItem(merchantScreenHandler, 2, fakePlayer);
+                } else {
+                    FakePlayerUtils.stopAction(context.getSource(), fakePlayer, "carpet.commands.playerAction.trade");
+                    return;
+                }
+            } else {
+                // 除非假玩家物品栏内已经没有足够的物品用来交易，否则填充交易槽位不会失败
+                return;
+            }
+        } while (CarpetOrgAdditionSettings.villagerInfiniteTrade);
+    }
+
+    // 选择物品
+    private static boolean switchItem(EntityPlayerMPFake fakePlayer, MerchantScreenHandler merchantScreenHandler, TradeOffer tradeOffer) {
+        // 获取第一个交易物品
+        ItemStack firstBuyItem = tradeOffer.getAdjustedFirstBuyItem();// 0索引
+        // 获取第二个交易物品
+        ItemStack secondBuyItem = tradeOffer.getSecondBuyItem();// 1索引
+        DefaultedList<Slot> list = merchantScreenHandler.slots;
+        return fillTradeSlot(fakePlayer, merchantScreenHandler, firstBuyItem, 0, list)
+                && fillTradeSlot(fakePlayer, merchantScreenHandler, secondBuyItem, 1, list);
+    }
+
+    /**
+     * 填充交易槽位
+     *
+     * @param fakePlayer            要交易物品的假玩家
+     * @param merchantScreenHandler 假玩家当前打开的交易GUI
+     * @param buyItem               村民的交易物品
+     * @param slotIndex             第几个交易物品
+     * @param list                  当前交易界面的物品栏
+     * @return 槽位上的物品是否已经足够参与交易
+     */
+    private static boolean fillTradeSlot(EntityPlayerMPFake fakePlayer, MerchantScreenHandler merchantScreenHandler,
+                                         ItemStack buyItem, int slotIndex, DefaultedList<Slot> list) {
+        // 获取交易槽上的物品
+        ItemStack slotItem = merchantScreenHandler.getSlot(slotIndex).getStack();
+        // 如果交易槽上的物品不是需要的物品，就丢弃槽位中的物品
+        if (!slotItem.isOf(buyItem.getItem())) {
+            FakePlayerUtils.throwItem(merchantScreenHandler, slotIndex, fakePlayer);
+        }
+        // 如果交易所需的物品为空，或者槽位的物品已经是所需的物品，直接跳过该物品
+        if (buyItem.isEmpty() || slotItemCanTrade(slotItem, buyItem)) {
+            return true;
+        }
+        // 填充交易物品
+        for (int index = 3; index < list.size(); index++) {
+            ItemStack itemStack = list.get(index).getStack();
+            if (CarpetOrgAdditionSettings.fakePlayerCraftKeepItem && itemStack.getCount() == 1
+                    && itemStack.getMaxCount() > 1) {
+                continue;
+            }
+            // 如果交易槽位上有物品，就将当前物品与交易槽上的物品比较，同时比较物品NBT
+            // 否则，将当前物品直接与村民需要的交易物品进行比较，不比较NBT
+            if (slotItem.isEmpty() ? buyItem.isOf(itemStack.getItem()) : ItemStack.canCombine(slotItem, itemStack)) {
+                // 如果匹配，将当前物品移动到交易槽位
+                FakePlayerUtils.pickupAndMoveItemStack(merchantScreenHandler, index, slotIndex, fakePlayer);
+                // 如果假玩家填充交易槽后光标上有剩余的物品，将剩余的物品放回原槽位
+                if (!merchantScreenHandler.getCursorStack().isEmpty()) {
+                    FakePlayerUtils.pickupCursorStack(merchantScreenHandler, index, fakePlayer);
+                }
+                slotItem = merchantScreenHandler.getSlot(slotIndex).getStack();
+                // 交易槽位物品的地址值可能发生变化，不能直接使用slotItem对象，需要重新获取
+                if (slotItemCanTrade(slotItem, buyItem)) {
+                    return true;
+                }
             }
         }
-        return true;
+        // 假玩家身上没有足够的物品用来交易，返回false
+        return false;
+    }
+
+    // 检查槽位上的物品是否可以交易
+    private static boolean slotItemCanTrade(ItemStack slotItem, ItemStack tradeItem) {
+        return (slotItem.getCount() >= tradeItem.getCount()) || slotItem.getCount() >= slotItem.getMaxCount();
     }
 }

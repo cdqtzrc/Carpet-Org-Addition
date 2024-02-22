@@ -1,7 +1,14 @@
 package org.carpet_org_addition.mixin.rule;
 
+import carpet.patches.EntityPlayerMPFake;
+import carpet.utils.CommandHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -24,6 +31,35 @@ public abstract class PlayerEntityMixin {
         if (CarpetOrgAdditionSettings.healthNotFullCanEat && thisPlayer.getHealth() < thisPlayer.getMaxHealth() - 0.3//-0.3：可能生命值不满但是显示的心满了
                 && this.getHungerManager().getSaturationLevel() <= 5) {
             cir.setReturnValue(true);
+        }
+    }
+
+    // 快速设置假玩家合成
+    @Inject(method = "interact", at = @At("HEAD"), cancellable = true)
+    private void interact(Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+        if (thisPlayer instanceof ServerPlayerEntity serverPlayer
+                && CommandHelper.canUseCommand(serverPlayer.getCommandSource(),
+                CarpetOrgAdditionSettings.commandPlayerAction)) {
+            switch (CarpetOrgAdditionSettings.quickSettingFakePlayerCraft) {
+                case FALSE:
+                    break;
+                case SNEAKING:
+                    if (!thisPlayer.isSneaking()) {
+                        break;
+                    }
+                case TRUE: {
+                    if (serverPlayer.getMainHandStack().isOf(Items.CRAFTING_TABLE)) {
+                        if (entity instanceof EntityPlayerMPFake fakePlayer) {
+                            serverPlayer.getServerWorld().getServer().getCommandManager()
+                                    .executeWithPrefix(serverPlayer.getCommandSource(),
+                                            "/playerAction " + fakePlayer.getName().getString() + " craft gui");
+                            cir.setReturnValue(ActionResult.SUCCESS);
+                        }
+                    }
+                }
+                default: {
+                }
+            }
         }
     }
 }
