@@ -76,7 +76,7 @@ public class InventoryUtils {
      * @param itemMatcher         一个物品匹配器对象，用来指定要从潜影盒中拿取的物品
      * @return 潜影盒中获取的指定物品
      */
-    public static ItemStack fromShulkerBoxPickItem(ItemStack shulkerBoxItemStack, ItemMatcher itemMatcher) {
+    public static ItemStack pickItemFromShulkerBox(ItemStack shulkerBoxItemStack, ItemMatcher itemMatcher) {
         // 判断潜影盒是否为空，空潜影盒直接返回空物品
         if (isEmptyShulkerBox(shulkerBoxItemStack)) {
             return ItemStack.EMPTY;

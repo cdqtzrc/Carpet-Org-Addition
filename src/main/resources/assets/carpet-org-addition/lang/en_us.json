@@ -291,6 +291,7 @@
   "carpet.commands.playerAction.info.sorting.this": "%s: %s",
   "carpet.commands.playerAction.info.sorting.other": "其他物品: %s",
   "carpet.commands.playerAction.info.clean.item": "%s正在清空%s",
+  "carpet.commands.playerAction.info.clean.designated_item": "%s正在清空%s中的%s",
   "carpet.commands.playerAction.info.fill.item": "%s正在向%s填充%s物品",
   "carpet.commands.playerAction.info.fill_all.item": "%s正在向%s填充物品",
   "carpet.commands.playerAction.info.rename.item": "%s正在将%s重命名为“%s”",

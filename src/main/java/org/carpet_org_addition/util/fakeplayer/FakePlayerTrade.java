@@ -46,11 +46,11 @@ public class FakePlayerTrade {
                     tickCounter.decrement(FakePlayerActionType.VOID_TRADE);
                     return;
                 } else {
-                    // 如果归零，重置计数器
+                    // 如果归零，重置计数器，然后开始交易
                     tickCounter.set(FakePlayerActionType.VOID_TRADE, 5);
                 }
             }
-            //判断按钮索引是否越界
+            // 判断按钮索引是否越界
             if (merchantScreenHandler.getRecipes().size() <= index) {
                 FakePlayerUtils.stopAction(context.getSource(), fakePlayer,
                         "carpet.commands.playerAction.trade");
@@ -135,18 +135,15 @@ public class FakePlayerTrade {
         if (buyItem.isEmpty() || slotItemCanTrade(slotItem, buyItem)) {
             return true;
         }
-        // 填充交易物品
+        // 将物品移动到交易槽位
         for (int index = 3; index < list.size(); index++) {
+            // 获取当前槽位上的物品
             ItemStack itemStack = list.get(index).getStack();
-            if (CarpetOrgAdditionSettings.fakePlayerCraftKeepItem && itemStack.getCount() == 1
-                    && itemStack.getMaxCount() > 1) {
-                continue;
-            }
             // 如果交易槽位上有物品，就将当前物品与交易槽上的物品比较，同时比较物品NBT
             // 否则，将当前物品直接与村民需要的交易物品进行比较，不比较NBT
-            if (slotItem.isEmpty() ? buyItem.isOf(itemStack.getItem()) : ItemStack.canCombine(slotItem, itemStack)) {
-                // 如果匹配，将当前物品移动到交易槽位
-                FakePlayerUtils.pickupAndMoveItemStack(merchantScreenHandler, index, slotIndex, fakePlayer);
+            if ((slotItem.isEmpty() ? buyItem.isOf(itemStack.getItem()) : ItemStack.canCombine(slotItem, itemStack))
+                    // 如果匹配，将当前物品移动到交易槽位
+                    && FakePlayerUtils.withKeepPickupAndMoveItemStack(merchantScreenHandler, index, slotIndex, fakePlayer)) {
                 // 如果假玩家填充交易槽后光标上有剩余的物品，将剩余的物品放回原槽位
                 if (!merchantScreenHandler.getCursorStack().isEmpty()) {
                     FakePlayerUtils.pickupCursorStack(merchantScreenHandler, index, fakePlayer);
