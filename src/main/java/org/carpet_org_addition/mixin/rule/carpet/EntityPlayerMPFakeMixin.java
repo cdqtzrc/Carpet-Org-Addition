@@ -143,7 +143,9 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
             // 假玩家分拣
             case SORTING -> FakePlayerSorting.sorting(context, thisPlayer);
             // 假玩家清空容器
-            case CLEAN -> FakePlayerClean.clean(thisPlayer);
+            case CLEAN -> FakePlayerClean.clean(context, thisPlayer, true);
+            // 清空潜影盒内的指定物品
+            case CLEAN_DESIGNATED -> FakePlayerClean.clean(context, thisPlayer, false);
             // 假玩家填充容器
             case FILL -> FakePlayerFillContainer.fillContainer(context, thisPlayer, false);
             // 假玩家填充任意物品到容器

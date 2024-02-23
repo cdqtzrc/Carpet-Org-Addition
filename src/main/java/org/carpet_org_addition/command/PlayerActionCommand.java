@@ -41,7 +41,9 @@ public class PlayerActionCommand {
                 .then(CommandManager.argument("player", EntityArgumentType.player())
                         .then(CommandManager.literal("sorting").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext)).then(CommandManager.argument("this", Vec3ArgumentType.vec3())
                                 .then(CommandManager.argument("other", Vec3ArgumentType.vec3()).executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.SORTING))))))
-                        .then(CommandManager.literal("clean").executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.CLEAN)))
+                        .then(CommandManager.literal("clean").executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.CLEAN))
+                                .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
+                                        .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.CLEAN_DESIGNATED))))
                         .then(CommandManager.literal("fill").executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.FILL_ALL))
                                 .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
                                         .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.FILL))))
@@ -99,8 +101,8 @@ public class PlayerActionCommand {
         if (CommandUtils.checkFakePlayer(fakePlayer)) {
             //将假玩家类型强转为假玩家动作接口
             FakePlayerActionInterface fakePlayerActionInterface = (FakePlayerActionInterface) fakePlayer;
-            //如果假玩家动作类型是自定义物品合成，为数组中的每一个元素赋值
             switch (action) {
+                //如果假玩家动作类型是自定义物品合成，为数组中的每一个元素赋值
                 // 单个合成材料，在生存模式物品栏中合成，第一个元素填入指定物品，其他元素填入空气
                 case CRAFT_ONE -> {
                     Predicate<ItemStack> item = ItemPredicateArgumentType.getItemStackPredicate(context, "item");
@@ -133,9 +135,10 @@ public class PlayerActionCommand {
                     }
                     fakePlayerActionInterface.set3x3Craft(items);
                 }
+                // 初始化虚空交易计时器
                 case VOID_TRADE -> {
-                    Counter<FakePlayerActionType> tickCount = fakePlayerActionInterface.getTickCounter();
-                    tickCount.set(FakePlayerActionType.VOID_TRADE, 5);
+                    Counter<FakePlayerActionType> tickCounter = fakePlayerActionInterface.getTickCounter();
+                    tickCounter.set(FakePlayerActionType.VOID_TRADE, 5);
                 }
                 default -> {
                     // 什么也不做

@@ -63,7 +63,7 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.COMMAND},
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
-    public static String commandProtect = "ops";
+    public static String commandProtect = "false";
 
     //创造玩家免疫/kill
     @Rule(
@@ -422,13 +422,13 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean disableWaterFreezes = false;
 
-    //假玩家合成保留物品
+    // 假玩家合成保留物品
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean fakePlayerCraftKeepItem = false;
 
-    //绘制粒子线命令
+    // 绘制粒子线命令
     @Rule(
             categories = {ORG, RuleCategory.COMMAND},
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}

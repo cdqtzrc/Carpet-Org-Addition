@@ -23,6 +23,10 @@ public enum FakePlayerActionType {
      */
     CLEAN,
     /**
+     * 假玩家清空容器中的指定物品
+     */
+    CLEAN_DESIGNATED,
+    /**
      * 假玩家填充容器
      */
     FILL,
@@ -80,7 +84,8 @@ public enum FakePlayerActionType {
         return switch (this) {
             case STOP -> FakePlayerActionInfo.showStopInfo(fakePlayer);
             case SORTING -> FakePlayerActionInfo.showSortingInfo(context, fakePlayer);
-            case CLEAN -> FakePlayerActionInfo.showCleanInfo(fakePlayer);
+            case CLEAN-> FakePlayerActionInfo.showCleanInfo(fakePlayer);
+            case CLEAN_DESIGNATED -> FakePlayerActionInfo.showCleanDesignatedInfo(context,fakePlayer);
             case FILL -> FakePlayerActionInfo.showFillInfo(context, fakePlayer);
             case FILL_ALL -> FakePlayerActionInfo.showFillAllInfo(fakePlayer);
             case CRAFT_NINE, CRAFT_3X3 -> FakePlayerActionInfo.showCraftingTableCraftInfo(context, fakePlayer);
@@ -103,6 +108,7 @@ public enum FakePlayerActionType {
             case STOP -> "停止";
             case SORTING -> "分拣";
             case CLEAN -> "清空潜影盒";
+            case CLEAN_DESIGNATED -> "清空潜影盒内指定物品";
             case FILL -> "填充潜影盒";
             case CRAFT_ONE -> "合成(单个材料)";
             case CRAFT_FOUR -> "合成(四个相同材料)";

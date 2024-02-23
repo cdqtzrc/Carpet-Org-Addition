@@ -111,29 +111,38 @@ public class FakePlayerUtils {
     }
 
     /**
-     * 通过模拟光标拾取放置物品来快速移动物品，如果光标在拾取物品前有物品，则先丢弃该物品，用这种方式移动物品比模拟按住Shift键移动和使用数字键移动更加灵活，因为它可以在任意两个槽位之间移动，但是这种移动方式需要点击插槽两次，比另外两种略微浪费资源，有条件时也可以使用另外两种
+     * 通过模拟光标拾取放置物品来快速移动物品，如果光标在拾取物品前有物品，则先丢弃该物品，用这种方式移动物品比模拟按住Shift键移动和使用数字键移动更加灵活，因为它可以在任意两个槽位之间移动，但是这种移动方式需要点击插槽两次，比另外两种略微浪费资源，有条件时也可以使用另外两种<br/>
+     * 此方法受到规则{@link CarpetOrgAdditionSettings#fakePlayerCraftKeepItem}影响，会先判断当前物品是否不能移动，然后再进行移动物品操作
      *
      * @param screenHandler 玩家当前打开的GUI
      * @param fromIndex     玩家拿取物品槽位的索引索引
      * @param toIndex       玩家放置物品的槽位所以
      * @param player        当前操作GUI的假玩家
+     * @return 物品是否可以移动
      */
-    public static void pickupAndMoveItemStack(ScreenHandler screenHandler, int fromIndex,
-                                              int toIndex, EntityPlayerMPFake player) {
+    public static boolean withKeepPickupAndMoveItemStack(ScreenHandler screenHandler, int fromIndex,
+                                                         int toIndex, EntityPlayerMPFake player) {
+        ItemStack itemStack = screenHandler.getSlot(fromIndex).getStack();
+        // 如果假玩家合成保留物品启用，并且该物品的数量为1，并且该物品的最大堆叠数大于1
+        // 认为这个物品需要保留，不移动物品
+        if (CarpetOrgAdditionSettings.fakePlayerCraftKeepItem && itemStack.getCount() == 1 && itemStack.getMaxCount() > 1) {
+            return false;
+        }
         // 如果鼠标光标上有物品，先把光标上的物品丢弃
         if (!screenHandler.getCursorStack().isEmpty()) {
             screenHandler.onSlotClick(EMPTY_SPACE_SLOT_INDEX, PICKUP_LEFT_CLICK, SlotActionType.PICKUP, player);
         }
         screenHandler.onSlotClick(fromIndex, PICKUP_LEFT_CLICK, SlotActionType.PICKUP, player);
-        //如果规则假玩家合成保留物品启用，并且该物品的最大堆叠数大于1，就在该槽位上放回一个物品
+        // 如果规则假玩家合成保留物品启用，并且该物品的最大堆叠数大于1，就在该槽位上再放回一个物品
         if (CarpetOrgAdditionSettings.fakePlayerCraftKeepItem && screenHandler.getCursorStack().getMaxCount() > 1) {
             screenHandler.onSlotClick(fromIndex, PICKUP_RIGHT_CLICK, SlotActionType.PICKUP, player);
         }
         screenHandler.onSlotClick(toIndex, PICKUP_LEFT_CLICK, SlotActionType.PICKUP, player);
+        return true;
     }
 
     /**
-     * 功能与{@link FakePlayerUtils#pickupAndMoveItemStack(ScreenHandler, int, int, EntityPlayerMPFake)}基本一致，只是本方法使用右键拿取物品，即一次拿取一半的物品
+     * 功能与{@link FakePlayerUtils#withKeepPickupAndMoveItemStack(ScreenHandler, int, int, EntityPlayerMPFake)}基本一致，只是本方法使用右键拿取物品，即一次拿取一半的物品
      *
      * @param screenHandler 玩家当前打开的GUI
      * @param fromIndex     从哪个槽位拿取物品

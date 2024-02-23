@@ -76,21 +76,16 @@ public class FakePlayerCraft {
                         for (int inventoryIndex = 10; inventoryIndex < size; inventoryIndex++) {
                             ItemStack itemStack = craftingScreenHandler.getSlot(inventoryIndex).getStack();
                             if (itemMatcher.test(itemStack)) {
-                                // 如果假玩家合成保留物品启用，并且该物品的数量为1，并且该物品的最大堆叠数大于1
-                                // 认为这个物品需要保留，结束本轮循环
-                                if (CarpetOrgAdditionSettings.fakePlayerCraftKeepItem && itemStack.getCount() == 1
-                                        && itemStack.getMaxCount() > 1) {
-                                    continue;
-                                }
                                 // 光标拾取和移动物品
-                                FakePlayerUtils.pickupAndMoveItemStack(craftingScreenHandler,
-                                        inventoryIndex, index, fakePlayer);
-                                // 找到正确合成材料的次数自增
-                                successCount++;
-                                break;
+                                if (FakePlayerUtils.withKeepPickupAndMoveItemStack(craftingScreenHandler,
+                                        inventoryIndex, index, fakePlayer)) {
+                                    // 找到正确合成材料的次数自增
+                                    successCount++;
+                                    break;
+                                }
                             } else if (CarpetOrgAdditionSettings.fakePlayerCraftPickItemFromShulkerBox
                                     && InventoryUtils.isShulkerBoxItem(itemStack)) {
-                                ItemStack contentItemStack = InventoryUtils.fromShulkerBoxPickItem(itemStack, itemMatcher);
+                                ItemStack contentItemStack = InventoryUtils.pickItemFromShulkerBox(itemStack, itemMatcher);
                                 if (!contentItemStack.isEmpty()) {
                                     // 丢弃光标上的物品（如果有）
                                     FakePlayerUtils.dropCursorStack(craftingScreenHandler, fakePlayer);
@@ -173,19 +168,14 @@ public class FakePlayerCraft {
                     ItemStack itemStack = playerScreenHandler.getSlot(inventoryIndex).getStack();
                     //如果该槽位是正确的合成材料，将该物品移动到合成格，然后增加找到正确合成材料的次数
                     if (itemMatcher.test(itemStack)) {
-                        // 如果假玩家合成保留物品启用，并且该物品的数量为1，并且该物品的最大堆叠数大于1
-                        // 认为这个物品需要保留，结束本轮循环
-                        if (CarpetOrgAdditionSettings.fakePlayerCraftKeepItem && itemStack.getCount() == 1
-                                && itemStack.getMaxCount() > 1) {
-                            continue;
+                        if (FakePlayerUtils.withKeepPickupAndMoveItemStack(playerScreenHandler,
+                                inventoryIndex, craftIndex, fakePlayer)) {
+                            successCount++;
+                            break;
                         }
-                        FakePlayerUtils.pickupAndMoveItemStack(playerScreenHandler,
-                                inventoryIndex, craftIndex, fakePlayer);
-                        successCount++;
-                        break;
                     } else if (CarpetOrgAdditionSettings.fakePlayerCraftPickItemFromShulkerBox
                             && InventoryUtils.isShulkerBoxItem(itemStack)) {
-                        ItemStack contentItemStack = InventoryUtils.fromShulkerBoxPickItem(itemStack, itemMatcher);
+                        ItemStack contentItemStack = InventoryUtils.pickItemFromShulkerBox(itemStack, itemMatcher);
                         if (!contentItemStack.isEmpty()) {
                             // 丢弃光标上的物品（如果有）
                             FakePlayerUtils.dropCursorStack(playerScreenHandler, fakePlayer);

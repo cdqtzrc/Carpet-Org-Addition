@@ -146,6 +146,17 @@ public class FakePlayerActionInfo {
         return list;
     }
 
+    // 显示清空潜影盒指定物品的详细信息
+    public static ArrayList<MutableText> showCleanDesignatedInfo(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) {
+        ArrayList<MutableText> list = new ArrayList<>();
+        // 将玩家清空潜影盒的信息添加到集合
+        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.clean.designated_item",
+                fakePlayer.getDisplayName(),
+                Items.SHULKER_BOX.getName(),
+                ItemStackArgumentType.getItemStackArgument(context, "item").getItem().getName()));
+        return list;
+    }
+
     // 显示假玩家填充潜影盒的详细信息
     public static ArrayList<MutableText> showFillInfo(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) {
         ArrayList<MutableText> list = new ArrayList<>();
