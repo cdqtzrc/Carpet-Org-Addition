@@ -380,12 +380,6 @@ public class CarpetOrgAdditionSettings {
     )
     public static String commandLocations = "ops";
 
-    //生命恢复附带饱和
-    @Rule(
-            categories = {ORG, RuleCategory.SURVIVAL}
-    )
-    public static boolean regenerationSaturation = false;
-
     //生命值不满可以进食
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}

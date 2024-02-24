@@ -17,7 +17,7 @@ import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.fakeplayer.*;
 import org.carpet_org_addition.util.helpers.Counter;
-import org.carpet_org_addition.util.helpers.ItemMatcher;
+import org.carpet_org_addition.util.matcher.Matcher;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -41,6 +41,14 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
 
     @Unique
     private final Counter<FakePlayerActionType> counter = new Counter<>();
+
+    /**
+     * 使用数组的动态初始化把数组提前创建好，需要修改的时候只修改数组内的元素，这样能保证数组的长度是固定的
+     */
+    @Unique
+    private final Matcher[] ITEMS_3X3 = new Matcher[9];
+    @Unique
+    private final Matcher[] ITEMS_2X2 = new Matcher[4];
 
     //私有化构造方法，防止被创建对象
     private EntityPlayerMPFakeMixin(MinecraftServer server, ServerWorld world, GameProfile profile) {
@@ -71,23 +79,23 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
 
     // 假玩家3x3合成时的配方
     @Override
-    public ItemMatcher[] get3x3Craft() {
+    public Matcher[] get3x3Craft() {
         return ITEMS_3X3;
     }
 
     @Override
-    public void set3x3Craft(ItemMatcher[] items) {
+    public void set3x3Craft(Matcher[] items) {
         // 数组拷贝
         System.arraycopy(items, 0, ITEMS_3X3, 0, ITEMS_3X3.length);
     }
 
     @Override
-    public ItemMatcher[] get2x2Craft() {
+    public Matcher[] get2x2Craft() {
         return ITEMS_2X2;
     }
 
     @Override
-    public void set2x2Craft(ItemMatcher[] items) {
+    public void set2x2Craft(Matcher[] items) {
         System.arraycopy(items, 0, ITEMS_2X2, 0, ITEMS_2X2.length);
     }
 
@@ -179,7 +187,8 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
     //阻止受保护的假玩家受到伤害
     @Override
     public boolean damage(DamageSource source, float amount) {
-        if (FakePlayerProtectManager.isInvincible(thisPlayer) && !(source.getSource() instanceof PlayerEntity)
+        if (FakePlayerProtectManager.ruleEnable() && FakePlayerProtectManager.isInvincible(thisPlayer)
+                && !(source.getSource() instanceof PlayerEntity)
                 && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return false;
         }
@@ -189,7 +198,8 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
     //阻止受保护的假玩家死亡
     @Inject(method = "onDeath", at = @At("HEAD"), cancellable = true)
     private void onDeath(DamageSource source, CallbackInfo ci) {
-        if (FakePlayerProtectManager.isImmortal(thisPlayer) && !(source.getSource() instanceof PlayerEntity)
+        if (FakePlayerProtectManager.ruleEnable() && FakePlayerProtectManager.isImmortal(thisPlayer)
+                && !(source.getSource() instanceof PlayerEntity)
                 && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             this.setHealth(this.getMaxHealth());
             HungerManager hungerManager = this.getHungerManager();

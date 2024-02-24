@@ -43,7 +43,9 @@ import org.carpet_org_addition.util.findtask.result.TradeEnchantedBookResult;
 import org.carpet_org_addition.util.findtask.result.TradeItemFindResult;
 import org.carpet_org_addition.util.helpers.Counter;
 import org.carpet_org_addition.util.helpers.ImmutableInventory;
-import org.carpet_org_addition.util.helpers.ItemMatcher;
+import org.carpet_org_addition.util.matcher.ItemMatcher;
+import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
+import org.carpet_org_addition.util.matcher.Matcher;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -103,25 +105,25 @@ public class FinderCommand {
         // 获取玩家所在的位置，这是命令开始执行的坐标
         BlockPos sourceBlockPos = player.getBlockPos();
         // 查找周围容器中的物品
-        ItemMatcher itemMatcher = new ItemMatcher(predicate);
-        ArrayList<ItemFindResult> list = findItem(player.getServerWorld(), sourceBlockPos, itemMatcher, range);
+        Matcher matcher = new ItemPredicateMatcher(predicate);
+        ArrayList<ItemFindResult> list = findItem(player.getServerWorld(), sourceBlockPos, matcher, range);
         if (list.isEmpty()) {
             // 在周围的容器中找不到指定物品
             MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.item.find.not_item",
-                    itemMatcher.toText());
+                    matcher.toText());
             return 0;
         } else if (list.size() > 300000) {
             // 容器太多，无法统计
             throw CommandUtils.createException("carpet.commands.finder.item.too_much_container",
-                    itemMatcher.toText(), list.size());
+                    matcher.toText(), list.size());
         }
         // 在一个单独的线程中处理数据
-        new ItemFindFeedback(context, list, itemMatcher, maxCount).start();
+        new ItemFindFeedback(context, list, matcher, maxCount).start();
         return list.size();
     }
 
     // 开始查找物品
-    private static ArrayList<ItemFindResult> findItem(ServerWorld world, BlockPos blockPos, ItemMatcher itemMatcher,
+    private static ArrayList<ItemFindResult> findItem(ServerWorld world, BlockPos blockPos, Matcher matcher,
                                                       int range) throws CommandSyntaxException {
         // 创建ArrayList集合，用来记录找到的物品坐标
         ArrayList<ItemFindResult> list = new ArrayList<>();
@@ -132,6 +134,58 @@ public class FinderCommand {
         // 获取当前系统时间的毫秒值
         long currentTimeMillis = System.currentTimeMillis();
         // 查找世界上容器中的物品
+        findFromContainer(world, blockPos, matcher, range, maxX, maxZ, maxHeight, currentTimeMillis, list);
+        // 查找世界上的掉落物物品
+        findFromWorld(world, blockPos, matcher, range, list);
+        return list;
+    }
+
+    // 从掉落物中查找物品
+    private static void findFromWorld(ServerWorld world, BlockPos blockPos, Matcher itemMatchers, int range, ArrayList<ItemFindResult> list) {
+        Box box = new Box(blockPos.getX() - range, world.getBottomY(), blockPos.getZ() - range,
+                blockPos.getX() + range, world.getTopY(), blockPos.getZ() + range);
+        // 获取范围内所有掉落物的集合
+        List<ItemEntity> itemEntityList = world.getNonSpectatingEntities(ItemEntity.class, box);
+        // 掉落物的翻译键
+        String itemEntityName = "carpet.commands.finder.item.drops";
+        // 遍历集合内所有物品实体
+        for (ItemEntity item : itemEntityList) {
+            // 获取物品实体的物品堆栈
+            ItemStack itemStack = item.getStack();
+            // 检查该物品是否与指定物品匹配
+            if (itemMatchers.test(itemStack)) {
+                // 如果匹配，将物品添加到集合
+                list.add(new ItemFindResult(item.getBlockPos(), itemStack.getCount(), false,
+                        itemEntityName, itemMatchers));
+            } else if (InventoryUtils.isShulkerBoxItem(itemStack)) {
+                // 否则，检查该物品实体是否为潜影盒掉落物，如果是，获取潜影盒的物品栏
+                ImmutableInventory inventory;
+                try {
+                    inventory = InventoryUtils.getInventory(itemStack);
+                } catch (NoNbtException e) {
+                    // 潜影盒没有NBT，直接结束本轮循环
+                    continue;
+                }
+                // 定义变量记录在潜影盒内找到物品的数量
+                Counter<ItemMatcher> counter = new Counter<>();
+                // 获取潜影盒内的每一个物品
+                for (int i = 0; i < inventory.size(); i++) {
+                    ItemStack shulkerBoxItemStack = inventory.getStack(i);
+                    if (itemMatchers.test(shulkerBoxItemStack)) {
+                        counter.add(new ItemMatcher(shulkerBoxItemStack), shulkerBoxItemStack.getCount());
+                    }
+                }
+                // 如果在潜影盒内有找到物品，将查找结果添加到集合
+                for (ItemMatcher matcher : counter) {
+                    list.add(new ItemFindResult(item.getBlockPos(), counter.getCount(matcher), true,
+                            itemEntityName, matcher));
+                }
+            }
+        }
+    }
+
+    // 从容器中查找物品
+    private static void findFromContainer(ServerWorld world, BlockPos blockPos, Matcher itemMatchers, int range, int maxX, int maxZ, int maxHeight, long currentTimeMillis, ArrayList<ItemFindResult> list) throws CommandSyntaxException {
         // 遍历整个三维空间，找到与目标物品匹配的物品
         for (int minX = blockPos.getX() - range; minX <= maxX; minX++) {
             for (int minZ = blockPos.getZ() - range; minZ <= maxZ; minZ++) {
@@ -150,7 +204,7 @@ public class FinderCommand {
                             // 获取当前准备比较的物品堆栈对象
                             ItemStack itemStack = inventory.getStack(index);
                             // 如果物品栏中的物品与指定物品匹配，找到物品的数量增加
-                            if (itemMatcher.test(itemStack)) {
+                            if (itemMatchers.test(itemStack)) {
                                 counter.add(new ItemMatcher(itemStack), itemStack.getCount());
                                 // 不再判断本物品是否为潜影盒
                                 continue;
@@ -168,7 +222,7 @@ public class FinderCommand {
                                 // 在潜影盒内寻找物品
                                 for (int i = 0; i < shulkerBoxInventory.size(); i++) {
                                     ItemStack shulkerBoxItemStack = shulkerBoxInventory.getStack(i);
-                                    if (itemMatcher.test(shulkerBoxItemStack)) {
+                                    if (itemMatchers.test(shulkerBoxItemStack)) {
                                         // 在潜影盒内找到物品的数量增加
                                         inTheShulkerBox = true;
                                         // 找到物品的数量增加
@@ -178,57 +232,15 @@ public class FinderCommand {
                             }
                         }
                         // 如果容器中有指定物品，就将查找结果添加进集合
-                        for (ItemMatcher matcher : counter) {
-                            list.add(new ItemFindResult(currentPos, counter.getCount(matcher), inTheShulkerBox,
+                        for (ItemMatcher itemMatcher : counter) {
+                            list.add(new ItemFindResult(currentPos, counter.getCount(itemMatcher), inTheShulkerBox,
                                     world.getBlockState(currentPos).getBlock().getTranslationKey(),
-                                    matcher));
+                                    itemMatcher));
                         }
                     }
                 }
             }
         }
-        // 查找世界上的掉落物物品
-        Box box = new Box(blockPos.getX() - range, world.getBottomY(), blockPos.getZ() - range,
-                blockPos.getX() + range, world.getTopY(), blockPos.getZ() + range);
-        // 获取范围内所有掉落物的集合
-        List<ItemEntity> itemEntityList = world.getNonSpectatingEntities(ItemEntity.class, box);
-        // 掉落物的翻译键
-        String itemEntityName = "carpet.commands.finder.item.drops";
-        // 遍历集合内所有物品实体
-        for (ItemEntity item : itemEntityList) {
-            // 获取物品实体的物品堆栈
-            ItemStack itemStack = item.getStack();
-            // 检查该物品是否与指定物品匹配
-            if (itemMatcher.test(itemStack)) {
-                // 如果匹配，将物品添加到集合
-                list.add(new ItemFindResult(item.getBlockPos(), itemStack.getCount(), false,
-                        itemEntityName, itemMatcher));
-            } else if (InventoryUtils.isShulkerBoxItem(itemStack)) {
-                // 否则，检查该物品实体是否为潜影盒掉落物，如果是，获取潜影盒的物品栏
-                ImmutableInventory inventory;
-                try {
-                    inventory = InventoryUtils.getInventory(itemStack);
-                } catch (NoNbtException e) {
-                    // 潜影盒没有NBT，直接结束本轮循环
-                    continue;
-                }
-                // 定义变量记录在潜影盒内找到物品的数量
-                Counter<ItemMatcher> counter = new Counter<>();
-                // 获取潜影盒内的每一个物品
-                for (int i = 0; i < inventory.size(); i++) {
-                    ItemStack shulkerBoxItemStack = inventory.getStack(i);
-                    if (itemMatcher.test(shulkerBoxItemStack)) {
-                        counter.add(new ItemMatcher(shulkerBoxItemStack), shulkerBoxItemStack.getCount());
-                    }
-                }
-                // 如果在潜影盒内有找到物品，将查找结果添加到集合
-                for (ItemMatcher matcher : counter) {
-                    list.add(new ItemFindResult(item.getBlockPos(), counter.getCount(matcher), true,
-                            itemEntityName, matcher));
-                }
-            }
-        }
-        return list;
     }
 
     //方块查找

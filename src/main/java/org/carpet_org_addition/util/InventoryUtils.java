@@ -9,7 +9,7 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.util.collection.DefaultedList;
 import org.carpet_org_addition.exception.NoNbtException;
 import org.carpet_org_addition.util.helpers.ImmutableInventory;
-import org.carpet_org_addition.util.helpers.ItemMatcher;
+import org.carpet_org_addition.util.matcher.Matcher;
 
 import java.util.Objects;
 
@@ -73,10 +73,10 @@ public class InventoryUtils {
      * 从物品形式的潜影盒中获取第一个指定的物品
      *
      * @param shulkerBoxItemStack 潜影盒物品
-     * @param itemMatcher         一个物品匹配器对象，用来指定要从潜影盒中拿取的物品
+     * @param matcher            一个物品匹配器对象，用来指定要从潜影盒中拿取的物品
      * @return 潜影盒中获取的指定物品
      */
-    public static ItemStack pickItemFromShulkerBox(ItemStack shulkerBoxItemStack, ItemMatcher itemMatcher) {
+    public static ItemStack pickItemFromShulkerBox(ItemStack shulkerBoxItemStack, Matcher matcher) {
         // 判断潜影盒是否为空，空潜影盒直接返回空物品
         if (isEmptyShulkerBox(shulkerBoxItemStack)) {
             return ItemStack.EMPTY;
@@ -91,7 +91,7 @@ public class InventoryUtils {
         for (int index = 0; index < list.size(); index++) {
             ItemStack itemStack = ItemStack.fromNbt(list.getCompound(index));
             // 依次检查潜影盒内每个物品是否为指定物品，如果是，从NBT中删除该物品，并将该物品的副本返回
-            if (itemMatcher.test(itemStack)) {
+            if (matcher.test(itemStack)) {
                 list.remove(index);
                 // 如果潜影盒最后一个物品被取出，就删除潜影盒的“BlockEntityTag”标签以保证潜影盒堆叠的正常运行
                 if (isEmptyShulkerBox(shulkerBoxItemStack)) {
