@@ -20,11 +20,13 @@ class PlayerCommandMixin {
     //假玩家保护
     @Inject(method = "kill", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;kill()V"))
     private static void killPlayer(CommandContext<ServerCommandSource> context, CallbackInfoReturnable<Integer> cir) throws CommandSyntaxException {
-        String playerName = StringArgumentType.getString(context, "player");
-        MinecraftServer server = context.getSource().getServer();
-        ServerPlayerEntity player = server.getPlayerManager().getPlayer(playerName);
-        if (player instanceof EntityPlayerMPFake fakePlayer && FakePlayerProtectManager.isNotKill(fakePlayer)) {
-            throw CommandUtils.createException("carpet.commands.protect.player.command");
+        if (FakePlayerProtectManager.ruleEnable()) {
+            String playerName = StringArgumentType.getString(context, "player");
+            MinecraftServer server = context.getSource().getServer();
+            ServerPlayerEntity player = server.getPlayerManager().getPlayer(playerName);
+            if (player instanceof EntityPlayerMPFake fakePlayer && FakePlayerProtectManager.isNotKill(fakePlayer)) {
+                throw CommandUtils.createException("carpet.commands.protect.player.command");
+            }
         }
     }
 }

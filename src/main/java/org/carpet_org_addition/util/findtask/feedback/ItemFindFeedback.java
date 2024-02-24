@@ -7,7 +7,7 @@ import org.carpet_org_addition.command.FinderCommand;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.findtask.result.ItemFindResult;
-import org.carpet_org_addition.util.helpers.ItemMatcher;
+import org.carpet_org_addition.util.matcher.Matcher;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
@@ -16,7 +16,7 @@ public class ItemFindFeedback extends AbstractFindFeedback<ItemFindResult> {
     /**
      * 要查找的物品
      */
-    private final ItemMatcher itemMatcher;
+    private final Matcher matcher;
     /**
      * 是否包含在容器中的潜影盒中找到的物品
      */
@@ -26,9 +26,9 @@ public class ItemFindFeedback extends AbstractFindFeedback<ItemFindResult> {
      */
     private int count = 0;
 
-    public ItemFindFeedback(CommandContext<ServerCommandSource> context, ArrayList<ItemFindResult> list, ItemMatcher itemMatcher, int maxCount) {
+    public ItemFindFeedback(CommandContext<ServerCommandSource> context, ArrayList<ItemFindResult> list, Matcher matcher, int maxCount) {
         super(context, list, maxCount);
-        this.itemMatcher = itemMatcher;
+        this.matcher = matcher;
         this.setName("ItemFindFeedbackThread");
     }
 
@@ -54,10 +54,10 @@ public class ItemFindFeedback extends AbstractFindFeedback<ItemFindResult> {
     @Override
     protected void sendFeedback() throws TimeoutException {
         MutableText text;
-        boolean isItem = itemMatcher.isItem();
+        boolean isItem = matcher.isItem();
         if (isItem) {
             // 为数量添加鼠标悬停效果
-            text = FinderCommand.showCount(itemMatcher.getItem().getDefaultStack(), count, inTheShulkerBox);
+            text = FinderCommand.showCount(matcher.getItem().getDefaultStack(), count, inTheShulkerBox);
         } else {
             text = TextUtils.regularStyle(String.valueOf(count), null, false, inTheShulkerBox,
                     false, false);
@@ -65,24 +65,24 @@ public class ItemFindFeedback extends AbstractFindFeedback<ItemFindResult> {
         // 发送命令反馈
         if (list.size() <= this.maxCount) {
             MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.item.find",
-                    list.size(), text, itemMatcher.toText());
+                    list.size(), text, matcher.toText());
             for (ItemFindResult result : list) {
                 checkTimeOut();
                 MessageUtils.sendTextMessage(context.getSource(),
                         isItem
                                 ? result.toText()
-                                : TextUtils.appendAll(result.toText(), result.getItemMatcher().toText()));
+                                : TextUtils.appendAll(result.toText(), result.getMatcher().toText()));
             }
         } else {
             MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.item.find.limit",
-                    list.size(), text, itemMatcher.toText(), this.maxCount);
+                    list.size(), text, matcher.toText(), this.maxCount);
             // 容器数量过多，只反馈前十个
             for (int i = 0; i < this.maxCount; i++) {
                 checkTimeOut();
                 MessageUtils.sendTextMessage(context.getSource(),
                         isItem
                                 ? list.get(i).toText()
-                                : TextUtils.appendAll(list.get(i).toText(), list.get(i).getItemMatcher().toText()));
+                                : TextUtils.appendAll(list.get(i).toText(), list.get(i).getMatcher().toText()));
             }
         }
     }

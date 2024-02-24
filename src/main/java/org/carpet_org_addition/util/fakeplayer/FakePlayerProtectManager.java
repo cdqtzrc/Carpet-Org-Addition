@@ -1,6 +1,7 @@
 package org.carpet_org_addition.util.fakeplayer;
 
 import carpet.patches.EntityPlayerMPFake;
+import org.carpet_org_addition.CarpetOrgAdditionSettings;
 
 /**
  * 假玩家保护管理器
@@ -83,5 +84,12 @@ public class FakePlayerProtectManager {
      */
     public static FakePlayerProtectType getProtectType(EntityPlayerMPFake player) {
         return getProtectInterface(player).getProtect();
+    }
+
+    /**
+     * @return 假玩家保护规则是否启用
+     */
+    public static boolean ruleEnable() {
+        return !"false".equals(CarpetOrgAdditionSettings.commandProtect);
     }
 }

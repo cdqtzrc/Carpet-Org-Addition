@@ -81,7 +81,7 @@ public class PlayerToolsCommand {
         Text playerName = player.getDisplayName();
         //判断被执行的玩家是否为假玩家
         if (CommandUtils.checkFakePlayer(fakePlayer)) {
-            if (FakePlayerProtectManager.isProtected((EntityPlayerMPFake) fakePlayer)) {
+            if (FakePlayerProtectManager.ruleEnable() && FakePlayerProtectManager.isProtected((EntityPlayerMPFake) fakePlayer)) {
                 //不能传送受保护的假玩家
                 throw CommandUtils.createException("carpet.commands.playerTools.tp.protected_fake_player");
             }

@@ -141,17 +141,18 @@ public class FakePlayerTrade {
             ItemStack itemStack = list.get(index).getStack();
             // 如果交易槽位上有物品，就将当前物品与交易槽上的物品比较，同时比较物品NBT
             // 否则，将当前物品直接与村民需要的交易物品进行比较，不比较NBT
-            if ((slotItem.isEmpty() ? buyItem.isOf(itemStack.getItem()) : ItemStack.canCombine(slotItem, itemStack))
-                    // 如果匹配，将当前物品移动到交易槽位
-                    && FakePlayerUtils.withKeepPickupAndMoveItemStack(merchantScreenHandler, index, slotIndex, fakePlayer)) {
-                // 如果假玩家填充交易槽后光标上有剩余的物品，将剩余的物品放回原槽位
-                if (!merchantScreenHandler.getCursorStack().isEmpty()) {
-                    FakePlayerUtils.pickupCursorStack(merchantScreenHandler, index, fakePlayer);
-                }
-                slotItem = merchantScreenHandler.getSlot(slotIndex).getStack();
-                // 交易槽位物品的地址值可能发生变化，不能直接使用slotItem对象，需要重新获取
-                if (slotItemCanTrade(slotItem, buyItem)) {
-                    return true;
+            if (slotItem.isEmpty() ? buyItem.isOf(itemStack.getItem()) : ItemStack.canCombine(slotItem, itemStack)) {
+                // 如果匹配，将当前物品移动到交易槽位
+                if (FakePlayerUtils.withKeepPickupAndMoveItemStack(merchantScreenHandler, index, slotIndex, fakePlayer)) {
+                    // 如果假玩家填充交易槽后光标上有剩余的物品，将剩余的物品放回原槽位
+                    if (!merchantScreenHandler.getCursorStack().isEmpty()) {
+                        FakePlayerUtils.pickupCursorStack(merchantScreenHandler, index, fakePlayer);
+                    }
+                    slotItem = merchantScreenHandler.getSlot(slotIndex).getStack();
+                    // 交易槽位物品的地址值可能发生变化，不能直接使用slotItem对象，需要重新获取
+                    if (slotItemCanTrade(slotItem, buyItem)) {
+                        return true;
+                    }
                 }
             }
         }

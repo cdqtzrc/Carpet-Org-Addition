@@ -44,7 +44,6 @@
     "rule.SmithingScreenHandlerMixin",
     "rule.SnowGolemEntityMixin",
     "rule.SpawnerBlockMixin",
-    "rule.StatusEffectMixin",
     "rule.SwiftSneakEnchantmentMixin",
     "rule.TeleportCommandMixin",
     "rule.ThornsEnchantmentMixin",
