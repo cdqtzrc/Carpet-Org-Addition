@@ -66,7 +66,6 @@ public class FakePlayerInventoryScreenHandler extends ScreenHandler {
         return index;
     }
 
-    // TODO 从假玩家物品栏向自己的物品栏移动物品的逻辑有问题：物品不会通过快速移动进入自己的物品栏左上角的槽位
     // 按住Shift键移动物品
     @Override
     public ItemStack quickMove(PlayerEntity player, int slotIndex) {
@@ -80,7 +79,7 @@ public class FakePlayerInventoryScreenHandler extends ScreenHandler {
             itemStack = slotItemStack.copy();
             // 如果当前槽位位于GUI的上半部分，将物品移动的玩家物品栏槽位
             if (slotIndex < 54) {
-                if (!this.insertItem(slotItemStack, 55, this.slots.size(), true)) {
+                if (!this.insertItem(slotItemStack, 54, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             } else {

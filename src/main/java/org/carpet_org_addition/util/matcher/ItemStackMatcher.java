@@ -6,6 +6,10 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
+/**
+ * 不同与{@link ItemMatcher}，此匹配器匹配的物品堆栈除了要求物品要相同，物品的NBT也要相同，如果物品堆栈没有达到最大堆叠数，则这两个物品可以合并
+ */
+@SuppressWarnings({"unused", "ClassCanBeRecord"})
 public class ItemStackMatcher implements Matcher {
     public final ItemStack itemStack;
 

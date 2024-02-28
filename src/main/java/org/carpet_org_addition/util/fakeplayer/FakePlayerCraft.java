@@ -11,7 +11,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.exception.InfiniteLoopException;
 import org.carpet_org_addition.util.InventoryUtils;
-import org.carpet_org_addition.util.StringUtils;
 import org.carpet_org_addition.util.matcher.Matcher;
 
 public class FakePlayerCraft {
@@ -40,26 +39,21 @@ public class FakePlayerCraft {
     //合成自定义物品，3x3
     public static void craft3x3(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer, Matcher[] items) {
         if (fakePlayer.currentScreenHandler instanceof CraftingScreenHandler craftingScreenHandler) {
-            int loopCount = 0;
+            InfiniteLoopException exception = new InfiniteLoopException(MAX_LOOP_COUNT);
             do {
-                loopCount++;
-                //避免游戏进入死循环
-                if (loopCount > MAX_LOOP_COUNT) {
-                    throw new InfiniteLoopException(StringUtils.getPlayerName(fakePlayer) + "在合成物品时循环了"
-                            + loopCount + "次(" + StringUtils.getDimensionId(fakePlayer.getWorld()) + ":["
-                            + StringUtils.getBlockPosString(fakePlayer.getBlockPos()) + "])");
-                }
+                // 检查循环次数，在循环次数过多时抛出异常
+                exception.checkLoopCount();
                 //定义变量记录找到正确合成材料的次数
                 int successCount = 0;
                 //依次获取每一个合成材料和遍历合成格
                 for (int index = 1; index <= 9; index++) {
                     //依次获取每一个合成材料
-                    Matcher itemMatchers = items[index - 1];
+                    Matcher matcher = items[index - 1];
                     Slot slot = craftingScreenHandler.getSlot(index);
                     //如果合成格的指定槽位不是所需要合成材料，则丢出该物品
                     if (slot.hasStack()) {
                         ItemStack itemStack = slot.getStack();
-                        if (itemMatchers.test(itemStack)) {
+                        if (matcher.test(itemStack)) {
                             //合成表格上已经有正确的合成材料，找到正确的合成材料次数自增
                             successCount++;
                         } else {
@@ -67,7 +61,7 @@ public class FakePlayerCraft {
                         }
                     } else {
                         //如果指定合成材料是空气，则不需要遍历物品栏，直接跳过该物品，并增加找到正确合成材料的次数
-                        if (itemMatchers.isEmpty()) {
+                        if (matcher.isEmpty()) {
                             successCount++;
                             continue;
                         }
@@ -75,7 +69,7 @@ public class FakePlayerCraft {
                         int size = craftingScreenHandler.slots.size();
                         for (int inventoryIndex = 10; inventoryIndex < size; inventoryIndex++) {
                             ItemStack itemStack = craftingScreenHandler.getSlot(inventoryIndex).getStack();
-                            if (itemMatchers.test(itemStack)) {
+                            if (matcher.test(itemStack)) {
                                 // 光标拾取和移动物品
                                 if (FakePlayerUtils.withKeepPickupAndMoveItemStack(craftingScreenHandler,
                                         inventoryIndex, index, fakePlayer)) {
@@ -85,7 +79,7 @@ public class FakePlayerCraft {
                                 }
                             } else if (CarpetOrgAdditionSettings.fakePlayerCraftPickItemFromShulkerBox
                                     && InventoryUtils.isShulkerBoxItem(itemStack)) {
-                                ItemStack contentItemStack = InventoryUtils.pickItemFromShulkerBox(itemStack, itemMatchers);
+                                ItemStack contentItemStack = InventoryUtils.pickItemFromShulkerBox(itemStack, matcher);
                                 if (!contentItemStack.isEmpty()) {
                                     // 丢弃光标上的物品（如果有）
                                     FakePlayerUtils.dropCursorStack(craftingScreenHandler, fakePlayer);
@@ -131,34 +125,28 @@ public class FakePlayerCraft {
     //合成自定义物品，2x2
     public static void craft2x2(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer, Matcher[] items) {
         PlayerScreenHandler playerScreenHandler = fakePlayer.playerScreenHandler;
-        //定义变量记录循环次数
-        int loopCount = 0;
+        InfiniteLoopException exception = new InfiniteLoopException(MAX_LOOP_COUNT);
         do {
-            loopCount++;
-            //如果循环次数过多，认为游戏进入了死循环，直接抛出异常强行结束方法
-            if (loopCount > MAX_LOOP_COUNT) {
-                throw new InfiniteLoopException(StringUtils.getPlayerName(fakePlayer) + "在合成物品时循环了"
-                        + loopCount + "次(" + StringUtils.getDimensionId(fakePlayer.getWorld()) + ":["
-                        + StringUtils.getBlockPosString(fakePlayer.getBlockPos()) + "])");
-            }
+            // 检查循环次数
+            exception.checkLoopCount();
             // 定义变量记录找到正确合成材料的次数
             int successCount = 0;
             //遍历4x4合成格
             for (int craftIndex = 1; craftIndex <= 4; craftIndex++) {
                 //获取每一个合成材料
-                Matcher itemMatchers = items[craftIndex - 1];
+                Matcher matcher = items[craftIndex - 1];
                 Slot slot = playerScreenHandler.getSlot(craftIndex);
                 //检查合成格上是否已经有物品
                 if (slot.hasStack()) {
                     //如果有并且物品是正确的合成材料，直接结束本轮循环，即跳过该物品
-                    if (itemMatchers.test(slot.getStack())) {
+                    if (matcher.test(slot.getStack())) {
                         successCount++;
                         continue;
                     } else {
                         //如果不是，丢出该物品
                         FakePlayerUtils.throwItem(playerScreenHandler, craftIndex, fakePlayer);
                     }
-                } else if (itemMatchers.isEmpty()) {
+                } else if (matcher.isEmpty()) {
                     successCount++;
                     continue;
                 }
@@ -167,7 +155,7 @@ public class FakePlayerCraft {
                 for (int inventoryIndex = 5; inventoryIndex < size; inventoryIndex++) {
                     ItemStack itemStack = playerScreenHandler.getSlot(inventoryIndex).getStack();
                     //如果该槽位是正确的合成材料，将该物品移动到合成格，然后增加找到正确合成材料的次数
-                    if (itemMatchers.test(itemStack)) {
+                    if (matcher.test(itemStack)) {
                         if (FakePlayerUtils.withKeepPickupAndMoveItemStack(playerScreenHandler,
                                 inventoryIndex, craftIndex, fakePlayer)) {
                             successCount++;
@@ -175,7 +163,7 @@ public class FakePlayerCraft {
                         }
                     } else if (CarpetOrgAdditionSettings.fakePlayerCraftPickItemFromShulkerBox
                             && InventoryUtils.isShulkerBoxItem(itemStack)) {
-                        ItemStack contentItemStack = InventoryUtils.pickItemFromShulkerBox(itemStack, itemMatchers);
+                        ItemStack contentItemStack = InventoryUtils.pickItemFromShulkerBox(itemStack, matcher);
                         if (!contentItemStack.isEmpty()) {
                             // 丢弃光标上的物品（如果有）
                             FakePlayerUtils.dropCursorStack(playerScreenHandler, fakePlayer);

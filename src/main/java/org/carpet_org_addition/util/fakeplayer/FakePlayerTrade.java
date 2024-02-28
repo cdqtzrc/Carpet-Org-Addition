@@ -15,7 +15,6 @@ import net.minecraft.village.TradeOffer;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.exception.InfiniteLoopException;
 import org.carpet_org_addition.mixin.rule.MerchantScreenHandlerAccessor;
-import org.carpet_org_addition.util.StringUtils;
 import org.carpet_org_addition.util.helpers.Counter;
 
 public class FakePlayerTrade {
@@ -68,17 +67,10 @@ public class FakePlayerTrade {
     // 尝试交易物品
     private static void tryTrade(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer,
                                  MerchantScreenHandler merchantScreenHandler, int index) {
-        int loopCount = 0;
+        InfiniteLoopException exception = new InfiniteLoopException();
         //如果村民无限交易未启用，则只循环一次
         do {
-            loopCount++;
-            if (loopCount > 1000) {
-                //无限循环异常
-                throw new InfiniteLoopException(StringUtils.getPlayerName(fakePlayer)
-                        + "在与村民交易时循环了" + loopCount + "次("
-                        + StringUtils.getDimensionId(fakePlayer.getWorld()) + ":["
-                        + StringUtils.getBlockPosString(fakePlayer.getBlockPos()) + "])");
-            }
+            exception.checkLoopCount();
             //如果当前交易以锁定，直接结束方法
             TradeOffer tradeOffer = merchantScreenHandler.getRecipes().get(index);
             if (tradeOffer.isDisabled()) {

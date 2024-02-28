@@ -47,7 +47,7 @@ public abstract class PlayerEntityMixin {
                     if (!thisPlayer.isSneaking()) {
                         break;
                     }
-                case TRUE: {
+                case TRUE:
                     if (serverPlayer.getMainHandStack().isOf(Items.CRAFTING_TABLE)) {
                         if (entity instanceof EntityPlayerMPFake fakePlayer) {
                             serverPlayer.getServerWorld().getServer().getCommandManager()
@@ -56,7 +56,6 @@ public abstract class PlayerEntityMixin {
                             cir.setReturnValue(ActionResult.SUCCESS);
                         }
                     }
-                }
                 default: {
                 }
             }

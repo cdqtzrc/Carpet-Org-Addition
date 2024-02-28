@@ -57,8 +57,11 @@
 假玩家保护命令(commandProtect)
 
 - 启用/protect命令用来保护特定的假玩家
+- damage：保护假玩家不受到直接来自玩家和虚空以外的伤害
+- death：保护假玩家不被直接来自玩家和虚空以外的伤害杀死
+- kill：保护假玩家不被/player命令杀死
     - 类型：`字符串`
-    - 默认值：`"ops"`
+    - 默认值：`"false"`
     - 参考选项：`"true"`, `“false”`, `"ops"`, `"0"`, `"1"`, `"2"`,
       `"3"`, `"4"`
     - 分类：`Org`，`指令`
@@ -78,14 +81,6 @@
     - 默认值：`false`
     - 参考选项：`true`，`false`
     - 分类：`Org`，`特性`
-
-荆棘不额外消耗耐久(thornsDamageDurability)
-
-- 造成荆棘伤害后不会额外消耗耐久度
-    - 类型：`布尔值`
-    - 默认值：`false`
-    - 参考选项：`true`，`false`
-    - 分类：`Org`，`生存`，`特性`
 
 滑翔时不能对方块使用烟花(flyingUseOnBlockFirework)
 
@@ -122,11 +117,8 @@
 
 最大方块放置距离(maxBlockPlaceDistance)
 
-- 服务器不会拒绝在此距离内的玩家操作
-- 默认情况下不会影响与实体的交互，需要开启"最大方块交互距离适用于实体"
-- 允许玩家使用Tweakeroo等模组修改交互距离，也可以让投影打印机支持更大的范围
-- 值必须介于0-128之间，或者是-1
-- 需要客户端支持
+- 服务器不会拒绝在此交互范围内的操作
+- 对方块的破坏和部分方块的交互同样有效，但不增加容器的交互距离
     - 类型：`双精度浮点数`
     - 默认值：`-1`
     - 分类：`Org`，`生存`，`特性`
@@ -143,14 +135,6 @@
 
 - 三叉戟引雷时忽略天气
 - 依然会受其他条件限制，如维度，是否露天等
-    - 类型：`布尔值`
-    - 默认值：`false`
-    - 参考选项：`true`，`false`
-    - 分类：`Org`，`特性`
-
-破坏冰时总是变成水(iceBreakPlaceWater)
-
-- 破坏冰时不需要下方为可阻止移动方块或液体就可以变成水
     - 类型：`布尔值`
     - 默认值：`false`
     - 参考选项：`true`，`false`
@@ -280,14 +264,6 @@
     - 参考选项：`true`，`false`
     - 分类：`Org`，`特性`
 
-猪灵快速交易(piglinFastBarter)
-
-- 猪灵完成以物易物只需要8个游戏刻
-    - 类型：`布尔值`
-    - 默认值：`false`
-    - 参考选项：`true`，`false`
-    - 分类：`Org`，`特性`
-
 禁止村民女巫化(disableVillagerWitch)
 
 - 村民被闪电击中后不会变成女巫
@@ -307,14 +283,6 @@
 将镐作为基岩的有效采集工具(pickaxeMinedBedrock)
 
 - 使用镐可以更快速的破坏基岩
-    - 类型：`布尔值`
-    - 默认值：`false`
-    - 参考选项：`true`，`false`
-    - 分类：`Org`，`特性`
-
-禁止雪傀儡融化(disableSnowGolemMelts)
-
-- 雪傀儡可以在任何群系生存
     - 类型：`布尔值`
     - 默认值：`false`
     - 参考选项：`true`，`false`
@@ -364,7 +332,6 @@
 最大方块放置距离适用于实体(maxBlockPlaceDistanceReferToEntity)
 
 - 玩家可以与最大方块交互距离内的实体交互
-- 最大方块交互距离默认不会影响与实体交互，需要开启本条规则
     - 类型：`布尔值`
     - 默认值：`false`
     - 参考选项：`true`，`false`
@@ -506,14 +473,6 @@ CCE更新抑制器(CCEUpdateSuppression)
       `"3"`, `"4"`
     - 分类：`Org`，`命令`
 
-生命恢复附带饱和(regenerationSaturation)
-
-- 生命恢复会同时给予饱和效果
-    - 类型：`布尔值`
-    - 默认值：`false`
-    - 参考选项：`true`，`false`
-    - 分类：`Org`，`生存`
-
 血量不满时可进食(healthNotFullCanEat)
 
 - 血量没有完全恢复并且饱和度小于等于5时可以进食
@@ -565,6 +524,7 @@ CCE更新抑制器(CCEUpdateSuppression)
 假玩家合成保留物品(fakePlayerCraftKeepItem)
 
 - 假玩家合成物品时会在物品栏中保留至少一个合成材料，除非该物品的最大堆叠数为1
+- 对假玩家自动交易同样有效
     - 类型：`布尔值`
     - 默认值：`false`
     - 参考选项：`true`，`false`
@@ -658,6 +618,36 @@ CCE更新抑制器(CCEUpdateSuppression)
     - 类型：`布尔值`
     - 默认值：`false`
     - 参考选项：`true`，`false`
+    - 分类：`Org`，`生存`
+
+自定义猪灵交易时间(customPiglinBarteringTime)
+
+- 将猪灵默认以物易物所需的时间设为指定值
+    - 类型：`长整数`
+    - 默认值：`-1`
+    - 分类：`Org`，`生存`
+
+快速设置假玩家合成(quickSettingFakePlayerCraft)
+
+- 手持工作台对假玩家右键直接打开假玩家合成GUI，要求玩家拥有执行/playerAction命令的权限
+- false：禁用本条规则
+- sneaking：只有在潜行时才能右键打开
+- true：总是可以右键打开
+    - 类型：`枚举`
+    - 默认值：`false`
+    - 参考选项：`true`，`sneaking`，`false`
+    - 分类：`Org`，`生存`
+
+湿海绵立即蒸干(wetSpongeImmediatelyDry)
+
+- 指定湿海绵是否在下界以外的干旱的生物群系里也可以立即蒸干
+- false：禁用本条规则
+- arid：在不会降水的生物群系可以立即蒸干
+- all：在所有群系都可以立即蒸干
+- disable：湿海绵即使在下界也不会立即蒸干
+    - 类型：`枚举`
+    - 默认值：`false`
+    - 参考选项：`false`，`arid`，`all`，`disable`
     - 分类：`Org`，`生存`
 
 ## 命令

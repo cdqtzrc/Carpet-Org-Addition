@@ -7,6 +7,7 @@ import org.carpet_org_addition.rulevalidator.MaxBlockPlaceDistanceLegitimacyVali
 import org.carpet_org_addition.rulevalidator.PiglinBarteringTimeValidator;
 import org.carpet_org_addition.rulevalidator.PortalSpawnZombifiedPiglinProbabilityValidator;
 import org.carpet_org_addition.rulevalue.QuickSettingFakePlayerCraft;
+import org.carpet_org_addition.rulevalue.WetSpongeImmediatelyDry;
 
 public class CarpetOrgAdditionSettings {
     private CarpetOrgAdditionSettings() {
@@ -76,12 +77,6 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean itemNeverDespawn = false;
-
-    //荆棘不额外损耗耐久
-    @Rule(
-            categories = {ORG, RuleCategory.SURVIVAL, RuleCategory.FEATURE}
-    )
-    public static boolean thornsDamageDurability = false;
 
     //滑翔时不能对方块使用烟花
     @Rule(
@@ -233,12 +228,6 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean pickaxeMinedBedrock = false;
-
-    //雪傀儡不融化
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE}
-    )
-    public static boolean disableSnowGolemMelts = false;
 
     //村民回血
     @Rule(
@@ -477,7 +466,7 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean betterTotemOfUndying = false;
 
-    //假玩家动作命令
+    // 假玩家动作命令
     @Rule(
             categories = {ORG, RuleCategory.COMMAND},
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
@@ -502,4 +491,10 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static QuickSettingFakePlayerCraft quickSettingFakePlayerCraft = QuickSettingFakePlayerCraft.FALSE;
+
+    // 湿海绵立即干燥
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static WetSpongeImmediatelyDry wetSpongeImmediatelyDry = WetSpongeImmediatelyDry.FALSE;
 }
