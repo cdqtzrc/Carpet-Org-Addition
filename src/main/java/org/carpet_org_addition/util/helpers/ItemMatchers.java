@@ -13,6 +13,10 @@ import org.carpet_org_addition.util.predicate.AbstractItemStackPredicate;
 
 import java.util.function.Predicate;
 
+/**
+ * @see org.carpet_org_addition.util.matcher.Matcher
+ * @deprecated 被新的类取代
+ */
 @SuppressWarnings("unused")
 @Deprecated(forRemoval = true)
 public class ItemMatchers {

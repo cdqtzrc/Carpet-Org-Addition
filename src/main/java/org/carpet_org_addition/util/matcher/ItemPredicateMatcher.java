@@ -31,6 +31,7 @@ public class ItemPredicateMatcher implements Matcher {
     @Override
     public boolean isItem() {
         if (this.predicate instanceof AbstractItemStackPredicate itemStackPredicate) {
+            // “#”开头的是物品标签
             return !itemStackPredicate.toString().startsWith("#");
         }
         return false;

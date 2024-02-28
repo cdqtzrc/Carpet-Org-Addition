@@ -70,10 +70,10 @@ public class InventoryUtils {
     }
 
     /**
-     * 从物品形式的潜影盒中获取第一个指定的物品
+     * 从物品形式的潜影盒中获取第一个指定的物品，并将该物品从潜影盒的NBT中删除，使用时，为避免不必要的物品浪费，取出来的物品必须使用或丢出
      *
      * @param shulkerBoxItemStack 潜影盒物品
-     * @param matcher            一个物品匹配器对象，用来指定要从潜影盒中拿取的物品
+     * @param matcher             一个物品匹配器对象，用来指定要从潜影盒中拿取的物品
      * @return 潜影盒中获取的指定物品
      */
     public static ItemStack pickItemFromShulkerBox(ItemStack shulkerBoxItemStack, Matcher matcher) {
