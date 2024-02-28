@@ -106,7 +106,7 @@ public class FinderCommand {
         BlockPos sourceBlockPos = player.getBlockPos();
         // 查找周围容器中的物品
         Matcher matcher = new ItemPredicateMatcher(predicate);
-        ArrayList<ItemFindResult> list = findItem(player.getServerWorld(), sourceBlockPos, matcher, range);
+        ArrayList<ItemFindResult> list = findItem(player.getWorld(), sourceBlockPos, matcher, range);
         if (list.isEmpty()) {
             // 在周围的容器中找不到指定物品
             MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.item.find.not_item",
@@ -260,7 +260,7 @@ public class FinderCommand {
         // 获取命令执行时的方块坐标
         final BlockPos sourceBlockPos = player.getBlockPos();
         // 开始查找方块，然后返回查询结果
-        ArrayList<BlockFindResult> list = findBlock(player.getServerWorld(), sourceBlockPos, blockStateArgument, range);
+        ArrayList<BlockFindResult> list = findBlock(player.getWorld(), sourceBlockPos, blockStateArgument, range);
         int count = list.size();
         // 如果找到的方块数量过多，直接抛出异常结束方法，不再进行排序
         if (count > 300000) {

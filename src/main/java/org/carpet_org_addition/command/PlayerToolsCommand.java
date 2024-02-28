@@ -90,7 +90,7 @@ public class PlayerToolsCommand {
         //在假玩家位置播放潜影贝传送音效
         fakePlayer.getWorld().playSound(null, fakePlayer.prevX, fakePlayer.prevY, fakePlayer.prevZ,
                 SoundEvents.ENTITY_SHULKER_TELEPORT, fakePlayer.getSoundCategory(), 1.0f, 1.0f);
-        fakePlayer.teleport(player.getServerWorld(), player.getX(), player.getY(), player.getZ(), player.getYaw(), player.getPitch());
+        fakePlayer.teleport(player.getWorld(), player.getX(), player.getY(), player.getZ(), player.getYaw(), player.getPitch());
         //在聊天栏显示命令反馈
         MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.playerTools.tp.success", fakePlayerName, playerName);
         return 1;

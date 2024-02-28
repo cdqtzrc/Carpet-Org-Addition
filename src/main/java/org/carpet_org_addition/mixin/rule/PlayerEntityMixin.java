@@ -50,7 +50,7 @@ public abstract class PlayerEntityMixin {
                 case TRUE:
                     if (serverPlayer.getMainHandStack().isOf(Items.CRAFTING_TABLE)) {
                         if (entity instanceof EntityPlayerMPFake fakePlayer) {
-                            serverPlayer.getServerWorld().getServer().getCommandManager()
+                            serverPlayer.getWorld().getServer().getCommandManager()
                                     .executeWithPrefix(serverPlayer.getCommandSource(),
                                             "/playerAction " + fakePlayer.getName().getString() + " craft gui");
                             cir.setReturnValue(ActionResult.SUCCESS);
