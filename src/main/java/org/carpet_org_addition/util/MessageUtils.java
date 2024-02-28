@@ -62,6 +62,7 @@ public class MessageUtils {
      * @param message           消息的内容
      * @param containPlayerName 是否在消息前追加玩家名
      */
+    @Deprecated
     public static void broadcastStringMessage(PlayerEntity player, String message, boolean containPlayerName) {
         try {
             PlayerManager playerManager = Objects.requireNonNull(player.getServer()).getPlayerManager();

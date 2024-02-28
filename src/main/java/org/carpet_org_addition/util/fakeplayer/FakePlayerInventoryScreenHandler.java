@@ -79,7 +79,7 @@ public class FakePlayerInventoryScreenHandler extends ScreenHandler {
             itemStack = slotItemStack.copy();
             // 如果当前槽位位于GUI的上半部分，将物品移动的玩家物品栏槽位
             if (slotIndex < 54) {
-                if (!this.insertItem(slotItemStack, 55, this.slots.size(), true)) {
+                if (!this.insertItem(slotItemStack, 54, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             } else {

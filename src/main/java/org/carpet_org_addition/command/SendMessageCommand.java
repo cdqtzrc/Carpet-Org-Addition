@@ -84,7 +84,7 @@ public class SendMessageCommand {
                     StringUtils.getDimensionId(player.getWorld()),
                     TextUtils.blockPos(blockPos, null));
         };
-        MessageUtils.broadcastTextMessage(player, mutableText);
+        MessageUtils.broadcastTextMessage(context.getSource(), mutableText);
         return 1;
     }
 

@@ -4,7 +4,7 @@
 
 `playerAction <player> ...`
 
-- `... clean`
+- `... clean [<item>]`
 - `... craft ...`
     - `... 2x2 <item1> <item2> <item3> <item4>`
     - `... 3x3 <item1> <item2> <item3> <item4> <item5> <item6> <item7> <item8> <item9>`
@@ -12,14 +12,13 @@
     - `... gui`
     - `... nine <item>`
     - `... one <item>`
-- `... farming`
-- `... fill <item>`
+- `... fill [<item>]`
 - `... info`
 - `... rename <item> <name>`
 - `... sorting <item> <this> <other>`
 - `... stonecutting <item> <button>`
 - `... stop`
-- `... trade <index>`
+- `... trade <index> [void_trade]`
 
 ## 参数
 
@@ -54,8 +53,9 @@
 
 `/playerAction <player> ...`
 
-- `clean`
+- `clean [<item>]`
     - 让假玩家自动清空潜影盒，需要让假玩家打开潜影盒，清空完毕后自动关闭潜影盒
+    - 如果指定的物品，则只清空指定的物品
 - `craft ...`
     - 让假玩家自动合成一些物品，需要给予该假玩家一些合成材料物品
     - 为了快速合成物品，应同时启用Ctrl+Q合成修复
@@ -72,11 +72,10 @@
             - 让假玩家在工作台合成指定配方为九个相同材料的物品
         - `one`
             - 让假玩家在生存模式物品栏合成配方为单个材料的物品
-- `farming`
-    - 根据玩家副手的物品自动在周围种植并收获农作物，同时对农作物使用骨粉
-- `fill <item>`
+- `fill [<item]`
     - 让假玩家向潜影盒中放入指定物品，玩家物品栏内的指定物品会被填入潜影盒，非指定物品会被丢出，需要让假玩家打开潜影盒。
     - 无法再向潜影盒内填充物品时，潜影盒会自动关闭
+    - 如果未指定物品，则表示向容器内填充所有潜影盒以外的物品
 - `info`
     - 在聊天栏显示假玩家当前动作的详细信息
 - `rename <item> <name>`
@@ -88,8 +87,9 @@
     - 让假玩家使用切石机制作一些物品，需要让假玩家打开一个切石机GUI
 - `stop`
     - 让假玩家停止当前的动作
-- `trade <index>`
+- `trade <index> [void_trade]`
     - 让假玩家与一名村民或流浪商人进行交易，需要打开一个交易界面
+    - 如果指定了void_trade参数，表示当前进行的是虚空交易，虚空交易会在村民所在区块卸载后等待5个游戏刻再交易，交易完毕后会自动关闭交易页面
 
 ## 输出
 

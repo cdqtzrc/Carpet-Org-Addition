@@ -99,5 +99,4 @@ public class CommandUtils {
     public static CommandSyntaxException createNotJsonFileException() {
         return new SimpleCommandExceptionType(TextUtils.getTranslate("carpet.command.file.json.not_file")).create();
     }
-
 }

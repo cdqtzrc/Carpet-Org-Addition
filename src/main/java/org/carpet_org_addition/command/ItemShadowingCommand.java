@@ -16,9 +16,6 @@ import org.carpet_org_addition.util.*;
 import org.carpet_org_addition.util.helpers.ImmutableInventory;
 
 public class ItemShadowingCommand {
-    public ItemShadowingCommand() {
-    }
-
     //注册用于制作物品分身的/itemshadowing命令
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("itemshadowing")

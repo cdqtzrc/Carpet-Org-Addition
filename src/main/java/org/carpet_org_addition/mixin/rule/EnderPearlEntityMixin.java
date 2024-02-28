@@ -17,6 +17,6 @@ public class EnderPearlEntityMixin {
         if (CarpetOrgAdditionSettings.notDamageEnderPearl) {
             return false;
         }
-        return original.call(entity, source, 5F);
+        return original.call(entity, source, amount);
     }
 }
