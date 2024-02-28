@@ -54,7 +54,7 @@ public class DeathRecorder {
         // 死亡信息是在统计信息更新之前记录的，所以这里获取的死亡次数需要+1
         File file = modFile.getModFile((getDeathCount(this.player) + 1) + ".nbt");
         // 将NBT写入本地文件
-        NbtIo.write(nbt, file);
+        NbtIo.write(nbt, file.toPath());
     }
 
     // 从本地文件加载死亡信息
@@ -62,7 +62,7 @@ public class DeathRecorder {
         String playerName = player.getName().getString();
         ModFile modFile = new ModFile(player.server, DEATH_LOG, playerName);
         File file = modFile.getModFile(number + NBT);
-        return NbtIo.read(file);
+        return NbtIo.read(file.toPath());
     }
 
     // 获取死亡次数
