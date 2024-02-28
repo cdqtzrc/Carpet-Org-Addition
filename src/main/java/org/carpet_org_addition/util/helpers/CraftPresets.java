@@ -7,12 +7,16 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.ItemPredicateArgumentType;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.util.CommandUtils;
+import org.carpet_org_addition.util.matcher.ItemMatcher;
+import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
+import org.carpet_org_addition.util.matcher.Matcher;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -92,9 +96,9 @@ public class CraftPresets {
     }
 
     // 根据字符串数组获取物品匹配器数组
-    public ItemMatcher[] getItemMarcher(CommandRegistryAccess commandRegistryAccess, String fileName) throws CommandSyntaxException {
-        ItemMatcher[] itemMatcherArr = new ItemMatcher[9];
-        for (int index = 0; index < itemMatcherArr.length; index++) {
+    public Matcher[] getItemMarcher(CommandRegistryAccess commandRegistryAccess, String fileName) throws CommandSyntaxException {
+        Matcher[] itemMatchersArr = new Matcher[9];
+        for (int index = 0; index < itemMatchersArr.length; index++) {
             // 获取字符串中的每一个元素
             String itemOrTag;
             try {
@@ -102,12 +106,12 @@ public class CraftPresets {
                 itemOrTag = this.itemOrTag[index];
             } catch (ArrayIndexOutOfBoundsException e) {
                 CarpetOrgAddition.LOGGER.warn("获取物品匹配器数组时出现索引越界", e);
-                itemMatcherArr[index] = new ItemMatcher();
+                itemMatchersArr[index] = new ItemMatcher(Items.AIR);
                 continue;
             }
             // 如果字符串为null，或字符串中没有内容，创建一个空气的物品匹配器对象并添加进数组
             if (itemOrTag == null || itemOrTag.isEmpty()) {
-                itemMatcherArr[index] = new ItemMatcher();
+                itemMatchersArr[index] = new ItemMatcher(Items.AIR);
                 continue;
             }
             if (itemOrTag.startsWith("#")) {
@@ -117,7 +121,7 @@ public class CraftPresets {
                 ItemPredicateArgumentType.ItemStackPredicateArgument parse =
                         new ItemPredicateArgumentType(commandRegistryAccess).parse(stringReader);
                 // 创建一个以物品标签匹配物品的物品匹配器对象并添加进数组
-                itemMatcherArr[index] = new ItemMatcher(parse);
+                itemMatchersArr[index] = new ItemPredicateMatcher(parse);
             } else {
                 // 将字符串切割为命名空间和物品名称两部分
                 String[] split = itemOrTag.split(":");
@@ -133,10 +137,10 @@ public class CraftPresets {
                     throw CommandUtils.createException("carpet.commands.presets.parse.item.fail", extractFileName(fileName), (index + 1));
                 }
                 // 创建一个直接以物品匹配物品的物品匹配器对象并添加进数组
-                itemMatcherArr[index] = new ItemMatcher(item);
+                itemMatchersArr[index] = new ItemMatcher(item);
             }
         }
-        return itemMatcherArr;
+        return itemMatchersArr;
     }
 
     // 获取世界根目录下的presets文件夹对象，如果没有则创建

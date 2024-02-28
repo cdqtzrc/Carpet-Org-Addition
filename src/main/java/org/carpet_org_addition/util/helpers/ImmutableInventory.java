@@ -12,7 +12,7 @@ import java.util.StringJoiner;
 /**
  * 不可变的物品栏，一旦创建，里面的内容都是不可以改变的，只能进行查询操作，否则抛出{@link UnsupportedOperationException}
  */
-public class ImmutableInventory extends SimpleInventory implements Inventory {
+public final class ImmutableInventory extends SimpleInventory implements Inventory {
     /**
      * 当前物品栏是否已锁定，锁定后，物品栏不能改变
      */

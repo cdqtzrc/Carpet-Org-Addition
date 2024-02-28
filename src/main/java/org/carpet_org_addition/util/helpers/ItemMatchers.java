@@ -14,17 +14,20 @@ import org.carpet_org_addition.util.predicate.AbstractItemStackPredicate;
 import java.util.function.Predicate;
 
 /**
- * 活塞等物品的合成材料中，木板不是指某一种物品，而是指一类包含指定物品标签物品，所有木板都可以用来合成活塞，因此使用指定标签的合成配方会比指定物品的配方更加灵活，但是使用/playerTools 玩家名 action craft gui命令指定的配方不能使用标签，只能指定物品，本类用来在遍历玩家物品栏时自动选择让物品使用物品谓词的测试，还是物品直接比较，这样就不用把合成物品的方法写两遍
+ * @see org.carpet_org_addition.util.matcher.Matcher
+ * @deprecated 被新的类取代
  */
-public class ItemMatcher {
-    public static final ItemMatcher AIR_ITEM_MATCHER = new ItemMatcher(Items.AIR);
+@SuppressWarnings("unused")
+@Deprecated(forRemoval = true)
+public class ItemMatchers {
+    public static final ItemMatchers AIR_ITEM_MATCHER = new ItemMatchers(Items.AIR);
     private final Predicate<ItemStack> predicate;
     private final Item item;
 
     /**
      * 使用谓词匹配物品
      */
-    public ItemMatcher(Predicate<ItemStack> predicate) {
+    public ItemMatchers(Predicate<ItemStack> predicate) {
         this.predicate = predicate;
         this.item = null;
     }
@@ -32,19 +35,19 @@ public class ItemMatcher {
     /**
      * 使用物品匹配物品
      */
-    public ItemMatcher(Item item) {
+    public ItemMatchers(Item item) {
         this.predicate = null;
         this.item = item;
     }
 
-    public ItemMatcher(ItemStack itemStack) {
+    public ItemMatchers(ItemStack itemStack) {
         this(itemStack.getItem());
     }
 
     /**
      * 使用空气物品匹配物品
      */
-    public ItemMatcher() {
+    public ItemMatchers() {
         this.predicate = null;
         this.item = Items.AIR;
     }
@@ -121,7 +124,11 @@ public class ItemMatcher {
             return this.getItem().getName();
         }
         if (this.predicate instanceof AbstractItemStackPredicate itemStackPredicate) {
-            return ItemMatcher.asItem(itemStackPredicate.toString()).getName();
+            String nameOrTag = itemStackPredicate.toString();
+            if (nameOrTag.startsWith("#")) {
+                return TextUtils.createText(nameOrTag);
+            }
+            return ItemMatchers.asItem(nameOrTag).getName();
         }
         return TextUtils.getTranslate("carpet.commands.playerAction.info.craft.item_tag");
     }
@@ -131,9 +138,9 @@ public class ItemMatcher {
      *
      * @return 如果是物品，然后物品默认的物品堆栈对象，否则返回null
      */
-    public Object getDefaultStack() {
+    public ItemStack getDefaultStack() {
         if (this.isItem()) {
-            return this.getItem();
+            return this.getItem().getDefaultStack();
         }
         for (Item item : Registries.ITEM) {
             ItemStack defaultStack = item.getDefaultStack();
@@ -160,7 +167,7 @@ public class ItemMatcher {
                 if (itemOrTag.startsWith("#")) {
                     return TextUtils.createText(itemOrTag);
                 } else {
-                    return ItemMatcher.asItem(itemOrTag).getDefaultStack().toHoverableText().copy();
+                    return ItemMatchers.asItem(itemOrTag).getDefaultStack().toHoverableText().copy();
                 }
             }
             return TextUtils.getTranslate("carpet.commands.playerAction.info.craft.item_tag");
@@ -173,11 +180,11 @@ public class ItemMatcher {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof ItemMatcher itemMatcher) {
-            if (this.isItem() && this.isItem() && this.item == itemMatcher.getItem()) {
+        if (obj instanceof ItemMatchers itemMatchers) {
+            if (this.isItem() && this.isItem() && this.item == itemMatchers.getItem()) {
                 return true;
             }
-            return this.predicate != null && this.predicate == itemMatcher.predicate;
+            return this.predicate != null && this.predicate == itemMatchers.predicate;
         }
         return false;
     }

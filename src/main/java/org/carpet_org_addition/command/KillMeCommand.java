@@ -23,7 +23,7 @@ public class KillMeCommand {
     private static int killMe(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getPlayer(context);
         //广播自杀消息
-        MessageUtils.broadcastTextMessage(player, TextUtils.getTranslate("carpet.commands.killMe", player.getDisplayName()));
+        MessageUtils.broadcastTextMessage(context.getSource(), TextUtils.getTranslate("carpet.commands.killMe", player.getDisplayName()));
         player.kill();
         return 1;
     }
