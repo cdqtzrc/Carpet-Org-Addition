@@ -9,7 +9,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -29,42 +28,37 @@ import java.util.List;
 
 public class ProtectCommand {
     //用来补全受保护玩家的名字
-    private static SuggestionProvider<ServerCommandSource> getServerCommandSourceSuggestionProvider() {
+    private static SuggestionProvider<ServerCommandSource> listProtectedPlayer() {
         return (context, builder) -> {
             List<ServerPlayerEntity> list = context.getSource().getServer().getPlayerManager().getPlayerList();
             return CommandSource.suggestMatching(
                     list.stream().filter(player -> player instanceof EntityPlayerMPFake fakePlayer
-                                                   && FakePlayerProtectManager.isProtect(fakePlayer))
+                                    && FakePlayerProtectManager.isProtected(fakePlayer))
                             .map(player -> player.getName().getString()), builder);
         };
     }
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register((CommandManager.literal("protect")
-                        .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandProtect))
-                        .then(CommandManager.literal("add")
-                                .then(CommandManager.argument("targets", EntityArgumentType.player())
-                                        .executes(context -> setFakePlayerProtectType(context.getSource(), EntityArgumentType.getPlayer(context, "targets"), FakePlayerProtectType.KILL))
-                                        .then(CommandManager.literal("kill").executes(context -> setFakePlayerProtectType(context.getSource(), EntityArgumentType.getPlayer(context, "targets"), FakePlayerProtectType.KILL)))
-                                        .then(CommandManager.literal("damage").executes(context -> setFakePlayerProtectType(context.getSource(), EntityArgumentType.getPlayer(context, "targets"), FakePlayerProtectType.DAMAGE)))
-                                        .then(CommandManager.literal("death").executes(context -> setFakePlayerProtectType(context.getSource(), EntityArgumentType.getPlayer(context, "targets"), FakePlayerProtectType.DEATH)))))
-                        .then(CommandManager.literal("list").executes(ProtectCommand::ListProtectPlayer
-                                )
-                        ).then(CommandManager.literal("remove").then(CommandManager.literal("name").then(CommandManager.argument("player", StringArgumentType.string())
-                                        .suggests(getServerCommandSourceSuggestionProvider())
-                                        .executes(context -> {
-                                            String name = StringArgumentType.getString(context, "player");
-                                            try {
-                                                return setFakePlayerProtectType(context.getSource(), GameUtils.getPlayer(context.getSource().getServer(), name), FakePlayerProtectType.NONE);
-                                            } catch (NotFoundPlayerException e) {
-                                                throw CommandUtils.createException("carpet.commands.protect.remove.not_found", name);
-                                            }
-                                        }))
-                                ).then(CommandManager.literal("all").executes(context -> fromProtectListRemoveAllPlayer(context.getSource()))
-                                )
-                        )
-                )
-        );
+                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandProtect))
+                .then(CommandManager.literal("add")
+                        .then(CommandManager.argument("targets", EntityArgumentType.player())
+                                .executes(context -> setFakePlayerProtectType(context.getSource(), EntityArgumentType.getPlayer(context, "targets"), FakePlayerProtectType.KILL))
+                                .then(CommandManager.literal("kill").executes(context -> setFakePlayerProtectType(context.getSource(), EntityArgumentType.getPlayer(context, "targets"), FakePlayerProtectType.KILL)))
+                                .then(CommandManager.literal("damage").executes(context -> setFakePlayerProtectType(context.getSource(), EntityArgumentType.getPlayer(context, "targets"), FakePlayerProtectType.DAMAGE)))
+                                .then(CommandManager.literal("death").executes(context -> setFakePlayerProtectType(context.getSource(), EntityArgumentType.getPlayer(context, "targets"), FakePlayerProtectType.DEATH)))))
+                .then(CommandManager.literal("list").executes(ProtectCommand::ListProtectPlayer))
+                .then(CommandManager.literal("remove").then(CommandManager.literal("name").then(CommandManager.argument("player", StringArgumentType.string())
+                                .suggests(listProtectedPlayer())
+                                .executes(context -> {
+                                    String name = StringArgumentType.getString(context, "player");
+                                    try {
+                                        return setFakePlayerProtectType(context.getSource(), GameUtils.getPlayer(context.getSource().getServer(), name), FakePlayerProtectType.NONE);
+                                    } catch (NotFoundPlayerException e) {
+                                        throw CommandUtils.createException("carpet.commands.protect.remove.not_found", name);
+                                    }
+                                })))
+                        .then(CommandManager.literal("all").executes(context -> fromProtectListRemoveAllPlayer(context.getSource()))))));
     }
 
     //列出所有受保护的玩家
@@ -78,16 +72,16 @@ public class ProtectCommand {
             MessageUtils.sendCommandFeedback(source, "carpet.commands.protect.list", count);
         }
         for (ServerPlayerEntity player : list) {
-            if (player instanceof EntityPlayerMPFake fakePlayer && FakePlayerProtectManager.isProtect(fakePlayer)) {
-                MessageUtils.sendTextMessage(source, TextUtils.appendAll(fakePlayer.getDisplayName(), ": "
-                        , FakePlayerProtectManager.getProtect(fakePlayer).getText()));
+            if (player instanceof EntityPlayerMPFake fakePlayer && FakePlayerProtectManager.isProtected(fakePlayer)) {
+                MessageUtils.sendTextMessage(source, TextUtils.appendAll(fakePlayer.getDisplayName(), ": ",
+                        FakePlayerProtectManager.getProtectType(fakePlayer).getText()));
             }
         }
         return count;
     }
 
     //设置假玩家的保护类型
-    private static int setFakePlayerProtectType(ServerCommandSource source, PlayerEntity player, FakePlayerProtectType protectType) throws CommandSyntaxException {
+    private static int setFakePlayerProtectType(ServerCommandSource source, ServerPlayerEntity player, FakePlayerProtectType protectType) throws CommandSyntaxException {
         if (player instanceof EntityPlayerMPFake fakePlayer) {
             if (protectType.isProtect()) {
                 MutableText type = protectType.getText();
@@ -104,9 +98,9 @@ public class ProtectCommand {
     //添加玩家到受保护玩家列表
     private static int addPlayerToProtectList(ServerCommandSource source, EntityPlayerMPFake fakePlayer, FakePlayerProtectType protectType, MutableText type) {
         Text playerName = fakePlayer.getDisplayName();
-        if (FakePlayerProtectManager.isProtect(fakePlayer)) {
-            boolean flag = FakePlayerProtectManager.setProtect(fakePlayer, protectType);
-            if (flag) {
+        if (FakePlayerProtectManager.isProtected(fakePlayer)) {
+            boolean isModify = FakePlayerProtectManager.setProtect(fakePlayer, protectType);
+            if (isModify) {
                 MessageUtils.sendCommandFeedback(source, "carpet.commands.protect.modify", playerName, type);
                 return 1;
             } else {
@@ -123,10 +117,9 @@ public class ProtectCommand {
 
     //设置假玩家不受保护
     private static int fromProtectListRemovePlayer(ServerCommandSource source, EntityPlayerMPFake fakePlayer) {
-        Text playerName = fakePlayer.getDisplayName();
-        if (FakePlayerProtectManager.isProtect(fakePlayer)) {
+        if (FakePlayerProtectManager.isProtected(fakePlayer)) {
             FakePlayerProtectManager.setProtect(fakePlayer, FakePlayerProtectType.NONE);
-            MessageUtils.sendCommandFeedback(source, "carpet.commands.protect.remove", playerName);
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.protect.remove", fakePlayer.getDisplayName());
             return 1;
         } else {
             MessageUtils.sendCommandFeedback(source, "carpet.commands.protect.not_found");
@@ -139,7 +132,7 @@ public class ProtectCommand {
         List<ServerPlayerEntity> list = source.getServer().getPlayerManager().getPlayerList();
         int count = 0;
         for (ServerPlayerEntity player : list) {
-            if (player instanceof EntityPlayerMPFake fakePlayer && FakePlayerProtectManager.isProtect(fakePlayer)) {
+            if (player instanceof EntityPlayerMPFake fakePlayer && FakePlayerProtectManager.isProtected(fakePlayer)) {
                 FakePlayerProtectManager.setProtect(fakePlayer, FakePlayerProtectType.NONE);
                 count++;
             }
@@ -157,7 +150,7 @@ public class ProtectCommand {
         List<ServerPlayerEntity> list = server.getPlayerManager().getPlayerList();
         int count = 0;
         for (ServerPlayerEntity player : list) {
-            if (player instanceof EntityPlayerMPFake fakePlayer && FakePlayerProtectManager.isProtect(fakePlayer)) {
+            if (player instanceof EntityPlayerMPFake fakePlayer && FakePlayerProtectManager.isProtected(fakePlayer)) {
                 count++;
             }
         }

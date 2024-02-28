@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -39,6 +40,7 @@ public class ItemPredicateArgumentTypeMixin {
         cir.setReturnValue(map);
     }
 
+    @Unique
     private static AbstractItemStackPredicate getItemStackPredicate(AbstractRegistryEntryPredicate predicate, @Nullable NbtCompound nbt) {
         return nbt != null ? new WithNbtItemStackPredicate(predicate, nbt) : new ItemStackPredicate(predicate, null);
     }

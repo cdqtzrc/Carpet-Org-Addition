@@ -29,7 +29,9 @@ import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionInterface;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionType;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerGuiCraftScreenHandler;
-import org.carpet_org_addition.util.helpers.ItemMatcher;
+import org.carpet_org_addition.util.helpers.Counter;
+import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
+import org.carpet_org_addition.util.matcher.Matcher;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
@@ -40,9 +42,12 @@ public class PlayerActionCommand {
                 .then(CommandManager.argument("player", EntityArgumentType.player())
                         .then(CommandManager.literal("sorting").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext)).then(CommandManager.argument("this", Vec3ArgumentType.vec3())
                                 .then(CommandManager.argument("other", Vec3ArgumentType.vec3()).executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.SORTING))))))
-                        .then(CommandManager.literal("clean").executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.CLEAN)))
-                        .then(CommandManager.literal("fill").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
-                                .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.FILL))))
+                        .then(CommandManager.literal("clean").executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.CLEAN))
+                                .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
+                                        .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.CLEAN_DESIGNATED))))
+                        .then(CommandManager.literal("fill").executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.FILL_ALL))
+                                .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
+                                        .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.FILL))))
                         .then(CommandManager.literal("stop").executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.STOP)))
                         .then(CommandManager.literal("craft")
                                 .then(CommandManager.literal("one").then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
@@ -69,8 +74,11 @@ public class PlayerActionCommand {
                                                                 .then(CommandManager.argument("item4", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                                         .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.CRAFT_2X2)))))))
                                 .then(CommandManager.literal("gui").executes(context -> openFakePlayerCraftGui(context, CommandUtils.getPlayerEntity(context)))))
-                        .then(CommandManager.literal("trade").then(CommandManager.argument("index", IntegerArgumentType.integer(1))
-                                .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.TRADE))))
+                        .then(CommandManager.literal("trade")
+                                .then(CommandManager.argument("index", IntegerArgumentType.integer(1))
+                                        .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.TRADE))
+                                        .then(CommandManager.literal("void_trade")
+                                                .executes(context -> setAction(context, CommandUtils.getPlayerEntity(context), FakePlayerActionType.VOID_TRADE)))))
                         .then(CommandManager.literal("info").executes(context -> getAction(context, CommandUtils.getPlayerEntity(context))))
                         .then(CommandManager.literal("rename").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
                                 .then(CommandManager.argument("name", StringArgumentType.string())
@@ -94,39 +102,44 @@ public class PlayerActionCommand {
         if (CommandUtils.checkFakePlayer(fakePlayer)) {
             //将假玩家类型强转为假玩家动作接口
             FakePlayerActionInterface fakePlayerActionInterface = (FakePlayerActionInterface) fakePlayer;
-            //如果假玩家动作类型是自定义物品合成，为数组中的每一个元素赋值
             switch (action) {
+                //如果假玩家动作类型是自定义物品合成，为数组中的每一个元素赋值
                 // 单个合成材料，在生存模式物品栏中合成，第一个元素填入指定物品，其他元素填入空气
                 case CRAFT_ONE -> {
                     Predicate<ItemStack> item = ItemPredicateArgumentType.getItemStackPredicate(context, "item");
-                    fakePlayerActionInterface.set2x2Craft(fillArray(new ItemMatcher(item), new ItemMatcher[4], false));
+                    fakePlayerActionInterface.set2x2Craft(fillArray(new ItemPredicateMatcher(item), new Matcher[4], false));
                 }
                 // 四个相同的合成材料，在生存模式物品栏合成，所有元素都填入指定物品
                 case CRAFT_FOUR -> {
                     Predicate<ItemStack> item = ItemPredicateArgumentType.getItemStackPredicate(context, "item");
-                    fakePlayerActionInterface.set2x2Craft(fillArray(new ItemMatcher(item), new ItemMatcher[4], true));
+                    fakePlayerActionInterface.set2x2Craft(fillArray(new ItemPredicateMatcher(item), new Matcher[4], true));
                 }
                 // 九个相同的合成材料，在工作台合成，所有元素都填入指定物品
                 case CRAFT_NINE -> {
                     Predicate<ItemStack> item = ItemPredicateArgumentType.getItemStackPredicate(context, "item");
-                    fakePlayerActionInterface.set3x3Craft(fillArray(new ItemMatcher(item), new ItemMatcher[9], true));
+                    fakePlayerActionInterface.set3x3Craft(fillArray(new ItemPredicateMatcher(item), new Matcher[9], true));
                 }
                 // 4个不同的合成材料，在生存模式物品栏合成，每个元素填入不同的物品
                 case CRAFT_2X2 -> {
-                    ItemMatcher[] items = new ItemMatcher[4];
+                    ItemPredicateMatcher[] items = new ItemPredicateMatcher[4];
                     for (int i = 1; i <= 4; i++) {
                         //获取每一个合成材料
-                        items[i - 1] = new ItemMatcher(ItemPredicateArgumentType.getItemStackPredicate(context, "item" + i));
+                        items[i - 1] = new ItemPredicateMatcher(ItemPredicateArgumentType.getItemStackPredicate(context, "item" + i));
                         fakePlayerActionInterface.set2x2Craft(items);
                     }
                 }
                 // 九个不同的合成材料，在工作台合成，每个元素填入不同的物品
                 case CRAFT_3X3 -> {
-                    ItemMatcher[] items = new ItemMatcher[9];
+                    ItemPredicateMatcher[] items = new ItemPredicateMatcher[9];
                     for (int i = 1; i <= 9; i++) {
-                        items[i - 1] = new ItemMatcher(ItemPredicateArgumentType.getItemStackPredicate(context, "item" + i));
+                        items[i - 1] = new ItemPredicateMatcher(ItemPredicateArgumentType.getItemStackPredicate(context, "item" + i));
                     }
                     fakePlayerActionInterface.set3x3Craft(items);
+                }
+                // 初始化虚空交易计时器
+                case VOID_TRADE -> {
+                    Counter<FakePlayerActionType> tickCounter = fakePlayerActionInterface.getTickCounter();
+                    tickCounter.set(FakePlayerActionType.VOID_TRADE, 5);
                 }
                 default -> {
                     // 什么也不做
@@ -141,21 +154,21 @@ public class PlayerActionCommand {
 
 
     // 填充数组
-    private static ItemMatcher[] fillArray(ItemMatcher itemMatcher, ItemMatcher[] itemArr, boolean directFill) {
+    private static Matcher[] fillArray(Matcher matcher, Matcher[] matchers, boolean directFill) {
         if (directFill) {
             // 直接使用元素填满整个数组
-            Arrays.fill(itemArr, itemMatcher);
+            Arrays.fill(matchers, matcher);
         } else {
             // 第一个元素填入指定物品，其他元素填入空气
-            for (int i = 0; i < itemArr.length; i++) {
+            for (int i = 0; i < matchers.length; i++) {
                 if (i == 0) {
-                    itemArr[i] = itemMatcher;
+                    matchers[i] = matcher;
                 } else {
-                    itemArr[i] = ItemMatcher.AIR_ITEM_MATCHER;
+                    matchers[i] = Matcher.AIR_ITEM_MATCHER;
                 }
             }
         }
-        return itemArr;
+        return matchers;
     }
 
     //获取假玩家操作类型

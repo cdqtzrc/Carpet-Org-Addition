@@ -10,7 +10,6 @@ import net.minecraft.screen.StonecutterScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.exception.InfiniteLoopException;
-import org.carpet_org_addition.util.StringUtils;
 
 public class FakePlayerStonecutting {
     private FakePlayerStonecutting() {
@@ -21,17 +20,10 @@ public class FakePlayerStonecutting {
             Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
             //获取要切割的物品和按钮的索引
             int buttonIndex = IntegerArgumentType.getInteger(context, "button") - 1;
-            //定义变量记录循环次数，用于循环次数过多时抛出异常结束循环
-            int loopCount = 0;
+            // 用于循环次数过多时抛出异常结束循环
+            InfiniteLoopException exception = new InfiniteLoopException();
             while (true) {
-                loopCount++;
-                if (loopCount > 1000) {
-                    //无限循环异常
-                    throw new InfiniteLoopException(StringUtils.getPlayerName(fakePlayer)
-                            + "在使用切石机时循环了" + loopCount + "次("
-                            + StringUtils.getDimensionId(fakePlayer.getWorld()) + ":["
-                            + StringUtils.getBlockPosString(fakePlayer.getBlockPos()) + "])");
-                }
+                exception.checkLoopCount();
                 //定义变量记录是否需要遍历物品栏
                 boolean flag = true;
                 //获取切石机输入槽对象

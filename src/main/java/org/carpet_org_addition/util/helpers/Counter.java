@@ -18,22 +18,73 @@ public class Counter<E> implements Iterable<E> {
         this.COUNTER = new HashMap<>();
     }
 
+    /**
+     * 使集合内一个元素的数量递增
+     *
+     * @param element 要数量递增的元素
+     */
     public void add(E element) {
         add(element, 1);
     }
 
+    /**
+     * 使集合内元素的数量递减
+     *
+     * @param element 要数量递减的元素
+     */
+    public void decrement(E element) {
+        add(element, -1);
+    }
+
+    /**
+     * 将一个元素的数量增加指定值，可以是正数，也可以是负数，表示减少指定值
+     *
+     * @param element 要增加数量的元素
+     * @param count   增加的个数
+     */
     public void add(E element, int count) {
         Integer i = this.COUNTER.get(element);
         this.COUNTER.put(element, i == null ? count : i + count);
     }
 
+    /**
+     * 将集合内一个元素的数量设置为指定值
+     *
+     * @param element 要修改数量的元素
+     * @param count   修改后的数量
+     */
+    public void set(E element, int count) {
+        this.COUNTER.put(element, count);
+    }
+
+    /**
+     * 获取一个元素在集合内的数量
+     *
+     * @param element 要获取数量的元素
+     * @return 此元素在计数器内的数量
+     */
     public int getCount(E element) {
         Integer i = this.COUNTER.get(element);
         return i == null ? 0 : i;
     }
 
+    /**
+     * 获取集合内总共有多少种元素
+     *
+     * @return 集合的大小
+     */
     public int size() {
         return COUNTER.size();
+    }
+
+    /**
+     * 判断一个元素在集合内是否存在
+     *
+     * @param element 要判断是否存在的元素
+     * @return 指定元素是否在集合内的数量大于0
+     */
+    public boolean hasElement(E element) {
+        return this.getCount(element) > 0;
     }
 
     @NotNull

@@ -30,11 +30,8 @@ public abstract class FireworkRocketItemMixin {
             }
         }
         //烟花火箭使用冷却(对方块使用)
-        if (CarpetOrgAdditionSettings.fireworkRocketUseCooldown && !player.isFallFlying()) {
-            PlayerEntity user = context.getPlayer();
-            if (user != null) {
-                user.getItemCooldownManager().set((FireworkRocketItem) (Object) this, 5);
-            }
+        if (CarpetOrgAdditionSettings.fireworkRocketUseCooldown) {
+            player.getItemCooldownManager().set((FireworkRocketItem) (Object) this, 5);
         }
     }
 

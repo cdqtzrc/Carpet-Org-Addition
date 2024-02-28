@@ -4,7 +4,10 @@ import carpet.api.settings.Rule;
 import carpet.api.settings.RuleCategory;
 import org.carpet_org_addition.rulevalidator.BedrockHardnessValidator;
 import org.carpet_org_addition.rulevalidator.MaxBlockPlaceDistanceLegitimacyValidator;
+import org.carpet_org_addition.rulevalidator.PiglinBarteringTimeValidator;
 import org.carpet_org_addition.rulevalidator.PortalSpawnZombifiedPiglinProbabilityValidator;
+import org.carpet_org_addition.rulevalue.QuickSettingFakePlayerCraft;
+import org.carpet_org_addition.rulevalue.WetSpongeImmediatelyDry;
 
 public class CarpetOrgAdditionSettings {
     private CarpetOrgAdditionSettings() {
@@ -61,7 +64,7 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.COMMAND},
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
-    public static String commandProtect = "ops";
+    public static String commandProtect = "false";
 
     //创造玩家免疫/kill
     @Rule(
@@ -74,12 +77,6 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean itemNeverDespawn = false;
-
-    //荆棘不额外损耗耐久
-    @Rule(
-            categories = {ORG, RuleCategory.SURVIVAL, RuleCategory.FEATURE}
-    )
-    public static boolean thornsDamageDurability = false;
 
     //滑翔时不能对方块使用烟花
     @Rule(
@@ -117,12 +114,6 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean channelingIgnoreWeather = false;
-
-    //破坏冰时总是变成水
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE}
-    )
-    public static boolean iceBreakPlaceWater = false;
 
     //无伤末影珍珠
     @Rule(
@@ -214,12 +205,6 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean disablePiglinZombify = false;
 
-    //猪灵快速交易
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE}
-    )
-    public static boolean piglinFastBarter = false;
-
     //禁止村民女巫化
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
@@ -237,12 +222,6 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean pickaxeMinedBedrock = false;
-
-    //雪傀儡不融化
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE}
-    )
-    public static boolean disableSnowGolemMelts = false;
 
     //村民回血
     @Rule(
@@ -384,12 +363,6 @@ public class CarpetOrgAdditionSettings {
     )
     public static String commandLocations = "ops";
 
-    //生命恢复附带饱和
-    @Rule(
-            categories = {ORG, RuleCategory.SURVIVAL}
-    )
-    public static boolean regenerationSaturation = false;
-
     //生命值不满可以进食
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
@@ -426,13 +399,13 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean disableWaterFreezes = false;
 
-    //假玩家合成保留物品
+    // 假玩家合成保留物品
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean fakePlayerCraftKeepItem = false;
 
-    //绘制粒子线命令
+    // 绘制粒子线命令
     @Rule(
             categories = {ORG, RuleCategory.COMMAND},
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
@@ -481,7 +454,7 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean betterTotemOfUndying = false;
 
-    //假玩家动作命令
+    // 假玩家动作命令
     @Rule(
             categories = {ORG, RuleCategory.COMMAND},
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
@@ -493,4 +466,23 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean fakePlayerCraftPickItemFromShulkerBox = false;
+
+    // 自定义猪灵交易时间
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL},
+            validators = PiglinBarteringTimeValidator.class
+    )
+    public static long customPiglinBarteringTime = -1;
+
+    // 快速设置假玩家合成
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static QuickSettingFakePlayerCraft quickSettingFakePlayerCraft = QuickSettingFakePlayerCraft.FALSE;
+
+    // 湿海绵立即干燥
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static WetSpongeImmediatelyDry wetSpongeImmediatelyDry = WetSpongeImmediatelyDry.FALSE;
 }

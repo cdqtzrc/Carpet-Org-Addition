@@ -5,7 +5,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import org.carpet_org_addition.command.FinderCommand;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.helpers.ItemMatcher;
+import org.carpet_org_addition.util.matcher.Matcher;
 
 public class ItemFindResult extends AbstractFindResult {
     /**
@@ -25,21 +25,21 @@ public class ItemFindResult extends AbstractFindResult {
      */
     private final String blockName;
 
-    public ItemMatcher getItemMatcher() {
-        return itemMatcher;
+    public Matcher getMatcher() {
+        return matcher;
     }
 
     /**
      * 要查找的物品
      */
-    private final ItemMatcher itemMatcher;
+    private final Matcher matcher;
 
-    public ItemFindResult(BlockPos blockPos, int count, boolean inTheShulkerBox, String blockName, ItemMatcher itemMatcher) {
+    public ItemFindResult(BlockPos blockPos, int count, boolean inTheShulkerBox, String blockName, Matcher matcher) {
         this.blockPos = blockPos;
         this.count = count;
         this.inTheShulkerBox = inTheShulkerBox;
         this.blockName = blockName;
-        this.itemMatcher = itemMatcher;
+        this.matcher = matcher;
     }
 
     public int getCount() {
@@ -56,8 +56,8 @@ public class ItemFindResult extends AbstractFindResult {
                 + ((double) blockPos.getY() + 0.5) + " " + ((double) blockPos.getZ() + 0.5);
         return TextUtils.getTranslate("carpet.commands.finder.item.each", TextUtils.blockPos(blockPos, Formatting.GREEN),
                 TextUtils.command(TextUtils.getTranslate(blockName), command, null, null, true),
-                itemMatcher.isItem()
-                        ? FinderCommand.showCount(itemMatcher.getItem().getDefaultStack(), count, inTheShulkerBox)
-                        : itemMatcher.toText());
+                matcher.isItem()
+                        ? FinderCommand.showCount(matcher.getItem().getDefaultStack(), count, inTheShulkerBox)
+                        : matcher.toText());
     }
 }

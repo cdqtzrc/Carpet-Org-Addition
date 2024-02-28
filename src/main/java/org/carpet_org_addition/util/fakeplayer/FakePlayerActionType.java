@@ -10,30 +10,66 @@ import net.minecraft.text.MutableText;
 import java.util.ArrayList;
 
 public enum FakePlayerActionType {
-    //假玩家停止操作
+    /**
+     * 假玩家停止操作
+     */
     STOP,
-    //假玩家物品分拣
+    /**
+     * 假玩家物品分拣
+     */
     SORTING,
-    //假玩家清空容器
+    /**
+     * 假玩家清空容器
+     */
     CLEAN,
-    //假玩家填充容器
+    /**
+     * 假玩家清空容器中的指定物品
+     */
+    CLEAN_DESIGNATED,
+    /**
+     * 假玩家填充容器
+     */
     FILL,
-    //假玩家自动合成物品（单个材料）
+    /**
+     * 假玩家自动向容器内填充所有物品
+     */
+    FILL_ALL,
+    /**
+     * 假玩家自动合成物品（单个材料）
+     */
     CRAFT_ONE,
-    //假玩家合成物品（四个相同的材料）
+    /**
+     * 假玩家合成物品（四个相同的材料）
+     */
     CRAFT_FOUR,
-    //假玩家自动合成物品（九个相同的材料）
+    /**
+     * 假玩家自动合成物品（九个相同的材料）
+     */
     CRAFT_NINE,
-    //假玩家合成物品（3x3自定义合成）
+    /**
+     * 假玩家合成物品（3x3自定义合成）
+     */
     CRAFT_3X3,
-    //假玩家合成物品（2x2自定义合成）
+    /**
+     * 假玩家合成物品（2x2自定义合成）
+     */
     CRAFT_2X2,
-    //假玩家自动重命名
+    /**
+     * 假玩家自动重命名
+     */
     RENAME,
-    //假玩家切石机
+    /**
+     * 假玩家切石机
+     */
     STONECUTTING,
-    //假玩家自动交易
-    TRADE;
+    /**
+     * 假玩家自动交易
+     */
+    TRADE,
+    /**
+     * 假玩家自动虚空交易
+     */
+    VOID_TRADE;
 
     //获取假玩家操作类型的字符串或可变文本形式
     public ArrayList<MutableText> getActionText(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) throws CommandSyntaxException {
@@ -48,14 +84,16 @@ public enum FakePlayerActionType {
         return switch (this) {
             case STOP -> FakePlayerActionInfo.showStopInfo(fakePlayer);
             case SORTING -> FakePlayerActionInfo.showSortingInfo(context, fakePlayer);
-            case CLEAN -> FakePlayerActionInfo.showCleanInfo(fakePlayer);
+            case CLEAN-> FakePlayerActionInfo.showCleanInfo(fakePlayer);
+            case CLEAN_DESIGNATED -> FakePlayerActionInfo.showCleanDesignatedInfo(context,fakePlayer);
             case FILL -> FakePlayerActionInfo.showFillInfo(context, fakePlayer);
+            case FILL_ALL -> FakePlayerActionInfo.showFillAllInfo(fakePlayer);
             case CRAFT_NINE, CRAFT_3X3 -> FakePlayerActionInfo.showCraftingTableCraftInfo(context, fakePlayer);
             case CRAFT_ONE, CRAFT_FOUR, CRAFT_2X2 ->
                     FakePlayerActionInfo.showSurvivalInventoryCraftInfo(context, fakePlayer);
             case RENAME -> FakePlayerActionInfo.showRenameInfo(context, fakePlayer);
             case STONECUTTING -> FakePlayerActionInfo.showStoneCuttingInfo(context, fakePlayer);
-            case TRADE -> FakePlayerActionInfo.showTradeInfo(context, fakePlayer);
+            case TRADE, VOID_TRADE -> FakePlayerActionInfo.showTradeInfo(context, fakePlayer);
         };
     }
 
@@ -70,6 +108,7 @@ public enum FakePlayerActionType {
             case STOP -> "停止";
             case SORTING -> "分拣";
             case CLEAN -> "清空潜影盒";
+            case CLEAN_DESIGNATED -> "清空潜影盒内指定物品";
             case FILL -> "填充潜影盒";
             case CRAFT_ONE -> "合成(单个材料)";
             case CRAFT_FOUR -> "合成(四个相同材料)";
@@ -79,6 +118,8 @@ public enum FakePlayerActionType {
             case RENAME -> "重命名";
             case STONECUTTING -> "切石";
             case TRADE -> "交易";
+            case VOID_TRADE -> "虚空交易";
+            case FILL_ALL -> "填充任意物品到潜影盒";
         };
     }
 }
