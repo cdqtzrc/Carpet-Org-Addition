@@ -55,6 +55,8 @@
     "rule.carpet.PlayerCommandMixin",
     "rule.channelingignoreweather.LightningRodBlockMixin",
     "rule.channelingignoreweather.TridentEntityMixin",
+    "rule.fakeplayerkeepinventory.PlayerEntityMixin",
+    "rule.fakeplayerkeepinventory.ServerPlayerEntityMixin",
     "rule.playerinteraction.GameRendererMixin",
     "rule.playerinteraction.ServerPlayerInteractionManagerMixin",
     "rule.playerinteraction.ServerPlayNetworkHandlerMixin",

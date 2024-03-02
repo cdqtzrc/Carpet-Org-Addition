@@ -497,4 +497,10 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static WetSpongeImmediatelyDry wetSpongeImmediatelyDry = WetSpongeImmediatelyDry.FALSE;
+
+    // 假玩家死亡不掉落
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean fakePlayerKeepInventory = false;
 }
