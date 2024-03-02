@@ -184,6 +184,8 @@
   "carpet.rule.wetSpongeImmediatelyDry.extra.1": "arid：在不会降水的生物群系可以立即蒸干",
   "carpet.rule.wetSpongeImmediatelyDry.extra.2": "all：在所有群系都可以立即蒸干",
   "carpet.rule.wetSpongeImmediatelyDry.extra.3": "disable：湿海绵即使在下界也不会立即蒸干",
+  "carpet.rule.fakePlayerKeepInventory.name": "假玩家死亡不掉落",
+  "carpet.rule.fakePlayerKeepInventory.desc": "假玩家死亡后保留物品栏物品和经验",
   "carpet.rule.message.disableRespawnBlocksExplode": "已禁用重生方块爆炸",
   "carpet.rule.validate.setBedrockHardness": "值必须大于等于0，或者-1",
   "carpet.rule.validate.portalSpawnZombifiedPiglinProbability": "值必须介于0-2000之间，或者-1",
