@@ -15,7 +15,6 @@ public class ServerPlayerEntityMixin {
     @Unique
     ServerPlayerEntity thisPlayer = (ServerPlayerEntity) (Object) this;
 
-    @SuppressWarnings("UnresolvedMixinReference")
     @WrapOperation(method = "copyFrom", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameRules;getBoolean(Lnet/minecraft/world/GameRules$Key;)Z"))
     private boolean keepItem(GameRules instance, GameRules.Key<GameRules.BooleanRule> rule, Operation<Boolean> original) {
         if (CarpetOrgAdditionSettings.fakePlayerKeepInventory && thisPlayer instanceof EntityPlayerMPFake) {

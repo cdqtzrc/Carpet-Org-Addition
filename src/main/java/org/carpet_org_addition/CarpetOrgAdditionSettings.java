@@ -503,4 +503,11 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean fakePlayerKeepInventory = false;
+
+    // 苦力怕命令
+    @Rule(
+            categories = {ORG, RuleCategory.COMMAND},
+            options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
+    )
+    public static String commandCreeper = "ops";
 }

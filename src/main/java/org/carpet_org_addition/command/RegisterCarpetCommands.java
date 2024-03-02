@@ -32,7 +32,7 @@ public class RegisterCarpetCommands {
             SendMessageCommand.register(dispatcher);
 
             //苦力怕音效命令
-            //CreeperCommand.register(dispatcher);
+            CreeperCommand.register(dispatcher);
 
             //经验转移命令
             XpTransferCommand.register(dispatcher);
