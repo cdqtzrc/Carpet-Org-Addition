@@ -138,7 +138,7 @@ public class PlayerActionCommand {
                 }
                 // 初始化虚空交易计时器
                 case VOID_TRADE -> {
-                    Counter<FakePlayerActionType> tickCounter = fakePlayerActionInterface.getTickCounter();
+                    Counter<Object> tickCounter = fakePlayerActionInterface.getTickCounter();
                     tickCounter.set(FakePlayerActionType.VOID_TRADE, 5);
                 }
                 default -> {

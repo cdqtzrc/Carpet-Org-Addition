@@ -52,6 +52,7 @@ public class ItemFindResult extends AbstractFindResult {
 
     @Override
     public MutableText toText() {
+        // TODO 坐标数组过大时的类型转化：/particleLine ~ ~1 ~ 1.11100645E7 -16.5 1.11101025E7
         String command = "/particleLine ~ ~1 ~ " + ((double) blockPos.getX() + 0.5) + " "
                 + ((double) blockPos.getY() + 0.5) + " " + ((double) blockPos.getZ() + 0.5);
         return TextUtils.getTranslate("carpet.commands.finder.item.each", TextUtils.blockPos(blockPos, Formatting.GREEN),
