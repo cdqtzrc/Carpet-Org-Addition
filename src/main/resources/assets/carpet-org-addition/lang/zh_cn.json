@@ -199,7 +199,7 @@
   "carpet.command.file.json.read": "无法读取json文件",
   "carpet.command.file.nbt.read": "无法从文件中读取NBT",
   "carpet.commands.finder.timeout": "任务超时",
-  "carpet.commands.finder.block.too_much_blocks": "周围%s过多，无法统计（数量：%s）",
+  "carpet.commands.finder.block.too_much_blocks": "周围%s过多，无法统计",
   "carpet.commands.finder.block.not_found_block": "在指定范围内找不到%s",
   "carpet.commands.finder.block.find": "在指定范围内找到%s个%s",
   "carpet.commands.finder.block.find.limit": "在指定范围内找到%s个%s，距离你最近的%s个分别是：",

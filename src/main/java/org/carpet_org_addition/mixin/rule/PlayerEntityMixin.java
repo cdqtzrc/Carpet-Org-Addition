@@ -39,7 +39,7 @@ public abstract class PlayerEntityMixin {
     private void interact(Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
         if (thisPlayer instanceof ServerPlayerEntity serverPlayer
                 && CommandHelper.canUseCommand(serverPlayer.getCommandSource(),
-                CarpetOrgAdditionSettings.commandPlayerAction)) {
+                CarpetOrgAdditionSettings.commandPlayerAction) && !thisPlayer.isSpectator()) {
             switch (CarpetOrgAdditionSettings.quickSettingFakePlayerCraft) {
                 case FALSE:
                     break;
