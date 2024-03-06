@@ -509,5 +509,13 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.COMMAND},
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
-    public static String commandCreeper = "ops";
+    public static String commandCreeper = "false";
+
+    // 规则搜索命令
+    @Rule(
+            categories = {ORG, RuleCategory.COMMAND},
+            options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
+    )
+    public static String commandRuleSearch = "ops";
+    // TODO 闪电苦力怕掉落所有头颅
 }

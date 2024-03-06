@@ -186,6 +186,8 @@
   "carpet.rule.fakePlayerKeepInventory.desc": "假玩家死亡后保留物品栏物品和经验",
   "carpet.rule.commandCreeper.name": "苦力怕命令",
   "carpet.rule.commandCreeper.desc": "启用/creeper命令用来在指定玩家周围生成一只立即爆炸但不会破坏方块的苦力怕",
+  "carpet.rule.commandRuleSearch.name": "规则搜索命令",
+  "carpet.rule.commandRuleSearch.desc": "启用/ruleSearch命令用来搜索翻译后名称中包含指定字符串的规则",
   "carpet.rule.message.disableRespawnBlocksExplode": "已禁用重生方块爆炸",
   "carpet.rule.validate.setBedrockHardness": "值必须大于等于0，或者-1",
   "carpet.rule.validate.portalSpawnZombifiedPiglinProbability": "值必须介于0-2000之间，或者-1",
@@ -329,5 +331,6 @@
   "carpet.commands.playerAction.exception.infinite_loop": "游戏进入死循环，停止操作",
   "carpet.commands.playerAction.exception.runtime": "%s在执行操作时遇到意外错误",
   "carpet.commands.playerAction.closeScreen.fail": "%s没有打开一个GUI",
-  "carpet.commands.playerAction.closeScreen": "关闭了%s打开的GUI"
+  "carpet.commands.playerAction.closeScreen": "关闭了%s打开的GUI",
+  "carpet.commands.ruleSearch.feedback": "Carpet Mod中符合“%s”的选项：:"
 }

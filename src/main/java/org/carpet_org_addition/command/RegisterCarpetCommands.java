@@ -58,6 +58,9 @@ public class RegisterCarpetCommands {
             // 预设管理器命令
             // PresetsCommand.register(dispatcher);
 
+            // 规则搜索命令
+            RuleSearchCommand.register(dispatcher);
+
             /*
               测试用命令
              */
