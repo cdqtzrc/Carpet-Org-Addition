@@ -7,6 +7,8 @@ import org.carpet_org_addition.command.FinderCommand;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.matcher.Matcher;
 
+import java.math.BigDecimal;
+
 public class ItemFindResult extends AbstractFindResult {
     /**
      * 物品所在容器的位置
@@ -52,9 +54,10 @@ public class ItemFindResult extends AbstractFindResult {
 
     @Override
     public MutableText toText() {
-        // TODO 坐标数组过大时的类型转化：/particleLine ~ ~1 ~ 1.11100645E7 -16.5 1.11101025E7
-        String command = "/particleLine ~ ~1 ~ " + ((double) blockPos.getX() + 0.5) + " "
-                + ((double) blockPos.getY() + 0.5) + " " + ((double) blockPos.getZ() + 0.5);
+        String command = "/particleLine ~ ~1 ~ "
+                + (BigDecimal.valueOf((double) blockPos.getX() + 0.5)) + " "
+                + (BigDecimal.valueOf((double) blockPos.getY() + 0.5)) + " "
+                + (BigDecimal.valueOf((double) blockPos.getZ() + 0.5));
         return TextUtils.getTranslate("carpet.commands.finder.item.each", TextUtils.blockPos(blockPos, Formatting.GREEN),
                 TextUtils.command(TextUtils.getTranslate(blockName), command, null, null, true),
                 matcher.isItem()

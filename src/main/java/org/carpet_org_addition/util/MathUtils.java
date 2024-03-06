@@ -167,7 +167,7 @@ public class MathUtils {
             return max;
         }
         if (min > max) {
-            // 如果最小值大于最大值，交互最大最小值
+            // 如果最小值大于最大值，交换最大最小值
             int temp = max;
             max = min;
             min = temp;

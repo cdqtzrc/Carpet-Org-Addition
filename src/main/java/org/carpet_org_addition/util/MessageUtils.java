@@ -109,7 +109,6 @@ public class MessageUtils {
      * 发送一条可以被翻译的消息做为命令的执行反馈，消息内容仅消息发送者可见
      */
     public static void sendCommandFeedback(ServerCommandSource source, String key, Object... obj) {
-        // TODO 消息受游戏规则影响
         MessageUtils.sendTextMessage(source, TextUtils.getTranslate(key, obj));
     }
 
