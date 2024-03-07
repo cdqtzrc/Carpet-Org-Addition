@@ -38,6 +38,7 @@
     "rule.RedstoneWireBlockMixin",
     "rule.SculkShriekerBlockMixin",
     "rule.SeedCommandMixin",
+    "rule.ServerPlayerEntityMixin",
     "rule.ServerPlayNetworkHandlerMixin",
     "rule.ServerWorldMixin",
     "rule.ShulkerBoxBlockMixin",

@@ -6,8 +6,12 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Function;
 
 public class CommandUtils {
     private CommandUtils() {
@@ -69,6 +73,20 @@ public class CommandUtils {
         } else {
             //不是假玩家的反馈消息
             throw createException("carpet.command.not_fake_player", fakePlayer.getDisplayName());
+        }
+    }
+
+    /**
+     * 让服务器内指定玩家执行一条命令
+     *
+     * @param player   执行命令的玩家
+     * @param command  执行命令的内容，前缀斜杠是可选的
+     * @param function 执行命令的条件，如果为null，默认为true
+     */
+    public static void execute(ServerPlayerEntity player, String command, @Nullable Function<ServerPlayerEntity, Boolean> function) {
+        if (function == null || function.apply(player)) {
+            CommandManager commandManager = player.getServerWorld().getServer().getCommandManager();
+            commandManager.executeWithPrefix(player.getCommandSource(), command.startsWith("/") ? command : "/" + command);
         }
     }
 
