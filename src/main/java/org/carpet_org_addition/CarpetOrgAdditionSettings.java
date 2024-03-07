@@ -517,5 +517,16 @@ public class CarpetOrgAdditionSettings {
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
     public static String commandRuleSearch = "ops";
-    // TODO 闪电苦力怕掉落所有头颅
+
+    // 增强闪电苦力怕
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean superChargedCreeper = false;
+
+    // 玩家掉落头颅
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean playerDropHead = false;
 }
