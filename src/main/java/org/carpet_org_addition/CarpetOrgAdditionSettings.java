@@ -2,10 +2,7 @@ package org.carpet_org_addition;
 
 import carpet.api.settings.Rule;
 import carpet.api.settings.RuleCategory;
-import org.carpet_org_addition.rulevalidator.BedrockHardnessValidator;
-import org.carpet_org_addition.rulevalidator.MaxBlockPlaceDistanceLegitimacyValidator;
-import org.carpet_org_addition.rulevalidator.PiglinBarteringTimeValidator;
-import org.carpet_org_addition.rulevalidator.PortalSpawnZombifiedPiglinProbabilityValidator;
+import org.carpet_org_addition.rulevalidator.*;
 import org.carpet_org_addition.rulevalue.QuickSettingFakePlayerCraft;
 import org.carpet_org_addition.rulevalue.WetSpongeImmediatelyDry;
 
@@ -168,12 +165,6 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean turtleEggFastHatch = false;
-
-    //大范围信标
-    @Rule(
-            categories = {ORG, RuleCategory.SURVIVAL}
-    )
-    public static boolean wideRangeBeacon = false;
 
     //禁止海带生长
     @Rule(
@@ -529,4 +520,17 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean playerDropHead = false;
+
+    // 信标范围扩展
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL},
+            validators = BeaconRangeExpandValidator.class
+    )
+    public static int beaconRangeExpand = 0;
+
+    // 信标世界高度
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean beaconWorldHeight = false;
 }
