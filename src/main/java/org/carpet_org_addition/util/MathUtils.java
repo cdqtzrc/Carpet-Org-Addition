@@ -174,4 +174,18 @@ public class MathUtils {
         }
         return RANDOM.nextInt(max - min + 1) + min;
     }
+
+    /**
+     * 求一个小数数组里所有数的平均值
+     *
+     * @param args 小数数组
+     * @return 数组内所有数的平均值
+     */
+    public static double average(double... args) {
+        double sum = 0;
+        for (double arg : args) {
+            sum += arg;
+        }
+        return sum / args.length;
+    }
 }

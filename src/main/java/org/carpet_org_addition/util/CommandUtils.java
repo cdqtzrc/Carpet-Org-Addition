@@ -81,10 +81,10 @@ public class CommandUtils {
      *
      * @param player   执行命令的玩家
      * @param command  执行命令的内容，前缀斜杠是可选的
-     * @param function 执行命令的条件，如果为null，默认为true
+     * @param constraint 执行命令的条件，如果为null，默认为true
      */
-    public static void execute(ServerPlayerEntity player, String command, @Nullable Function<ServerPlayerEntity, Boolean> function) {
-        if (function == null || function.apply(player)) {
+    public static void execute(ServerPlayerEntity player, String command, @Nullable Function<ServerPlayerEntity, Boolean> constraint) {
+        if (constraint == null || constraint.apply(player)) {
             CommandManager commandManager = player.getServerWorld().getServer().getCommandManager();
             commandManager.executeWithPrefix(player.getCommandSource(), command.startsWith("/") ? command : "/" + command);
         }
