@@ -27,7 +27,7 @@ public interface FakePlayerActionInterface {
 
     void set2x2Craft(Matcher[] items);
 
-    Counter<FakePlayerActionType> getTickCounter();
+    Counter<Object> getTickCounter();
 
     // 将假玩家类型强转为假玩家动作接口类型
     static FakePlayerActionInterface getInstance(EntityPlayerMPFake fakePlayer) {

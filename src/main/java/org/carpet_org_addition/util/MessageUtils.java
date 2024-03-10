@@ -112,6 +112,10 @@ public class MessageUtils {
         MessageUtils.sendTextMessage(source, TextUtils.getTranslate(key, obj));
     }
 
+    public static void sendCommandFeedback(ServerCommandSource source, Text text) {
+        source.sendFeedback(() -> text, false);
+    }
+
     /**
      * 发送多条带有特殊样式的消息，每一条消息单独占一行，消息内容仅发送者可见
      *

@@ -26,7 +26,7 @@ public class FakePlayerTrade {
         if (fakePlayer.currentScreenHandler instanceof MerchantScreenHandler merchantScreenHandler) {
             FakePlayerActionInterface fakePlayerActionInterface = FakePlayerActionInterface.getInstance(fakePlayer);
             // 获取计数器，记录村民距离上次被加载的时间是否超过了5游戏刻（区块卸载后村民似乎不会立即卸载）
-            Counter<FakePlayerActionType> tickCounter = fakePlayerActionInterface.getTickCounter();
+            Counter<Object> tickCounter = fakePlayerActionInterface.getTickCounter();
             if (voidTrade) {
                 // 获取正在接受交易的村民
                 MerchantScreenHandlerAccessor accessor = (MerchantScreenHandlerAccessor) merchantScreenHandler;

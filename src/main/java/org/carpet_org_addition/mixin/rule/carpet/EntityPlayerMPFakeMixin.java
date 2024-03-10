@@ -41,7 +41,7 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
     private FakePlayerProtectType protect = FakePlayerProtectType.NONE;
 
     @Unique
-    private final Counter<FakePlayerActionType> counter = new Counter<>();
+    private final Counter<Object> counter = new Counter<>();
 
     /**
      * 使用数组的动态初始化把数组提前创建好，需要修改的时候只修改数组内的元素，这样能保证数组的长度是固定的
@@ -101,7 +101,7 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
     }
 
     @Override
-    public Counter<FakePlayerActionType> getTickCounter() {
+    public Counter<Object> getTickCounter() {
         return counter;
     }
 
