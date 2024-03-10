@@ -53,6 +53,11 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class FinderCommand {
+    /**
+     * 最大统计数量
+     */
+    private static final int MAXIMUM_STATISTICS = 300000;
+
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("finder").requires(source ->
                         CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandFinder))
@@ -112,7 +117,7 @@ public class FinderCommand {
             MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.item.find.not_item",
                     matcher.toText());
             return 0;
-        } else if (list.size() > 300000) {
+        } else if (list.size() > MAXIMUM_STATISTICS) {
             // 容器太多，无法统计
             throw CommandUtils.createException("carpet.commands.finder.item.too_much_container",
                     matcher.toText(), list.size());
@@ -262,11 +267,6 @@ public class FinderCommand {
         // 开始查找方块，然后返回查询结果
         ArrayList<BlockFindResult> list = findBlock(player.getWorld(), sourceBlockPos, blockStateArgument, range);
         int count = list.size();
-        // 如果找到的方块数量过多，直接抛出异常结束方法，不再进行排序
-        if (count > 300000) {
-            throw CommandUtils.createException("carpet.commands.finder.block.too_much_blocks",
-                    TextUtils.getBlockName(blockStateArgument.getBlockState().getBlock()), count);
-        }
         //判断集合中是否有元素，如果没有，直接在聊天栏发送反馈并结束方法
         if (list.isEmpty()) {
             MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.not_found_block",
@@ -303,6 +303,11 @@ public class FinderCommand {
             for (int minZ = blockPos.getZ() - range; minZ <= maxZ; minZ++) {
                 for (int bottomY = world.getBottomY(); bottomY <= maxHeight; bottomY++) {
                     checkTimeOut(currentTimeMillis);
+                    // 如果找到的方块数量过多，直接抛出异常结束方法，不再进行排序
+                    if (list.size() > MAXIMUM_STATISTICS) {
+                        throw CommandUtils.createException("carpet.commands.finder.block.too_much_blocks",
+                                TextUtils.getBlockName(blockStateArgument.getBlockState().getBlock()));
+                    }
                     //修改可变坐标的值
                     mutableBlockPos.set(minX, bottomY, minZ);
                     if (blockStateArgument.test(world, mutableBlockPos)) {
