@@ -5,12 +5,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 
+import java.util.Random;
+
 public class MathUtils {
     /**
      * 数学工具类，私有化构造方法
      */
     private MathUtils() {
     }
+
+    private static final Random RANDOM = new Random();
 
     /**
      * 根据经验等级和经验值计算总经验值<br/>
@@ -148,5 +152,40 @@ public class MathUtils {
      */
     public static BlockPos getOverworldPos(Entity entity) {
         return getOverworldPos(entity.getX(), entity.getY(), entity.getZ());
+    }
+
+    /**
+     * 生成一次指定范围内随机整数，包含最大值和最小值，范围也可以包含负数，最大最小值参数也可以反过来传递
+     *
+     * @param min 随机数的最小值
+     * @param max 随机数的最大值
+     * @return 指定范围内的随机数
+     */
+    public static int randomInt(int min, int max) {
+        if (max == min) {
+            // 如果最大最小值相等，直接返回
+            return max;
+        }
+        if (min > max) {
+            // 如果最小值大于最大值，交换最大最小值
+            int temp = max;
+            max = min;
+            min = temp;
+        }
+        return RANDOM.nextInt(max - min + 1) + min;
+    }
+
+    /**
+     * 求一个小数数组里所有数的平均值
+     *
+     * @param args 小数数组
+     * @return 数组内所有数的平均值
+     */
+    public static double average(double... args) {
+        double sum = 0;
+        for (double arg : args) {
+            sum += arg;
+        }
+        return sum / args.length;
     }
 }

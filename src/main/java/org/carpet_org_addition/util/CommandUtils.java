@@ -6,8 +6,12 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Function;
 
 public class CommandUtils {
     private CommandUtils() {
@@ -73,30 +77,23 @@ public class CommandUtils {
     }
 
     /**
-     * json文件已存在
+     * 让服务器内指定玩家执行一条命令
+     *
+     * @param player     执行命令的玩家
+     * @param command    执行命令的内容，前缀斜杠是可选的
+     * @param constraint 执行命令的条件，如果为null，默认为true
      */
-    public static CommandSyntaxException createJsonFileAlreadyExistException() {
-        return new SimpleCommandExceptionType(TextUtils.getTranslate("carpet.command.file.json.file_already_exist")).create();
+    public static void execute(ServerPlayerEntity player, String command, @Nullable Function<ServerPlayerEntity, Boolean> constraint) {
+        if (constraint == null || constraint.apply(player)) {
+            CommandManager commandManager = player.getServerWorld().getServer().getCommandManager();
+            commandManager.executeWithPrefix(player.getCommandSource(), command);
+        }
     }
 
     /**
-     * 无法解析json文件
+     * @see CommandUtils#execute(ServerPlayerEntity, String, Function)
      */
-    public static CommandSyntaxException createJsonParseException() {
-        return new SimpleCommandExceptionType(TextUtils.getTranslate("carpet.command.file.json.json_parse")).create();
-    }
-
-    /**
-     * 无法读取json文件
-     */
-    public static CommandSyntaxException createReadJsonFileException() {
-        return new SimpleCommandExceptionType(TextUtils.getTranslate("carpet.command.file.json.read")).create();
-    }
-
-    /**
-     * 找不到json文件
-     */
-    public static CommandSyntaxException createNotJsonFileException() {
-        return new SimpleCommandExceptionType(TextUtils.getTranslate("carpet.command.file.json.not_file")).create();
+    public static void execute(ServerPlayerEntity player, String command) {
+        CommandUtils.execute(player, command, null);
     }
 }

@@ -2,10 +2,8 @@ package org.carpet_org_addition;
 
 import carpet.api.settings.Rule;
 import carpet.api.settings.RuleCategory;
-import org.carpet_org_addition.rulevalidator.BedrockHardnessValidator;
-import org.carpet_org_addition.rulevalidator.MaxBlockPlaceDistanceLegitimacyValidator;
-import org.carpet_org_addition.rulevalidator.PiglinBarteringTimeValidator;
-import org.carpet_org_addition.rulevalidator.PortalSpawnZombifiedPiglinProbabilityValidator;
+import org.carpet_org_addition.rulevalidator.*;
+import org.carpet_org_addition.rulevalue.MobWhetherOrNotCanPickItem;
 import org.carpet_org_addition.rulevalue.QuickSettingFakePlayerCraft;
 import org.carpet_org_addition.rulevalue.WetSpongeImmediatelyDry;
 
@@ -168,12 +166,6 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean turtleEggFastHatch = false;
-
-    //大范围信标
-    @Rule(
-            categories = {ORG, RuleCategory.SURVIVAL}
-    )
-    public static boolean wideRangeBeacon = false;
 
     //禁止海带生长
     @Rule(
@@ -497,4 +489,55 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static WetSpongeImmediatelyDry wetSpongeImmediatelyDry = WetSpongeImmediatelyDry.FALSE;
+
+    // 假玩家死亡不掉落
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean fakePlayerKeepInventory = false;
+
+    // 苦力怕命令
+    @Rule(
+            categories = {ORG, RuleCategory.COMMAND},
+            options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
+    )
+    public static String commandCreeper = "false";
+
+    // 规则搜索命令
+    @Rule(
+            categories = {ORG, RuleCategory.COMMAND},
+            options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
+    )
+    public static String commandRuleSearch = "ops";
+
+    // 增强闪电苦力怕
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean superChargedCreeper = false;
+
+    // 玩家掉落头颅
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean playerDropHead = false;
+
+    // 信标范围扩展
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL},
+            validators = BeaconRangeExpandValidator.class
+    )
+    public static int beaconRangeExpand = 0;
+
+    // 信标世界高度
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean beaconWorldHeight = false;
+
+    // 生物是否可以捡起物品
+    @Rule(
+            categories = {ORG, RuleCategory.FEATURE}
+    )
+    public static MobWhetherOrNotCanPickItem mobWhetherOrNotCanPickItem = MobWhetherOrNotCanPickItem.VANILLA;
 }
