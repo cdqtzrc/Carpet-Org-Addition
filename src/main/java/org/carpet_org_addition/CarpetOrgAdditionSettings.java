@@ -3,6 +3,7 @@ package org.carpet_org_addition;
 import carpet.api.settings.Rule;
 import carpet.api.settings.RuleCategory;
 import org.carpet_org_addition.rulevalidator.*;
+import org.carpet_org_addition.rulevalue.MobWhetherOrNotCanPickItem;
 import org.carpet_org_addition.rulevalue.QuickSettingFakePlayerCraft;
 import org.carpet_org_addition.rulevalue.WetSpongeImmediatelyDry;
 
@@ -533,4 +534,10 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean beaconWorldHeight = false;
+
+    // 生物是否可以捡起物品
+    @Rule(
+            categories = {ORG, RuleCategory.FEATURE}
+    )
+    public static MobWhetherOrNotCanPickItem mobWhetherOrNotCanPickItem = MobWhetherOrNotCanPickItem.VANILLA;
 }

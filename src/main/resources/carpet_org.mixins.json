@@ -29,6 +29,7 @@
     "rule.MagmaCubeEntityMixin",
     "rule.MerchantScreenHandlerAccessor",
     "rule.MiningToolItemMixin",
+    "rule.MobEntityMixin",
     "rule.NetherPortalBlockMixin",
     "rule.ObserverBlockMixin",
     "rule.PiglinBrainMixin",
