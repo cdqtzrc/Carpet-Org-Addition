@@ -113,7 +113,7 @@ public class MessageUtils {
     }
 
     public static void sendCommandFeedback(ServerCommandSource source, Text text) {
-        source.sendFeedback(() -> text, false);
+        source.sendFeedback(text, false);
     }
 
     /**

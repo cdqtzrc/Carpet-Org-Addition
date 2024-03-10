@@ -85,7 +85,7 @@ public class CommandUtils {
      */
     public static void execute(ServerPlayerEntity player, String command, @Nullable Function<ServerPlayerEntity, Boolean> constraint) {
         if (constraint == null || constraint.apply(player)) {
-            CommandManager commandManager = player.getServerWorld().getServer().getCommandManager();
+            CommandManager commandManager = player.getWorld().getServer().getCommandManager();
             commandManager.executeWithPrefix(player.getCommandSource(), command);
         }
     }
