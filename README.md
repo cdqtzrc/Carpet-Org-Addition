@@ -204,14 +204,6 @@
     - 参考选项：`true`，`false`
     - 分类：`Org`，`特性`
 
-大范围信标(wideRangeBeacon)
-
-- 信标作用效果向各个方向扩展50格，再向下额外延伸384格
-    - 类型：`布尔值`
-    - 默认值：`false`
-    - 参考选项：`true`，`false`
-    - 分类：`Org`，`生存`
-
 禁止海带生长(disableKelpGrow)
 
 - 阻止海带自然生长
@@ -650,6 +642,74 @@ CCE更新抑制器(CCEUpdateSuppression)
     - 参考选项：`false`，`arid`，`all`，`disable`
     - 分类：`Org`，`生存`
 
+假玩家死亡不掉落(fakePlayerKeepInventory)
+
+- 假玩家死亡后保留物品栏物品和经验
+    - 类型：`布尔值`
+    - 默认值：`false`
+    - 参考选项：`true`，`false`
+    - 分类：`Org`，`生存`
+
+苦力怕命令(commandCreeper)
+
+- 启用/creeper命令用来在指定玩家周围生成一只立即爆炸但不会破坏方块的苦力怕
+    - 类型：`字符串`
+    - 默认值：`"false"`
+    - 参考选项：`"true"`, `“false”`, `"ops"`, `"0"`, `"1"`, `"2"`, `"3"`, `"4"`
+    - 分类：`Org`，`指令`
+
+规则搜索命令(commandRuleSearch)
+
+- 启用/ruleSearch命令用来搜索翻译后名称中包含指定字符串的规则
+    - 类型：`字符串`
+    - 默认值：`"ops"`
+    - 参考选项：`"true"`, `“false”`, `"ops"`, `"0"`, `"1"`, `"2"`, `"3"`, `"4"`
+    - 分类：`Org`，`指令`
+
+增强闪电苦力怕(superChargedCreeper)
+
+- 闪电苦力怕同时炸死多个生物时每个生物都掉落头颅
+    - 类型：`布尔值`
+    - 默认值：`false`
+    - 参考选项：`true`，`false`
+    - 分类：`Org`，`生存`
+
+玩家掉落头(playerDropHead)
+
+- 玩家被闪电苦力怕杀死时掉落头颅
+    - 类型：`布尔值`
+    - 默认值：`false`
+    - 参考选项：`true`，`false`
+    - 分类：`Org`，`生存`
+
+信标范围扩展(beaconRangeExpand)
+
+- 将信标范围扩展向四周指定格数
+    - 类型：`整数`
+    - 默认值：`0`
+    - 分类：`Org`，`生存`
+
+信标世界高度(beaconWorldHeight)
+
+- 将信标竖直方向的范围调整为整个世界高度
+    - 类型：`布尔值`
+    - 默认值：`false`
+    - 参考选项：`true`，`false`
+    - 分类：`Org`，`生存`
+
+生物是否可以捡起物品(mobWhetherOrNotCanPickItem)
+
+- 设置掉落物是否可以被生物捡起
+- no：任何生物都不能捡起掉落物
+- vanilla：原版行为
+- yes：任何生物都能捡起掉落物
+- yes_only_hostile：任何敌对都能捡起掉落物，其它生物为原版行为
+- no_only_hostile：任何敌对生物都不能捡起掉落物，其它生物为原版行为
+    - 类型：`枚举`
+    - 默认值：`vanilla`
+    - 参考选项：`no`，`vanilla`，`yes`，`yes_only_hostile`，`no_only_hostile`
+    - 分类：`Org`，`特性`
+
 ## 命令
 
 [/itemshadowing](docs/commands/itemshadowing.md)
@@ -695,3 +755,11 @@ CCE更新抑制器(CCEUpdateSuppression)
 [/playerAction](docs/commands/playerAction.md)
 
 - 假玩家动作命令，控制假玩家的行为
+
+[/creeper](docs/commands/creeper.md)
+
+- 在指定玩家周围生成一只立即爆炸的苦力怕，爆炸不会破坏方块
+
+[/ruleSearch](docs/commands/ruleSearch.md)
+
+- 用来搜索翻译后名称中包含指定字符串的规则
