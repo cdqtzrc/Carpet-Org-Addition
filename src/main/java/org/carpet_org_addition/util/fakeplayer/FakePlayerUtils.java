@@ -169,6 +169,7 @@ public class FakePlayerUtils {
      * @param screenHandler 玩家当前打开的GUI
      * @param slotIndex     玩家当前操作槽位的索引
      * @param player        当前操作该GUI的玩家
+     * @apiNote 请勿在工作台输出槽中使用此方法丢弃物品
      */
     public static void loopThrowItem(ScreenHandler screenHandler, int slotIndex, EntityPlayerMPFake player) {
         while (screenHandler.getSlot(slotIndex).hasStack()) {

@@ -14,6 +14,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.util.CommandUtils;
+import org.carpet_org_addition.util.constant.CommandSyntaxExceptionConstants;
 import org.carpet_org_addition.util.matcher.ItemMatcher;
 import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
 import org.carpet_org_addition.util.matcher.Matcher;
@@ -70,7 +71,7 @@ public class CraftPresets {
         File file = new File(getFile(server), suppFileName(fileName));
         if (!file.exists()) {
             // 如果文件不存在，直接抛出异常
-            throw CommandUtils.createNotJsonFileException();
+            throw CommandSyntaxExceptionConstants.NOT_JSON_FILE_EXCEPTION;
         }
         // 读取json文件的内容
         StringBuilder sb = new StringBuilder();
@@ -83,7 +84,7 @@ public class CraftPresets {
             }
         } catch (IOException e) {
             // 无法读取json文件
-            throw CommandUtils.createReadJsonFileException();
+            throw CommandSyntaxExceptionConstants.READ_JSON_FILE_EXCEPTION;
         }
         Gson gson = new Gson();
         try {
@@ -91,7 +92,7 @@ public class CraftPresets {
             return gson.fromJson(sb.toString(), CraftPresets.class);
         } catch (JsonParseException e) {
             // 无法解析json文件时抛出异常
-            throw CommandUtils.createJsonParseException();
+            throw CommandSyntaxExceptionConstants.JSON_PARSE_EXCEPTION;
         }
     }
 
@@ -149,7 +150,7 @@ public class CraftPresets {
         File file = server.getSavePath(WorldSavePath.ROOT).resolve("presets").resolve("craft").toFile();
         // 如果文件已存在并且不是文件夹，直接抛出异常
         if (file.isFile()) {
-            throw CommandUtils.createJsonFileAlreadyExistException();
+            throw CommandSyntaxExceptionConstants.JSON_FILE_ALREADY_EXIST_EXCEPTION;
         }
         // 如果文件夹已存在，直接返回文件夹
         if (file.exists()) {
