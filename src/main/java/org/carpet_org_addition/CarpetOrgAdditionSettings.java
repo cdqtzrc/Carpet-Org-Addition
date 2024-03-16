@@ -385,12 +385,6 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean canActivatesObserver = false;
 
-    //禁用聊天数据包顺序检查
-    @Rule(
-            categories = {ORG, RuleCategory.SURVIVAL}
-    )
-    public static boolean disableOutOfOrderChatCheck = false;
-
     //禁止水结冰
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
