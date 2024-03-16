@@ -41,6 +41,7 @@ public abstract class AbstractBlockStateMixin {
                     || block == Blocks.POLISHED_DEEPSLATE_SLAB || block == Blocks.POLISHED_DEEPSLATE_STAIRS
                     || block == Blocks.POLISHED_DEEPSLATE_WALL) {
                 cir.setReturnValue(Blocks.STONE.getHardness());
+                return;
             } else if (block == Blocks.COBBLED_DEEPSLATE || block == Blocks.COBBLED_DEEPSLATE_SLAB
                     || block == Blocks.COBBLED_DEEPSLATE_STAIRS || block == Blocks.COBBLED_DEEPSLATE_WALL
                     || block == Blocks.DEEPSLATE_BRICKS || block == Blocks.DEEPSLATE_TILES
@@ -49,8 +50,10 @@ public abstract class AbstractBlockStateMixin {
                     || block == Blocks.CRACKED_DEEPSLATE_TILES) {
                 // 深板岩圆石
                 cir.setReturnValue(Blocks.COBBLESTONE.getHardness());
+                return;
             }
-        } else if (block == Blocks.OBSIDIAN && CarpetOrgAdditionSettings.softObsidian) {
+        }
+        if (block == Blocks.OBSIDIAN && CarpetOrgAdditionSettings.softObsidian) {
             // 易碎黑曜石
             cir.setReturnValue(Blocks.END_STONE.getHardness());
         } else {
