@@ -30,6 +30,7 @@ import org.carpet_org_addition.util.fakeplayer.FakePlayerActionInterface;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionType;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerGuiCraftScreenHandler;
 import org.carpet_org_addition.util.helpers.Counter;
+import org.carpet_org_addition.util.matcher.ItemMatcher;
 import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
 import org.carpet_org_addition.util.matcher.Matcher;
 
@@ -152,7 +153,6 @@ public class PlayerActionCommand {
         return 1;
     }
 
-
     // 填充数组
     private static Matcher[] fillArray(Matcher matcher, Matcher[] matchers, boolean directFill) {
         if (directFill) {
@@ -164,7 +164,7 @@ public class PlayerActionCommand {
                 if (i == 0) {
                     matchers[i] = matcher;
                 } else {
-                    matchers[i] = Matcher.AIR_ITEM_MATCHER;
+                    matchers[i] = ItemMatcher.AIR_ITEM_MATCHER;
                 }
             }
         }

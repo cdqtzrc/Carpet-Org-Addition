@@ -2,7 +2,6 @@ package org.carpet_org_addition.util.matcher;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -10,7 +9,6 @@ import net.minecraft.util.Identifier;
 import org.carpet_org_addition.CarpetOrgAddition;
 
 public interface Matcher {
-    ItemMatcher AIR_ITEM_MATCHER = new ItemMatcher(Items.AIR);
 
     /**
      * 检查当前物品堆栈是否与匹配器匹配

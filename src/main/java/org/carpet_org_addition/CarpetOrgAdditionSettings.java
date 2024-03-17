@@ -103,7 +103,7 @@ public class CarpetOrgAdditionSettings {
     //最大方块交互距离
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL, RuleCategory.FEATURE},
-            validators = {MaxBlockPlaceDistanceLegitimacyValidator.class}
+            validators = {MaxBlockPlaceDistanceValidator.class}
     )
     public static double maxBlockPlaceDistance;
 
