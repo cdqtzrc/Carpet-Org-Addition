@@ -14,7 +14,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
-import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
@@ -86,7 +85,7 @@ public class ParticleLineCommand {
                 try {
                     Thread.sleep(waitTime);
                 } catch (InterruptedException e) {
-                    CarpetOrgAddition.LOGGER.warn("绘制粒子线任务时的线程等待出现问题", e);
+                    return;
                 }
             }
         }
