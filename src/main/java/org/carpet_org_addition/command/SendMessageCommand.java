@@ -67,7 +67,7 @@ public class SendMessageCommand {
     private static int sendSelfLocation(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getPlayer(context);
         BlockPos blockPos = player.getBlockPos();
-        MutableText mutableText = switch (StringUtils.getDimensionId(player.getWorld())) {
+        MutableText mutableText = switch (WorldUtils.getDimensionId(player.getWorld())) {
             case "minecraft:overworld" -> TextUtils.getTranslate("carpet.commands.sendMessage.location.overworld",
                     player.getDisplayName(),
                     TextUtils.blockPos(blockPos, Formatting.GREEN),
@@ -81,7 +81,7 @@ public class SendMessageCommand {
                     TextUtils.blockPos(blockPos, Formatting.DARK_PURPLE));
             default -> TextUtils.getTranslate("carpet.commands.sendMessage.location.default",
                     player.getDisplayName(),
-                    StringUtils.getDimensionId(player.getWorld()),
+                    WorldUtils.getDimensionId(player.getWorld()),
                     TextUtils.blockPos(blockPos, null));
         };
         MessageUtils.broadcastTextMessage(context.getSource(), mutableText);

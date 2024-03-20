@@ -8,7 +8,10 @@ import net.minecraft.server.command.ServerCommandSource;
 
 public class RegisterCarpetCommands {
     //注册Carpet命令
-    public static void registerCarpetCommands(CommandDispatcher<ServerCommandSource> dispatcher, @SuppressWarnings("unused") CommandManager.RegistrationEnvironment environment, CommandRegistryAccess commandBuildContext) {
+    @SuppressWarnings("unused")
+    public static void registerCarpetCommands(CommandDispatcher<ServerCommandSource> dispatcher,
+                                              CommandManager.RegistrationEnvironment environment,
+                                              CommandRegistryAccess commandBuildContext) {
         if (CarpetServer.settingsManager != null) {
             CarpetServer.settingsManager.registerCommand(dispatcher, commandBuildContext);
             CarpetServer.extensions.forEach((e) -> {
@@ -22,8 +25,8 @@ public class RegisterCarpetCommands {
             //物品分身命令
             ItemShadowingCommand.register(dispatcher);
 
-            //保护假玩家命令
-            ProtectCommand.register(dispatcher);
+            // 保护假玩家命令
+            // ProtectCommand.register(dispatcher);
 
             //假玩家工具命令
             PlayerToolsCommand.register(dispatcher);

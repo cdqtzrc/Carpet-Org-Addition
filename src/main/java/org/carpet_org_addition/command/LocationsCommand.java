@@ -17,9 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
-import org.carpet_org_addition.util.CommandUtils;
-import org.carpet_org_addition.util.MessageUtils;
-import org.carpet_org_addition.util.StringUtils;
+import org.carpet_org_addition.util.*;
 import org.carpet_org_addition.util.helpers.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,48 +36,35 @@ public class LocationsCommand {
                         .then(CommandManager.argument("name", StringArgumentType.string())
                                 .executes(context -> addWayPoint(context, null))
                                 .then(CommandManager.argument("pos", BlockPosArgumentType.blockPos())
-                                        .executes(context -> addWayPoint(context, BlockPosArgumentType.getBlockPos(context, "pos")))
-                                )
-                        )
-                ).then(CommandManager.literal("list")
+                                        .executes(context -> addWayPoint(context, BlockPosArgumentType.getBlockPos(context, "pos"))))))
+                .then(CommandManager.literal("list")
                         .executes(context -> listWayPoint(context, null)).then(CommandManager.argument("filter", StringArgumentType.string())
-                                .executes(context -> listWayPoint(context, StringArgumentType.getString(context, "filter")))
-                        )
-                ).then(CommandManager.literal("supplement")
+                                .executes(context -> listWayPoint(context, StringArgumentType.getString(context, "filter")))))
+                .then(CommandManager.literal("supplement")
                         .then(CommandManager.argument("supp", StringArgumentType.string())
                                 .suggests(getServerCommandSourceSuggestionProvider())
                                 .then(CommandManager.literal("illustrate")
                                         .executes(context -> addIllustrateText(context, null))
                                         .then(CommandManager.argument("illustrate", StringArgumentType.string())
-                                                .executes(context -> addIllustrateText(context, StringArgumentType.getString(context, "illustrate")))
-                                        )
-                                ).then(CommandManager.literal("another_pos")
+                                                .executes(context -> addIllustrateText(context, StringArgumentType.getString(context, "illustrate")))))
+                                .then(CommandManager.literal("another_pos")
                                         .executes(context -> addAnotherPos(context, null))
                                         .then(CommandManager.argument("anotherPos", BlockPosArgumentType.blockPos())
-                                                .executes(context -> addAnotherPos(context, BlockPosArgumentType.getBlockPos(context, "anotherPos")))
-                                        ))
-                        )
-                ).then(CommandManager.literal("info")
+                                                .executes(context -> addAnotherPos(context, BlockPosArgumentType.getBlockPos(context, "anotherPos")))))))
+                .then(CommandManager.literal("info")
                         .then(CommandManager.argument("info", StringArgumentType.string())
                                 .suggests(getServerCommandSourceSuggestionProvider())
-                                .executes(LocationsCommand::showInfo)
-                        )
-                )
+                                .executes(LocationsCommand::showInfo)))
                 .then(CommandManager.literal("delete")
                         .then(CommandManager.argument("delete", StringArgumentType.string())
                                 .suggests(getServerCommandSourceSuggestionProvider())
-                                .executes(LocationsCommand::deleteWayPoint)
-                        )
-                )
+                                .executes(LocationsCommand::deleteWayPoint)))
                 .then(CommandManager.literal("set")
                         .then(CommandManager.argument("name", StringArgumentType.string())
                                 .suggests(getServerCommandSourceSuggestionProvider())
                                 .executes(context -> setWayPoint(context, null))
                                 .then(CommandManager.argument("pos", BlockPosArgumentType.blockPos())
-                                        .executes(context -> setWayPoint(context, BlockPosArgumentType.getBlockPos(context, "pos"))))
-                        )
-                )
-        );
+                                        .executes(context -> setWayPoint(context, BlockPosArgumentType.getBlockPos(context, "pos")))))));
     }
 
     @NotNull
@@ -110,7 +95,7 @@ public class LocationsCommand {
         Location location;
         try {
             //从本地文件读取路径点对象
-            location = new Location(blockPos, StringUtils.getDimensionId(player.getWorld()), player);
+            location = new Location(blockPos, WorldUtils.getDimensionId(player.getWorld()), player);
         } catch (IllegalArgumentException e) {
             //不能为自定义维度添加路径点
             throw CommandUtils.createException("carpet.commands.locations.add.fail.unknown_dimension");
@@ -132,9 +117,9 @@ public class LocationsCommand {
             //添加路径点并写入本地文件
             Location.saveLoc(file, location, name);
             //成功添加路径点
-            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.locations.add.success", name, StringUtils.getBlockPosString(blockPos));
+            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.locations.add.success", name, WorldUtils.toPosString(blockPos));
         } catch (IOException e) {
-            CarpetOrgAddition.LOGGER.error(StringUtils.getPlayerName(player) + "在尝试将路径点写入本地文件时出现意外问题:", e);
+            CarpetOrgAddition.LOGGER.error(GameUtils.getPlayerName(player) + "在尝试将路径点写入本地文件时出现意外问题:", e);
         }
         return 1;
     }
@@ -170,7 +155,7 @@ public class LocationsCommand {
                     MessageUtils.sendTextMessage(source, location.getText("[" + name + "] "));
                     count++;
                 } catch (IOException e) {
-                    CarpetOrgAddition.LOGGER.error(StringUtils.getPlayerName(player) + "在尝试将列出路径点时出现意外问题:", e);
+                    CarpetOrgAddition.LOGGER.error(GameUtils.getPlayerName(player) + "在尝试将列出路径点时出现意外问题:", e);
                 }
             }
             MessageUtils.sendStringMessage(source, "------------------------------");

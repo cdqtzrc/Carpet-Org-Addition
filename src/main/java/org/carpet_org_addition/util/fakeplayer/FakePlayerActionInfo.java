@@ -24,7 +24,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.world.World;
-import org.carpet_org_addition.util.StringUtils;
+import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.matcher.Matcher;
 import org.jetbrains.annotations.NotNull;
@@ -125,10 +125,10 @@ public class FakePlayerActionInfo {
         list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.sorting.item", fakeName, itemName));
         // 获取分拣物品要丢出的方向
         Vec3d thisVec = Vec3ArgumentType.getVec3(context, "this");
-        MutableText thisPos = Text.literal(StringUtils.keepTwoDecimalPlaces(thisVec.getX(), thisVec.getY(), thisVec.getZ()));
+        MutableText thisPos = Text.literal(MathUtils.keepTwoDecimalPlaces(thisVec.getX(), thisVec.getY(), thisVec.getZ()));
         // 获取非分拣物品要丢出的方向
         Vec3d otherVec = Vec3ArgumentType.getVec3(context, "other");
-        MutableText otherPos = Text.literal(StringUtils.keepTwoDecimalPlaces(otherVec.getX(), otherVec.getY(), otherVec.getZ()));
+        MutableText otherPos = Text.literal(MathUtils.keepTwoDecimalPlaces(otherVec.getX(), otherVec.getY(), otherVec.getZ()));
         // 将丢要分拣物品的方向的信息添加到集合
         list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.sorting.this", itemName, thisPos));
         // 将丢其他物品的方向的信息添加到集合

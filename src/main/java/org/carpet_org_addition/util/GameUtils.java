@@ -1,5 +1,6 @@
 package org.carpet_org_addition.util;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -25,5 +26,15 @@ public class GameUtils {
             throw new NotFoundPlayerException();
         }
         return player;
+    }
+
+    /**
+     * 获取一名玩家的字符串形式的玩家名
+     *
+     * @param player 要获取字符串形式玩家名的玩家
+     * @return 玩家名的字符串形式
+     */
+    public static String getPlayerName(PlayerEntity player) {
+        return player.getName().getString();
     }
 }

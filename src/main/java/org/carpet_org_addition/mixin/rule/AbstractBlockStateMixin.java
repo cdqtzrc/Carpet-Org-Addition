@@ -22,7 +22,7 @@ public abstract class AbstractBlockStateMixin {
      * 修改硬度的基岩不会被推动
      * {@link PistonBlockMixin}
      */
-    //抄的Carpet AMS
+    // 抄的Carpet AMS
     @Inject(method = "getHardness", at = @At("TAIL"), cancellable = true)
     public void getBlockHardness(BlockView world, BlockPos pos, CallbackInfoReturnable<Float> cir) {
         // 设置基岩硬度

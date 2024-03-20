@@ -16,6 +16,7 @@ public class VillagerInventoryScreenHandler extends ScreenHandler {
     private static final int SIZE = 8;
     private final VillagerEntity villagerEntity;
 
+    // TODO 最后一格强行放入物品时，关闭GUI时丢出物品
     public VillagerInventoryScreenHandler(int syncId, PlayerInventory playerInventory, VillagerEntity villagerEntity) {
         super(ScreenHandlerType.GENERIC_3X3, syncId);
         this.villagerEntity = villagerEntity;

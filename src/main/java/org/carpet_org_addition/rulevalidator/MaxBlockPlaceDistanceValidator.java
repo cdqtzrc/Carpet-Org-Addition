@@ -6,8 +6,10 @@ import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.util.TextUtils;
 import org.jetbrains.annotations.Nullable;
 
-//检查最大方块交互距离的合法性
+// 最大方块交互距离校验
 public class MaxBlockPlaceDistanceValidator extends Validator<Double> {
+    public static final double MAX_BLOCK_PLACE_DISTANCE_MAX_VALUE = 256.0;
+
     private MaxBlockPlaceDistanceValidator() {
     }
 
@@ -16,7 +18,7 @@ public class MaxBlockPlaceDistanceValidator extends Validator<Double> {
      */
     @Override
     public Double validate(@Nullable ServerCommandSource serverCommandSource, CarpetRule<Double> carpetRule, Double aDouble, String s) {
-        return (aDouble >= 0 && aDouble <= 128) || aDouble == -1 ? aDouble : null;
+        return (aDouble >= 0 && aDouble <= MAX_BLOCK_PLACE_DISTANCE_MAX_VALUE) || aDouble == -1 ? aDouble : null;
     }
 
     /**
