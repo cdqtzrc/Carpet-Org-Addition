@@ -23,7 +23,7 @@ public class TextUtils {
     public static MutableText blockPos(BlockPos blockPos, @Nullable Formatting color) {
         MutableText pos = Texts.bracketed(Text.translatable("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
         //添加单击事件，复制方块坐标
-        pos.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, StringUtils.getBlockPosString(blockPos))));
+        pos.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, WorldUtils.toPosString(blockPos))));
         //添加光标悬停事件：单击复制到剪贴板
         pos.styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextUtils.getTranslate("chat.copy.click"))));
         if (color != null) {

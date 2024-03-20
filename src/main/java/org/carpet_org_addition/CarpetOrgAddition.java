@@ -19,6 +19,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
 
     //日志
     public static final Logger LOGGER = LoggerFactory.getLogger("CarpetOrgAddition");
+    public static final String MOD_NAME_LOWER_CASE = "carpetorgaddition";
 
     /**
      * Runs the mod initializer.

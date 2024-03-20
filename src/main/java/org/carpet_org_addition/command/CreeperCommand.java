@@ -14,11 +14,10 @@ import org.carpet_org_addition.util.MathUtils;
 
 public class CreeperCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        dispatcher.register(CommandManager.literal("creeper").requires(source ->
-                        CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandCreeper))
+        dispatcher.register(CommandManager.literal("creeper")
+                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandCreeper))
                 .then(CommandManager.argument("player", EntityArgumentType.player())
-                        .executes(context -> creeperExplosion(EntityArgumentType.getPlayer(context, "player"))
-                        )));
+                        .executes(context -> creeperExplosion(EntityArgumentType.getPlayer(context, "player")))));
     }
 
     // 创建苦力怕并爆炸

@@ -117,9 +117,6 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void fakePlayerTick(CallbackInfo ci) {
-        if (thisPlayer == null) {
-            return;
-        }
         //假玩家回血
         if (CarpetOrgAdditionSettings.fakePlayerHeal) {
             long time = thisPlayer.getWorld().getTime();
@@ -181,32 +178,6 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
                 CarpetOrgAddition.LOGGER.error(action + "的行为没有预先定义");
                 action = FakePlayerActionType.STOP;
             }
-        }
-    }
-
-    //阻止受保护的假玩家受到伤害
-    @Override
-    public boolean damage(DamageSource source, float amount) {
-        if (FakePlayerProtectManager.ruleEnable() && FakePlayerProtectManager.isInvincible(thisPlayer)
-                && !(source.getSource() instanceof PlayerEntity)
-                && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-            return false;
-        }
-        return super.damage(source, amount);
-    }
-
-    //阻止受保护的假玩家死亡
-    @Inject(method = "onDeath", at = @At("HEAD"), cancellable = true)
-    private void onDeath(DamageSource source, CallbackInfo ci) {
-        if (FakePlayerProtectManager.ruleEnable() && FakePlayerProtectManager.isImmortal(thisPlayer)
-                && !(source.getSource() instanceof PlayerEntity)
-                && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-            this.setHealth(this.getMaxHealth());
-            HungerManager hungerManager = this.getHungerManager();
-            hungerManager.setFoodLevel(20);
-            hungerManager.setSaturationLevel(5.0f);
-            hungerManager.setExhaustion(0);
-            ci.cancel();
         }
     }
 }

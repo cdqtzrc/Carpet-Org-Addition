@@ -12,7 +12,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionTypes;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
-import org.carpet_org_addition.util.StringUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,7 +52,7 @@ public class Location {
             default -> throw new IllegalArgumentException();
         }
         this.creatorPlayerName = player.getName().getString();
-        this.creatorTime = StringUtils.getDateString();
+        this.creatorTime = MathUtils.getDateString();
     }
 
     //设置主世界坐标

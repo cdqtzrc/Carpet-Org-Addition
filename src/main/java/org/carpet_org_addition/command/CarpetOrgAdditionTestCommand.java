@@ -2,6 +2,7 @@ package org.carpet_org_addition.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.ItemPredicateArgumentType;
 import net.minecraft.enchantment.Enchantment;
@@ -23,7 +24,8 @@ import java.util.function.Predicate;
 @SuppressWarnings("unused")
 public class CarpetOrgAdditionTestCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
-        dispatcher.register(CommandManager.literal("carpetOrgAdditionTest").requires(source -> false)
+        dispatcher.register(CommandManager.literal("carpetOrgAdditionTest")
+                .requires(source -> FabricLoader.getInstance().isDevelopmentEnvironment())
                 .then(CommandManager.literal("listEnchantBookFactory").executes(context -> {
                     listEnchantBookFactory(context.getSource());
                     return 1;

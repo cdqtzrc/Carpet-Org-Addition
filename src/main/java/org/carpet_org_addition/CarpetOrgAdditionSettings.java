@@ -7,6 +7,8 @@ import org.carpet_org_addition.rulevalue.MobWhetherOrNotCanPickItem;
 import org.carpet_org_addition.rulevalue.QuickSettingFakePlayerCraft;
 import org.carpet_org_addition.rulevalue.WetSpongeImmediatelyDry;
 
+import java.lang.reflect.Field;
+
 public class CarpetOrgAdditionSettings {
     private CarpetOrgAdditionSettings() {
     }
@@ -14,7 +16,6 @@ public class CarpetOrgAdditionSettings {
     static {
         setBedrockHardness = -1;
         maxBlockPlaceDistance = -1;
-        portalSpawnZombifiedPiglinProbability = -1;
     }
 
     public static final String ORG = "Org";
@@ -50,19 +51,6 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean sculkShriekerCanSummon = false;
-
-    //村民立即补货
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE}
-    )
-    public static boolean villagerImmediatelyRestock = false;
-
-    //保护玩家列表控制命令
-    @Rule(
-            categories = {ORG, RuleCategory.COMMAND},
-            options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
-    )
-    public static String commandProtect = "false";
 
     //创造玩家免疫/kill
     @Rule(
@@ -263,13 +251,6 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean renewableSwiftSneak = false;
-
-    //传送门生成僵尸猪灵概率
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE},
-            validators = {PortalSpawnZombifiedPiglinProbabilityValidator.class}
-    )
-    public static int portalSpawnZombifiedPiglinProbability;
 
     //击退棒
     @Rule(

@@ -15,8 +15,9 @@ import org.carpet_org_addition.util.TextUtils;
 //自杀命令
 public class KillMeCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        dispatcher.register(CommandManager.literal("killMe").requires(source ->
-                CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandKillMe)).executes(KillMeCommand::killMe));
+        dispatcher.register(CommandManager.literal("killMe")
+                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandKillMe))
+                .executes(KillMeCommand::killMe));
     }
 
     //玩家自杀
