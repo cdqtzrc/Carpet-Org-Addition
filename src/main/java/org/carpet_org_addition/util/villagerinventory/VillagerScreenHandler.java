@@ -3,27 +3,23 @@ package org.carpet_org_addition.util.villagerinventory;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.Generic3x3ContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import org.carpet_org_addition.util.helpers.DisabledSlot;
 
-public class VillagerInventoryScreenHandler extends ScreenHandler {
+public class VillagerScreenHandler extends ScreenHandler {
     // 物品栏的大小
     private static final int SIZE = 8;
     private final VillagerEntity villagerEntity;
+    private final VillagerInventory inventory;
 
-    // TODO 最后一格强行放入物品时，关闭GUI时丢出物品
-    public VillagerInventoryScreenHandler(int syncId, PlayerInventory playerInventory, VillagerEntity villagerEntity) {
+    public VillagerScreenHandler(int syncId, PlayerInventory playerInventory, VillagerEntity villagerEntity) {
         super(ScreenHandlerType.GENERIC_3X3, syncId);
         this.villagerEntity = villagerEntity;
-        Inventory inventory = villagerEntity.getInventory();
-        // 检查物品栏大小，如果物品栏大小小于8，抛出非法参数异常
-        Generic3x3ContainerScreenHandler.checkSize(inventory, SIZE);
-        inventory.onOpen(playerInventory.player);
+        this.inventory = new VillagerInventory(villagerEntity);
+        this.inventory.onOpen(playerInventory.player);
         // 添加村民物品栏的槽位
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
@@ -124,5 +120,11 @@ public class VillagerInventoryScreenHandler extends ScreenHandler {
     @Override
     public boolean canInsertIntoSlot(ItemStack stack, Slot slot) {
         return !(slot instanceof DisabledSlot);
+    }
+
+    @Override
+    public void onClosed(PlayerEntity player) {
+        super.onClosed(player);
+        this.inventory.dropExcess(player);
     }
 }

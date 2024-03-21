@@ -6,8 +6,6 @@ import net.minecraft.util.math.MathHelper;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.rulevalidator.MaxBlockPlaceDistanceValidator;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import java.util.StringJoiner;
 
@@ -164,17 +162,6 @@ public class MathUtils {
             sum += arg;
         }
         return sum / args.length;
-    }
-
-    /**
-     * 获取当前系统时间的字符串形式
-     *
-     * @return 当前系统时间的字符串形式
-     */
-    public static String getDateString() {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH:mm:ss");
-        return formatter.format(localDateTime);
     }
 
     /**

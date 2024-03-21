@@ -32,7 +32,7 @@ public class ParticleLineCommand {
     // 准备绘制粒子线
     public static int draw(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         // 获取玩家对象
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         // 获取粒子线的起始和结束点
         Vec3d from = Vec3ArgumentType.getVec3(context, "from");
         Vec3d to = Vec3ArgumentType.getVec3(context, "to");
