@@ -11,7 +11,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
-import org.carpet_org_addition.util.villagerinventory.VillagerInventoryScreenHandler;
+import org.carpet_org_addition.util.villagerinventory.VillagerScreenHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -48,7 +48,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
         if (CarpetOrgAdditionSettings.openVillagerInventory && player.isSneaking()) {
             SimpleNamedScreenHandlerFactory screen =
                     new SimpleNamedScreenHandlerFactory((i, inventory, playerEntity)
-                            -> new VillagerInventoryScreenHandler(i, inventory, thisVillager), thisVillager.getName());
+                            -> new VillagerScreenHandler(i, inventory, thisVillager), thisVillager.getName());
             player.openHandledScreen(screen);
             cir.setReturnValue(ActionResult.SUCCESS);
         }

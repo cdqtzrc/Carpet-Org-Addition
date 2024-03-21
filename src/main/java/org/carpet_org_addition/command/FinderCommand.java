@@ -96,7 +96,7 @@ public class FinderCommand {
     // 物品查找
     private static int itemFinder(CommandContext<ServerCommandSource> context, int range, int maxCount) throws CommandSyntaxException {
         // 获取执行命令的玩家并非空判断
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         // 获取要查找的物品堆栈
         Predicate<ItemStack> predicate = ItemPredicateArgumentType.getItemStackPredicate(context, "itemStack");
         if (range == -1) {
@@ -251,7 +251,7 @@ public class FinderCommand {
     //方块查找
     private static int blockFinder(CommandContext<ServerCommandSource> context, int range, int maxCount) throws CommandSyntaxException {
         // 获取执行命令的玩家并非空判断
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         // 获取要匹配的方块状态
         BlockStateArgument blockStateArgument = BlockStateArgumentType.getBlockState(context, "blockState");
         if (range == -1) {
@@ -331,7 +331,7 @@ public class FinderCommand {
     // 准备根据物品查找交易项
     private static int tradeItemFinder(CommandContext<ServerCommandSource> context, int range, int maxCount) throws CommandSyntaxException {
         // 获取执行命令的玩家对象
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         if (range == -1) {
             // 获取要查找方块的范围
             range = IntegerArgumentType.getInteger(context, "range");
@@ -386,7 +386,7 @@ public class FinderCommand {
     // 准备查找出售指定附魔书的村民
     private static int enchantedBookTradeFinder(CommandContext<ServerCommandSource> context, int range, int maxCount) throws CommandSyntaxException {
         // 获取执行命令的玩家
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         if (range == -1) {
             // 获取要查找方块的范围
             range = IntegerArgumentType.getInteger(context, "range");

@@ -201,7 +201,7 @@
   "carpet.rule.message.disableRespawnBlocksExplode": "已禁用重生方块爆炸",
   "carpet.rule.validate.setBedrockHardness": "值必须大于等于0，或者-1",
   "carpet.rule.validate.portalSpawnZombifiedPiglinProbability": "值必须介于0-2000之间，或者-1",
-  "carpet.rule.validate.maxBlockPlaceDistance": "值必须介于0-128之间，或者-1",
+  "carpet.rule.validate.maxBlockPlaceDistance": "值必须介于0-256之间，或者-1",
   "carpet.rule.validate.customPiglinBarteringTime": "值必须大于等于0，或者-1",
   "carpet.rule.validate.beaconRangeExpand": "值必须小于等于1024",
   "carpet.command.not_fake_player": "%s不是假玩家",

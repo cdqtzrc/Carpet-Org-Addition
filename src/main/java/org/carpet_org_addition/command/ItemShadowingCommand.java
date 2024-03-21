@@ -25,7 +25,7 @@ public class ItemShadowingCommand {
 
     //制作物品分身
     private static int itemShadowing(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         // 获取主副手上的物品
         ItemStack main = player.getMainHandStack();
         ItemStack off = player.getOffHandStack();

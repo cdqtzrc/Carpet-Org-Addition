@@ -85,7 +85,7 @@ public class LocationsCommand {
 
     //添加路径点
     private static int addWayPoint(CommandContext<ServerCommandSource> context, @Nullable BlockPos blockPos) throws CommandSyntaxException {
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         //获取路径点名称和位置对象
         String name = StringArgumentType.getString(context, "name");
         if (blockPos == null) {
@@ -126,7 +126,7 @@ public class LocationsCommand {
 
     //列出所有路径点
     private static int listWayPoint(CommandContext<ServerCommandSource> context, @Nullable String filter) throws CommandSyntaxException {
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         //获取并遍历文件夹
         File file = getFile(player.getWorld());
         File[] files = file.listFiles();
@@ -165,7 +165,7 @@ public class LocationsCommand {
 
     //添加说明文本
     private static int addIllustrateText(CommandContext<ServerCommandSource> context, @Nullable String illustrate) throws CommandSyntaxException {
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         String name = StringArgumentType.getString(context, "supp");
         ServerCommandSource source = context.getSource();
         try {
@@ -200,7 +200,7 @@ public class LocationsCommand {
 
     //添加另一个坐标
     private static int addAnotherPos(CommandContext<ServerCommandSource> context, @Nullable BlockPos blockPos) throws CommandSyntaxException {
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         ServerCommandSource source = context.getSource();
         String name = StringArgumentType.getString(context, "supp");
         try {
@@ -232,7 +232,7 @@ public class LocationsCommand {
 
     //显示详细信息
     private static int showInfo(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         ServerCommandSource source = context.getSource();
         String name = StringArgumentType.getString(context, "info");
         try {
@@ -253,7 +253,7 @@ public class LocationsCommand {
 
     //删除路径点
     private static int deleteWayPoint(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         ServerCommandSource source = context.getSource();
         //获取路径点文件名
         String delete = StringArgumentType.getString(context, "delete");
@@ -274,7 +274,7 @@ public class LocationsCommand {
 
     //修改路径点
     private static int setWayPoint(CommandContext<ServerCommandSource> context, @Nullable BlockPos blockPos) throws CommandSyntaxException {
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         ServerCommandSource source = context.getSource();
         if (blockPos == null) {
             blockPos = player.getBlockPos();

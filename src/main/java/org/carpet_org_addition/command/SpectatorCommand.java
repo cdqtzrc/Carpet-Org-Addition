@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -36,22 +37,24 @@ public class SpectatorCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("spectator")
                 .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandSpectator))
-                .executes(SpectatorCommand::setGameMode));
+                .executes(context -> setGameMode(context, false))
+                .then(CommandManager.argument(CommandUtils.PLAYER, EntityArgumentType.player())
+                        .executes(context -> setGameMode(context, true))));
     }
 
-    // TODO 切换假玩家游戏模式
     // 更改游戏模式
-    private static int setGameMode(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+    private static int setGameMode(CommandContext<ServerCommandSource> context, boolean isFakePlayer) throws CommandSyntaxException {
+        ServerPlayerEntity player = isFakePlayer
+                ? CommandUtils.getArgumentFakePlayer(context)
+                : CommandUtils.getSourcePlayer(context);
         // 如果玩家当前是旁观模式，就切换到生存模式，否则切换到旁观模式
         GameMode gameMode;
         if (player.isSpectator()) {
             gameMode = GameMode.SURVIVAL;
-            // TODO 控制是否切换生存后回到原位置
             loadPlayerPos(player.getServer(), player);
         } else {
-            savePlayerPos(player.getServer(), player);
             gameMode = GameMode.SPECTATOR;
+            savePlayerPos(player.getServer(), player);
         }
         player.changeGameMode(gameMode);
         // 发送命令反馈
@@ -61,7 +64,7 @@ public class SpectatorCommand {
     }
 
     private static void savePlayerPos(MinecraftServer server, ServerPlayerEntity player) {
-        ModLevelFormat modLevelFormat = new ModLevelFormat(server, SPECTATOR);
+        ModLevelFormat levelFormat = new ModLevelFormat(server, SPECTATOR);
         JsonObject json = new JsonObject();
         json.addProperty("x", MathUtils.keepTwoDecimalPlaces(player.getX()));
         json.addProperty("y", MathUtils.keepTwoDecimalPlaces(player.getY()));
@@ -71,7 +74,7 @@ public class SpectatorCommand {
         json.addProperty("dimension", WorldUtils.getDimensionId(player.getWorld()));
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonString = gson.toJson(json, JsonObject.class);
-        File file = modLevelFormat.createModFile(player.getUuidAsString() + JSON_EXTENSION);
+        File file = levelFormat.createModFile(player.getUuidAsString() + JSON_EXTENSION);
         try {
             try (BufferedWriter writer = ModLevelFormat.toWriter(file)) {
                 writer.write(jsonString);
@@ -82,8 +85,8 @@ public class SpectatorCommand {
     }
 
     private static void loadPlayerPos(MinecraftServer server, ServerPlayerEntity player) {
-        ModLevelFormat modLevelFormat = new ModLevelFormat(server, SPECTATOR);
-        File file = modLevelFormat.createModFile(player.getUuidAsString() + JSON_EXTENSION);
+        ModLevelFormat levelFormat = new ModLevelFormat(server, SPECTATOR);
+        File file = levelFormat.createModFile(player.getUuidAsString() + JSON_EXTENSION);
         try {
             BufferedReader reader = ModLevelFormat.toReader(file);
             try (reader) {

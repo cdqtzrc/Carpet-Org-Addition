@@ -10,6 +10,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionTypes;
+import org.carpet_org_addition.util.GameUtils;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
@@ -19,6 +20,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 public class Location {
+    // TODO 重构
     //当前坐标的类型
     private LocationType locType = LocationType.OVERWORLD;
     //坐标创建者
@@ -52,7 +54,7 @@ public class Location {
             default -> throw new IllegalArgumentException();
         }
         this.creatorPlayerName = player.getName().getString();
-        this.creatorTime = MathUtils.getDateString();
+        this.creatorTime = GameUtils.getDateString();
     }
 
     //设置主世界坐标
