@@ -4,8 +4,10 @@ import carpet.CarpetExtension;
 import carpet.CarpetServer;
 import carpet.patches.EntityPlayerMPFake;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.carpet_org_addition.translate.Translate;
+import org.carpet_org_addition.util.helpers.Waypoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +51,12 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
             // 清除摔落高度
             fakePlayer.fallDistance = 0;
         }
+    }
+
+    @Override
+    public void onServerLoaded(MinecraftServer server) {
+        CarpetExtension.super.onServerLoaded(server);
+        Waypoint.replaceWaypoint(server);
     }
 
     //设置可以有翻译

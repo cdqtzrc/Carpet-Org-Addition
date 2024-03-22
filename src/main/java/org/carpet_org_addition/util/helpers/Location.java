@@ -19,8 +19,9 @@ import org.jetbrains.annotations.Nullable;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
+@SuppressWarnings({"unused", "DeprecatedIsStillUsed"})
+@Deprecated
 public class Location {
-    // TODO 重构
     //当前坐标的类型
     private LocationType locType = LocationType.OVERWORLD;
     //坐标创建者
@@ -240,17 +241,17 @@ public class Location {
                 && (locType == LocationType.OVERWORLD
                 || locType == LocationType.OVERWORLD_AND_THE_NETHER
                 || locType == LocationType.THE_NETHER_AND_OVERWORLD)) {
-            MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance"
-                    , (int) MathUtils.getBlockDistance(player.getBlockPos(), getOverworldPos()));
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance",
+                    (int) MathUtils.getBlockDistance(player.getBlockPos(), getOverworldPos()));
         } else if (value.equals(DimensionTypes.THE_NETHER_ID)
                 && (locType == LocationType.THE_NETHER
                 || locType == LocationType.THE_NETHER_AND_OVERWORLD
                 || locType == LocationType.OVERWORLD_AND_THE_NETHER)) {
-            MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance"
-                    , (int) MathUtils.getBlockDistance(player.getBlockPos(), getTheNetherPos()));
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance",
+                    (int) MathUtils.getBlockDistance(player.getBlockPos(), getTheNetherPos()));
         } else if (value.equals(DimensionTypes.THE_END_ID) && locType == LocationType.THE_END) {
-            MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance"
-                    , (int) MathUtils.getBlockDistance(player.getBlockPos(), getTheEndPos()));
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance",
+                    (int) MathUtils.getBlockDistance(player.getBlockPos(), getTheEndPos()));
         }
     }
 

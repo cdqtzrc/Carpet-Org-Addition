@@ -29,4 +29,11 @@ public class WorldFormatTest {
             System.out.println(line);
         }
     }
+
+    @Test
+    public void copyFolderTest() throws IOException {
+        File from = new File("src/main/resources");
+        File to = new File("src/copy/resources");
+        WorldFormat.copyFolder(from, to);
+    }
 }

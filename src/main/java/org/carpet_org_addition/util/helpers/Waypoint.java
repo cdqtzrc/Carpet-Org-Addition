@@ -6,17 +6,21 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.BlockPos;
+import org.carpet_org_addition.CarpetOrgAddition;
+import org.carpet_org_addition.command.LocationsCommand;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.WorldUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Waypoint {
-    private static final String WAYPOINT = "waypoint";
+    public static final String WAYPOINT = "waypoint";
     private BlockPos blockPos;
     private BlockPos anotherBlockPos;
     private final String dimension;
@@ -32,6 +36,7 @@ public class Waypoint {
         this.creator = playerName;
     }
 
+    @SuppressWarnings("deprecation")
     public Waypoint(Location location, String name) {
         this.name = name;
         this.creator = location.getCreatorPlayerName();
@@ -65,6 +70,35 @@ public class Waypoint {
         }
     }
 
+    @SuppressWarnings({"deprecation", "ResultOfMethodCallIgnored"})
+    public static void replaceWaypoint(MinecraftServer server) {
+        // 将旧的路径点替换为新的并移动到新位置
+        File file = Objects.requireNonNull(server).getSavePath(WorldSavePath.ROOT).resolve("locations").toFile();
+        File flagFile = new File(file, "MOVED");
+        if (flagFile.exists()) {
+            return;
+        }
+        if (file.exists() && file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (files != null) {
+                for (File f : files) {
+                    try {
+                        Location location = Location.loadLoc(file, f.getName());
+                        Waypoint waypoint = new Waypoint(location, f.getName());
+                        waypoint.save(server);
+                    } catch (IOException e) {
+                        CarpetOrgAddition.LOGGER.warn("路径点[" + LocationsCommand.removeExtension(f.getName()) + "]移动失败");
+                    }
+                }
+            }
+            try {
+                flagFile.createNewFile();
+            } catch (IOException e) {
+                CarpetOrgAddition.LOGGER.warn("标记文件创建失败", e);
+            }
+        }
+    }
+
     // 将路径点写入本地文件
     public void save(MinecraftServer server) throws IOException {
         JsonObject json = new JsonObject();
@@ -87,7 +121,7 @@ public class Waypoint {
             json.addProperty("another_z", this.anotherBlockPos.getZ());
         }
         WorldFormat worldFormat = new WorldFormat(server, WAYPOINT);
-        File file = worldFormat.createModFile(this.name);
+        File file = worldFormat.getModFile(this.name);
         WorldFormat.saveJson(file, WorldFormat.createGson(), json);
     }
 
@@ -164,5 +198,4 @@ public class Waypoint {
     public void setBlockPos(BlockPos blockPos) {
         this.blockPos = blockPos;
     }
-
 }

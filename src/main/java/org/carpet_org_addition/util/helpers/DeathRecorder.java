@@ -52,7 +52,7 @@ public class DeathRecorder {
         nbt.putInt("XpLevel", this.player.experienceLevel);
         WorldFormat worldFormat = new WorldFormat(player.server, DEATH_LOG, this.playerName);
         // 死亡信息是在统计信息更新之前记录的，所以这里获取的死亡次数需要+1
-        File file = worldFormat.createModFile((getDeathCount(this.player) + 1) + ".nbt");
+        File file = worldFormat.getModFile((getDeathCount(this.player) + 1) + ".nbt");
         // 将NBT写入本地文件
         NbtIo.write(nbt, file);
     }
@@ -61,7 +61,7 @@ public class DeathRecorder {
     public static NbtCompound load(ServerPlayerEntity player, int number) throws IOException {
         String playerName = player.getName().getString();
         WorldFormat worldFormat = new WorldFormat(player.server, DEATH_LOG, playerName);
-        File file = worldFormat.createModFile(number + NBT);
+        File file = worldFormat.getModFile(number + NBT);
         return NbtIo.read(file);
     }
 

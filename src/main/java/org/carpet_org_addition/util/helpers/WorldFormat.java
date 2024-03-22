@@ -10,6 +10,8 @@ import org.carpet_org_addition.CarpetOrgAddition;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * @see <a href="https://zh.minecraft.wiki/w/Java%E7%89%88%E4%B8%96%E7%95%8C%E6%A0%BC%E5%BC%8F">世界格式</a>
@@ -47,7 +49,7 @@ public class WorldFormat {
      *
      * @param fileName 文件名，如果没有扩展名，则自动添加json作为扩展名
      */
-    public File createModFile(String fileName) {
+    public File getModFile(String fileName) {
         return new File(this.modFileDirectory, suppFileName(fileName));
     }
 
@@ -115,5 +117,53 @@ public class WorldFormat {
             return fileName + JSON_EXTENSION;
         }
         return fileName;
+    }
+
+    // 列出当前目录下的所有文件
+    public HashSet<File> listFiles() {
+        File[] files = this.modFileDirectory.listFiles();
+        if (files == null) {
+            return new HashSet<>();
+        }
+        return new HashSet<>(Arrays.asList(files));
+    }
+
+    // 检查该目录下的文件是否存在
+    public boolean fileExists(String fileName) {
+        fileName = suppFileName(fileName);
+        File file = this.getModFile(fileName);
+        return file.exists();
+    }
+
+
+    /**
+     * 复制一个文件夹
+     *
+     * @param from 复制哪个文件夹
+     * @param to   把文件夹复制到哪里
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static void copyFolder(File from, File to) throws IOException {
+        to.mkdirs();
+        // 列出文件夹下的所有文件
+        File[] files = from.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                // 如果是文件，复制文件
+                if (file.isFile()) {
+                    FileInputStream input = new FileInputStream(file);
+                    FileOutputStream output = new FileOutputStream(new File(to, file.getName()));
+                    try (input; output) {
+                        byte[] bytes = new byte[1024];
+                        int len;
+                        while ((len = input.read(bytes)) != -1)
+                            output.write(bytes, 0, len);
+                    }
+                } else {
+                    // 如果是文件夹，递归复制文件
+                    copyFolder(file, new File(to, file.getName()));
+                }
+            }
+        }
     }
 }

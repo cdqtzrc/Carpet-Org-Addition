@@ -30,6 +30,7 @@ public class TextUtils {
             //修改文本颜色
             pos.styled(style -> style.withColor(color));
         }
+        // TODO 添加一个高亮按钮 /highlightWaypoint
         return pos;
     }
 
