@@ -35,6 +35,55 @@ public class Location {
     private int overworld_z;
     //下界坐标
     private int the_nether_x;
+
+    public LocationType getLocType() {
+        return locType;
+    }
+
+    public String getCreatorPlayerName() {
+        return creatorPlayerName;
+    }
+
+    public String getIllustrate() {
+        return illustrate;
+    }
+
+    public int getOverworld_x() {
+        return overworld_x;
+    }
+
+    public int getOverworld_y() {
+        return overworld_y;
+    }
+
+    public int getOverworld_z() {
+        return overworld_z;
+    }
+
+    public int getThe_nether_x() {
+        return the_nether_x;
+    }
+
+    public int getThe_nether_y() {
+        return the_nether_y;
+    }
+
+    public int getThe_nether_z() {
+        return the_nether_z;
+    }
+
+    public int getThe_end_x() {
+        return the_end_x;
+    }
+
+    public int getThe_end_y() {
+        return the_end_y;
+    }
+
+    public int getThe_end_z() {
+        return the_end_z;
+    }
+
     private int the_nether_y;
     private int the_nether_z;
     //末地坐标

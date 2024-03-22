@@ -82,6 +82,7 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
 
     @Override
     public void markDirty() {
+        this.getInventory().markDirty();
     }
 
     @Override
@@ -95,6 +96,7 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
         return slot < this.getActualSize();
     }
 
+    // 丢弃多余的槽位中的物品
     public void dropExcess(PlayerEntity player) {
         for (ItemStack itemStack : stacks) {
             player.dropItem(itemStack, false, false);

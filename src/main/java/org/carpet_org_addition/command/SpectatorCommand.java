@@ -22,7 +22,7 @@ import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.GameUtils;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.WorldUtils;
-import org.carpet_org_addition.util.helpers.ModLevelFormat;
+import org.carpet_org_addition.util.helpers.WorldFormat;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -32,7 +32,6 @@ import java.io.IOException;
 // 在生存模式和旁观模式间切换
 public class SpectatorCommand {
     private static final String SPECTATOR = "spectator";
-    private static final String JSON_EXTENSION = ".json";
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("spectator")
@@ -51,10 +50,15 @@ public class SpectatorCommand {
         GameMode gameMode;
         if (player.isSpectator()) {
             gameMode = GameMode.SURVIVAL;
-            loadPlayerPos(player.getServer(), player);
+            if (!isFakePlayer) {
+                // 假玩家切换游戏模式不需要回到原位置
+                loadPlayerPos(player.getServer(), player);
+            }
         } else {
             gameMode = GameMode.SPECTATOR;
-            savePlayerPos(player.getServer(), player);
+            if (!isFakePlayer) {
+                savePlayerPos(player.getServer(), player);
+            }
         }
         player.changeGameMode(gameMode);
         // 发送命令反馈
@@ -64,7 +68,7 @@ public class SpectatorCommand {
     }
 
     private static void savePlayerPos(MinecraftServer server, ServerPlayerEntity player) {
-        ModLevelFormat levelFormat = new ModLevelFormat(server, SPECTATOR);
+        WorldFormat worldFormat = new WorldFormat(server, SPECTATOR);
         JsonObject json = new JsonObject();
         json.addProperty("x", MathUtils.keepTwoDecimalPlaces(player.getX()));
         json.addProperty("y", MathUtils.keepTwoDecimalPlaces(player.getY()));
@@ -74,9 +78,9 @@ public class SpectatorCommand {
         json.addProperty("dimension", WorldUtils.getDimensionId(player.getWorld()));
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonString = gson.toJson(json, JsonObject.class);
-        File file = levelFormat.createModFile(player.getUuidAsString() + JSON_EXTENSION);
+        File file = worldFormat.createModFile(player.getUuidAsString() + WorldFormat.JSON_EXTENSION);
         try {
-            try (BufferedWriter writer = ModLevelFormat.toWriter(file)) {
+            try (BufferedWriter writer = WorldFormat.toWriter(file)) {
                 writer.write(jsonString);
             }
         } catch (IOException e) {
@@ -85,10 +89,10 @@ public class SpectatorCommand {
     }
 
     private static void loadPlayerPos(MinecraftServer server, ServerPlayerEntity player) {
-        ModLevelFormat levelFormat = new ModLevelFormat(server, SPECTATOR);
-        File file = levelFormat.createModFile(player.getUuidAsString() + JSON_EXTENSION);
+        WorldFormat worldFormat = new WorldFormat(server, SPECTATOR);
+        File file = worldFormat.createModFile(player.getUuidAsString() + WorldFormat.JSON_EXTENSION);
         try {
-            BufferedReader reader = ModLevelFormat.toReader(file);
+            BufferedReader reader = WorldFormat.toReader(file);
             try (reader) {
                 Gson gson = new Gson();
                 JsonObject json = gson.fromJson(reader, JsonObject.class);

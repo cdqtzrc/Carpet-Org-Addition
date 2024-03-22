@@ -1,5 +1,8 @@
 package org.carpet_org_addition.util.helpers;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.WorldSavePath;
 import org.carpet_org_addition.CarpetOrgAddition;
@@ -11,7 +14,8 @@ import java.nio.file.Path;
 /**
  * @see <a href="https://zh.minecraft.wiki/w/Java%E7%89%88%E4%B8%96%E7%95%8C%E6%A0%BC%E5%BC%8F">世界格式</a>
  */
-public class ModLevelFormat {
+public class WorldFormat {
+    public static final String JSON_EXTENSION = ".json";
     private final File modFileDirectory;
 
     /**
@@ -21,7 +25,7 @@ public class ModLevelFormat {
      * @param directories 一个字符串数组，数组中第一个元素表示第二级子目录，第二个元素表示第三级子目录，以此类推
      * @apiNote 第一级目录是carpetorgaddition文件夹
      */
-    public ModLevelFormat(MinecraftServer server, String... directories) {
+    public WorldFormat(MinecraftServer server, String... directories) {
         // 获取服务器存档保存文件的路径
         Path path = server.getSavePath(WorldSavePath.ROOT).resolve(CarpetOrgAddition.MOD_NAME_LOWER_CASE);
         // 拼接路径
@@ -38,7 +42,17 @@ public class ModLevelFormat {
         CarpetOrgAddition.LOGGER.warn(this.modFileDirectory + "文件夹创建失败");
     }
 
+    /**
+     * 创建一个当前目录下的文件对象，只创建文件对象，不创建文件
+     *
+     * @param fileName 文件名，如果没有扩展名，则自动添加json作为扩展名
+     */
     public File createModFile(String fileName) {
+        return new File(this.modFileDirectory, suppFileName(fileName));
+    }
+
+    public File getFile(String fileName) {
+        fileName = suppFileName(fileName);
         return new File(this.modFileDirectory, fileName);
     }
 
@@ -56,8 +70,50 @@ public class ModLevelFormat {
         return new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8));
     }
 
+    /**
+     * @return 构建一个可以格式化json内容的Gson对象
+     */
+    public static Gson createGson() {
+        return new GsonBuilder().setPrettyPrinting().create();
+    }
+
+    // 保存json文件
+    public static void saveJson(File file, Gson gson, JsonObject json) throws IOException {
+        String jsonString = gson.toJson(json, JsonObject.class);
+        try (BufferedWriter writer = WorldFormat.toWriter(file)) {
+            writer.write(jsonString);
+        }
+    }
+
+    // 加载json文件
+    public static JsonObject loadJson(File file) throws IOException {
+        Gson gson = createGson();
+        BufferedReader reader = toReader(file);
+        try (reader) {
+            return gson.fromJson(reader, JsonObject.class);
+        }
+    }
+
+    public static boolean jsonHasElement(JsonObject json, String... elements) {
+        for (String element : elements) {
+            if (json.has(element)) {
+                continue;
+            }
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public String toString() {
         return this.modFileDirectory.toString();
+    }
+
+    // 补全文件扩展名
+    private static String suppFileName(String fileName) {
+        if (fileName.split("\\.").length == 1) {
+            return fileName + JSON_EXTENSION;
+        }
+        return fileName;
     }
 }
