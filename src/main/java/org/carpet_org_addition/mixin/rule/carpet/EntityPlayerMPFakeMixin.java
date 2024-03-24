@@ -2,18 +2,17 @@ package org.carpet_org_addition.mixin.rule.carpet;
 
 import carpet.patches.EntityPlayerMPFake;
 import com.mojang.authlib.GameProfile;
-import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.fakeplayer.*;
-import org.carpet_org_addition.util.helpers.Counter;
-import org.carpet_org_addition.util.matcher.Matcher;
+import org.carpet_org_addition.util.fakeplayer.FakePlayerAction;
+import org.carpet_org_addition.util.fakeplayer.FakePlayerActionInterface;
+import org.carpet_org_addition.util.fakeplayer.FakePlayerActionManager;
+import org.carpet_org_addition.util.fakeplayer.actiondata.StopData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,93 +21,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @SuppressWarnings("AddedMixinMembersNamePattern")
 @Mixin(EntityPlayerMPFake.class)
-public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakePlayerActionInterface, FakePlayerProtectInterface {
+public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakePlayerActionInterface {
     @Unique
     private final EntityPlayerMPFake thisPlayer = (EntityPlayerMPFake) (Object) this;
-    //用来决定假人的操作类型
-    @Unique
-    private FakePlayerAction action = FakePlayerAction.STOP;
-    //假玩家操作类型的命令参数
-    @Unique
-    private CommandContext<ServerCommandSource> context = null;
-    //假玩家保护类型
-    @Unique
-    private FakePlayerProtectType protect = FakePlayerProtectType.NONE;
 
     @Unique
-    private final Counter<Object> counter = new Counter<>();
-
-    /**
-     * 使用数组的动态初始化把数组提前创建好，需要修改的时候只修改数组内的元素，这样能保证数组的长度是固定的
-     */
-    @Unique
-    private final Matcher[] ITEMS_3X3 = new Matcher[9];
-    @Unique
-    private final Matcher[] ITEMS_2X2 = new Matcher[4];
+    private final FakePlayerActionManager actionManager = new FakePlayerActionManager(thisPlayer);
 
     //私有化构造方法，防止被创建对象
     private EntityPlayerMPFakeMixin(MinecraftServer server, ServerWorld world, GameProfile profile) {
         super(server, world, profile);
     }
 
-    //命令上下文
     @Override
-    public CommandContext<ServerCommandSource> getContext() {
-        return context;
-    }
-
-    @Override
-    public void setContext(CommandContext<ServerCommandSource> context) {
-        this.context = context;
-    }
-
-    //假玩家操作类型
-    @Override
-    public FakePlayerAction getAction() {
-        return action;
-    }
-
-    @Override
-    public void setAction(FakePlayerAction action) {
-        this.action = action;
-    }
-
-    // 假玩家3x3合成时的配方
-    @Override
-    public Matcher[] get3x3Craft() {
-        return ITEMS_3X3;
-    }
-
-    @Override
-    public void set3x3Craft(Matcher[] items) {
-        // 数组拷贝
-        System.arraycopy(items, 0, ITEMS_3X3, 0, ITEMS_3X3.length);
-    }
-
-    @Override
-    public Matcher[] get2x2Craft() {
-        return ITEMS_2X2;
-    }
-
-    @Override
-    public void set2x2Craft(Matcher[] items) {
-        System.arraycopy(items, 0, ITEMS_2X2, 0, ITEMS_2X2.length);
-    }
-
-    @Override
-    public Counter<Object> getTickCounter() {
-        return counter;
-    }
-
-    //假玩家保护类型
-    @Override
-    public FakePlayerProtectType getProtect() {
-        return protect;
-    }
-
-    @Override
-    public void setProtected(FakePlayerProtectType protect) {
-        this.protect = protect;
+    public FakePlayerActionManager getActionManager() {
+        return actionManager;
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
@@ -122,58 +49,18 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
         }
         try {
             //根据假玩家操作类型执行操作
-            if (action != FakePlayerAction.STOP && context != null) {
-                this.fakePlayerAction();
+            if (this.getActionManager().isRun()) {
+                this.getActionManager().executeAction();
             }
         } catch (RuntimeException e) {
             //将错误信息写入日志
-            CarpetOrgAddition.LOGGER.error(thisPlayer.getName().getString() + "在执行操作“" + this.action.toString() + "”时遇到意外错误:", e);
+            CarpetOrgAddition.LOGGER.error(thisPlayer.getName().getString() + "在执行操作“" + this.getActionManager().getAction().toString() + "”时遇到意外错误:", e);
             //让假玩家停止当前操作
-            this.action = FakePlayerAction.STOP;
+            this.getActionManager().setAction(FakePlayerAction.STOP, StopData.STOP);
             //向聊天栏发送错误消息的反馈
             MessageUtils.broadcastTextMessage(thisPlayer,
                     TextUtils.getTranslate("carpet.commands.playerAction.exception.runtime",
                             thisPlayer.getDisplayName()));
-        }
-    }
-
-    //根据假玩家操作类型执行操作
-    @Unique
-    private void fakePlayerAction() {
-        switch (action) {
-            // 假玩家分拣
-            case SORTING -> FakePlayerSorting.sorting(context, thisPlayer);
-            // 假玩家清空容器
-            case CLEAN -> FakePlayerClean.clean(context, thisPlayer, true);
-            // 清空潜影盒内的指定物品
-            case CLEAN_DESIGNATED -> FakePlayerClean.clean(context, thisPlayer, false);
-            // 假玩家填充容器
-            case FILL -> FakePlayerFillContainer.fillContainer(context, thisPlayer, false);
-            // 假玩家填充任意物品到容器
-            case FILL_ALL -> FakePlayerFillContainer.fillContainer(context, thisPlayer, true);
-            // 假玩家自动合成物品（单个材料）
-            case CRAFT_ONE -> FakePlayerCraft.craftOne(context, thisPlayer, ITEMS_2X2);
-            // 假玩家自动合成物品（四个相同的材料）
-            case CRAFT_FOUR -> FakePlayerCraft.craftFour(context, thisPlayer, ITEMS_2X2);
-            // 假玩家自动合成物品（九个相同的材料）
-            case CRAFT_NINE -> FakePlayerCraft.craftNine(context, thisPlayer, ITEMS_3X3);
-            // 假玩家自动合成物品（9x9自定义物品）
-            case CRAFT_3X3 -> FakePlayerCraft.craft3x3(context, thisPlayer, ITEMS_3X3);
-            // 假玩家自动合成物品（4x4自定义物品）
-            case CRAFT_2X2 -> FakePlayerCraft.craft2x2(context, thisPlayer, ITEMS_2X2);
-            // 假玩家自动重命名
-            case RENAME -> FakePlayerRename.rename(context, thisPlayer);
-            // 假玩家切石机
-            case STONECUTTING -> FakePlayerStonecutting.stonecutting(context, thisPlayer);
-            // 假玩家交易
-            case TRADE -> FakePlayerTrade.trade(context, thisPlayer, false);
-            // 假玩家虚空交易
-            case VOID_TRADE -> FakePlayerTrade.trade(context, thisPlayer, true);
-            // 以上值都不匹配，设置操作类型为STOP（不应该出现都不匹配的情况）
-            default -> {
-                CarpetOrgAddition.LOGGER.error(action + "的行为没有预先定义");
-                action = FakePlayerAction.STOP;
-            }
         }
     }
 }

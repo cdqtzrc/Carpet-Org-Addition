@@ -18,6 +18,8 @@ import java.util.HashSet;
  */
 public class WorldFormat {
     public static final String JSON_EXTENSION = ".json";
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
     private final File modFileDirectory;
 
     /**
@@ -78,10 +80,10 @@ public class WorldFormat {
     }
 
     /**
-     * @return 构建一个可以格式化json内容的Gson对象
+     * @return 一个可以格式化json内容的Gson对象
      */
-    public static Gson createGson() {
-        return new GsonBuilder().setPrettyPrinting().create();
+    public static Gson getGson() {
+        return GSON;
     }
 
     // 保存json文件
@@ -94,7 +96,7 @@ public class WorldFormat {
 
     // 加载json文件
     public static JsonObject loadJson(File file) throws IOException {
-        Gson gson = createGson();
+        Gson gson = getGson();
         BufferedReader reader = toReader(file);
         try (reader) {
             return gson.fromJson(reader, JsonObject.class);

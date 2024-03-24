@@ -1,32 +1,29 @@
 package org.carpet_org_addition.util.fakeplayer;
 
 import carpet.patches.EntityPlayerMPFake;
-import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.AnvilScreenHandler;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.server.command.ServerCommandSource;
+import org.carpet_org_addition.util.fakeplayer.actiondata.RenameData;
 
 public class FakePlayerRename {
     private FakePlayerRename() {
     }
 
-    public static void rename(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) {
+    public static void rename(RenameData renameData, EntityPlayerMPFake fakePlayer) {
         // 如果假玩家对铁砧持续按住右键，就会一直打开新的铁砧界面，同时旧的铁砧界面会自动关闭，关闭旧的铁砧界面时，铁砧内的物品会回到玩家物品栏
         if (fakePlayer.currentScreenHandler instanceof AnvilScreenHandler anvilScreenHandler) {
             // 如果假玩家没有足够的经验，直接介绍方法，创造玩家给物品重命名不需要消耗经验
             if (fakePlayer.experienceLevel < 1 && !fakePlayer.isCreative()) {
-                FakePlayerUtils.stopAction(context.getSource(), fakePlayer,
+                FakePlayerUtils.stopAction(fakePlayer.getCommandSource(), fakePlayer,
                         "carpet.commands.playerAction.rename.not_experience");
                 return;
             }
             //获取当前要操作的物品和要重命名的字符串
-            Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
-            String newName = StringArgumentType.getString(context, "name");
+            Item item = renameData.getItem();
+            String newName = renameData.getNewName();
             Slot oneSlot = anvilScreenHandler.getSlot(0);
             //第一个槽位的物品是否正确：是指定物品，没有被正确重命名，已经最大堆叠
             boolean oneSlotCorrect = false;
@@ -82,7 +79,7 @@ public class FakePlayerRename {
                     FakePlayerUtils.pickupAndThrow(anvilScreenHandler, 2, fakePlayer);
                 } else {
                     //如果不能取出，可能玩家已经没有经验，停止重命名
-                    FakePlayerUtils.stopAction(context.getSource(), fakePlayer,
+                    FakePlayerUtils.stopAction(fakePlayer.getCommandSource(), fakePlayer,
                             "carpet.commands.playerAction.rename");
                 }
             }

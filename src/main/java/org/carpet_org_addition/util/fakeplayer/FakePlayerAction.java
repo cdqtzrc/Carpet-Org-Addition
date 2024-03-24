@@ -1,12 +1,12 @@
 package org.carpet_org_addition.util.fakeplayer;
 
 import carpet.patches.EntityPlayerMPFake;
-import com.google.gson.JsonObject;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.MutableText;
+import org.carpet_org_addition.util.fakeplayer.actiondata.*;
 
 import java.util.ArrayList;
 
@@ -74,33 +74,33 @@ public enum FakePlayerAction {
 
     //获取假玩家操作类型的字符串或可变文本形式
     public ArrayList<MutableText> getActionText(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) throws CommandSyntaxException {
-        FakePlayerActionInterface fakePlayerActionInterface;
         if (context == null) {
-            return FakePlayerActionInfo.showStopInfo(fakePlayer);
+            return StopData.STOP.info(fakePlayer);
         }
-        // 现在的命令执行上下文来自/playerAction <玩家名> action info，这条命令的命令执行上下文对象记录只的是本条info命令的信息，并没有动作相关的信息
-        // 需要获取该玩家的对象，然后根据这个假玩家获取假玩家当前的命令执行上下文，这一个命令执行上下文对象中才有获取文本所需要的信息
-        fakePlayerActionInterface = (FakePlayerActionInterface) EntityArgumentType.getPlayer(context, "player");
-        context = fakePlayerActionInterface.getContext();
-        return switch (this) {
-            case STOP -> FakePlayerActionInfo.showStopInfo(fakePlayer);
-            case SORTING -> FakePlayerActionInfo.showSortingInfo(context, fakePlayer);
-            case CLEAN -> FakePlayerActionInfo.showCleanInfo(fakePlayer);
-            case CLEAN_DESIGNATED -> FakePlayerActionInfo.showCleanDesignatedInfo(context, fakePlayer);
-            case FILL -> FakePlayerActionInfo.showFillInfo(context, fakePlayer);
-            case FILL_ALL -> FakePlayerActionInfo.showFillAllInfo(fakePlayer);
-            case CRAFT_NINE, CRAFT_3X3 -> FakePlayerActionInfo.showCraftingTableCraftInfo(context, fakePlayer);
-            case CRAFT_ONE, CRAFT_FOUR, CRAFT_2X2 ->
-                    FakePlayerActionInfo.showSurvivalInventoryCraftInfo(context, fakePlayer);
-            case RENAME -> FakePlayerActionInfo.showRenameInfo(context, fakePlayer);
-            case STONECUTTING -> FakePlayerActionInfo.showStoneCuttingInfo(context, fakePlayer);
-            case TRADE, VOID_TRADE -> FakePlayerActionInfo.showTradeInfo(context, fakePlayer);
-        };
+        FakePlayerActionManager actionManager = ((FakePlayerActionInterface) EntityArgumentType.getPlayer(context, "player")).getActionManager();
+        return actionManager.getActionData().info(fakePlayer);
     }
 
     //是合成物品的操作类型
     public boolean isCraftAction() {
         return this == CRAFT_ONE || this == CRAFT_FOUR || this == CRAFT_NINE || this == CRAFT_2X2 || this == CRAFT_3X3;
+    }
+
+    // 检查当前动作是否与指定动作数据匹配
+    public void checkActionData(Class<? extends AbstractActionData> clazz) {
+        if (clazz != switch (this) {
+            case STOP -> StopData.class;
+            case SORTING -> SortingData.class;
+            case CLEAN, CLEAN_DESIGNATED -> CleanData.class;
+            case FILL, FILL_ALL -> FillData.class;
+            case CRAFT_ONE, CRAFT_FOUR, CRAFT_2X2 -> InventoryCraftData.class;
+            case CRAFT_NINE, CRAFT_3X3 -> CraftingTableCraftData.class;
+            case RENAME -> RenameData.class;
+            case STONECUTTING -> StonecuttingData.class;
+            case TRADE, VOID_TRADE -> TradeData.class;
+        }) {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override

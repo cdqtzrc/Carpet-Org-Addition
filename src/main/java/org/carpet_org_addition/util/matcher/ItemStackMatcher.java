@@ -71,6 +71,6 @@ public class ItemStackMatcher implements Matcher {
 
     @Override
     public String toString() {
-        return this.itemStack.getItem() + "*" + this.itemStack.getCount();
+        return this.itemStack.getItem().toString();
     }
 }

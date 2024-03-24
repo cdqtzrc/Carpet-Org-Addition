@@ -34,7 +34,7 @@ dependencies {
     // fabric-carpet
     modImplementation("curse.maven:carpet-349239:${project.carpet_core_version}")
     // MixinExtras
-    include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.2.2")))
+    include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${project.mixinextras_version}")))
 }
 processResources {
     inputs.property "version", project.version

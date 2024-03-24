@@ -11,6 +11,8 @@ import net.minecraft.screen.Generic3x3ContainerScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.command.PlayerActionCommand;
+import org.carpet_org_addition.util.fakeplayer.actiondata.CraftingTableCraftData;
+import org.carpet_org_addition.util.fakeplayer.actiondata.InventoryCraftData;
 import org.carpet_org_addition.util.matcher.ItemMatcher;
 
 public class FakePlayerGuiCraftScreenHandler extends Generic3x3ContainerScreenHandler {
@@ -57,11 +59,9 @@ public class FakePlayerGuiCraftScreenHandler extends Generic3x3ContainerScreenHa
         for (int i = 0; i < fakePlayerCraftInventory.size(); i++) {
             items[i] = fakePlayerCraftInventory.getStack(i).getItem();
         }
-        FakePlayerActionInterface fakePlayerActionInterface = (FakePlayerActionInterface) fakePlayer;
-        // context不能为null，否则假玩家不能合成
-        fakePlayerActionInterface.setContext(context);
+        FakePlayerActionManager actionManager = FakePlayerActionInterface.getInstance(fakePlayer).getActionManager();
         // 设置假玩家合成动作
-        setCraftAction(items, fakePlayerActionInterface);
+        setCraftAction(items, actionManager);
         // 关闭GUI后，物品回到玩家背包
         this.screenHandlerContext.run((world, pos) -> this.dropInventory(player, fakePlayerCraftInventory));
         // 提示启用Ctrl+Q合成修复
@@ -69,36 +69,31 @@ public class FakePlayerGuiCraftScreenHandler extends Generic3x3ContainerScreenHa
     }
 
     // 设置假玩家合成动作
-    private void setCraftAction(Item[] items, FakePlayerActionInterface fakePlayerActionInterface) {
+    private void setCraftAction(Item[] items, FakePlayerActionManager actionManager) {
         // 如果能在2x2合成格中合成，优先使用2x2
         if (items[0] == Items.AIR && items[1] == Items.AIR && items[2] == Items.AIR
                 && items[5] == Items.AIR && items[8] == Items.AIR) {
-            fakePlayerActionInterface.setAction(FakePlayerAction.CRAFT_2X2);
-            fakePlayerActionInterface.set2x2Craft(new ItemMatcher[]{
-                    new ItemMatcher(items[3]), new ItemMatcher(items[4]), new ItemMatcher(items[6]), new ItemMatcher(items[7])});
+            actionManager.setAction(FakePlayerAction.CRAFT_2X2, new InventoryCraftData(new ItemMatcher[]{
+                    new ItemMatcher(items[3]), new ItemMatcher(items[4]), new ItemMatcher(items[6]), new ItemMatcher(items[7])}));
         } else if (items[0] == Items.AIR && items[3] == Items.AIR && items[6] == Items.AIR
                 && items[7] == Items.AIR && items[8] == Items.AIR) {
-            fakePlayerActionInterface.setAction(FakePlayerAction.CRAFT_2X2);
-            fakePlayerActionInterface.set2x2Craft(new ItemMatcher[]{
-                    new ItemMatcher(items[1]), new ItemMatcher(items[2]), new ItemMatcher(items[4]), new ItemMatcher(items[5])});
+            actionManager.setAction(FakePlayerAction.CRAFT_2X2, new InventoryCraftData(new ItemMatcher[]{
+                    new ItemMatcher(items[1]), new ItemMatcher(items[2]), new ItemMatcher(items[4]), new ItemMatcher(items[5])}));
         } else if (items[2] == Items.AIR && items[5] == Items.AIR && items[6] == Items.AIR
                 && items[7] == Items.AIR && items[8] == Items.AIR) {
-            fakePlayerActionInterface.setAction(FakePlayerAction.CRAFT_2X2);
-            fakePlayerActionInterface.set2x2Craft(new ItemMatcher[]{
-                    new ItemMatcher(items[0]), new ItemMatcher(items[1]), new ItemMatcher(items[3]), new ItemMatcher(items[4])});
+            actionManager.setAction(FakePlayerAction.CRAFT_2X2, new InventoryCraftData(new ItemMatcher[]{
+                    new ItemMatcher(items[0]), new ItemMatcher(items[1]), new ItemMatcher(items[3]), new ItemMatcher(items[4])}));
         } else if (items[0] == Items.AIR && items[1] == Items.AIR && items[2] == Items.AIR
                 && items[3] == Items.AIR && items[6] == Items.AIR) {
-            fakePlayerActionInterface.setAction(FakePlayerAction.CRAFT_2X2);
-            fakePlayerActionInterface.set2x2Craft(new ItemMatcher[]{
-                    new ItemMatcher(items[4]), new ItemMatcher(items[5]), new ItemMatcher(items[7]), new ItemMatcher(items[8])});
+            actionManager.setAction(FakePlayerAction.CRAFT_2X2, new InventoryCraftData(new ItemMatcher[]{
+                    new ItemMatcher(items[4]), new ItemMatcher(items[5]), new ItemMatcher(items[7]), new ItemMatcher(items[8])}));
         } else {
             //将假玩家动作设置为3x3合成
-            fakePlayerActionInterface.setAction(FakePlayerAction.CRAFT_3X3);
             ItemMatcher[] itemMatchersArr = new ItemMatcher[9];
             for (int i = 0; i < itemMatchersArr.length; i++) {
                 itemMatchersArr[i] = new ItemMatcher(items[i]);
             }
-            fakePlayerActionInterface.set3x3Craft(itemMatchersArr);
+            actionManager.setAction(FakePlayerAction.CRAFT_3X3, new CraftingTableCraftData(itemMatchersArr));
         }
     }
 }

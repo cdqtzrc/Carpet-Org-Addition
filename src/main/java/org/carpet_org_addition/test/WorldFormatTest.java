@@ -19,7 +19,7 @@ public class WorldFormatTest {
     @Test
     public void WhetherToClose() throws IOException {
         File file = new File("src/main/resources/assets/carpet-org-addition/test.json");
-        Gson gson = WorldFormat.createGson();
+        Gson gson = WorldFormat.getGson();
         BufferedReader reader = WorldFormat.toReader(file);
         gson.fromJson(reader, JsonObject.class);
         reader.close();
