@@ -27,7 +27,7 @@ import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionInterface;
-import org.carpet_org_addition.util.fakeplayer.FakePlayerActionType;
+import org.carpet_org_addition.util.fakeplayer.FakePlayerAction;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerGuiCraftScreenHandler;
 import org.carpet_org_addition.util.helpers.Counter;
 import org.carpet_org_addition.util.matcher.ItemMatcher;
@@ -42,21 +42,21 @@ public class PlayerActionCommand {
         dispatcher.register(CommandManager.literal("playerAction").requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerAction))
                 .then(CommandManager.argument("player", EntityArgumentType.player())
                         .then(CommandManager.literal("sorting").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext)).then(CommandManager.argument("this", Vec3ArgumentType.vec3())
-                                .then(CommandManager.argument("other", Vec3ArgumentType.vec3()).executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerActionType.SORTING))))))
-                        .then(CommandManager.literal("clean").executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerActionType.CLEAN))
+                                .then(CommandManager.argument("other", Vec3ArgumentType.vec3()).executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerAction.SORTING))))))
+                        .then(CommandManager.literal("clean").executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerAction.CLEAN))
                                 .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
-                                        .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerActionType.CLEAN_DESIGNATED))))
-                        .then(CommandManager.literal("fill").executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerActionType.FILL_ALL))
+                                        .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerAction.CLEAN_DESIGNATED))))
+                        .then(CommandManager.literal("fill").executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerAction.FILL_ALL))
                                 .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
-                                        .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerActionType.FILL))))
-                        .then(CommandManager.literal("stop").executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerActionType.STOP)))
+                                        .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerAction.FILL))))
+                        .then(CommandManager.literal("stop").executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerAction.STOP)))
                         .then(CommandManager.literal("craft")
                                 .then(CommandManager.literal("one").then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                        .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerActionType.CRAFT_ONE))))
+                                        .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerAction.CRAFT_ONE))))
                                 .then(CommandManager.literal("nine").then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                        .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerActionType.CRAFT_NINE))))
+                                        .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerAction.CRAFT_NINE))))
                                 .then(CommandManager.literal("four").then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                        .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerActionType.CRAFT_FOUR))))
+                                        .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerAction.CRAFT_FOUR))))
                                 .then(CommandManager.literal("3x3")
                                         .then(CommandManager.argument("item1", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                 .then(CommandManager.argument("item2", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
@@ -67,33 +67,33 @@ public class PlayerActionCommand {
                                                                                         .then(CommandManager.argument("item7", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                                                                 .then(CommandManager.argument("item8", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                                                                         .then(CommandManager.argument("item9", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                                                                .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerActionType.CRAFT_3X3))))))))))))
+                                                                                                                .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerAction.CRAFT_3X3))))))))))))
                                 .then(CommandManager.literal("2x2")
                                         .then(CommandManager.argument("item1", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                 .then(CommandManager.argument("item2", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                         .then(CommandManager.argument("item3", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                                 .then(CommandManager.argument("item4", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                        .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerActionType.CRAFT_2X2)))))))
+                                                                        .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerAction.CRAFT_2X2)))))))
                                 .then(CommandManager.literal("gui").executes(context -> openFakePlayerCraftGui(context, CommandUtils.getArgumentPlayer(context)))))
                         .then(CommandManager.literal("trade")
                                 .then(CommandManager.argument("index", IntegerArgumentType.integer(1))
-                                        .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerActionType.TRADE))
+                                        .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerAction.TRADE))
                                         .then(CommandManager.literal("void_trade")
-                                                .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerActionType.VOID_TRADE)))))
+                                                .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerAction.VOID_TRADE)))))
                         .then(CommandManager.literal("info").executes(context -> getAction(context, CommandUtils.getArgumentPlayer(context))))
                         .then(CommandManager.literal("rename").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
                                 .then(CommandManager.argument("name", StringArgumentType.string())
-                                        .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerActionType.RENAME)))))
+                                        .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerAction.RENAME)))))
                         .then(CommandManager.literal("stonecutting").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
                                 .then(CommandManager.argument("button", IntegerArgumentType.integer(1))
-                                        .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerActionType.STONECUTTING)))))
+                                        .executes(context -> setAction(context, CommandUtils.getArgumentPlayer(context), FakePlayerAction.STONECUTTING)))))
                 )
         );
     }
 
     //设置假玩家操作类型
     private static int setAction(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer,
-                                 FakePlayerActionType action) throws CommandSyntaxException {
+                                 FakePlayerAction action) throws CommandSyntaxException {
         ServerCommandSource source = context.getSource();
         if (action.isCraftAction()) {
             // 提示启用Ctrl+Q合成修复
@@ -140,7 +140,7 @@ public class PlayerActionCommand {
                 // 初始化虚空交易计时器
                 case VOID_TRADE -> {
                     Counter<Object> tickCounter = fakePlayerActionInterface.getTickCounter();
-                    tickCounter.set(FakePlayerActionType.VOID_TRADE, 5);
+                    tickCounter.set(FakePlayerAction.VOID_TRADE, 5);
                 }
                 default -> {
                     // 什么也不做
@@ -175,7 +175,7 @@ public class PlayerActionCommand {
     private static int getAction(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer)
             throws CommandSyntaxException {
         if (CommandUtils.checkFakePlayer(fakePlayer)) {
-            FakePlayerActionType action = ((FakePlayerActionInterface) fakePlayer).getAction();
+            FakePlayerAction action = ((FakePlayerActionInterface) fakePlayer).getAction();
             MessageUtils.sendListMessage(context.getSource(), action.getActionText(context, (EntityPlayerMPFake) fakePlayer));
         }
         return 1;

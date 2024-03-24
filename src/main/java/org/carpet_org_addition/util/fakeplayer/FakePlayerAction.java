@@ -1,6 +1,7 @@
 package org.carpet_org_addition.util.fakeplayer;
 
 import carpet.patches.EntityPlayerMPFake;
+import com.google.gson.JsonObject;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.argument.EntityArgumentType;
@@ -9,7 +10,7 @@ import net.minecraft.text.MutableText;
 
 import java.util.ArrayList;
 
-public enum FakePlayerActionType {
+public enum FakePlayerAction {
     /**
      * 假玩家停止操作
      */
@@ -84,8 +85,8 @@ public enum FakePlayerActionType {
         return switch (this) {
             case STOP -> FakePlayerActionInfo.showStopInfo(fakePlayer);
             case SORTING -> FakePlayerActionInfo.showSortingInfo(context, fakePlayer);
-            case CLEAN-> FakePlayerActionInfo.showCleanInfo(fakePlayer);
-            case CLEAN_DESIGNATED -> FakePlayerActionInfo.showCleanDesignatedInfo(context,fakePlayer);
+            case CLEAN -> FakePlayerActionInfo.showCleanInfo(fakePlayer);
+            case CLEAN_DESIGNATED -> FakePlayerActionInfo.showCleanDesignatedInfo(context, fakePlayer);
             case FILL -> FakePlayerActionInfo.showFillInfo(context, fakePlayer);
             case FILL_ALL -> FakePlayerActionInfo.showFillAllInfo(fakePlayer);
             case CRAFT_NINE, CRAFT_3X3 -> FakePlayerActionInfo.showCraftingTableCraftInfo(context, fakePlayer);

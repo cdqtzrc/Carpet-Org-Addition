@@ -63,13 +63,17 @@ public class Waypoint {
                 this.dimension = WorldUtils.THE_END;
                 this.blockPos = new BlockPos(location.getThe_end_x(), location.getThe_end_y(), location.getThe_end_z());
             }
-            default -> throw new IllegalArgumentException();
+            // 不应该会执行到这里
+            default -> throw new IllegalStateException("未知的枚举类型:" + location.getLocType());
         }
-        if (location.getIllustrate() != null) {
-            this.illustrate = location.getIllustrate();
+        if (location.getIllustrate() == null || location.getIllustrate().isEmpty()) {
+            // 旧的路径点没有说明文本
+            return;
         }
+        this.illustrate = location.getIllustrate();
     }
 
+    // 将旧的路径点替换为新的
     @SuppressWarnings({"deprecation", "ResultOfMethodCallIgnored"})
     public static void replaceWaypoint(MinecraftServer server) {
         // 将旧的路径点替换为新的并移动到新位置
@@ -78,11 +82,13 @@ public class Waypoint {
         if (flagFile.exists()) {
             return;
         }
+        // 文件夹必须存在
         if (file.exists() && file.isDirectory()) {
             File[] files = file.listFiles();
             if (files != null) {
                 for (File f : files) {
                     try {
+                        // 读取旧的路径点，生成新的路径点json
                         Location location = Location.loadLoc(file, f.getName());
                         Waypoint waypoint = new Waypoint(location, f.getName());
                         waypoint.save(server);
@@ -92,6 +98,7 @@ public class Waypoint {
                 }
             }
             try {
+                // 替换完后创建一个空白文件用来表示已经完成移动
                 flagFile.createNewFile();
             } catch (IOException e) {
                 CarpetOrgAddition.LOGGER.warn("标记文件创建失败", e);
@@ -157,6 +164,7 @@ public class Waypoint {
         return Optional.of(waypoint);
     }
 
+    // 显示路径点
     public void show(ServerCommandSource source) {
         MutableText text = switch (this.dimension) {
             case WorldUtils.OVERWORLD -> this.anotherBlockPos == null
@@ -179,20 +187,25 @@ public class Waypoint {
         MessageUtils.sendCommandFeedback(source, text);
     }
 
-    public void setAnotherBlockPos(BlockPos anotherBlockPos) {
-        this.anotherBlockPos = anotherBlockPos;
-    }
-
-    public void setIllustrate(String illustrate) {
-        this.illustrate = illustrate;
-    }
-
+    // 将路径点名称改为带有方括号和悬停样式的文本组件对象
     private Text formatName() {
         String name = "[" + this.name.split("\\.")[0] + "]";
         if (this.illustrate == null) {
             return TextUtils.createText(name);
         }
         return TextUtils.hoverText(name, this.illustrate);
+    }
+
+    public void setAnotherBlockPos(BlockPos anotherBlockPos) {
+        this.anotherBlockPos = anotherBlockPos;
+    }
+
+    public void setIllustrate(String illustrate) {
+        if (illustrate == null || illustrate.isEmpty()) {
+            this.illustrate = null;
+            return;
+        }
+        this.illustrate = illustrate;
     }
 
     public void setBlockPos(BlockPos blockPos) {

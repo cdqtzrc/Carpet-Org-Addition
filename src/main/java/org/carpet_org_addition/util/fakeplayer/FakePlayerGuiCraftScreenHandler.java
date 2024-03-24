@@ -73,27 +73,27 @@ public class FakePlayerGuiCraftScreenHandler extends Generic3x3ContainerScreenHa
         // 如果能在2x2合成格中合成，优先使用2x2
         if (items[0] == Items.AIR && items[1] == Items.AIR && items[2] == Items.AIR
                 && items[5] == Items.AIR && items[8] == Items.AIR) {
-            fakePlayerActionInterface.setAction(FakePlayerActionType.CRAFT_2X2);
+            fakePlayerActionInterface.setAction(FakePlayerAction.CRAFT_2X2);
             fakePlayerActionInterface.set2x2Craft(new ItemMatcher[]{
                     new ItemMatcher(items[3]), new ItemMatcher(items[4]), new ItemMatcher(items[6]), new ItemMatcher(items[7])});
         } else if (items[0] == Items.AIR && items[3] == Items.AIR && items[6] == Items.AIR
                 && items[7] == Items.AIR && items[8] == Items.AIR) {
-            fakePlayerActionInterface.setAction(FakePlayerActionType.CRAFT_2X2);
+            fakePlayerActionInterface.setAction(FakePlayerAction.CRAFT_2X2);
             fakePlayerActionInterface.set2x2Craft(new ItemMatcher[]{
                     new ItemMatcher(items[1]), new ItemMatcher(items[2]), new ItemMatcher(items[4]), new ItemMatcher(items[5])});
         } else if (items[2] == Items.AIR && items[5] == Items.AIR && items[6] == Items.AIR
                 && items[7] == Items.AIR && items[8] == Items.AIR) {
-            fakePlayerActionInterface.setAction(FakePlayerActionType.CRAFT_2X2);
+            fakePlayerActionInterface.setAction(FakePlayerAction.CRAFT_2X2);
             fakePlayerActionInterface.set2x2Craft(new ItemMatcher[]{
                     new ItemMatcher(items[0]), new ItemMatcher(items[1]), new ItemMatcher(items[3]), new ItemMatcher(items[4])});
         } else if (items[0] == Items.AIR && items[1] == Items.AIR && items[2] == Items.AIR
                 && items[3] == Items.AIR && items[6] == Items.AIR) {
-            fakePlayerActionInterface.setAction(FakePlayerActionType.CRAFT_2X2);
+            fakePlayerActionInterface.setAction(FakePlayerAction.CRAFT_2X2);
             fakePlayerActionInterface.set2x2Craft(new ItemMatcher[]{
                     new ItemMatcher(items[4]), new ItemMatcher(items[5]), new ItemMatcher(items[7]), new ItemMatcher(items[8])});
         } else {
             //将假玩家动作设置为3x3合成
-            fakePlayerActionInterface.setAction(FakePlayerActionType.CRAFT_3X3);
+            fakePlayerActionInterface.setAction(FakePlayerAction.CRAFT_3X3);
             ItemMatcher[] itemMatchersArr = new ItemMatcher[9];
             for (int i = 0; i < itemMatchersArr.length; i++) {
                 itemMatchersArr[i] = new ItemMatcher(items[i]);

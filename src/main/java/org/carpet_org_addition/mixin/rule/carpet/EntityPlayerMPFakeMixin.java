@@ -3,10 +3,6 @@ package org.carpet_org_addition.mixin.rule.carpet;
 import carpet.patches.EntityPlayerMPFake;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.HungerManager;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -31,7 +27,7 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
     private final EntityPlayerMPFake thisPlayer = (EntityPlayerMPFake) (Object) this;
     //用来决定假人的操作类型
     @Unique
-    private FakePlayerActionType action = FakePlayerActionType.STOP;
+    private FakePlayerAction action = FakePlayerAction.STOP;
     //假玩家操作类型的命令参数
     @Unique
     private CommandContext<ServerCommandSource> context = null;
@@ -68,12 +64,12 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
 
     //假玩家操作类型
     @Override
-    public FakePlayerActionType getAction() {
+    public FakePlayerAction getAction() {
         return action;
     }
 
     @Override
-    public void setAction(FakePlayerActionType action) {
+    public void setAction(FakePlayerAction action) {
         this.action = action;
     }
 
@@ -126,14 +122,14 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
         }
         try {
             //根据假玩家操作类型执行操作
-            if (action != FakePlayerActionType.STOP && context != null) {
+            if (action != FakePlayerAction.STOP && context != null) {
                 this.fakePlayerAction();
             }
         } catch (RuntimeException e) {
             //将错误信息写入日志
             CarpetOrgAddition.LOGGER.error(thisPlayer.getName().getString() + "在执行操作“" + this.action.toString() + "”时遇到意外错误:", e);
             //让假玩家停止当前操作
-            this.action = FakePlayerActionType.STOP;
+            this.action = FakePlayerAction.STOP;
             //向聊天栏发送错误消息的反馈
             MessageUtils.broadcastTextMessage(thisPlayer,
                     TextUtils.getTranslate("carpet.commands.playerAction.exception.runtime",
@@ -176,7 +172,7 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
             // 以上值都不匹配，设置操作类型为STOP（不应该出现都不匹配的情况）
             default -> {
                 CarpetOrgAddition.LOGGER.error(action + "的行为没有预先定义");
-                action = FakePlayerActionType.STOP;
+                action = FakePlayerAction.STOP;
             }
         }
     }
