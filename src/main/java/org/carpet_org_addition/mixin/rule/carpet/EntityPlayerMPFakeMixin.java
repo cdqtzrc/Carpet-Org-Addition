@@ -49,9 +49,7 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
         }
         try {
             //根据假玩家操作类型执行操作
-            if (this.getActionManager().isRun()) {
-                this.getActionManager().executeAction();
-            }
+            this.getActionManager().executeAction();
         } catch (RuntimeException e) {
             //将错误信息写入日志
             CarpetOrgAddition.LOGGER.error(thisPlayer.getName().getString() + "在执行操作“" + this.getActionManager().getAction().toString() + "”时遇到意外错误:", e);

@@ -1,6 +1,7 @@
 package org.carpet_org_addition.util.fakeplayer;
 
 import carpet.patches.EntityPlayerMPFake;
+import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.util.fakeplayer.actiondata.*;
 
 public class FakePlayerActionManager {
@@ -28,6 +29,10 @@ public class FakePlayerActionManager {
             case STONECUTTING ->
                     FakePlayerStonecutting.stonecutting((StonecuttingData) function.actionData, fakePlayer);
             case TRADE, VOID_TRADE -> FakePlayerTrade.trade((TradeData) function.actionData, fakePlayer);
+            default -> {
+                CarpetOrgAddition.LOGGER.error(this.function.getAction() + "的行为没有预先定义");
+                this.function.setAction(FakePlayerAction.STOP, StopData.STOP);
+            }
         }
     }
 
@@ -41,10 +46,6 @@ public class FakePlayerActionManager {
 
     public void setAction(FakePlayerAction action, AbstractActionData data) {
         this.function.setAction(action, data);
-    }
-
-    public boolean isRun() {
-        return this.function.action != FakePlayerAction.STOP;
     }
 
     /**
