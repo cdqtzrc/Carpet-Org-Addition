@@ -1,8 +1,6 @@
 package org.carpet_org_addition.util.fakeplayer;
 
 import carpet.patches.EntityPlayerMPFake;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.MerchantScreenHandler;
@@ -15,18 +13,19 @@ import net.minecraft.village.TradeOffer;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.exception.InfiniteLoopException;
 import org.carpet_org_addition.mixin.rule.MerchantScreenHandlerAccessor;
+import org.carpet_org_addition.util.fakeplayer.actiondata.TradeData;
 import org.carpet_org_addition.util.helpers.Counter;
 
 public class FakePlayerTrade {
     //假玩家交易
-    public static void trade(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer, boolean voidTrade) {
-        //获取按钮的索引，减去1
-        int index = IntegerArgumentType.getInteger(context, "index") - 1;
+    public static void trade(TradeData tradeData, EntityPlayerMPFake fakePlayer) {
+        //获取按钮的索引
+        int index = tradeData.getIndex();
         //判断当前打开的GUI是否为交易界面
         if (fakePlayer.currentScreenHandler instanceof MerchantScreenHandler merchantScreenHandler) {
-            FakePlayerActionInterface fakePlayerActionInterface = FakePlayerActionInterface.getInstance(fakePlayer);
+            boolean voidTrade = tradeData.isVoidTrade();
             // 获取计数器，记录村民距离上次被加载的时间是否超过了5游戏刻（区块卸载后村民似乎不会立即卸载）
-            Counter<Object> tickCounter = fakePlayerActionInterface.getTickCounter();
+            Counter<Object> tickCounter = tradeData.getTickCounter();
             if (voidTrade) {
                 // 获取正在接受交易的村民
                 MerchantScreenHandlerAccessor accessor = (MerchantScreenHandlerAccessor) merchantScreenHandler;
@@ -49,14 +48,15 @@ public class FakePlayerTrade {
                     tickCounter.set(FakePlayerAction.VOID_TRADE, 5);
                 }
             }
+            ServerCommandSource source = fakePlayer.getCommandSource();
             // 判断按钮索引是否越界
             if (merchantScreenHandler.getRecipes().size() <= index) {
-                FakePlayerUtils.stopAction(context.getSource(), fakePlayer,
+                FakePlayerUtils.stopAction(source, fakePlayer,
                         "carpet.commands.playerAction.trade");
                 return;
             }
             // 尝试交易物品
-            tryTrade(context, fakePlayer, merchantScreenHandler, index);
+            tryTrade(source, fakePlayer, merchantScreenHandler, index);
             if (voidTrade) {
                 // 如果是虚空交易，交易完毕后关闭交易GUI
                 fakePlayer.closeHandledScreen();
@@ -65,7 +65,7 @@ public class FakePlayerTrade {
     }
 
     // 尝试交易物品
-    private static void tryTrade(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer,
+    private static void tryTrade(ServerCommandSource source, EntityPlayerMPFake fakePlayer,
                                  MerchantScreenHandler merchantScreenHandler, int index) {
         InfiniteLoopException exception = new InfiniteLoopException();
         //如果村民无限交易未启用，则只循环一次
@@ -84,7 +84,7 @@ public class FakePlayerTrade {
                 if (merchantScreenHandler.getSlot(2).hasStack()) {
                     FakePlayerUtils.loopThrowItem(merchantScreenHandler, 2, fakePlayer);
                 } else {
-                    FakePlayerUtils.stopAction(context.getSource(), fakePlayer, "carpet.commands.playerAction.trade");
+                    FakePlayerUtils.stopAction(source, fakePlayer, "carpet.commands.playerAction.trade");
                     return;
                 }
             } else {

@@ -129,7 +129,7 @@ public class Waypoint {
         }
         WorldFormat worldFormat = new WorldFormat(server, WAYPOINT);
         File file = worldFormat.getModFile(this.name);
-        WorldFormat.saveJson(file, WorldFormat.createGson(), json);
+        WorldFormat.saveJson(file, WorldFormat.getGson(), json);
     }
 
     // 从本地文件加载一个路径点对象
