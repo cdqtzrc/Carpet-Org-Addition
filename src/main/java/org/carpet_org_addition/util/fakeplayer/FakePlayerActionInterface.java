@@ -14,9 +14,9 @@ public interface FakePlayerActionInterface {
     void setContext(CommandContext<ServerCommandSource> context);
 
     // 假玩家操作类型
-    FakePlayerActionType getAction();
+    FakePlayerAction getAction();
 
-    void setAction(FakePlayerActionType action);
+    void setAction(FakePlayerAction action);
 
     // 假玩家3x3合成时的配方
     Matcher[] get3x3Craft();

@@ -522,4 +522,10 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static MobWhetherOrNotCanPickItem mobWhetherOrNotCanPickItem = MobWhetherOrNotCanPickItem.VANILLA;
+
+    // 可高亮路径点
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL, RuleCategory.CLIENT}
+    )
+    public static boolean canHighlightWaypoint = false;
 }

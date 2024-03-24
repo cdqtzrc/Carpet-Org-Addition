@@ -41,7 +41,7 @@ public class WorldFormat {
             return;
         }
         // 如果这个文件夹不存在并且没有创建成功，将信息写入日志
-        CarpetOrgAddition.LOGGER.warn(this.modFileDirectory + "文件夹创建失败");
+        CarpetOrgAddition.LOGGER.error(this.modFileDirectory + "文件夹创建失败");
     }
 
     /**
@@ -53,6 +53,11 @@ public class WorldFormat {
         return new File(this.modFileDirectory, suppFileName(fileName));
     }
 
+    /**
+     * 获取一个当前目录下的指定名称的文件对象
+     *
+     * @param fileName 文件的名称，如果没有扩展名，则自动添加一个.json作为扩展名
+     */
     public File getFile(String fileName) {
         fileName = suppFileName(fileName);
         return new File(this.modFileDirectory, fileName);
@@ -96,6 +101,11 @@ public class WorldFormat {
         }
     }
 
+    /**
+     * json对象中是否包含指定元素
+     *
+     * @param elements 一个字符串数组，数组中只要有一个元素不存在于json中方法就返回false
+     */
     public static boolean jsonHasElement(JsonObject json, String... elements) {
         for (String element : elements) {
             if (json.has(element)) {
@@ -123,6 +133,7 @@ public class WorldFormat {
     public HashSet<File> listFiles() {
         File[] files = this.modFileDirectory.listFiles();
         if (files == null) {
+            // 返回空集合
             return new HashSet<>();
         }
         return new HashSet<>(Arrays.asList(files));

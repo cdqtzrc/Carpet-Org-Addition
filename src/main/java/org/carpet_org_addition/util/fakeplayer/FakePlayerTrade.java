@@ -35,18 +35,18 @@ public class FakePlayerTrade {
                     ChunkPos chunkPos = merchantEntity.getChunkPos();
                     if (merchantEntity.getWorld().isChunkLoaded(chunkPos.x, chunkPos.z)) {
                         // 如果村民位于已加载区块内，重置计数器，然后直接结束方法
-                        tickCounter.set(FakePlayerActionType.VOID_TRADE, 5);
+                        tickCounter.set(FakePlayerAction.VOID_TRADE, 5);
                         return;
                     }
                 }
                 // 检查计数器是否归零
-                if (tickCounter.hasElement(FakePlayerActionType.VOID_TRADE)) {
+                if (tickCounter.hasElement(FakePlayerAction.VOID_TRADE)) {
                     // 如果没有归零，计数器递减，然后结束方法
-                    tickCounter.decrement(FakePlayerActionType.VOID_TRADE);
+                    tickCounter.decrement(FakePlayerAction.VOID_TRADE);
                     return;
                 } else {
                     // 如果归零，重置计数器，然后开始交易
-                    tickCounter.set(FakePlayerActionType.VOID_TRADE, 5);
+                    tickCounter.set(FakePlayerAction.VOID_TRADE, 5);
                 }
             }
             // 判断按钮索引是否越界
