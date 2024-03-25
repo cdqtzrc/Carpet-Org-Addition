@@ -6,6 +6,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.util.TextUtils;
 import org.jetbrains.annotations.Nullable;
 
+// 信标范围验证
 public class BeaconRangeExpandValidator extends Validator<Integer> {
     @Override
     public Integer validate(@Nullable ServerCommandSource serverCommandSource, CarpetRule<Integer> carpetRule, Integer integer, String s) {

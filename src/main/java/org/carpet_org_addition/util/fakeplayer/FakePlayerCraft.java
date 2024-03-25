@@ -2,7 +2,6 @@ package org.carpet_org_addition.util.fakeplayer;
 
 import carpet.CarpetSettings;
 import carpet.patches.EntityPlayerMPFake;
-import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.CraftingScreenHandler;
 import net.minecraft.screen.PlayerScreenHandler;
@@ -11,6 +10,8 @@ import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.exception.InfiniteLoopException;
 import org.carpet_org_addition.util.InventoryUtils;
+import org.carpet_org_addition.util.fakeplayer.actiondata.CraftingTableCraftData;
+import org.carpet_org_addition.util.fakeplayer.actiondata.InventoryCraftData;
 import org.carpet_org_addition.util.matcher.Matcher;
 
 public class FakePlayerCraft {
@@ -20,26 +21,11 @@ public class FakePlayerCraft {
     private FakePlayerCraft() {
     }
 
-    //假玩家自动合成物品（单个材料）  例：一个铁块合成九个铁锭
-    public static void craftOne(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer, Matcher[] items) {
-        craft2x2(context, fakePlayer, items);
-    }
-
-    //自动合成物品（4个相同材料）
-    public static void craftFour(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer, Matcher[] items) {
-        craft2x2(context, fakePlayer, items);
-    }
-
-    //假玩家自动合成物品（九个相同的材料）  例：九个铁锭合成一个铁块
-    public static void craftNine(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer, Matcher[] items) {
-        craft3x3(context, fakePlayer, items);
-    }
-
-
     //合成自定义物品，3x3
-    public static void craft3x3(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer, Matcher[] items) {
+    public static void craft3x3(CraftingTableCraftData craftData, EntityPlayerMPFake fakePlayer) {
         if (fakePlayer.currentScreenHandler instanceof CraftingScreenHandler craftingScreenHandler) {
             InfiniteLoopException exception = new InfiniteLoopException(MAX_LOOP_COUNT);
+            Matcher[] items = craftData.getMatchers();
             do {
                 // 检查循环次数，在循环次数过多时抛出异常
                 exception.checkLoopCount();
@@ -106,7 +92,7 @@ public class FakePlayerCraft {
                         FakePlayerUtils.throwItem(craftingScreenHandler, 0, fakePlayer);
                     } else {
                         //如果没有输出物品，说明之前的合成步骤有误，停止合成
-                        stopCraftAction(context.getSource(), fakePlayer);
+                        stopCraftAction(fakePlayer.getCommandSource(), fakePlayer);
                         return;
                     }
                 } else {
@@ -123,9 +109,10 @@ public class FakePlayerCraft {
     }
 
     //合成自定义物品，2x2
-    public static void craft2x2(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer, Matcher[] items) {
+    public static void craft2x2(InventoryCraftData craftData, EntityPlayerMPFake fakePlayer) {
         PlayerScreenHandler playerScreenHandler = fakePlayer.playerScreenHandler;
         InfiniteLoopException exception = new InfiniteLoopException(MAX_LOOP_COUNT);
+        Matcher[] items = craftData.getMatchers();
         do {
             // 检查循环次数
             exception.checkLoopCount();
@@ -188,7 +175,7 @@ public class FakePlayerCraft {
                     FakePlayerUtils.throwItem(playerScreenHandler, 0, fakePlayer);
                 } else {
                     //如果输出槽没有物品，认为前面的合成操作有误，停止合成
-                    stopCraftAction(context.getSource(), fakePlayer);
+                    stopCraftAction(fakePlayer.getCommandSource(), fakePlayer);
                     return;
                 }
             } else {

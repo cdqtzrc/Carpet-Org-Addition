@@ -5,6 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.translate.Translate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,15 +21,22 @@ public class TextUtils {
      *
      * @param color 文本的颜色，如果为null，不修改颜色
      */
+    @SuppressWarnings("ExtractMethodRecommender")
     public static MutableText blockPos(BlockPos blockPos, @Nullable Formatting color) {
         MutableText pos = Texts.bracketed(Text.translatable("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
         //添加单击事件，复制方块坐标
-        pos.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, StringUtils.getBlockPosString(blockPos))));
+        pos.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, WorldUtils.toPosString(blockPos))));
         //添加光标悬停事件：单击复制到剪贴板
         pos.styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextUtils.getTranslate("chat.copy.click"))));
         if (color != null) {
             //修改文本颜色
             pos.styled(style -> style.withColor(color));
+        }
+        if (CarpetOrgAdditionSettings.canHighlightWaypoint) {
+            MutableText highlight = createText(" [H]");
+            TextUtils.command(highlight, "/highlightWaypoint " + WorldUtils.toPosString(blockPos),
+                    TextUtils.getTranslate("ommc.highlight_waypoint.tooltip"), color, false);
+            return TextUtils.appendAll(pos, highlight);
         }
         return pos;
     }
@@ -115,13 +123,13 @@ public class TextUtils {
      * @param color     文本的颜色
      * @return 可以单击执行命令的可变文本组件
      */
-    public static MutableText command(@NotNull MutableText text, @NotNull String command, @Nullable String hoverText, @Nullable Formatting color, boolean underline) {
+    public static MutableText command(@NotNull MutableText text, @NotNull String command, @Nullable Text hoverText, @Nullable Formatting color, boolean underline) {
         //添加下划线
         text.styled(style -> style.withUnderline(underline));
         // 点击后执行命令
         text.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command)));
         if (hoverText != null) {
-            text.styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal(hoverText))));
+            text.styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText)));
         }
         if (color != null) {
             text.styled(style -> style.withColor(color));

@@ -1,22 +1,21 @@
 package org.carpet_org_addition.util.fakeplayer;
 
 import carpet.patches.EntityPlayerMPFake;
-import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ShulkerBoxScreenHandler;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.server.command.ServerCommandSource;
+import org.carpet_org_addition.util.fakeplayer.actiondata.FillData;
 
-public class FakePlayerFillContainer {
-    private FakePlayerFillContainer() {
+public class FakePlayerFill {
+    private FakePlayerFill() {
     }
 
-    public static void fillContainer(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer, boolean allItem) {
+    public static void fill(FillData fillData, EntityPlayerMPFake fakePlayer) {
         if (fakePlayer.currentScreenHandler instanceof ShulkerBoxScreenHandler shulkerBoxScreenHandler) {
+            boolean allItem = fillData.isAllItem();
             //获取要装在潜影盒的物品
-            Item item = allItem ? null : ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
+            Item item = allItem ? null : fillData.getItem();
             //只遍历玩家物品栏，不遍历潜影盒容器
             //前27个格子是潜影盒的槽位
             // 定义变量记录潜影盒是否已满

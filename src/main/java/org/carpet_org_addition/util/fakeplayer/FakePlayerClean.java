@@ -1,19 +1,17 @@
 package org.carpet_org_addition.util.fakeplayer;
 
 import carpet.patches.EntityPlayerMPFake;
-import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ShulkerBoxScreenHandler;
-import net.minecraft.server.command.ServerCommandSource;
+import org.carpet_org_addition.util.fakeplayer.actiondata.CleanData;
 
 public class FakePlayerClean {
     private FakePlayerClean() {
     }
 
-    public static void clean(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer, boolean allItem) {
-        Item item = allItem ? null : ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
+    public static void clean(CleanData cleanData, EntityPlayerMPFake fakePlayer) {
+        Item item = cleanData.isAllItem() ? null : cleanData.getItem();
         //判断假玩家打开的界面是不是潜影盒的GUI
         if (fakePlayer.currentScreenHandler instanceof ShulkerBoxScreenHandler shulkerBoxScreenHandler) {
             // 使用循环一次丢弃一组丢出潜影盒中的物品
@@ -22,7 +20,7 @@ public class FakePlayerClean {
                 if (itemStack.isEmpty()) {
                     continue;
                 }
-                if (allItem || itemStack.isOf(item)) {
+                if (cleanData.isAllItem() || itemStack.isOf(item)) {
                     // 丢弃一组物品
                     FakePlayerUtils.throwItem(shulkerBoxScreenHandler, index, fakePlayer);
                 }
