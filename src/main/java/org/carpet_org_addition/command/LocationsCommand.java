@@ -69,7 +69,7 @@ public class LocationsCommand {
         return (context, builder) -> {
             WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), Waypoint.WAYPOINT);
             return CommandSource.suggestMatching(worldFormat.listFiles().stream().map(File::getName)
-                    .filter(name -> name.endsWith(WorldFormat.JSON_EXTENSION)).map(LocationsCommand::removeExtension)
+                    .filter(name -> name.endsWith(WorldFormat.JSON_EXTENSION)).map(WorldFormat::removeExtension)
                     .map(StringArgumentType::escapeIfRequired), builder);
         };
     }
@@ -123,7 +123,7 @@ public class LocationsCommand {
                 optional = Waypoint.load(server, name);
             } catch (IOException e) {
                 //无法解析坐标
-                MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.locations.list.parse", removeExtension(name));
+                MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.locations.list.parse", WorldFormat.removeExtension(name));
                 continue;
             }
             // 显示路径点
@@ -209,7 +209,7 @@ public class LocationsCommand {
         String name = StringArgumentType.getString(context, "delete");
         //获取路径点文件对象
         WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), Waypoint.WAYPOINT);
-        File file = worldFormat.getModFile(name);
+        File file = worldFormat.createFileObject(name);
         //从本地文件删除路径点
         if (file.delete()) {
             // 成功删除
@@ -230,7 +230,7 @@ public class LocationsCommand {
         }
         String fileName = StringArgumentType.getString(context, "name");
         WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), Waypoint.WAYPOINT);
-        File file = worldFormat.getModFile(fileName);
+        File file = worldFormat.createFileObject(fileName);
         try {
             Optional<Waypoint> optional = Waypoint.load(context.getSource().getServer(), file.getName());
             if (optional.isPresent()) {
@@ -247,11 +247,4 @@ public class LocationsCommand {
         return 1;
     }
 
-    //删除扩展名
-    public static String removeExtension(String fileName) {
-        if (fileName.endsWith(".json")) {
-            return fileName.substring(0, fileName.lastIndexOf("."));
-        }
-        return fileName;
-    }
 }

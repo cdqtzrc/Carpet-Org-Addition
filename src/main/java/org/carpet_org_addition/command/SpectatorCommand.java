@@ -78,7 +78,7 @@ public class SpectatorCommand {
         json.addProperty("dimension", WorldUtils.getDimensionId(player.getWorld()));
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonString = gson.toJson(json, JsonObject.class);
-        File file = worldFormat.getModFile(player.getUuidAsString() + WorldFormat.JSON_EXTENSION);
+        File file = worldFormat.createFileObject(player.getUuidAsString() + WorldFormat.JSON_EXTENSION);
         try {
             try (BufferedWriter writer = WorldFormat.toWriter(file)) {
                 writer.write(jsonString);
@@ -90,7 +90,7 @@ public class SpectatorCommand {
 
     private static void loadPlayerPos(MinecraftServer server, ServerPlayerEntity player) {
         WorldFormat worldFormat = new WorldFormat(server, SPECTATOR);
-        File file = worldFormat.getModFile(player.getUuidAsString() + WorldFormat.JSON_EXTENSION);
+        File file = worldFormat.createFileObject(player.getUuidAsString() + WorldFormat.JSON_EXTENSION);
         try {
             BufferedReader reader = WorldFormat.toReader(file);
             try (reader) {

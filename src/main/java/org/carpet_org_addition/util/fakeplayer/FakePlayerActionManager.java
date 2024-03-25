@@ -1,11 +1,12 @@
 package org.carpet_org_addition.util.fakeplayer;
 
 import carpet.patches.EntityPlayerMPFake;
+import com.google.gson.JsonObject;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.util.fakeplayer.actiondata.*;
+import org.carpet_org_addition.util.helpers.JsonSerial;
 
-public class FakePlayerActionManager {
-    public static final String PLAYER_DATA = "player_data";
+public class FakePlayerActionManager implements JsonSerial {
     private final EntityPlayerMPFake fakePlayer;
 
     private final ActionFunction function = new ActionFunction();
@@ -46,6 +47,51 @@ public class FakePlayerActionManager {
 
     public void setAction(FakePlayerAction action, AbstractActionData data) {
         this.function.setAction(action, data);
+    }
+
+    public static void load(EntityPlayerMPFake fakePlayer, JsonObject json) {
+        FakePlayerActionManager actionManager = FakePlayerActionInterface.getInstance(fakePlayer).getActionManager();
+        try {
+            if (json.has("stop")) {
+                actionManager.setAction(FakePlayerAction.STOP, StopData.STOP);
+            } else if (json.has("sorting")) {
+                actionManager.setAction(FakePlayerAction.SORTING, SortingData.load(json.get("sorting").getAsJsonObject()));
+            } else if (json.has("clean")) {
+                actionManager.setAction(FakePlayerAction.CLEAN, CleanData.load(json.get("clean").getAsJsonObject()));
+            } else if (json.has("fill")) {
+                actionManager.setAction(FakePlayerAction.FILL, FillData.load(json.get("fill").getAsJsonObject()));
+            } else if (json.has("inventory_crafting")) {
+                actionManager.setAction(FakePlayerAction.CRAFT_2X2, InventoryCraftData.load(json.get("inventory_crafting").getAsJsonObject()));
+            } else if (json.has("crafting_table_craft")) {
+                actionManager.setAction(FakePlayerAction.CRAFT_3X3, CraftingTableCraftData.load(json.get("crafting_table_craft").getAsJsonObject()));
+            } else if (json.has("rename")) {
+                actionManager.setAction(FakePlayerAction.RENAME, RenameData.load(json.get("rename").getAsJsonObject()));
+            } else if (json.has("stonecutting")) {
+                actionManager.setAction(FakePlayerAction.STONECUTTING, StonecuttingData.load(json.get("stonecutting").getAsJsonObject()));
+            } else if (json.has("trade")) {
+                actionManager.setAction(FakePlayerAction.TRADE, TradeData.load(json.get("trade").getAsJsonObject()));
+            }
+        } catch (RuntimeException e) {
+            actionManager.setAction(FakePlayerAction.STOP, StopData.STOP);
+        }
+    }
+
+    @Override
+    public JsonObject toJson() {
+        JsonObject json = new JsonObject();
+        String action = switch (this.getAction()) {
+            case STOP -> "stop";
+            case SORTING -> "sorting";
+            case CLEAN, CLEAN_DESIGNATED -> "clean";
+            case FILL, FILL_ALL -> "fill";
+            case CRAFT_ONE, CRAFT_FOUR, CRAFT_2X2 -> "inventory_crafting";
+            case CRAFT_NINE, CRAFT_3X3 -> "crafting_table_craft";
+            case RENAME -> "rename";
+            case STONECUTTING -> "stonecutting";
+            case TRADE, VOID_TRADE -> "trade";
+        };
+        json.add(action, this.getActionData().toJson());
+        return json;
     }
 
     /**
