@@ -64,7 +64,7 @@ public class EntityPlayerActionPackSerial implements JsonSerial {
             JsonObject useJson = new JsonObject();
             useJson.addProperty("interval", use.interval);
             useJson.addProperty("continuous", ((ActionAccessor) use).isContinuous());
-            json.add("ust", useJson);
+            json.add("use", useJson);
         }
         return json;
     }
