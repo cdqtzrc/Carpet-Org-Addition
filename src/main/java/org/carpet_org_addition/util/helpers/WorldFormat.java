@@ -26,12 +26,14 @@ public class WorldFormat {
      * 尝试创建一个存档目录下的文件夹
      *
      * @param server      游戏当前运行的服务器，用来获取操作系统下服务器存档的路径
-     * @param directories 一个字符串数组，数组中第一个元素表示第二级子目录，第二个元素表示第三级子目录，以此类推
+     * @param directory   一个字符串，表示第二级子目录，有这个参数的原因是至少要传入一个字符串参数
+     * @param directories 一个字符串数组，数组中第一个元素表示第三级子目录，第二个元素表示第四级子目录，以此类推
      * @apiNote 第一级目录是carpetorgaddition文件夹
      */
-    public WorldFormat(MinecraftServer server, String... directories) {
+    public WorldFormat(MinecraftServer server, String directory, String... directories) {
         // 获取服务器存档保存文件的路径
         Path path = server.getSavePath(WorldSavePath.ROOT).resolve(CarpetOrgAddition.MOD_NAME_LOWER_CASE);
+        path = path.resolve(directory);
         // 拼接路径
         for (String name : directories) {
             path = path.resolve(name);
@@ -51,7 +53,7 @@ public class WorldFormat {
      *
      * @param fileName 文件名，如果没有扩展名，则自动添加json作为扩展名
      */
-    public File getModFile(String fileName) {
+    public File createFileObject(String fileName) {
         return new File(this.modFileDirectory, suppFileName(fileName));
     }
 
@@ -79,13 +81,6 @@ public class WorldFormat {
         return new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8));
     }
 
-    /**
-     * @return 一个可以格式化json内容的Gson对象
-     */
-    public static Gson getGson() {
-        return GSON;
-    }
-
     // 保存json文件
     public static void saveJson(File file, Gson gson, JsonObject json) throws IOException {
         String jsonString = gson.toJson(json, JsonObject.class);
@@ -96,10 +91,9 @@ public class WorldFormat {
 
     // 加载json文件
     public static JsonObject loadJson(File file) throws IOException {
-        Gson gson = getGson();
         BufferedReader reader = toReader(file);
         try (reader) {
-            return gson.fromJson(reader, JsonObject.class);
+            return GSON.fromJson(reader, JsonObject.class);
         }
     }
 
@@ -131,6 +125,20 @@ public class WorldFormat {
         return fileName;
     }
 
+    /**
+     * 删除文件扩展名
+     *
+     * @apiNote 不要在本类中使用此方法
+     */
+    //删除扩展名
+    public static String removeExtension(String fileName) {
+        if (fileName.endsWith(JSON_EXTENSION)) {
+            return fileName.substring(0, fileName.lastIndexOf("."));
+        }
+        return fileName;
+    }
+
+
     // 列出当前目录下的所有文件
     public HashSet<File> listFiles() {
         File[] files = this.modFileDirectory.listFiles();
@@ -144,7 +152,7 @@ public class WorldFormat {
     // 检查该目录下的文件是否存在
     public boolean fileExists(String fileName) {
         fileName = suppFileName(fileName);
-        File file = this.getModFile(fileName);
+        File file = this.createFileObject(fileName);
         return file.exists();
     }
 
@@ -155,7 +163,7 @@ public class WorldFormat {
      * @param from 复制哪个文件夹
      * @param to   把文件夹复制到哪里
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "unused"})
     public static void copyFolder(File from, File to) throws IOException {
         to.mkdirs();
         // 列出文件夹下的所有文件

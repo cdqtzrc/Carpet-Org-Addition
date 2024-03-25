@@ -6,7 +6,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
-import org.carpet_org_addition.exception.PlayerActionSerializationException;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.matcher.Matcher;
 
@@ -35,9 +34,6 @@ public class FillData extends AbstractActionData {
 
     @Override
     public JsonObject toJson() {
-        if (this == FILL_ALL) {
-            throw new PlayerActionSerializationException();
-        }
         JsonObject json = new JsonObject();
         if (this.item != null) {
             // 要清空的物品

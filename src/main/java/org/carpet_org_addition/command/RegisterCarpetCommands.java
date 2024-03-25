@@ -64,6 +64,9 @@ public class RegisterCarpetCommands {
             // 规则搜索命令
             RuleSearchCommand.register(dispatcher);
 
+            // 玩家管理器命令
+            PlayerManagerCommand.register(dispatcher);
+
             /*
               测试用命令
              */

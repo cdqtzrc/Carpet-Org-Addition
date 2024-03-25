@@ -3,6 +3,7 @@ package org.carpet_org_addition.util.matcher;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
@@ -74,6 +75,6 @@ public class ItemMatcher implements Matcher {
 
     @Override
     public String toString() {
-        return this.item.toString();
+        return Registries.ITEM.getId(this.item).toString();
     }
 }

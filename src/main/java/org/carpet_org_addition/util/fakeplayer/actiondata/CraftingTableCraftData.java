@@ -24,8 +24,8 @@ public class CraftingTableCraftData extends AbstractActionData {
         for (int i = 0; i < matchers.length; i++) {
             String item = json.get(String.valueOf(i)).getAsString();
             matchers[i] = (item.startsWith("#")
-                    ? new ItemMatcher(Matcher.asItem(item))
-                    : new ItemTagMatcher(item));
+                    ? new ItemTagMatcher(item)
+                    : new ItemMatcher(Matcher.asItem(item)));
         }
         return new CraftingTableCraftData(matchers);
     }

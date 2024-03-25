@@ -55,10 +55,10 @@ public class CommandUtils {
     /**
      * 获取命令参数中的玩家对象，并检查是不是假玩家
      */
-    public static ServerPlayerEntity getArgumentFakePlayer(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    public static EntityPlayerMPFake getArgumentFakePlayer(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = EntityArgumentType.getPlayer(context, PLAYER);
         checkFakePlayer(player);
-        return player;
+        return (EntityPlayerMPFake) player;
     }
 
     /**

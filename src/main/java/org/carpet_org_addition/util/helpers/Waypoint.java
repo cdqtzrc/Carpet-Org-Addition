@@ -9,7 +9,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.BlockPos;
 import org.carpet_org_addition.CarpetOrgAddition;
-import org.carpet_org_addition.command.LocationsCommand;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.WorldUtils;
@@ -93,7 +92,7 @@ public class Waypoint {
                         Waypoint waypoint = new Waypoint(location, f.getName());
                         waypoint.save(server);
                     } catch (IOException e) {
-                        CarpetOrgAddition.LOGGER.warn("路径点[" + LocationsCommand.removeExtension(f.getName()) + "]移动失败");
+                        CarpetOrgAddition.LOGGER.warn("路径点[" + WorldFormat.removeExtension(f.getName()) + "]移动失败");
                     }
                 }
             }
@@ -128,8 +127,8 @@ public class Waypoint {
             json.addProperty("another_z", this.anotherBlockPos.getZ());
         }
         WorldFormat worldFormat = new WorldFormat(server, WAYPOINT);
-        File file = worldFormat.getModFile(this.name);
-        WorldFormat.saveJson(file, WorldFormat.getGson(), json);
+        File file = worldFormat.createFileObject(this.name);
+        WorldFormat.saveJson(file, WorldFormat.GSON, json);
     }
 
     // 从本地文件加载一个路径点对象

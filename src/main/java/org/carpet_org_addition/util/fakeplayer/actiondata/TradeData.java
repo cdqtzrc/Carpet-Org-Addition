@@ -25,6 +25,12 @@ public class TradeData extends AbstractActionData {
         tickCounter.set(FakePlayerAction.VOID_TRADE, 5);
     }
 
+    public static TradeData load(JsonObject json) {
+        int index = json.get(INDEX).getAsInt();
+        boolean voidTrade = json.get(VOID_TRADE).getAsBoolean();
+        return new TradeData(index, voidTrade);
+    }
+
     @Override
     public JsonObject toJson() {
         JsonObject json = new JsonObject();

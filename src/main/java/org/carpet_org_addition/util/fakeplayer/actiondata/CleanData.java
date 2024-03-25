@@ -6,7 +6,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
-import org.carpet_org_addition.exception.PlayerActionSerializationException;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.matcher.Matcher;
 
@@ -15,7 +14,6 @@ import java.util.ArrayList;
 public final class CleanData extends AbstractActionData {
     private static final String ITEM = "item";
     private static final String ALL_ITEM = "allItem";
-    public static final CleanData EMPTY = new CleanData(null, false);
     public static final CleanData CLEAN_ALL = new CleanData(null, true);
     private final Item item;
     private final boolean allItem;
@@ -40,9 +38,6 @@ public final class CleanData extends AbstractActionData {
 
     @Override
     public JsonObject toJson() {
-        if (this == EMPTY) {
-            throw new PlayerActionSerializationException();
-        }
         JsonObject json = new JsonObject();
         if (this.item != null) {
             // 要清空的物品

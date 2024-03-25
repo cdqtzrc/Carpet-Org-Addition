@@ -16,10 +16,10 @@ public class ItemTagMatcher implements Matcher {
     public ItemTagMatcher(String tag) {
         boolean hasSymbol = tag.startsWith("#");
         if (hasSymbol && tag.contains(":")) {
-            this.tag = tag;
+            this.tag = tag.substring(1);
             return;
         }
-        this.tag = "#minecraft:" + (hasSymbol ? tag.substring(1) : tag);
+        this.tag = "minecraft:" + (hasSymbol ? tag.substring(1) : tag);
     }
 
     @Override
@@ -82,6 +82,6 @@ public class ItemTagMatcher implements Matcher {
 
     @Override
     public String toString() {
-        return this.tag;
+        return "#" + this.tag;
     }
 }

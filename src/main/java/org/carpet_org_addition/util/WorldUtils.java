@@ -93,4 +93,21 @@ public class WorldUtils {
         }
         return server.getWorld(RegistryKey.of(RegistryKeys.WORLD, identifier));
     }
+
+    /**
+     * 将字符串解析为世界ID
+     *
+     * @param worldId 世界的ID，如果指定了命名空间，则使用指定的，否则使用minecraft
+     * @return 世界类型的注册表项
+     */
+    public static RegistryKey<World> getWorld(String worldId) {
+        if (worldId.contains(":")) {
+            String[] split = worldId.split(":");
+            if (split.length != 2) {
+                throw new IllegalArgumentException();
+            }
+            return RegistryKey.of(RegistryKeys.WORLD, new Identifier(split[0], split[1]));
+        }
+        return RegistryKey.of(RegistryKeys.WORLD, new Identifier(worldId));
+    }
 }
