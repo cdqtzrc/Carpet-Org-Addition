@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.CraftingRecipe;
+import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.MutableText;
@@ -66,8 +67,8 @@ public abstract class AbstractActionData implements JsonSerial {
         }
         World world = fakePlayer.getWorld();
         // 获取配方的输出
-        Optional<CraftingRecipe> optional = fakePlayer.getCommandSource().getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingInventory, world);
-        return optional.map(craftingRecipe -> craftingRecipe.craft(craftingInventory, world.getRegistryManager()).getItem()).orElse(Items.AIR);
+        Optional<RecipeEntry<CraftingRecipe>> optional = fakePlayer.getCommandSource().getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingInventory, world);
+        return optional.map(craftingRecipe -> craftingRecipe.value().craft(craftingInventory, world.getRegistryManager()).getItem()).orElse(Items.AIR);
     }
 
     @NotNull
