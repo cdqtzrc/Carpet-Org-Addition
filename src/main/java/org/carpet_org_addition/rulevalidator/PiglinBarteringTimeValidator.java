@@ -6,6 +6,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.util.TextUtils;
 import org.jetbrains.annotations.Nullable;
 
+// 自定义猪灵交易时间
 public class PiglinBarteringTimeValidator extends Validator<Long> {
     @Override
     public Long validate(@Nullable ServerCommandSource serverCommandSource, CarpetRule<Long> carpetRule, Long aLong, String s) {

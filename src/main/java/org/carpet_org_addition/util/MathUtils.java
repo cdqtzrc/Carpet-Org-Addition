@@ -4,8 +4,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
+import org.carpet_org_addition.rulevalidator.MaxBlockPlaceDistanceValidator;
 
 import java.util.Random;
+import java.util.StringJoiner;
 
 public class MathUtils {
     /**
@@ -15,33 +17,6 @@ public class MathUtils {
     }
 
     private static final Random RANDOM = new Random();
-
-    /**
-     * 根据经验等级和经验值计算总经验值<br/>
-     *
-     * @param level 经验等级
-     * @param xp    经验值
-     * @return 总经验值
-     * @author ChatGPT
-     */
-    public static int getTotalExperience(int level, int xp) {
-        int totalExp;
-        // 0-16级
-        if (level <= 16) {
-            totalExp = level * level + 6 * level;
-        }
-        // 17-31级
-        else if (level <= 31) {
-            totalExp = (int) (2.5 * level * level - 40.5 * level + 360);
-        }
-        // 32级以上
-        else {
-            totalExp = (int) (4.5 * level * level - 162.5 * level + 2220);
-        }
-        // 防止数值溢出
-        int sum = totalExp + xp;
-        return sum < 0 ? totalExp : sum;
-    }
 
     /**
      * 获取两个方块坐标的距离的平方
@@ -101,7 +76,7 @@ public class MathUtils {
     }
 
     /**
-     * 获取Carpet Org Addition设置的玩家最大交互距离并进行判断，小于0的值会被视为6.0，超过128的值会被视为128.0
+     * 获取Carpet Org Addition设置的玩家最大交互距离并进行判断，小于0的值会被视为6.0，超过256的值会被视为256.0
      *
      * @return 当前设置的最大交互距离，最大不超过128
      */
@@ -110,7 +85,7 @@ public class MathUtils {
         if (distance < 0) {
             return 6.0;
         }
-        return Math.min(distance, 128.0);
+        return Math.min(distance, MaxBlockPlaceDistanceValidator.MAX_BLOCK_PLACE_DISTANCE_MAX_VALUE);
     }
 
     /**
@@ -187,5 +162,19 @@ public class MathUtils {
             sum += arg;
         }
         return sum / args.length;
+    }
+
+    /**
+     * 将一个浮点数数组中的每一个元素格式化为保留两位小数的字符串，然后拼接成一个大字符串，每个元素用空格隔开
+     *
+     * @param args 要格式化的浮点数数组
+     * @return 每一个元素拼接后的大字符串
+     */
+    public static String keepTwoDecimalPlaces(double... args) {
+        StringJoiner sj = new StringJoiner(" ");
+        for (double arg : args) {
+            sj.add(String.format("%.2f", arg));
+        }
+        return sj.toString();
     }
 }

@@ -3,9 +3,7 @@ package org.carpet_org_addition.util.fakeplayer;
 import carpet.patches.EntityPlayerMPFake;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
@@ -14,14 +12,13 @@ import org.carpet_org_addition.util.helpers.DisabledSlot;
 public class FakePlayerInventoryScreenHandler extends ScreenHandler {
     private static final int SIZE = 41;
     private final EntityPlayerMPFake fakePlayer;
+    private final FakePlayerInventory inventory;
 
     public FakePlayerInventoryScreenHandler(int syncId, PlayerInventory playerInventory, EntityPlayerMPFake fakePlayer) {
         super(ScreenHandlerType.GENERIC_9X6, syncId);
         this.fakePlayer = fakePlayer;
-        Inventory inventory = fakePlayer.getInventory();
-        // 检查物品栏的大小
-        GenericContainerScreenHandler.checkSize(inventory, SIZE);
-        inventory.onOpen(playerInventory.player);
+        this.inventory = new FakePlayerInventory(fakePlayer);
+        this.inventory.onOpen(playerInventory.player);
         // 定义变量记录添加的槽位的索引
         int index = 0;
         // 添加上半部分的槽位
@@ -103,5 +100,11 @@ public class FakePlayerInventoryScreenHandler extends ScreenHandler {
     public boolean canUse(PlayerEntity player) {
         // 假玩家活着，并且假玩家没有被删除
         return !this.fakePlayer.isDead() && !this.fakePlayer.isRemoved();
+    }
+
+    @Override
+    public void onClosed(PlayerEntity player) {
+        super.onClosed(player);
+        this.inventory.dropExcess(player);
     }
 }

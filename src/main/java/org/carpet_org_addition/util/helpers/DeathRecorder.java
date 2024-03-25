@@ -6,7 +6,7 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.math.BlockPos;
-import org.carpet_org_addition.util.StringUtils;
+import org.carpet_org_addition.util.WorldUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class DeathRecorder {
         this.deathMessage = deathMessage;
         BlockPos blockPos = player.getBlockPos();
         this.deathPos = new int[]{blockPos.getX(), blockPos.getY(), blockPos.getZ()};
-        this.deathDimension = StringUtils.getDimensionId(player.getWorld());
+        this.deathDimension = WorldUtils.getDimensionId(player.getWorld());
     }
 
     // 将死亡信息NBT写入本地文件
@@ -50,9 +50,9 @@ public class DeathRecorder {
         nbt.put("Inventory", this.player.getInventory().writeNbt(new NbtList()));
         // 死亡时玩家的经验等级
         nbt.putInt("XpLevel", this.player.experienceLevel);
-        ModFile modFile = new ModFile(player.server, DEATH_LOG, this.playerName);
+        WorldFormat worldFormat = new WorldFormat(player.server, DEATH_LOG, this.playerName);
         // 死亡信息是在统计信息更新之前记录的，所以这里获取的死亡次数需要+1
-        File file = modFile.getModFile((getDeathCount(this.player) + 1) + ".nbt");
+        File file = worldFormat.createFileObject((getDeathCount(this.player) + 1) + ".nbt");
         // 将NBT写入本地文件
         NbtIo.write(nbt, file);
     }
@@ -60,8 +60,8 @@ public class DeathRecorder {
     // 从本地文件加载死亡信息
     public static NbtCompound load(ServerPlayerEntity player, int number) throws IOException {
         String playerName = player.getName().getString();
-        ModFile modFile = new ModFile(player.server, DEATH_LOG, playerName);
-        File file = modFile.getModFile(number + NBT);
+        WorldFormat worldFormat = new WorldFormat(player.server, DEATH_LOG, playerName);
+        File file = worldFormat.createFileObject(number + NBT);
         return NbtIo.read(file);
     }
 

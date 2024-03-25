@@ -2,15 +2,12 @@ package org.carpet_org_addition.util.matcher;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.carpet_org_addition.CarpetOrgAddition;
 
 public interface Matcher {
-    ItemMatcher AIR_ITEM_MATCHER = new ItemMatcher(Items.AIR);
 
     /**
      * 检查当前物品堆栈是否与匹配器匹配
@@ -60,7 +57,9 @@ public interface Matcher {
      *
      * @return 如果是物品，返回默认堆栈的{@link ItemStack#toHoverableText()}，如果是物品标签，返回物品标签字符串的可变文本形式
      */
-    MutableText toText();
+    default MutableText toText() {
+        return this.getName().copy();
+    }
 
     /**
      * 根据物品id获取对应物品
@@ -69,11 +68,10 @@ public interface Matcher {
      * @return 指定的物品
      */
     static Item asItem(String id) {
-        String[] split = id.split(":");
-        if (split.length != 2) {
-            CarpetOrgAddition.LOGGER.error("无法根据物品id:“" + id + "”获取物品");
-            throw new IllegalArgumentException();
-        }
-        return Registries.ITEM.get(new Identifier(split[0], split[1]));
+        String[] split = id.strip().split(":");
+        Identifier identifier = (split.length == 1
+                ? new Identifier(Identifier.DEFAULT_NAMESPACE, split[0])
+                : new Identifier(split[0], split[1]));
+        return Registries.ITEM.get(identifier);
     }
 }

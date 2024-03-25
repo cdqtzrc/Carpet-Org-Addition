@@ -8,9 +8,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-//海龟蛋快速孵化
 @Mixin(TurtleEggBlock.class)
 public class TurtleEggBlockMixin {
+
+    //海龟蛋快速孵化
     @Inject(method = "shouldHatchProgress", at = @At("HEAD"), cancellable = true)
     private void progress(World world, CallbackInfoReturnable<Boolean> cir) {
         if (CarpetOrgAdditionSettings.turtleEggFastHatch) {

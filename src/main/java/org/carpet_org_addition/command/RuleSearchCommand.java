@@ -20,8 +20,8 @@ import java.util.List;
 
 public class RuleSearchCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        dispatcher.register(CommandManager.literal("ruleSearch").requires(source ->
-                        CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandRuleSearch))
+        dispatcher.register(CommandManager.literal("ruleSearch")
+                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandRuleSearch))
                 .then(CommandManager.argument("rule", StringArgumentType.string())
                         .executes(RuleSearchCommand::listRule)));
     }

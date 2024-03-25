@@ -25,21 +25,25 @@ import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerEnderChestScreenHandler;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerInventoryScreenHandler;
-import org.carpet_org_addition.util.fakeplayer.FakePlayerProtectManager;
 
 @SuppressWarnings("SameReturnValue")
 public class PlayerToolsCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        dispatcher.register(CommandManager.literal("playerTools").requires(source ->
-                        CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerTools))
+        dispatcher.register(CommandManager.literal("playerTools")
+                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerTools))
                 .then(CommandManager.argument("player", EntityArgumentType.player())
-                        .then(CommandManager.literal("enderChest").executes(context -> openEnderChest(context, CommandUtils.getPlayerEntity(context))))
-                        .then(CommandManager.literal("inventory").executes(context -> openFakePlayerInventory(context, CommandUtils.getPlayerEntity(context))))
-                        .then(CommandManager.literal("teleport").executes(context -> fakePlayerTp(context, CommandUtils.getPlayerEntity(context))))
-                        .then(CommandManager.literal("isFakePlayer").executes(context -> isFakePlayer(context, CommandUtils.getPlayerEntity(context))))
-                        .then(CommandManager.literal("position").executes(context -> getFakePlayerPos(context, CommandUtils.getPlayerEntity(context))))
-                        .then(CommandManager.literal("heal").executes(context -> fakePlayerHeal(context, CommandUtils.getPlayerEntity(context))))
-                ));
+                        .then(CommandManager.literal("enderChest")
+                                .executes(context -> openEnderChest(context, CommandUtils.getArgumentPlayer(context))))
+                        .then(CommandManager.literal("inventory")
+                                .executes(context -> openFakePlayerInventory(context, CommandUtils.getArgumentPlayer(context))))
+                        .then(CommandManager.literal("teleport")
+                                .executes(context -> fakePlayerTp(context, CommandUtils.getArgumentPlayer(context))))
+                        .then(CommandManager.literal("isFakePlayer")
+                                .executes(context -> isFakePlayer(context, CommandUtils.getArgumentPlayer(context))))
+                        .then(CommandManager.literal("position")
+                                .executes(context -> getFakePlayerPos(context, CommandUtils.getArgumentPlayer(context))))
+                        .then(CommandManager.literal("heal")
+                                .executes(context -> fakePlayerHeal(context, CommandUtils.getArgumentPlayer(context))))));
     }
 
     //假玩家治疗
@@ -57,7 +61,7 @@ public class PlayerToolsCommand {
 
     //打开玩家末影箱
     private static int openEnderChest(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer) throws CommandSyntaxException {
-        PlayerEntity player = CommandUtils.getPlayer(context);
+        PlayerEntity player = CommandUtils.getSourcePlayer(context);
         //检查玩家是否是假玩家或自己
         if (fakePlayer instanceof EntityPlayerMPFake || fakePlayer == player) {
             //创建GUI对象
@@ -75,18 +79,10 @@ public class PlayerToolsCommand {
 
     //假玩家传送
     private static int fakePlayerTp(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer) throws CommandSyntaxException {
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         //获取假玩家名和命令执行玩家名
         Text fakePlayerName = fakePlayer.getDisplayName();
         Text playerName = player.getDisplayName();
-        //判断被执行的玩家是否为假玩家
-        if (CommandUtils.checkFakePlayer(fakePlayer)) {
-            if (FakePlayerProtectManager.ruleEnable() && FakePlayerProtectManager.isProtected((EntityPlayerMPFake) fakePlayer)) {
-                //不能传送受保护的假玩家
-                throw CommandUtils.createException("carpet.commands.playerTools.tp.protected_fake_player");
-            }
-        }
-        //不需要return，程序在执行到上面的判断是否为假玩家时，只有是假玩家才能正常返回，非假玩家会直接抛出异常
         //在假玩家位置播放潜影贝传送音效
         fakePlayer.getWorld().playSound(null, fakePlayer.prevX, fakePlayer.prevY, fakePlayer.prevZ,
                 SoundEvents.ENTITY_SHULKER_TELEPORT, fakePlayer.getSoundCategory(), 1.0f, 1.0f);
@@ -141,7 +137,7 @@ public class PlayerToolsCommand {
     // 打开假玩家物品栏GUI
     private static int openFakePlayerInventory(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer)
             throws CommandSyntaxException {
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         if (CommandUtils.checkFakePlayer(fakePlayer)) {
             SimpleNamedScreenHandlerFactory screen = new SimpleNamedScreenHandlerFactory((syncId, playerInventory, playerEntity)
                     -> new FakePlayerInventoryScreenHandler(syncId, playerInventory,

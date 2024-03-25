@@ -1,30 +1,27 @@
 package org.carpet_org_addition.util.fakeplayer;
 
 import carpet.patches.EntityPlayerMPFake;
-import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
-import net.minecraft.command.argument.ItemStackArgumentType;
-import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.math.Vec3d;
 import org.carpet_org_addition.exception.InfiniteLoopException;
 import org.carpet_org_addition.exception.NoNbtException;
 import org.carpet_org_addition.util.InventoryUtils;
+import org.carpet_org_addition.util.fakeplayer.actiondata.SortingData;
 
 public class FakePlayerSorting {
     private FakePlayerSorting() {
     }
 
-    public static void sorting(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) {
+    public static void sorting(SortingData sortingData, EntityPlayerMPFake fakePlayer) {
         //获取要分拣的物品对象
-        Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
+        Item item = sortingData.getItem();
         //获取分拣物品要丢出的方向
-        Vec3d thisVec = Vec3ArgumentType.getVec3(context, "this");
+        Vec3d thisVec = sortingData.getThisVec();
         //获取非分拣物品要丢出的方向
-        Vec3d otherVec = Vec3ArgumentType.getVec3(context, "other");
+        Vec3d otherVec = sortingData.getOtherVec();
         //获取玩家物品栏对象
         PlayerInventory inventory = fakePlayer.getInventory();
         //遍历玩家物品栏，找到要丢出的物品
