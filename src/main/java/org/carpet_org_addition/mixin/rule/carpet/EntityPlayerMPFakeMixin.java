@@ -2,6 +2,7 @@ package org.carpet_org_addition.mixin.rule.carpet;
 
 import carpet.patches.EntityPlayerMPFake;
 import com.mojang.authlib.GameProfile;
+import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -21,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @SuppressWarnings("AddedMixinMembersNamePattern")
 @Mixin(EntityPlayerMPFake.class)
-public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakePlayerActionInterface {
+public abstract class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakePlayerActionInterface {
     @Unique
     private final EntityPlayerMPFake thisPlayer = (EntityPlayerMPFake) (Object) this;
 
@@ -29,8 +30,8 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
     private final FakePlayerActionManager actionManager = new FakePlayerActionManager(thisPlayer);
 
     //私有化构造方法，防止被创建对象
-    private EntityPlayerMPFakeMixin(MinecraftServer server, ServerWorld world, GameProfile profile) {
-        super(server, world, profile);
+    private EntityPlayerMPFakeMixin(MinecraftServer server, ServerWorld world, GameProfile profile, SyncedClientOptions clientOptions) {
+        super(server, world, profile, clientOptions);
     }
 
     @Override

@@ -90,7 +90,7 @@ public class FakePlayerSerial implements JsonSerial {
         boolean flying = json.get("flying").getAsBoolean();
         // 是否潜行
         boolean sneaking = json.get("sneaking").getAsBoolean();
-        EntityPlayerMPFake fakePlayer = EntityPlayerMPFake.createFake(playerName, server, vec3d, yaw, pitch,
+        EntityPlayerMPFake fakePlayer = GameUtils.createFakePlayer(playerName, server, vec3d, yaw, pitch,
                 WorldUtils.getWorld(dimension), gamemode, flying);
         fakePlayer.setSneaking(sneaking);
         if (json.has("hand_action")) {
