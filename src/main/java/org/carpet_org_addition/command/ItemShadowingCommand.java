@@ -25,7 +25,7 @@ public class ItemShadowingCommand {
 
     //制作物品分身
     private static int itemShadowing(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         // 获取主副手上的物品
         ItemStack main = player.getMainHandStack();
         ItemStack off = player.getOffHandStack();
@@ -42,22 +42,22 @@ public class ItemShadowingCommand {
             if (InventoryUtils.isShulkerBoxItem(main)) {
                 try {
                     ImmutableInventory inventory = InventoryUtils.getInventory(main);
-                    CarpetOrgAddition.LOGGER.info(StringUtils.getPlayerName(player) + "制作了一个"
-                            + main.getItem().getName().getString() + "的物品分身，包含" + inventory.itemCount()
+                    CarpetOrgAddition.LOGGER.info(GameUtils.getPlayerName(player) + "制作了一个"
+                            + main.getItem().getName().getString() + "的物品分身，包含" + inventory.slotCount()
                             + "个物品，分别是：" + inventory + "，在"
-                            + StringUtils.getDimensionId(player.getWorld()) + "，坐标:["
-                            + StringUtils.getBlockPosString(player.getBlockPos()) + "]");
+                            + WorldUtils.getDimensionId(player.getWorld()) + "，坐标:["
+                            + WorldUtils.toPosString(player.getBlockPos()) + "]");
                 } catch (NoNbtException e) {
-                    CarpetOrgAddition.LOGGER.info(StringUtils.getPlayerName(player) + "制作了一个空["
+                    CarpetOrgAddition.LOGGER.info(GameUtils.getPlayerName(player) + "制作了一个空["
                             + main.getItem().getName().getString() + "]的物品分身，在"
-                            + StringUtils.getDimensionId(player.getWorld()) + "，坐标:["
-                            + StringUtils.getBlockPosString(player.getBlockPos()) + "]");
+                            + WorldUtils.getDimensionId(player.getWorld()) + "，坐标:["
+                            + WorldUtils.toPosString(player.getBlockPos()) + "]");
                 }
             } else {
-                CarpetOrgAddition.LOGGER.info(StringUtils.getPlayerName(player) + "制作了一个["
+                CarpetOrgAddition.LOGGER.info(GameUtils.getPlayerName(player) + "制作了一个["
                         + main.getItem().getName().getString() + "]的物品分身，在"
-                        + StringUtils.getDimensionId(player.getWorld()) + "，坐标:["
-                        + StringUtils.getBlockPosString(player.getBlockPos()) + "]");
+                        + WorldUtils.getDimensionId(player.getWorld()) + "，坐标:["
+                        + WorldUtils.toPosString(player.getBlockPos()) + "]");
             }
             return 1;
         } else {

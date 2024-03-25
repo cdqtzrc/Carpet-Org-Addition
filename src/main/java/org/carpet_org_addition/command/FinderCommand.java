@@ -59,8 +59,8 @@ public class FinderCommand {
     private static final int MAXIMUM_STATISTICS = 300000;
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
-        dispatcher.register(CommandManager.literal("finder").requires(source ->
-                        CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandFinder))
+        dispatcher.register(CommandManager.literal("finder")
+                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandFinder))
                 .then(CommandManager.literal("block")
                         .then(CommandManager.argument("blockState", BlockStateArgumentType.blockState(commandBuildContext))
                                 .executes(context -> blockFinder(context, 32, 10))
@@ -96,7 +96,7 @@ public class FinderCommand {
     // 物品查找
     private static int itemFinder(CommandContext<ServerCommandSource> context, int range, int maxCount) throws CommandSyntaxException {
         // 获取执行命令的玩家并非空判断
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         // 获取要查找的物品堆栈
         Predicate<ItemStack> predicate = ItemPredicateArgumentType.getItemStackPredicate(context, "itemStack");
         if (range == -1) {
@@ -146,7 +146,7 @@ public class FinderCommand {
     }
 
     // 从掉落物中查找物品
-    private static void findFromWorld(ServerWorld world, BlockPos blockPos, Matcher itemMatchers, int range, ArrayList<ItemFindResult> list) {
+    private static void findFromWorld(ServerWorld world, BlockPos blockPos, Matcher matcher, int range, ArrayList<ItemFindResult> list) {
         Box box = new Box(blockPos.getX() - range, world.getBottomY(), blockPos.getZ() - range,
                 blockPos.getX() + range, world.getTopY(), blockPos.getZ() + range);
         // 获取范围内所有掉落物的集合
@@ -158,10 +158,10 @@ public class FinderCommand {
             // 获取物品实体的物品堆栈
             ItemStack itemStack = item.getStack();
             // 检查该物品是否与指定物品匹配
-            if (itemMatchers.test(itemStack)) {
+            if (matcher.test(itemStack)) {
                 // 如果匹配，将物品添加到集合
                 list.add(new ItemFindResult(item.getBlockPos(), itemStack.getCount(), false,
-                        itemEntityName, itemMatchers));
+                        itemEntityName, matcher));
             } else if (InventoryUtils.isShulkerBoxItem(itemStack)) {
                 // 否则，检查该物品实体是否为潜影盒掉落物，如果是，获取潜影盒的物品栏
                 ImmutableInventory inventory;
@@ -176,21 +176,21 @@ public class FinderCommand {
                 // 获取潜影盒内的每一个物品
                 for (int i = 0; i < inventory.size(); i++) {
                     ItemStack shulkerBoxItemStack = inventory.getStack(i);
-                    if (itemMatchers.test(shulkerBoxItemStack)) {
+                    if (matcher.test(shulkerBoxItemStack)) {
                         counter.add(new ItemMatcher(shulkerBoxItemStack), shulkerBoxItemStack.getCount());
                     }
                 }
                 // 如果在潜影盒内有找到物品，将查找结果添加到集合
-                for (ItemMatcher matcher : counter) {
-                    list.add(new ItemFindResult(item.getBlockPos(), counter.getCount(matcher), true,
-                            itemEntityName, matcher));
+                for (ItemMatcher itemMatcher : counter) {
+                    list.add(new ItemFindResult(item.getBlockPos(), counter.getCount(itemMatcher), true,
+                            itemEntityName, itemMatcher));
                 }
             }
         }
     }
 
     // 从容器中查找物品
-    private static void findFromContainer(ServerWorld world, BlockPos blockPos, Matcher itemMatchers, int range, int maxX, int maxZ, int maxHeight, long currentTimeMillis, ArrayList<ItemFindResult> list) throws CommandSyntaxException {
+    private static void findFromContainer(ServerWorld world, BlockPos blockPos, Matcher matcher, int range, int maxX, int maxZ, int maxHeight, long currentTimeMillis, ArrayList<ItemFindResult> list) throws CommandSyntaxException {
         // 遍历整个三维空间，找到与目标物品匹配的物品
         for (int minX = blockPos.getX() - range; minX <= maxX; minX++) {
             for (int minZ = blockPos.getZ() - range; minZ <= maxZ; minZ++) {
@@ -209,7 +209,7 @@ public class FinderCommand {
                             // 获取当前准备比较的物品堆栈对象
                             ItemStack itemStack = inventory.getStack(index);
                             // 如果物品栏中的物品与指定物品匹配，找到物品的数量增加
-                            if (itemMatchers.test(itemStack)) {
+                            if (matcher.test(itemStack)) {
                                 counter.add(new ItemMatcher(itemStack), itemStack.getCount());
                                 // 不再判断本物品是否为潜影盒
                                 continue;
@@ -227,7 +227,7 @@ public class FinderCommand {
                                 // 在潜影盒内寻找物品
                                 for (int i = 0; i < shulkerBoxInventory.size(); i++) {
                                     ItemStack shulkerBoxItemStack = shulkerBoxInventory.getStack(i);
-                                    if (itemMatchers.test(shulkerBoxItemStack)) {
+                                    if (matcher.test(shulkerBoxItemStack)) {
                                         // 在潜影盒内找到物品的数量增加
                                         inTheShulkerBox = true;
                                         // 找到物品的数量增加
@@ -251,7 +251,7 @@ public class FinderCommand {
     //方块查找
     private static int blockFinder(CommandContext<ServerCommandSource> context, int range, int maxCount) throws CommandSyntaxException {
         // 获取执行命令的玩家并非空判断
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         // 获取要匹配的方块状态
         BlockStateArgument blockStateArgument = BlockStateArgumentType.getBlockState(context, "blockState");
         if (range == -1) {
@@ -328,11 +328,10 @@ public class FinderCommand {
         }
     }
 
-
     // 准备根据物品查找交易项
     private static int tradeItemFinder(CommandContext<ServerCommandSource> context, int range, int maxCount) throws CommandSyntaxException {
         // 获取执行命令的玩家对象
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         if (range == -1) {
             // 获取要查找方块的范围
             range = IntegerArgumentType.getInteger(context, "range");
@@ -387,7 +386,7 @@ public class FinderCommand {
     // 准备查找出售指定附魔书的村民
     private static int enchantedBookTradeFinder(CommandContext<ServerCommandSource> context, int range, int maxCount) throws CommandSyntaxException {
         // 获取执行命令的玩家
-        ServerPlayerEntity player = CommandUtils.getPlayer(context);
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         if (range == -1) {
             // 获取要查找方块的范围
             range = IntegerArgumentType.getInteger(context, "range");

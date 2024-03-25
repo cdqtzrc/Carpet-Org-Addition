@@ -1,25 +1,22 @@
 package org.carpet_org_addition.util.fakeplayer;
 
 import carpet.patches.EntityPlayerMPFake;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.StonecutterScreenHandler;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.exception.InfiniteLoopException;
+import org.carpet_org_addition.util.fakeplayer.actiondata.StonecuttingData;
 
 public class FakePlayerStonecutting {
     private FakePlayerStonecutting() {
     }
 
-    public static void stonecutting(CommandContext<ServerCommandSource> context, EntityPlayerMPFake fakePlayer) {
+    public static void stonecutting(StonecuttingData stonecuttingData, EntityPlayerMPFake fakePlayer) {
         if (fakePlayer.currentScreenHandler instanceof StonecutterScreenHandler stonecutterScreenHandler) {
-            Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
             //获取要切割的物品和按钮的索引
-            int buttonIndex = IntegerArgumentType.getInteger(context, "button") - 1;
+            Item item = stonecuttingData.getItem();
+            int buttonIndex = stonecuttingData.getButton();
             // 用于循环次数过多时抛出异常结束循环
             InfiniteLoopException exception = new InfiniteLoopException();
             while (true) {
@@ -64,7 +61,7 @@ public class FakePlayerStonecutting {
                     FakePlayerUtils.loopThrowItem(stonecutterScreenHandler, 1, fakePlayer);
                 } else {
                     //否则，认为前面的操作有误，停止合成，结束方法
-                    FakePlayerUtils.stopAction(context.getSource(), fakePlayer,
+                    FakePlayerUtils.stopAction(fakePlayer.getCommandSource(), fakePlayer,
                             "carpet.commands.playerAction.stone_cutting");
                     return;
                 }

@@ -14,33 +14,51 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Function;
 
 public class CommandUtils {
+    public static final String PLAYER = "player";
+
     private CommandUtils() {
     }
 
     /**
-     * 根据命令执行上下文获取玩家对象
+     * 根据命令执行上下文获取命令执行者玩家对象
      *
      * @param context 用来获取玩家的命令执行上下文
      * @return 命令的执行玩家
      * @throws CommandSyntaxException 如果命令执行者不是玩家，则抛出该异常
      */
-    public static ServerPlayerEntity getPlayer(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        return getPlayer(context.getSource());
+    public static ServerPlayerEntity getSourcePlayer(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        return getSourcePlayer(context.getSource());
     }
 
     /**
-     * 根据命令源获取玩家对象
+     * 根据命令源获取命令执行者玩家对象
      *
      * @param source 用来获取玩家的命令源
      * @return 命令的执行玩家
      * @throws CommandSyntaxException 如果命令执行者不是玩家，则抛出该异常
      */
-    public static ServerPlayerEntity getPlayer(ServerCommandSource source) throws CommandSyntaxException {
+    public static ServerPlayerEntity getSourcePlayer(ServerCommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayer();
         if (player == null) {
             throw new SimpleCommandExceptionType(TextUtils.getTranslate("carpet.command.source.not_player")).create();
         }
         return player;
+    }
+
+    /**
+     * 获取命令参数中的玩家对象
+     */
+    public static ServerPlayerEntity getArgumentPlayer(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        return EntityArgumentType.getPlayer(context, PLAYER);
+    }
+
+    /**
+     * 获取命令参数中的玩家对象，并检查是不是假玩家
+     */
+    public static EntityPlayerMPFake getArgumentFakePlayer(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerPlayerEntity player = EntityArgumentType.getPlayer(context, PLAYER);
+        checkFakePlayer(player);
+        return (EntityPlayerMPFake) player;
     }
 
     /**
@@ -51,13 +69,6 @@ public class CommandUtils {
      */
     public static CommandSyntaxException createException(String key, Object... obj) {
         return new SimpleCommandExceptionType(TextUtils.getTranslate(key, obj)).create();
-    }
-
-    /**
-     * 获取命令执行上下文中的玩家对象
-     */
-    public static ServerPlayerEntity getPlayerEntity(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        return EntityArgumentType.getPlayer(context, "player");
     }
 
     /**

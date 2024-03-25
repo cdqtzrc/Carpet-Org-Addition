@@ -10,15 +10,17 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionTypes;
+import org.carpet_org_addition.util.GameUtils;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
-import org.carpet_org_addition.util.StringUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
+@SuppressWarnings({"unused", "DeprecatedIsStillUsed"})
+@Deprecated
 public class Location {
     //当前坐标的类型
     private LocationType locType = LocationType.OVERWORLD;
@@ -53,7 +55,7 @@ public class Location {
             default -> throw new IllegalArgumentException();
         }
         this.creatorPlayerName = player.getName().getString();
-        this.creatorTime = StringUtils.getDateString();
+        this.creatorTime = GameUtils.getDateString();
     }
 
     //设置主世界坐标
@@ -190,17 +192,17 @@ public class Location {
                 && (locType == LocationType.OVERWORLD
                 || locType == LocationType.OVERWORLD_AND_THE_NETHER
                 || locType == LocationType.THE_NETHER_AND_OVERWORLD)) {
-            MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance"
-                    , (int) MathUtils.getBlockDistance(player.getBlockPos(), getOverworldPos()));
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance",
+                    (int) MathUtils.getBlockDistance(player.getBlockPos(), getOverworldPos()));
         } else if (value.equals(DimensionTypes.THE_NETHER_ID)
                 && (locType == LocationType.THE_NETHER
                 || locType == LocationType.THE_NETHER_AND_OVERWORLD
                 || locType == LocationType.OVERWORLD_AND_THE_NETHER)) {
-            MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance"
-                    , (int) MathUtils.getBlockDistance(player.getBlockPos(), getTheNetherPos()));
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance",
+                    (int) MathUtils.getBlockDistance(player.getBlockPos(), getTheNetherPos()));
         } else if (value.equals(DimensionTypes.THE_END_ID) && locType == LocationType.THE_END) {
-            MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance"
-                    , (int) MathUtils.getBlockDistance(player.getBlockPos(), getTheEndPos()));
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.distance",
+                    (int) MathUtils.getBlockDistance(player.getBlockPos(), getTheEndPos()));
         }
     }
 
@@ -223,6 +225,54 @@ public class Location {
 
     public void setIllustrate(@Nullable String illustrate) {
         this.illustrate = illustrate;
+    }
+
+    public LocationType getLocType() {
+        return locType;
+    }
+
+    public String getCreatorPlayerName() {
+        return creatorPlayerName;
+    }
+
+    public String getIllustrate() {
+        return illustrate;
+    }
+
+    public int getOverworld_x() {
+        return overworld_x;
+    }
+
+    public int getOverworld_y() {
+        return overworld_y;
+    }
+
+    public int getOverworld_z() {
+        return overworld_z;
+    }
+
+    public int getThe_nether_x() {
+        return the_nether_x;
+    }
+
+    public int getThe_nether_y() {
+        return the_nether_y;
+    }
+
+    public int getThe_nether_z() {
+        return the_nether_z;
+    }
+
+    public int getThe_end_x() {
+        return the_end_x;
+    }
+
+    public int getThe_end_y() {
+        return the_end_y;
+    }
+
+    public int getThe_end_z() {
+        return the_end_z;
     }
 
     public enum LocationType {

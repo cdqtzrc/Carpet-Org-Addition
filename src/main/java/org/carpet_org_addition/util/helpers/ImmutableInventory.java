@@ -69,7 +69,7 @@ public final class ImmutableInventory extends SimpleInventory implements Invento
     /**
      * 潜影盒内的物品共占了多少个槽位，不是指潜影盒内物品的总数
      */
-    public int itemCount() {
+    public int slotCount() {
         int count = 0;
         for (int index = 0; index < this.size(); index++) {
             if (!this.getStack(index).isEmpty()) {

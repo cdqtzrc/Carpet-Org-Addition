@@ -20,9 +20,8 @@ public class PresetsCommand {
                         .then(CommandManager.literal("add")
                                 .then(CommandManager.argument("name", StringArgumentType.string())
                                         .then(CommandManager.argument("presets", StringArgumentType.string())
-                                                .executes(PresetsCommand::addCraftPresets))
-                                )).then(CommandManager.literal("list").executes(PresetsCommand::listCraftPreset))
-                ));
+                                                .executes(PresetsCommand::addCraftPresets))))
+                        .then(CommandManager.literal("list").executes(PresetsCommand::listCraftPreset))));
     }
 
     private static int addCraftPresets(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {

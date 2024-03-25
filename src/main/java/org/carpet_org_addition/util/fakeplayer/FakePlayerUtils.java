@@ -8,6 +8,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.fakeplayer.actiondata.StopData;
 
 public class FakePlayerUtils {
 
@@ -82,7 +83,7 @@ public class FakePlayerUtils {
      * @param key          停止操作时在聊天栏输出的内容的翻译键
      */
     public static void stopAction(ServerCommandSource source, EntityPlayerMPFake playerMPFake, String key, Object... obj) {
-        ((FakePlayerActionInterface) playerMPFake).setAction(FakePlayerActionType.STOP);
+        ((FakePlayerActionInterface) playerMPFake).getActionManager().setAction(FakePlayerAction.STOP, StopData.STOP);
         MessageUtils.broadcastTextMessage(source, TextUtils.appendAll(playerMPFake.getDisplayName(), ": ",
                 TextUtils.getTranslate(key, obj)));
     }

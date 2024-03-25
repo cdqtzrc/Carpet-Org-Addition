@@ -9,10 +9,9 @@ import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.village.TradeOffer;
 import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
-import org.carpet_org_addition.util.villagerinventory.VillagerInventoryScreenHandler;
+import org.carpet_org_addition.util.villagerinventory.VillagerScreenHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -34,16 +33,6 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
         super(entityType, world);
     }
 
-    //每次交互都会先触发一次补货
-    @Inject(method = "interactMob", at = @At(value = "HEAD"))
-    private void forceRestock(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-        if (CarpetOrgAdditionSettings.villagerImmediatelyRestock) {
-            for (TradeOffer tradeOffer : thisVillager.getOffers()) {
-                tradeOffer.resetUses();
-            }
-        }
-    }
-
     //阻止村民变成女巫
     @Inject(method = "onStruckByLightning", at = @At("HEAD"), cancellable = true)
     private void onStruckByLightning(ServerWorld world, LightningEntity lightning, CallbackInfo ci) {
@@ -53,14 +42,13 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
         }
     }
 
-
+    //打开村民物品栏
     @Inject(method = "interactMob", at = @At(value = "HEAD"), cancellable = true)
     private void clearVillagerInventory(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-        //打开村民物品栏
         if (CarpetOrgAdditionSettings.openVillagerInventory && player.isSneaking()) {
             SimpleNamedScreenHandlerFactory screen =
                     new SimpleNamedScreenHandlerFactory((i, inventory, playerEntity)
-                            -> new VillagerInventoryScreenHandler(i, inventory, thisVillager), thisVillager.getName());
+                            -> new VillagerScreenHandler(i, inventory, thisVillager), thisVillager.getName());
             player.openHandledScreen(screen);
             cir.setReturnValue(ActionResult.SUCCESS);
         }

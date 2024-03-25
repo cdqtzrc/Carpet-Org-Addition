@@ -6,7 +6,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.util.TextUtils;
 import org.jetbrains.annotations.Nullable;
 
-//检查基岩硬度数值的合法性
+// 设置基岩硬度校验
 public class BedrockHardnessValidator extends Validator<Float> {
     private BedrockHardnessValidator() {
     }
