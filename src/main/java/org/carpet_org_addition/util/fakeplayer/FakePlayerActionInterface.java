@@ -10,4 +10,9 @@ public interface FakePlayerActionInterface {
     static FakePlayerActionInterface getInstance(EntityPlayerMPFake fakePlayer) {
         return (FakePlayerActionInterface) fakePlayer;
     }
+
+    // 获取假玩家动作管理器对象
+    static FakePlayerActionManager getManager(EntityPlayerMPFake fakePlayer) {
+        return getInstance(fakePlayer).getActionManager();
+    }
 }
