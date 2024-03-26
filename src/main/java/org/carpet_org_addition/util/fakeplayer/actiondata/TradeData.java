@@ -6,8 +6,7 @@ import net.minecraft.screen.MerchantScreenHandler;
 import net.minecraft.text.MutableText;
 import net.minecraft.village.TradeOffer;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.fakeplayer.FakePlayerAction;
-import org.carpet_org_addition.util.helpers.Counter;
+import org.carpet_org_addition.util.helpers.SingleThingCounter;
 
 import java.util.ArrayList;
 
@@ -17,12 +16,12 @@ public class TradeData extends AbstractActionData {
     private final int index;
     private final boolean voidTrade;
     // 虚空交易计时器
-    private final Counter<Object> tickCounter = new Counter<>();
+    private final SingleThingCounter timer = new SingleThingCounter();
 
     public TradeData(int index, boolean voidTrade) {
         this.index = index;
         this.voidTrade = voidTrade;
-        tickCounter.set(FakePlayerAction.VOID_TRADE, 5);
+        timer.set(5);
     }
 
     public static TradeData load(JsonObject json) {
@@ -80,7 +79,7 @@ public class TradeData extends AbstractActionData {
         return voidTrade;
     }
 
-    public Counter<Object> getTickCounter() {
-        return tickCounter;
+    public SingleThingCounter getTimer() {
+        return timer;
     }
 }

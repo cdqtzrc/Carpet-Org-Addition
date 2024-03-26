@@ -11,6 +11,7 @@ import java.util.Map;
  *
  * @param <E> 计数器要统计数量的类
  */
+@SuppressWarnings("unused")
 public class Counter<E> implements Iterable<E> {
     private final HashMap<E, Integer> COUNTER;
 

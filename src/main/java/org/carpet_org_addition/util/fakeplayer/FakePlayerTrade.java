@@ -14,7 +14,7 @@ import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.exception.InfiniteLoopException;
 import org.carpet_org_addition.mixin.rule.MerchantScreenHandlerAccessor;
 import org.carpet_org_addition.util.fakeplayer.actiondata.TradeData;
-import org.carpet_org_addition.util.helpers.Counter;
+import org.carpet_org_addition.util.helpers.SingleThingCounter;
 
 public class FakePlayerTrade {
     //假玩家交易
@@ -25,7 +25,7 @@ public class FakePlayerTrade {
         if (fakePlayer.currentScreenHandler instanceof MerchantScreenHandler merchantScreenHandler) {
             boolean voidTrade = tradeData.isVoidTrade();
             // 获取计数器，记录村民距离上次被加载的时间是否超过了5游戏刻（区块卸载后村民似乎不会立即卸载）
-            Counter<Object> tickCounter = tradeData.getTickCounter();
+            SingleThingCounter tickCounter = tradeData.getTimer();
             if (voidTrade) {
                 // 获取正在接受交易的村民
                 MerchantScreenHandlerAccessor accessor = (MerchantScreenHandlerAccessor) merchantScreenHandler;
@@ -34,18 +34,18 @@ public class FakePlayerTrade {
                     ChunkPos chunkPos = merchantEntity.getChunkPos();
                     if (merchantEntity.getWorld().isChunkLoaded(chunkPos.x, chunkPos.z)) {
                         // 如果村民位于已加载区块内，重置计数器，然后直接结束方法
-                        tickCounter.set(FakePlayerAction.VOID_TRADE, 5);
+                        tickCounter.set(5);
                         return;
                     }
                 }
                 // 检查计数器是否归零
-                if (tickCounter.hasElement(FakePlayerAction.VOID_TRADE)) {
+                if (tickCounter.isZero()) {
                     // 如果没有归零，计数器递减，然后结束方法
-                    tickCounter.decrement(FakePlayerAction.VOID_TRADE);
+                    tickCounter.decrement();
                     return;
                 } else {
                     // 如果归零，重置计数器，然后开始交易
-                    tickCounter.set(FakePlayerAction.VOID_TRADE, 5);
+                    tickCounter.set(5);
                 }
             }
             ServerCommandSource source = fakePlayer.getCommandSource();

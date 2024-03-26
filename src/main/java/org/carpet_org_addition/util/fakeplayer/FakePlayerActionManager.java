@@ -20,16 +20,15 @@ public class FakePlayerActionManager implements JsonSerial {
             case STOP -> {
             }
             case SORTING -> FakePlayerSorting.sorting((SortingData) function.getActionData(), fakePlayer);
-            case CLEAN, CLEAN_DESIGNATED -> FakePlayerClean.clean((CleanData) function.getActionData(), fakePlayer);
-            case FILL, FILL_ALL -> FakePlayerFill.fill((FillData) function.getActionData(), fakePlayer);
-            case CRAFT_ONE, CRAFT_FOUR, CRAFT_2X2 ->
-                    FakePlayerCraft.craft2x2((InventoryCraftData) function.getActionData(), fakePlayer);
-            case CRAFT_NINE, CRAFT_3X3 ->
+            case CLEAN -> FakePlayerClean.clean((CleanData) function.getActionData(), fakePlayer);
+            case FILL -> FakePlayerFill.fill((FillData) function.getActionData(), fakePlayer);
+            case INVENTORY_CRAFT -> FakePlayerCraft.craft2x2((InventoryCraftData) function.getActionData(), fakePlayer);
+            case CRAFTING_TABLE_CRAFT ->
                     FakePlayerCraft.craft3x3((CraftingTableCraftData) function.getActionData(), fakePlayer);
             case RENAME -> FakePlayerRename.rename((RenameData) function.getActionData(), fakePlayer);
             case STONECUTTING ->
                     FakePlayerStonecutting.stonecutting((StonecuttingData) function.actionData, fakePlayer);
-            case TRADE, VOID_TRADE -> FakePlayerTrade.trade((TradeData) function.actionData, fakePlayer);
+            case TRADE -> FakePlayerTrade.trade((TradeData) function.actionData, fakePlayer);
             default -> {
                 CarpetOrgAddition.LOGGER.error(this.function.getAction() + "的行为没有预先定义");
                 this.function.setAction(FakePlayerAction.STOP, StopData.STOP);
@@ -61,9 +60,9 @@ public class FakePlayerActionManager implements JsonSerial {
             } else if (json.has("fill")) {
                 actionManager.setAction(FakePlayerAction.FILL, FillData.load(json.get("fill").getAsJsonObject()));
             } else if (json.has("inventory_crafting")) {
-                actionManager.setAction(FakePlayerAction.CRAFT_2X2, InventoryCraftData.load(json.get("inventory_crafting").getAsJsonObject()));
+                actionManager.setAction(FakePlayerAction.INVENTORY_CRAFT, InventoryCraftData.load(json.get("inventory_crafting").getAsJsonObject()));
             } else if (json.has("crafting_table_craft")) {
-                actionManager.setAction(FakePlayerAction.CRAFT_3X3, CraftingTableCraftData.load(json.get("crafting_table_craft").getAsJsonObject()));
+                actionManager.setAction(FakePlayerAction.CRAFTING_TABLE_CRAFT, CraftingTableCraftData.load(json.get("crafting_table_craft").getAsJsonObject()));
             } else if (json.has("rename")) {
                 actionManager.setAction(FakePlayerAction.RENAME, RenameData.load(json.get("rename").getAsJsonObject()));
             } else if (json.has("stonecutting")) {
@@ -82,13 +81,13 @@ public class FakePlayerActionManager implements JsonSerial {
         String action = switch (this.getAction()) {
             case STOP -> "stop";
             case SORTING -> "sorting";
-            case CLEAN, CLEAN_DESIGNATED -> "clean";
-            case FILL, FILL_ALL -> "fill";
-            case CRAFT_ONE, CRAFT_FOUR, CRAFT_2X2 -> "inventory_crafting";
-            case CRAFT_NINE, CRAFT_3X3 -> "crafting_table_craft";
+            case CLEAN -> "clean";
+            case FILL -> "fill";
+            case INVENTORY_CRAFT -> "inventory_crafting";
+            case CRAFTING_TABLE_CRAFT -> "crafting_table_craft";
             case RENAME -> "rename";
             case STONECUTTING -> "stonecutting";
-            case TRADE, VOID_TRADE -> "trade";
+            case TRADE -> "trade";
         };
         json.add(action, this.getActionData().toJson());
         return json;
