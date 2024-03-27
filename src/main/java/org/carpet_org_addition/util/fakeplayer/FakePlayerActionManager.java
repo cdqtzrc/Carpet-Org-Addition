@@ -8,13 +8,13 @@ import org.carpet_org_addition.util.helpers.JsonSerial;
 
 public class FakePlayerActionManager implements JsonSerial {
     private final EntityPlayerMPFake fakePlayer;
-
     private final ActionFunction function = new ActionFunction();
 
     public FakePlayerActionManager(EntityPlayerMPFake fakePlayer) {
         this.fakePlayer = fakePlayer;
     }
 
+    // 执行动作
     public void executeAction() {
         switch (function.getAction()) {
             case STOP -> {
@@ -31,7 +31,7 @@ public class FakePlayerActionManager implements JsonSerial {
             case TRADE -> FakePlayerTrade.trade((TradeData) function.actionData, fakePlayer);
             default -> {
                 CarpetOrgAddition.LOGGER.error(this.function.getAction() + "的行为没有预先定义");
-                this.function.setAction(FakePlayerAction.STOP, StopData.STOP);
+                this.stop();
             }
         }
     }
@@ -41,15 +41,21 @@ public class FakePlayerActionManager implements JsonSerial {
     }
 
     public AbstractActionData getActionData() {
-        return this.function.actionData;
+        return this.function.getActionData();
     }
 
+    // 设置假玩家当前的动作，类型必须与数据对应
     public void setAction(FakePlayerAction action, AbstractActionData data) {
         this.function.setAction(action, data);
     }
 
+    // 让假玩家停止当前的动作
+    public void stop() {
+        this.function.setAction(FakePlayerAction.STOP, StopData.STOP);
+    }
+
     public static void load(EntityPlayerMPFake fakePlayer, JsonObject json) {
-        FakePlayerActionManager actionManager = FakePlayerActionInterface.getInstance(fakePlayer).getActionManager();
+        FakePlayerActionManager actionManager = FakePlayerActionInterface.getManager(fakePlayer);
         try {
             if (json.has("stop")) {
                 actionManager.setAction(FakePlayerAction.STOP, StopData.STOP);
@@ -71,7 +77,8 @@ public class FakePlayerActionManager implements JsonSerial {
                 actionManager.setAction(FakePlayerAction.TRADE, TradeData.load(json.get("trade").getAsJsonObject()));
             }
         } catch (RuntimeException e) {
-            actionManager.setAction(FakePlayerAction.STOP, StopData.STOP);
+            actionManager.stop();
+            CarpetOrgAddition.LOGGER.error("玩家动作反序列化失败：", e);
         }
     }
 
@@ -94,25 +101,25 @@ public class FakePlayerActionManager implements JsonSerial {
     }
 
     /**
-     * 将动作类型和动作数据封装起来，保证类型与数据对应
+     * 将动作类型和动作数据封装起来，保证类型与数据对应，类中所以成员变量和成员方法全部为私有，防止外部其他类直接调用
      */
     private static class ActionFunction {
         private FakePlayerAction action = FakePlayerAction.STOP;
         private AbstractActionData actionData = StopData.STOP;
 
         // 动作类型必须和动作数据一起修改来保证类型与数据对应
-        public void setAction(FakePlayerAction action, AbstractActionData actionData) {
+        private void setAction(FakePlayerAction action, AbstractActionData actionData) {
             // 检查动作类型是否与数据匹配
             action.checkActionData(actionData.getClass());
             this.action = action;
             this.actionData = actionData;
         }
 
-        public FakePlayerAction getAction() {
+        private FakePlayerAction getAction() {
             return action;
         }
 
-        public AbstractActionData getActionData() {
+        private AbstractActionData getActionData() {
             return actionData;
         }
     }

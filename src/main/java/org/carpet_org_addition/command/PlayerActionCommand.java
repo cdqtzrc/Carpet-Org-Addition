@@ -44,8 +44,11 @@ public class PlayerActionCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("playerAction").requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerAction))
                 .then(CommandManager.argument("player", EntityArgumentType.player())
-                        .then(CommandManager.literal("sorting").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext)).then(CommandManager.argument("this", Vec3ArgumentType.vec3())
-                                .then(CommandManager.argument("other", Vec3ArgumentType.vec3()).executes(PlayerActionCommand::setSorting)))))
+                        .then(CommandManager.literal("sorting")
+                                .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
+                                        .then(CommandManager.argument("this", Vec3ArgumentType.vec3())
+                                                .then(CommandManager.argument("other", Vec3ArgumentType.vec3())
+                                                        .executes(PlayerActionCommand::setSorting)))))
                         .then(CommandManager.literal("clean")
                                 .executes(context -> setClean(context, true))
                                 .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
@@ -54,8 +57,7 @@ public class PlayerActionCommand {
                                 .executes(context -> setFIll(context, true))
                                 .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
                                         .executes(context -> setFIll(context, false))))
-                        .then(CommandManager.literal("stop")
-                                .executes(PlayerActionCommand::setStop))
+                        .then(CommandManager.literal("stop").executes(PlayerActionCommand::setStop))
                         .then(CommandManager.literal("craft")
                                 .then(CommandManager.literal("one").then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                         .executes(PlayerActionCommand::setOneCraft)))
@@ -80,13 +82,13 @@ public class PlayerActionCommand {
                                                         .then(CommandManager.argument("item3", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                                 .then(CommandManager.argument("item4", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                                         .executes(PlayerActionCommand::setInventoryCraft))))))
-                                .then(CommandManager.literal("gui").executes(context -> openFakePlayerCraftGui(context, CommandUtils.getArgumentPlayer(context)))))
+                                .then(CommandManager.literal("gui").executes(PlayerActionCommand::openFakePlayerCraftGui)))
                         .then(CommandManager.literal("trade")
                                 .then(CommandManager.argument("index", IntegerArgumentType.integer(1))
                                         .executes(context -> setTrade(context, false))
                                         .then(CommandManager.literal("void_trade")
                                                 .executes(context -> setTrade(context, true)))))
-                        .then(CommandManager.literal("info").executes(context -> getAction(context, CommandUtils.getArgumentPlayer(context))))
+                        .then(CommandManager.literal("info").executes(PlayerActionCommand::getAction))
                         .then(CommandManager.literal("rename").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
                                 .then(CommandManager.argument("name", StringArgumentType.string())
                                         .executes(PlayerActionCommand::setRename))))
@@ -101,7 +103,7 @@ public class PlayerActionCommand {
     private static int setStop(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
         FakePlayerActionManager actionManager = FakePlayerActionInterface.getManager(fakePlayer);
-        actionManager.setAction(FakePlayerAction.STOP, StopData.STOP);
+        actionManager.stop();
         return 1;
     }
 
@@ -124,6 +126,7 @@ public class PlayerActionCommand {
         EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
         FakePlayerActionManager actionManager = FakePlayerActionInterface.getManager(fakePlayer);
         if (allItem) {
+            // 设置清空潜影盒内的所有物品，不需要获取Item对象
             actionManager.setAction(FakePlayerAction.CLEAN, CleanData.CLEAN_ALL);
         } else {
             Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
@@ -137,6 +140,7 @@ public class PlayerActionCommand {
         EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
         FakePlayerActionManager actionManager = FakePlayerActionInterface.getManager(fakePlayer);
         if (allItem) {
+            // 向潜影盒内填充任意物品
             actionManager.setAction(FakePlayerAction.FILL, FillData.FILL_ALL);
         } else {
             Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
@@ -243,27 +247,23 @@ public class PlayerActionCommand {
     }
 
     //获取假玩家操作类型
-    private static int getAction(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer)
-            throws CommandSyntaxException {
-        if (CommandUtils.checkFakePlayer(fakePlayer)) {
-            FakePlayerAction action = ((FakePlayerActionInterface) fakePlayer).getActionManager().getAction();
-            MessageUtils.sendListMessage(context.getSource(), action.getActionText(context, (EntityPlayerMPFake) fakePlayer));
-        }
+    private static int getAction(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
+        FakePlayerActionManager actionManager = FakePlayerActionInterface.getManager(fakePlayer);
+        MessageUtils.sendListMessage(context.getSource(), actionManager.getActionData().info(fakePlayer));
         return 1;
     }
 
     // 打开控制假人合成物品的GUI
-    private static int openFakePlayerCraftGui(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer)
-            throws CommandSyntaxException {
+    private static int openFakePlayerCraftGui(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
-        if (CommandUtils.checkFakePlayer(fakePlayer)) {
-            // 打开合成GUI
-            SimpleNamedScreenHandlerFactory screen = new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity)
-                    -> new FakePlayerGuiCraftScreenHandler(i, playerInventory, (EntityPlayerMPFake) fakePlayer,
-                    ScreenHandlerContext.create(player.getWorld(), player.getBlockPos()), new SimpleInventory(9), context),
-                    TextUtils.getTranslate("carpet.commands.playerAction.info.craft.gui"));
-            player.openHandledScreen(screen);
-        }
+        EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
+        // 打开合成GUI
+        SimpleNamedScreenHandlerFactory screen = new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity)
+                -> new FakePlayerGuiCraftScreenHandler(i, playerInventory, fakePlayer,
+                ScreenHandlerContext.create(player.getWorld(), player.getBlockPos()), new SimpleInventory(9), context),
+                TextUtils.getTranslate("carpet.commands.playerAction.info.craft.gui"));
+        player.openHandledScreen(screen);
         return 1;
     }
 
