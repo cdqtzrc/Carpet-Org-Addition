@@ -105,6 +105,7 @@ public class FakePlayerSerial implements JsonSerial {
     public static int list(CommandContext<ServerCommandSource> context, WorldFormat worldFormat) {
         MutableText online = TextUtils.getTranslate("carpet.commands.playerManager.click.online");
         MutableText offline = TextUtils.getTranslate("carpet.commands.playerManager.click.offline");
+        // 使用变量记录列出的数量，而不是直接使用集合的长度，因为集合中可能存在一些非json的文件，或者被损坏的json文件
         int count = 0;
         for (File file : worldFormat.listFiles()) {
             try {
