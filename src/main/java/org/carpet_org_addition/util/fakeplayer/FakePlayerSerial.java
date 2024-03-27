@@ -46,7 +46,7 @@ public class FakePlayerSerial implements JsonSerial {
         this.flying = fakePlayer.getAbilities().flying;
         this.sneaking = fakePlayer.isSneaking();
         this.actionPack = new EntityPlayerActionPackSerial(((ServerPlayerInterface) fakePlayer).getActionPack());
-        this.actionManager = FakePlayerActionInterface.getInstance(fakePlayer).getActionManager();
+        this.actionManager = FakePlayerActionInterface.getManager(fakePlayer);
     }
 
     public FakePlayerSerial(EntityPlayerMPFake fakePlayer, String annotation) {

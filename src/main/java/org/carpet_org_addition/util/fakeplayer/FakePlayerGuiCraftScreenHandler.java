@@ -59,9 +59,8 @@ public class FakePlayerGuiCraftScreenHandler extends Generic3x3ContainerScreenHa
         for (int i = 0; i < fakePlayerCraftInventory.size(); i++) {
             items[i] = fakePlayerCraftInventory.getStack(i).getItem();
         }
-        FakePlayerActionManager actionManager = FakePlayerActionInterface.getInstance(fakePlayer).getActionManager();
         // 设置假玩家合成动作
-        setCraftAction(items, actionManager);
+        setCraftAction(items, FakePlayerActionInterface.getManager(fakePlayer));
         // 关闭GUI后，物品回到玩家背包
         this.screenHandlerContext.run((world, pos) -> this.dropInventory(player, fakePlayerCraftInventory));
         // 提示启用Ctrl+Q合成修复

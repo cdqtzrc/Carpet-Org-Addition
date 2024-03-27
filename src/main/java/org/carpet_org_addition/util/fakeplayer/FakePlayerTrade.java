@@ -25,7 +25,7 @@ public class FakePlayerTrade {
         if (fakePlayer.currentScreenHandler instanceof MerchantScreenHandler merchantScreenHandler) {
             boolean voidTrade = tradeData.isVoidTrade();
             // 获取计数器，记录村民距离上次被加载的时间是否超过了5游戏刻（区块卸载后村民似乎不会立即卸载）
-            SingleThingCounter tickCounter = tradeData.getTimer();
+            SingleThingCounter timer = tradeData.getTimer();
             if (voidTrade) {
                 // 获取正在接受交易的村民
                 MerchantScreenHandlerAccessor accessor = (MerchantScreenHandlerAccessor) merchantScreenHandler;
@@ -34,18 +34,18 @@ public class FakePlayerTrade {
                     ChunkPos chunkPos = merchantEntity.getChunkPos();
                     if (merchantEntity.getWorld().isChunkLoaded(chunkPos.x, chunkPos.z)) {
                         // 如果村民位于已加载区块内，重置计数器，然后直接结束方法
-                        tickCounter.set(5);
+                        timer.set(5);
                         return;
                     }
                 }
                 // 检查计数器是否归零
-                if (tickCounter.isZero()) {
+                if (timer.isZero()) {
                     // 如果没有归零，计数器递减，然后结束方法
-                    tickCounter.decrement();
+                    timer.decrement();
                     return;
                 } else {
                     // 如果归零，重置计数器，然后开始交易
-                    tickCounter.set(5);
+                    timer.set(5);
                 }
             }
             ServerCommandSource source = fakePlayer.getCommandSource();
