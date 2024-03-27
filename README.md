@@ -45,27 +45,6 @@
     - 参考选项：`true`，`false`
     - 分类：`Org`，`特性`
 
-村民立即补货(villagerImmediatelyRestock)
-
-- 启用后每次与村民交互前村民会进行一次补货
-- 每次与村民交易完毕后可以重新打开交易GUI来进行补货
-    - 类型：`布尔值`
-    - 默认值：`false`
-    - 参考选项：`true`，`false`
-    - 分类：`Org`，`特性`
-
-假玩家保护命令(commandProtect)
-
-- 启用/protect命令用来保护特定的假玩家
-- damage：保护假玩家不受到直接来自玩家和虚空以外的伤害
-- death：保护假玩家不被直接来自玩家和虚空以外的伤害杀死
-- kill：保护假玩家不被/player命令杀死
-    - 类型：`字符串`
-    - 默认值：`"false"`
-    - 参考选项：`"true"`, `“false”`, `"ops"`, `"0"`, `"1"`, `"2"`,
-      `"3"`, `"4"`
-    - 分类：`Org`，`指令`
-
 创造玩家免疫/kill(creativeImmuneKill)
 
 - 启用后命令/kill不能杀死创造模式的玩家
@@ -335,14 +314,6 @@
     - 类型：`布尔值`
     - 默认值：`false`
     - 参考选项：`true`，`false`
-    - 分类：`Org`，`特性`
-
-传送门生成僵尸猪灵概率(portalSpawnZombifiedPiglinProbability)
-
-- 下界传送门方块接收到随机刻后有指定值/2000的概率生成僵尸猪灵
-- 值必须介于0-2000之间，或者-1
-    - 类型：`整数`
-    - 默认值：`-1`
     - 分类：`Org`，`特性`
 
 击退棒(knockbackStick)
@@ -710,15 +681,27 @@ CCE更新抑制器(CCEUpdateSuppression)
     - 参考选项：`no`，`vanilla`，`yes`，`yes_only_hostile`，`no_only_hostile`
     - 分类：`Org`，`特性`
 
+可高亮路径点(canHighlightWaypoint)
+
+- 在方块坐标文本右侧添加一个按钮用来单击高亮路径点，此功能需要在客户端安装OMMC作为前置
+    - 类型：`布尔值`
+    - 默认值：`false`
+    - 参考选项：`true`，`false`
+    - 分类：`Org`，`生存`, `客户端`
+
+玩家管理器(commandPlayerManager)
+
+- 启用/playerManager命令用来管理假玩家快速上线
+    - 类型：`字符串`
+    - 默认值：`"ops"`
+    - 参考选项：`"true"`, `“false”`, `"ops"`, `"0"`, `"1"`, `"2"`, `"3"`, `"4"`
+    - 分类：`Org`，`指令`
+
 ## 命令
 
 [/itemshadowing](docs/commands/itemshadowing.md)
 
 - 用来制作物品分身
-
-[/protect](docs/commands/protect.md)
-
-- 用来管理受保护的玩家列表
 
 [/playerTools](docs/commands/playerTools.md)
 
@@ -746,7 +729,7 @@ CCE更新抑制器(CCEUpdateSuppression)
 
 [/locations](docs/commands/locations.md)
 
-路径点管理器，mcdr中!!loc的替代命令
+- 路径点管理器，mcdr中!!loc的替代命令
 
 [/particleLine](docs/commands/particleLine.md)
 
@@ -763,3 +746,7 @@ CCE更新抑制器(CCEUpdateSuppression)
 [/ruleSearch](docs/commands/ruleSearch.md)
 
 - 用来搜索翻译后名称中包含指定字符串的规则
+
+[/playerManager](docs/commands/playerManager.md)
+
+- 用来快速上线和下线常用假玩家
