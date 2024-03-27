@@ -36,7 +36,7 @@ public abstract class EntityPlayerMPFakeMixin extends ServerPlayerEntity impleme
 
     @Override
     public FakePlayerActionManager getActionManager() {
-        return actionManager;
+        return this.actionManager;
     }
 
     @Inject(method = "tick", at = @At("HEAD"))

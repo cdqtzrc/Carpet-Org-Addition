@@ -77,12 +77,14 @@ public class Waypoint {
     public static void replaceWaypoint(MinecraftServer server) {
         // 将旧的路径点替换为新的并移动到新位置
         File file = Objects.requireNonNull(server).getSavePath(WorldSavePath.ROOT).resolve("locations").toFile();
+        // 创建一个文件用来标记是否已经完成移动
         File flagFile = new File(file, "MOVED");
         if (flagFile.exists()) {
+            // 如果这个文件存在，说明路径点在之前已经替换过了，方法之间结束
             return;
         }
-        // 文件夹必须存在
-        if (file.exists() && file.isDirectory()) {
+        // 文件夹必须存在（如果file.isDirectory()成立，那file.exists()一定也成立）
+        if (file.isDirectory()) {
             File[] files = file.listFiles();
             if (files != null) {
                 for (File f : files) {

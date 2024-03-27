@@ -15,7 +15,6 @@ import java.util.Map;
 
 public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     static {
-        //carpet org扩展
         CarpetServer.manageExtension(new CarpetOrgAddition());
     }
 
@@ -56,6 +55,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     @Override
     public void onServerLoaded(MinecraftServer server) {
         CarpetExtension.super.onServerLoaded(server);
+        // 服务器启动时自动将旧的路径点替换成新的
         Waypoint.replaceWaypoint(server);
     }
 
