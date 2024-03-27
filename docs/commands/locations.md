@@ -4,17 +4,17 @@
 
 `locations add <name> [<pos>]`
 
-`locations delete <delete>`
-
-`locations info <info>`
+`locations delete <name>`
 
 `locations list [<filter>]`
 
 `locations <name> [<pos>]`
 
-`locations supplement <suup> another_pos [<anotherPos>]`
+`locations set <name> [<pos>]`
 
-`locations supplement <suup> illustrate [<illustrate>]`
+`locations supplement <name> another_pos [<anotherPos>]`
+
+`locations supplement <name> illustrate [<illustrate>]`
 
 ## 参数
 
@@ -26,17 +26,9 @@
 
 可选的方块坐标，如果未指定，默认为玩家当前位置
 
-`info`:string
-
-要查看信息的路径点名称
-
 `filter`:string
 
 如果不留空，只有名称包含此字符串的路径点才会被列出
-
-`suup`:string
-
-要补充信息的路径点名称
 
 `anotherPos`:block_pos
 
@@ -80,14 +72,6 @@
         </tr>
         <tr>
             <td>无法删除</td>
-            <td>执行失败</td>
-        </tr>
-        <tr>
-            <td rowspan="2">/locations info ...</td>
-            <td>执行成功</td>
-            <td>在聊天栏显示路径点的详细信息</td>
-        <tr>
-            <td>无法解析json文本</td>
             <td>执行失败</td>
         </tr>
         <tr>

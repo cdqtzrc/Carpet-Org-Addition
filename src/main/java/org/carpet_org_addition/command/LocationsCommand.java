@@ -19,7 +19,6 @@ import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.*;
 import org.carpet_org_addition.util.helpers.Waypoint;
 import org.carpet_org_addition.util.helpers.WorldFormat;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -41,8 +40,8 @@ public class LocationsCommand {
                         .executes(context -> listWayPoint(context, null)).then(CommandManager.argument("filter", StringArgumentType.string())
                                 .executes(context -> listWayPoint(context, StringArgumentType.getString(context, "filter")))))
                 .then(CommandManager.literal("supplement")
-                        .then(CommandManager.argument("supp", StringArgumentType.string())
-                                .suggests(getServerCommandSourceSuggestionProvider())
+                        .then(CommandManager.argument("name", StringArgumentType.string())
+                                .suggests(suggestion())
                                 .then(CommandManager.literal("illustrate")
                                         .executes(context -> addIllustrateText(context, null))
                                         .then(CommandManager.argument("illustrate", StringArgumentType.string())
@@ -52,20 +51,19 @@ public class LocationsCommand {
                                         .then(CommandManager.argument("anotherPos", BlockPosArgumentType.blockPos())
                                                 .executes(context -> addAnotherPos(context, BlockPosArgumentType.getBlockPos(context, "anotherPos")))))))
                 .then(CommandManager.literal("delete")
-                        .then(CommandManager.argument("delete", StringArgumentType.string())
-                                .suggests(getServerCommandSourceSuggestionProvider())
+                        .then(CommandManager.argument("name", StringArgumentType.string())
+                                .suggests(suggestion())
                                 .executes(LocationsCommand::deleteWayPoint)))
                 .then(CommandManager.literal("set")
                         .then(CommandManager.argument("name", StringArgumentType.string())
-                                .suggests(getServerCommandSourceSuggestionProvider())
+                                .suggests(suggestion())
                                 .executes(context -> setWayPoint(context, null))
                                 .then(CommandManager.argument("pos", BlockPosArgumentType.blockPos())
                                         .executes(context -> setWayPoint(context, BlockPosArgumentType.getBlockPos(context, "pos")))))));
     }
 
-    @NotNull
     //用来自动补全命令
-    private static SuggestionProvider<ServerCommandSource> getServerCommandSourceSuggestionProvider() {
+    private static SuggestionProvider<ServerCommandSource> suggestion() {
         return (context, builder) -> {
             WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), Waypoint.WAYPOINT);
             return CommandSource.suggestMatching(worldFormat.listFiles().stream().map(File::getName)
@@ -138,7 +136,7 @@ public class LocationsCommand {
 
     // 添加说明文本
     private static int addIllustrateText(CommandContext<ServerCommandSource> context, @Nullable String illustrate) throws CommandSyntaxException {
-        String name = StringArgumentType.getString(context, "supp");
+        String name = StringArgumentType.getString(context, "name");
         ServerCommandSource source = context.getSource();
         MinecraftServer server = context.getSource().getServer();
         WorldFormat worldFormat = new WorldFormat(server, Waypoint.WAYPOINT);
@@ -176,7 +174,7 @@ public class LocationsCommand {
     private static int addAnotherPos(CommandContext<ServerCommandSource> context, @Nullable BlockPos blockPos) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         ServerCommandSource source = context.getSource();
-        String name = StringArgumentType.getString(context, "supp");
+        String name = StringArgumentType.getString(context, "name");
         // 路径点的另一个坐标
         if (blockPos == null) {
             blockPos = player.getBlockPos();
@@ -206,7 +204,7 @@ public class LocationsCommand {
     private static int deleteWayPoint(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerCommandSource source = context.getSource();
         //获取路径点文件名
-        String name = StringArgumentType.getString(context, "delete");
+        String name = StringArgumentType.getString(context, "name");
         //获取路径点文件对象
         WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), Waypoint.WAYPOINT);
         File file = worldFormat.createFileObject(name);

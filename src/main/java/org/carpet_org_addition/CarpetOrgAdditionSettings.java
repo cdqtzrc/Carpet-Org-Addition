@@ -14,11 +14,6 @@ public class CarpetOrgAdditionSettings {
     private CarpetOrgAdditionSettings() {
     }
 
-    static {
-        setBedrockHardness = -1;
-        maxBlockPlaceDistance = -1;
-    }
-
     public static final String ORG = "Org";
 
     //制作物品分身
@@ -33,7 +28,7 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG},
             validators = {BedrockHardnessValidator.class}
     )
-    public static float setBedrockHardness;
+    public static float setBedrockHardness = -1F;
 
     //绑定诅咒无效化
     @Rule(
@@ -94,7 +89,7 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.SURVIVAL, RuleCategory.FEATURE},
             validators = {MaxBlockPlaceDistanceValidator.class}
     )
-    public static double maxBlockPlaceDistance;
+    public static double maxBlockPlaceDistance = -1;
 
     //强化引雷
     @Rule(
