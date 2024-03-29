@@ -69,8 +69,7 @@ public class ItemFindFeedback extends AbstractFindFeedback<ItemFindResult> {
             for (ItemFindResult result : list) {
                 checkTimeOut();
                 MessageUtils.sendTextMessage(context.getSource(),
-                        isItem
-                                ? result.toText()
+                        isItem ? result.toText()
                                 : TextUtils.appendAll(result.toText(), result.getMatcher().toText()));
             }
         } else {
@@ -80,8 +79,7 @@ public class ItemFindFeedback extends AbstractFindFeedback<ItemFindResult> {
             for (int i = 0; i < this.maxCount; i++) {
                 checkTimeOut();
                 MessageUtils.sendTextMessage(context.getSource(),
-                        isItem
-                                ? list.get(i).toText()
+                        isItem ? list.get(i).toText()
                                 : TextUtils.appendAll(list.get(i).toText(), list.get(i).getMatcher().toText()));
             }
         }

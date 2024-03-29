@@ -4,6 +4,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.carpet_org_addition.util.TextUtils;
 
@@ -36,6 +37,11 @@ public class ItemTagMatcher implements Matcher {
     @Override
     public boolean isEmpty() {
         return this.test(Items.AIR.getDefaultStack());
+    }
+
+    @Override
+    public MutableText toText() {
+        return this.getName().copy();
     }
 
     @Override

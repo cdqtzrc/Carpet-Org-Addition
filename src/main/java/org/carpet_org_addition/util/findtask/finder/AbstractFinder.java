@@ -1,8 +1,6 @@
 package org.carpet_org_addition.util.findtask.finder;
 
-import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.carpet_org_addition.util.CommandUtils;
@@ -15,13 +13,11 @@ public abstract class AbstractFinder {
     protected final World world;
     protected final BlockPos sourcePos;
     protected final int range;
-    protected final CommandContext<ServerCommandSource> context;
 
-    protected AbstractFinder(World world, BlockPos sourcePos, int range, CommandContext<ServerCommandSource> context) {
+    protected AbstractFinder(World world, BlockPos sourcePos, int range) {
         this.world = world;
         this.sourcePos = sourcePos;
         this.range = range;
-        this.context = context;
     }
 
     /**

@@ -6,9 +6,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.carpet_org_addition.util.predicate.AbstractItemStackPredicate;
-
-import java.util.function.Predicate;
 
 public interface Matcher {
 
@@ -32,7 +29,6 @@ public interface Matcher {
      *
      * @return 是物品返回true，是物品标签返回false
      */
-    @Deprecated
     boolean isItem();
 
     /**
@@ -40,7 +36,6 @@ public interface Matcher {
      *
      * @return 如果是物品直接返回，如果是物品标签返回空气物品
      */
-    @Deprecated
     Item getItem();
 
     /**
@@ -48,7 +43,6 @@ public interface Matcher {
      *
      * @return 如果是物品，返回物品的名称，如果是物品标签，返回物品标签的字符串
      */
-    @Deprecated
     Text getName();
 
     /**
@@ -56,7 +50,6 @@ public interface Matcher {
      *
      * @return 如果是物品，返回该物品的默认物品堆栈，如果是物品堆栈，直接返回，如果是物品标签，返回所有物品中第一个匹配的物品，如果没有匹配，返回空物品堆栈
      */
-    @Deprecated
     ItemStack getDefaultStack();
 
     /**
@@ -80,24 +73,5 @@ public interface Matcher {
                 ? new Identifier(Identifier.DEFAULT_NAMESPACE, split[0])
                 : new Identifier(split[0], split[1]));
         return Registries.ITEM.get(identifier);
-    }
-
-    /**
-     * 如果物品谓词不包含物品标签，则构造一个等效的物品匹配器
-     *
-     * @param predicate 物品谓词
-     * @return 物品匹配器或物品谓词匹配器对象
-     */
-    static Matcher of(Predicate<ItemStack> predicate) {
-        if (predicate instanceof AbstractItemStackPredicate itemStackPredicate) {
-            String string = itemStackPredicate.toString();
-            if (string.startsWith("#")) {
-                return new ItemPredicateMatcher(predicate);
-            } else {
-                return new ItemMatcher(Matcher.asItem(string));
-            }
-        } else {
-            return new ItemPredicateMatcher(predicate);
-        }
     }
 }
