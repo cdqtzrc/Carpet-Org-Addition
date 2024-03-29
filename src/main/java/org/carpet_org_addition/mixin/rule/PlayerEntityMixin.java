@@ -38,7 +38,9 @@ public abstract class PlayerEntityMixin {
     // 快速设置假玩家合成
     @Inject(method = "interact", at = @At("HEAD"), cancellable = true)
     private void interact(Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-        if (thisPlayer instanceof ServerPlayerEntity serverPlayer && !thisPlayer.isSpectator()) {
+        if (thisPlayer instanceof ServerPlayerEntity serverPlayer && !thisPlayer.isSpectator()
+                && CommandHelper.canUseCommand(thisPlayer.getCommandSource(),
+                CarpetOrgAdditionSettings.commandPlayerAction)) {
             switch (CarpetOrgAdditionSettings.quickSettingFakePlayerCraft) {
                 case FALSE:
                     break;
@@ -49,9 +51,7 @@ public abstract class PlayerEntityMixin {
                 case TRUE:
                     if (serverPlayer.getMainHandStack().isOf(Items.CRAFTING_TABLE)) {
                         if (entity instanceof EntityPlayerMPFake fakePlayer) {
-                            CommandUtils.execute(serverPlayer, "/playerAction " + fakePlayer.getName().getString()
-                                    + " craft gui", player -> CommandHelper.canUseCommand(player.getCommandSource(),
-                                    CarpetOrgAdditionSettings.commandPlayerAction));
+                            CommandUtils.execute(serverPlayer, "/playerAction " + fakePlayer.getName().getString() + " craft gui");
                             cir.setReturnValue(ActionResult.SUCCESS);
                         }
                     }

@@ -29,7 +29,7 @@ public class FakePlayerGuiCraftScreenHandler extends Generic3x3ContainerScreenHa
      */
     private final SimpleInventory fakePlayerCraftInventory;
     /**
-     * 执行/playerTools命令后的命令执行上下文对象，修改假玩家动作类型时会用到这个属性
+     * 执行/playerAction命令后的命令执行上下文对象，修改假玩家动作类型时会用到这个属性
      */
     private final CommandContext<ServerCommandSource> context;
 

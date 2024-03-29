@@ -9,9 +9,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Function;
 
 public class CommandUtils {
     public static final String PLAYER = "player";
@@ -88,23 +85,14 @@ public class CommandUtils {
     }
 
     /**
-     * 让服务器内指定玩家执行一条命令
-     *
-     * @param player     执行命令的玩家
-     * @param command    执行命令的内容，前缀斜杠是可选的
-     * @param constraint 执行命令的条件，如果为null，默认为true
-     */
-    public static void execute(ServerPlayerEntity player, String command, @Nullable Function<ServerPlayerEntity, Boolean> constraint) {
-        if (constraint == null || constraint.apply(player)) {
-            CommandManager commandManager = player.getServerWorld().getServer().getCommandManager();
-            commandManager.executeWithPrefix(player.getCommandSource(), command);
-        }
-    }
-
-    /**
-     * @see CommandUtils#execute(ServerPlayerEntity, String, Function)
+     * 让一名玩家执行一条命令
      */
     public static void execute(ServerPlayerEntity player, String command) {
-        CommandUtils.execute(player, command, null);
+        CommandUtils.execute(player.getCommandSource(), command);
+    }
+
+    public static void execute(ServerCommandSource source, String command) {
+        CommandManager commandManager = source.getServer().getCommandManager();
+        commandManager.executeWithPrefix(source, command);
     }
 }
