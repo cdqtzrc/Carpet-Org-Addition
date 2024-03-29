@@ -57,6 +57,7 @@ public class SelectionArea implements Iterable<BlockPos> {
             @Override
             public BlockPos next() {
                 if (!hasNext()) {
+                    // 超出选区抛出异常
                     throw new NoSuchElementException();
                 }
                 // 当前遍历到的位置坐标的副本

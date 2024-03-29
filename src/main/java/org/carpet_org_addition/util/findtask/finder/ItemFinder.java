@@ -1,15 +1,12 @@
 package org.carpet_org_addition.util.findtask.finder;
 
 import carpet.patches.EntityPlayerMPFake;
-import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.command.argument.ItemPredicateArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
@@ -23,6 +20,7 @@ import org.carpet_org_addition.util.helpers.Counter;
 import org.carpet_org_addition.util.helpers.ImmutableInventory;
 import org.carpet_org_addition.util.helpers.SelectionArea;
 import org.carpet_org_addition.util.matcher.ItemMatcher;
+import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
 import org.carpet_org_addition.util.matcher.Matcher;
 
 import java.util.ArrayList;
@@ -33,10 +31,9 @@ public class ItemFinder extends AbstractFinder {
     private final Matcher matcher;
     private final ArrayList<ItemFindResult> list = new ArrayList<>();
 
-    public ItemFinder(World world, BlockPos sourcePos, int range, CommandContext<ServerCommandSource> context) {
-        super(world, sourcePos, range, context);
-        Predicate<ItemStack> predicate = ItemPredicateArgumentType.getItemStackPredicate(context, "itemStack");
-        matcher = Matcher.of(predicate);
+    public ItemFinder(World world, BlockPos sourcePos, int range, Predicate<ItemStack> predicate) {
+        super(world, sourcePos, range);
+        matcher = new ItemPredicateMatcher(predicate);
     }
 
     @Override
@@ -56,7 +53,7 @@ public class ItemFinder extends AbstractFinder {
             // 判断是否超时
             checkTimeOut(startTimeMillis);
             // 检查当前位置方块实体有没有物品栏
-            if (this.world.getBlockState(blockPos) instanceof Inventory inventory) {
+            if (this.world.getBlockEntity(blockPos) instanceof Inventory inventory) {
                 Pair<Counter<ItemMatcher>, Boolean> pair = this.count(inventory);
                 addResultToList(pair, blockPos, world.getBlockState(blockPos).getBlock().getName());
             }
@@ -92,7 +89,7 @@ public class ItemFinder extends AbstractFinder {
             }
             // 从物品栏内找到与匹配器对应的物品并添到计数器
             if (this.matcher.test(itemStack)) {
-                counter.add(new ItemMatcher(itemStack));
+                counter.add(new ItemMatcher(itemStack), itemStack.getCount());
             } else if (InventoryUtils.isShulkerBoxItem(itemStack)) {
                 // 检查潜影盒内的物品
                 ImmutableInventory immutableInventory;
@@ -107,7 +104,7 @@ public class ItemFinder extends AbstractFinder {
                     // 遍历潜影盒内的物品栏，找到与匹配器对应的物品
                     for (ItemStack stack : immutableInventory) {
                         if (matcher.test(stack)) {
-                            counter.add(new ItemMatcher(stack));
+                            counter.add(new ItemMatcher(stack), stack.getCount());
                         }
                     }
                 }

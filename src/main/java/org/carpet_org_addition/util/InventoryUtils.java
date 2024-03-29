@@ -1,7 +1,6 @@
 package org.carpet_org_addition.util;
 
 import net.minecraft.inventory.Inventories;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -9,9 +8,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.util.collection.DefaultedList;
 import org.carpet_org_addition.exception.NoNbtException;
-import org.carpet_org_addition.util.helpers.Counter;
 import org.carpet_org_addition.util.helpers.ImmutableInventory;
-import org.carpet_org_addition.util.matcher.ItemMatcher;
 import org.carpet_org_addition.util.matcher.Matcher;
 
 import java.util.Objects;
