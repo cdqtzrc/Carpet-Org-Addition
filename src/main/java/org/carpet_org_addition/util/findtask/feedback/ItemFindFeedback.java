@@ -38,7 +38,7 @@ public class ItemFindFeedback extends AbstractFindFeedback<ItemFindResult> {
         for (ItemFindResult result : list) {
             this.count += result.getCount();
             // 是否包含从容器中的潜影盒中找到的物品，用来决定是否让数字带斜体
-            if (result.inTheShulkerBox()) {
+            if (result.inTheBox()) {
                 this.inTheShulkerBox = true;
             }
         }
