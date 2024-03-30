@@ -35,13 +35,13 @@ public abstract class AbstractActionData implements JsonSerial {
         return TextUtils.hoverText(Text.literal(capitalizeFirstLetter), item.getName(), null);
     }    // 获取物品的可变文本形式
 
-    protected static MutableText getHoverText(Matcher itemMatchers) {
-        if (itemMatchers.isEmpty()) {
+    protected static MutableText getHoverText(Matcher matcher) {
+        if (matcher.isEmpty()) {
             return TextUtils.hoverText(Text.literal("[A]"), Items.AIR.getName(), Formatting.DARK_GRAY);
         }
         // 获取物品ID的首字母，然后转为大写，再放进中括号里
-        String capitalizeFirstLetter = "[" + String.valueOf(itemMatchers.toString().charAt(0)).toUpperCase() + "]";
-        return TextUtils.hoverText(Text.literal(capitalizeFirstLetter), itemMatchers.getName(), null);
+        String capitalizeFirstLetter = "[" + String.valueOf(matcher.toString().charAt(0)).toUpperCase() + "]";
+        return TextUtils.hoverText(Text.literal(capitalizeFirstLetter), matcher.getName(), null);
     }
 
     // 获取物品堆栈的可变文本形式：物品名称x堆叠数量
