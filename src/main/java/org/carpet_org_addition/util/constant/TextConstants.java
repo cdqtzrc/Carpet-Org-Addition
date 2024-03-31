@@ -19,7 +19,7 @@ public class TextConstants {
     public static final Text TRUE = TextUtils.getTranslate("carpet.command.boolean.true");
     public static final Text FALSE = TextUtils.getTranslate("carpet.command.boolean.false");
 
-    public static Text getBoolean(boolean b) {
-        return b ? TRUE : FALSE;
+    public static Text getBoolean(boolean value) {
+        return value ? TRUE : FALSE;
     }
 }
