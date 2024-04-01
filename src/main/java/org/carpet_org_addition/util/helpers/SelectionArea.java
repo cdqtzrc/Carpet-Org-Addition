@@ -8,6 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * 用来获取指定范围内所有方块坐标对象，方块坐标对象不是使用集合一次性返回的，
+ * 而是使用迭代器逐个返回，因此它不会大量占用内存，并且本类实现了{@link Iterable}接口，可以使用增强for循环遍历
+ */
 public class SelectionArea implements Iterable<BlockPos> {
     private final int minX;
     private final int minY;
@@ -39,6 +43,9 @@ public class SelectionArea implements Iterable<BlockPos> {
         return new Box(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
     }
 
+    /**
+     * 类对象是不可变的，因此不需要考虑并发修改的问题
+     */
     @NotNull
     @Override
     public Iterator<BlockPos> iterator() {
