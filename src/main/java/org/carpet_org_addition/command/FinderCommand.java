@@ -130,7 +130,7 @@ public class FinderCommand {
         }
         // 获取命令执行时的方块坐标
         final BlockPos sourceBlockPos = player.getBlockPos();
-        BlockFinder blockFinder = new BlockFinder(player.getServerWorld(), sourceBlockPos, range, blockStateArgument);
+        BlockFinder blockFinder = new BlockFinder(player.getWorld(), sourceBlockPos, range, blockStateArgument);
         // 开始查找方块，然后返回查询结果
         ArrayList<BlockFindResult> list = blockFinder.startSearch();
         int count = list.size();
