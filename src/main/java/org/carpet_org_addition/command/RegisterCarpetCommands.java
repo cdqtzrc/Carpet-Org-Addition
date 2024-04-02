@@ -20,8 +20,6 @@ public class RegisterCarpetCommands {
                     sm.registerCommand(dispatcher, commandBuildContext);
                 }
             });
-            //注册命令
-
             //物品分身命令
             ItemShadowingCommand.register(dispatcher);
 

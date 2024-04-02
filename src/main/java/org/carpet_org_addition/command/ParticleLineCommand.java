@@ -23,9 +23,7 @@ public class ParticleLineCommand {
                 .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandParticleLine))
                 .then(CommandManager.argument("from", Vec3ArgumentType.vec3())
                         .then(CommandManager.argument("to", Vec3ArgumentType.vec3())
-                                .executes(ParticleLineCommand::draw))
-                )
-        );
+                                .executes(ParticleLineCommand::draw))));
     }
 
     // 准备绘制粒子线
