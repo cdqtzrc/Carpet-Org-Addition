@@ -33,8 +33,9 @@ public abstract class AbstractActionData implements JsonSerial {
         // 获取物品ID的首字母，然后转为大写，再放进中括号里
         String capitalizeFirstLetter = "[" + String.valueOf(item.toString().charAt(0)).toUpperCase() + "]";
         return TextUtils.hoverText(Text.literal(capitalizeFirstLetter), item.getName(), null);
-    }    // 获取物品的可变文本形式
+    }
 
+    // 获取物品的可变文本形式
     protected static MutableText getHoverText(Matcher matcher) {
         if (matcher.isEmpty()) {
             return TextUtils.hoverText(Text.literal("[A]"), Items.AIR.getName(), Formatting.DARK_GRAY);

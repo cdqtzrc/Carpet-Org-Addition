@@ -72,16 +72,16 @@ public class InventoryUtils {
     /**
      * 从物品形式的潜影盒中获取第一个指定的物品，并将该物品从潜影盒的NBT中删除，使用时，为避免不必要的物品浪费，取出来的物品必须使用或丢出
      *
-     * @param shulkerBoxItemStack 潜影盒物品
+     * @param shulkerBox 潜影盒物品
      * @param matcher             一个物品匹配器对象，用来指定要从潜影盒中拿取的物品
      * @return 潜影盒中获取的指定物品
      */
-    public static ItemStack pickItemFromShulkerBox(ItemStack shulkerBoxItemStack, Matcher matcher) {
+    public static ItemStack pickItemFromShulkerBox(ItemStack shulkerBox, Matcher matcher) {
         // 判断潜影盒是否为空，空潜影盒直接返回空物品
-        if (isEmptyShulkerBox(shulkerBoxItemStack)) {
+        if (isEmptyShulkerBox(shulkerBox)) {
             return ItemStack.EMPTY;
         }
-        NbtCompound nbt = shulkerBoxItemStack.getNbt();
+        NbtCompound nbt = shulkerBox.getNbt();
         NbtList list;
         try {
             list = Objects.requireNonNull(nbt).getCompound(BLOCK_ENTITY_TAG).getList(ITEMS, NbtElement.COMPOUND_TYPE);
@@ -94,8 +94,8 @@ public class InventoryUtils {
             if (matcher.test(itemStack)) {
                 list.remove(index);
                 // 如果潜影盒最后一个物品被取出，就删除潜影盒的“BlockEntityTag”标签以保证潜影盒堆叠的正常运行
-                if (isEmptyShulkerBox(shulkerBoxItemStack)) {
-                    shulkerBoxItemStack.removeSubNbt(BLOCK_ENTITY_TAG);
+                if (isEmptyShulkerBox(shulkerBox)) {
+                    shulkerBox.removeSubNbt(BLOCK_ENTITY_TAG);
                 }
                 return itemStack;
             }

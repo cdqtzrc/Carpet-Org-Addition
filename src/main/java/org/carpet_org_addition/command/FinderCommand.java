@@ -74,8 +74,7 @@ public class FinderCommand {
                                         .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
                                                 .executes(context -> findEnchantedBookTrade(context, -1, 10))
                                                 .then(CommandManager.argument("maxCount", IntegerArgumentType.integer(1))
-                                                        .executes(context -> findEnchantedBookTrade(context, -1, -1)))))))
-        );
+                                                        .executes(context -> findEnchantedBookTrade(context, -1, -1))))))));
     }
 
     // 物品查找
