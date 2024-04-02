@@ -25,12 +25,12 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     /**
      * Runs the mod initializer.
      */
-    //模组初始化
+    // 模组初始化
     @Override
     public void onInitialize() {
     }
 
-    //在游戏开始时
+    // 在游戏开始时
     @Override
     public void onGameStarted() {
         // 解析Carpet设置
@@ -52,6 +52,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
         }
     }
 
+    // 服务器启动时调用
     @Override
     public void onServerLoaded(MinecraftServer server) {
         CarpetExtension.super.onServerLoaded(server);

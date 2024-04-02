@@ -38,7 +38,7 @@ public class ItemFindFeedback extends AbstractFindFeedback<ItemFindResult> {
         for (ItemFindResult result : list) {
             this.count += result.getCount();
             // 是否包含从容器中的潜影盒中找到的物品，用来决定是否让数字带斜体
-            if (result.inTheShulkerBox()) {
+            if (result.inTheBox()) {
                 this.inTheShulkerBox = true;
             }
         }
@@ -69,8 +69,7 @@ public class ItemFindFeedback extends AbstractFindFeedback<ItemFindResult> {
             for (ItemFindResult result : list) {
                 checkTimeOut();
                 MessageUtils.sendTextMessage(context.getSource(),
-                        isItem
-                                ? result.toText()
+                        isItem ? result.toText()
                                 : TextUtils.appendAll(result.toText(), result.getMatcher().toText()));
             }
         } else {
@@ -80,8 +79,7 @@ public class ItemFindFeedback extends AbstractFindFeedback<ItemFindResult> {
             for (int i = 0; i < this.maxCount; i++) {
                 checkTimeOut();
                 MessageUtils.sendTextMessage(context.getSource(),
-                        isItem
-                                ? list.get(i).toText()
+                        isItem ? list.get(i).toText()
                                 : TextUtils.appendAll(list.get(i).toText(), list.get(i).getMatcher().toText()));
             }
         }
