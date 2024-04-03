@@ -67,7 +67,11 @@ public class SpectatorCommand {
             }
         } else {
             gameMode = GameMode.SPECTATOR;
-            if (!isFakePlayer) {
+            if (isFakePlayer) {
+                // 让假玩家切换旁观模式时向上移动0.2格
+                // Mojang真的修复MC-146582了吗？（https://bugs.mojang.com/browse/MC-146582）
+                player.requestTeleportOffset(0.0, 0.2, 0.0);
+            } else {
                 savePlayerPos(player.getServer(), player);
             }
         }
