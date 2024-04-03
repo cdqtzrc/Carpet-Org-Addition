@@ -9,10 +9,8 @@ import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.fakeplayer.FakePlayerAction;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionInterface;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionManager;
-import org.carpet_org_addition.util.fakeplayer.actiondata.StopData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -54,11 +52,10 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakeP
             //将错误信息写入日志
             CarpetOrgAddition.LOGGER.error(thisPlayer.getName().getString() + "在执行操作“" + this.getActionManager().getAction().toString() + "”时遇到意外错误:", e);
             //让假玩家停止当前操作
-            this.getActionManager().setAction(FakePlayerAction.STOP, StopData.STOP);
+            this.getActionManager().stop();
             //向聊天栏发送错误消息的反馈
-            MessageUtils.broadcastTextMessage(thisPlayer,
-                    TextUtils.getTranslate("carpet.commands.playerAction.exception.runtime",
-                            thisPlayer.getDisplayName()));
+            MessageUtils.broadcastTextMessage(thisPlayer, TextUtils.getTranslate("carpet.commands.playerAction.exception.runtime",
+                    thisPlayer.getDisplayName()));
         }
     }
 }

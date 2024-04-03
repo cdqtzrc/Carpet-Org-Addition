@@ -62,7 +62,7 @@ public class LocationsCommand {
                                         .executes(context -> setWayPoint(context, BlockPosArgumentType.getBlockPos(context, "pos")))))));
     }
 
-    //用来自动补全命令
+    // 用来自动补全路径点名称
     private static SuggestionProvider<ServerCommandSource> suggestion() {
         return (context, builder) -> {
             WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), Waypoint.WAYPOINT);
