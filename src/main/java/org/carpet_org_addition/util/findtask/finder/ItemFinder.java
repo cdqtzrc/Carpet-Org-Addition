@@ -78,6 +78,7 @@ public class ItemFinder extends AbstractFinder {
         }
     }
 
+    // TODO 测试一下
     // 统计物品栏内物品数量
     private Pair<Counter<ItemMatcher>, Boolean> count(Inventory inventory) {
         Counter<ItemMatcher> counter = new Counter<>();
@@ -98,12 +99,13 @@ public class ItemFinder extends AbstractFinder {
                 } catch (NoNbtException e) {
                     continue;
                 }
-                if (!immutableInventory.isEmpty()) {
-                    // 从潜影盒内查找物品
-                    inTheBox = true;
+                // 从潜影盒内查找物品
+                if (immutableInventory.nonEmpty()) {
                     // 遍历潜影盒内的物品栏，找到与匹配器对应的物品
                     for (ItemStack stack : immutableInventory) {
                         if (matcher.test(stack)) {
+                            // 如果从潜影盒内找到了指定物品，将inTheBox标记为true，表示找到的物品包含从潜影盒内找到的
+                            inTheBox = true;
                             counter.add(new ItemMatcher(stack), stack.getCount());
                         }
                     }

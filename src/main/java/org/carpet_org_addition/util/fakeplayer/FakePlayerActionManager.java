@@ -18,16 +18,25 @@ public class FakePlayerActionManager implements JsonSerial {
     public void executeAction() {
         switch (function.getAction()) {
             case STOP -> {
+                // 停止：什么也不做
             }
+            // 物品分拣
             case SORTING -> FakePlayerSorting.sorting((SortingData) function.getActionData(), fakePlayer);
+            // 清空潜影盒
             case CLEAN -> FakePlayerClean.clean((CleanData) function.getActionData(), fakePlayer);
+            // 填充潜影盒
             case FILL -> FakePlayerFill.fill((FillData) function.getActionData(), fakePlayer);
+            // 在生存模式物品栏合成物品
             case INVENTORY_CRAFT -> FakePlayerCraft.craft2x2((InventoryCraftData) function.getActionData(), fakePlayer);
+            // 在工作台合成物品
             case CRAFTING_TABLE_CRAFT ->
                     FakePlayerCraft.craft3x3((CraftingTableCraftData) function.getActionData(), fakePlayer);
+            // 重命名物品
             case RENAME -> FakePlayerRename.rename((RenameData) function.getActionData(), fakePlayer);
+            // 使用切石机
             case STONECUTTING ->
                     FakePlayerStonecutting.stonecutting((StonecuttingData) function.actionData, fakePlayer);
+            // 自动交易
             case TRADE -> FakePlayerTrade.trade((TradeData) function.actionData, fakePlayer);
             default -> {
                 CarpetOrgAddition.LOGGER.error(this.function.getAction() + "的行为没有预先定义");
