@@ -21,7 +21,13 @@ import java.util.ArrayList;
 public class StonecuttingData extends AbstractActionData {
     private static final String ITEM = "item";
     private static final String BUTTON = "button";
+    /**
+     * 要使用切石机切制的物品
+     */
     private final Item item;
+    /**
+     * 切石机内按钮的索引
+     */
     private final int button;
 
     public StonecuttingData(Item item, int button) {

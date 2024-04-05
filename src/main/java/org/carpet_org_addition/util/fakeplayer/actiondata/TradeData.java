@@ -13,9 +13,17 @@ import java.util.ArrayList;
 public class TradeData extends AbstractActionData {
     private static final String INDEX = "index";
     private static final String VOID_TRADE = "void_trade";
+    /**
+     * 交易GUI中左侧按钮的索引
+     */
     private final int index;
+    /**
+     * 是否为虚空交易，虚空交易会在村民所在区块卸载再等待5个游戏刻后进行
+     */
     private final boolean voidTrade;
-    // 虚空交易计时器
+    /**
+     * 虚空交易的计时器
+     */
     private final SingleThingCounter timer = new SingleThingCounter();
 
     public TradeData(int index, boolean voidTrade) {

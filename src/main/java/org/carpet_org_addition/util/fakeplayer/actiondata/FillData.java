@@ -15,7 +15,13 @@ public class FillData extends AbstractActionData {
     private static final String ITEM = "item";
     private static final String ALL_ITEM = "allItem";
     public static final FillData FILL_ALL = new FillData(null, true);
+    /**
+     * 要向潜影盒填充的物品
+     */
     private final Item item;
+    /**
+     * 是否向潜影盒内填充任意物品并忽略{@link FillData#item}（本身就不能放入潜影盒的物品不会被填充）
+     */
     private final boolean allItem;
 
     public FillData(Item item, boolean allItem) {

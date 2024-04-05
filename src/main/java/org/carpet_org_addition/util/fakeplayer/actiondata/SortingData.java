@@ -19,8 +19,17 @@ public final class SortingData extends AbstractActionData {
     private static final String ITEM = "item";
     private static final String THIS_VEC = "thisVec";
     private static final String OTHER_VEC = "otherVec";
+    /**
+     * 要分拣的物品
+     */
     private final Item item;
+    /**
+     * 如果当前物品是要分拣的物品，则将该物品向这个方向丢出
+     */
     private final Vec3d thisVec;
+    /**
+     * 如果当前物品不是要分拣的物品，则将该物品向这个方向丢出
+     */
     private final Vec3d otherVec;
 
     public SortingData(Item item, Vec3d thisVec, Vec3d otherVec) {

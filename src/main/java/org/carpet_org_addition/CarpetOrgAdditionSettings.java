@@ -518,7 +518,6 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean canHighlightWaypoint = false;
 
-
     // 玩家管理器命令
     @Rule(
             categories = {ORG, RuleCategory.COMMAND},

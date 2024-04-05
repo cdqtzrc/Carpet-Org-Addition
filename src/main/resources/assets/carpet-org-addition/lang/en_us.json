@@ -353,5 +353,7 @@
   "carpet.commands.playerManager.info.flying": "是否飞行：%s",
   "carpet.commands.playerManager.info.sneaking": "是否潜行：%s",
   "carpet.commands.playerManager.info.annotation": "注释：%s",
+  "carpet.commands.spectator.teleport.fail": "你当前不是%s",
+  "carpet.commands.spectator.teleport.success.dimension": "已将%s传送至%s",
   "carpet.commands.ruleSearch.feedback": "Carpet Mod中符合“%s”的选项：:"
 }

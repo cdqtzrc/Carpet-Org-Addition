@@ -7,23 +7,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-public interface Matcher {
-
-    /**
-     * 检查当前物品堆栈是否与匹配器匹配
-     *
-     * @param itemStack 要匹配的物品堆栈
-     * @return 当前物品堆栈是否与匹配器匹配
-     */
-    boolean test(ItemStack itemStack);
-
-    /**
-     * 当前物品是否与空气物品匹配
-     *
-     * @return 匹配器的内容是否为空
-     */
-    boolean isEmpty();
-
+public interface Matcher extends SimpleMatcher{
     /**
      * 判断当前匹配器的内容物是否为物品
      *
