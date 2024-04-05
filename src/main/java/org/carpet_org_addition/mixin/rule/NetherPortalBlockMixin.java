@@ -22,10 +22,12 @@ public abstract class NetherPortalBlockMixin extends Block {
     }
 
     @Shadow
-    public abstract BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos);
+    public abstract BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState,
+                                                         WorldAccess world, BlockPos pos, BlockPos neighborPos);
 
     @Inject(method = "getStateForNeighborUpdate", at = @At("HEAD"), cancellable = true)
-    private void update(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos, CallbackInfoReturnable<BlockState> cir) {
+    private void update(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos,
+                        BlockPos neighborPos, CallbackInfoReturnable<BlockState> cir) {
         if (CarpetOrgAdditionSettings.disablePortalUpdate) {
             cir.setReturnValue(super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos));
         }

@@ -20,20 +20,18 @@ import org.carpet_org_addition.util.helpers.Counter;
 import org.carpet_org_addition.util.helpers.ImmutableInventory;
 import org.carpet_org_addition.util.helpers.SelectionArea;
 import org.carpet_org_addition.util.matcher.ItemMatcher;
-import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
 import org.carpet_org_addition.util.matcher.Matcher;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class ItemFinder extends AbstractFinder {
     private final Matcher matcher;
     private final ArrayList<ItemFindResult> list = new ArrayList<>();
 
-    public ItemFinder(World world, BlockPos sourcePos, int range, Predicate<ItemStack> predicate) {
+    public ItemFinder(World world, BlockPos sourcePos, int range, Matcher matcher) {
         super(world, sourcePos, range);
-        matcher = new ItemPredicateMatcher(predicate);
+        this.matcher = matcher;
     }
 
     @Override
@@ -78,7 +76,6 @@ public class ItemFinder extends AbstractFinder {
         }
     }
 
-    // TODO 测试一下
     // 统计物品栏内物品数量
     private Pair<Counter<ItemMatcher>, Boolean> count(Inventory inventory) {
         Counter<ItemMatcher> counter = new Counter<>();
@@ -106,6 +103,11 @@ public class ItemFinder extends AbstractFinder {
                         if (matcher.test(stack)) {
                             // 如果从潜影盒内找到了指定物品，将inTheBox标记为true，表示找到的物品包含从潜影盒内找到的
                             inTheBox = true;
+                            // 成员位置的匹配器记录可能是物品标签而不是具体的物品
+                            // 如果匹配器记录的是物品标签，则命令完显示反馈时，反馈中的内容可能不正确
+                            // 如果是原木（#minecraft:logs），可能对应多种物品：橡木原木白桦原木等
+                            // 为了命令执行反馈的正确显示，比如计算堆叠数，匹配器匹配成功的每一种物品都创建一个新的物品匹配器，只对应一种物品
+                            // 计数器统计的是新物品匹配器的数量，每一种物品单独计数
                             counter.add(new ItemMatcher(stack), stack.getCount());
                         }
                     }
@@ -120,8 +122,10 @@ public class ItemFinder extends AbstractFinder {
     private void addResultToList(Pair<Counter<ItemMatcher>, Boolean> pair, BlockPos blockPos, Text text) {
         Counter<ItemMatcher> counter = pair.getLeft();
         for (ItemMatcher itemMatcher : counter) {
-            // 将计数器内的物品和对应数量添加到集合
-            list.add(new ItemFindResult(blockPos, counter.getCount(itemMatcher), pair.getRight(), text, this.matcher));
+            // 物品查找结果构造方法参数中的物品查找器被用来在命令反馈中显示物品名称，数量，堆叠组数的内容
+            // 但当前成员位置的物品匹配器对象中保存的可能是物品标签，而不是具体的物品，所以不能正确计算上述内容
+            // 所以要使用局部位置的物品匹配器对象，它是从count方法中重新创建的只对应一种物品的物品匹配器
+            list.add(new ItemFindResult(blockPos, counter.getCount(itemMatcher), pair.getRight(), text, itemMatcher));
         }
     }
 }

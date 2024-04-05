@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-//保护类魔咒兼容
+// 保护类魔咒兼容
 @Mixin(ProtectionEnchantment.class)
 public class ProtectionEnchantmentMixin extends Enchantment {
     protected ProtectionEnchantmentMixin(Rarity weight, EnchantmentTarget target, EquipmentSlot[] slotTypes) {

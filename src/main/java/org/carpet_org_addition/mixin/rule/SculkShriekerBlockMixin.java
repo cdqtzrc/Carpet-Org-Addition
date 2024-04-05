@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-//让玩家手动放置的幽匿尖啸体可以生成监守者
+// 让玩家手动放置的幽匿尖啸体可以生成监守者
 @Mixin(SculkShriekerBlock.class)
 public class SculkShriekerBlockMixin {
     @Inject(method = "getPlacementState", at = @At("HEAD"), cancellable = true)
@@ -24,6 +24,8 @@ public class SculkShriekerBlockMixin {
     @Unique
     private BlockState getBlockState(ItemPlacementContext ctx) {
         SculkShriekerBlock sculkShriekerBlock = (SculkShriekerBlock) (Object) this;
-        return sculkShriekerBlock.getDefaultState().with(SculkShriekerBlock.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER).with(SculkShriekerBlock.CAN_SUMMON, true);
+        return sculkShriekerBlock.getDefaultState().with(SculkShriekerBlock.WATERLOGGED,
+                        ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER)
+                .with(SculkShriekerBlock.CAN_SUMMON, true);
     }
 }
