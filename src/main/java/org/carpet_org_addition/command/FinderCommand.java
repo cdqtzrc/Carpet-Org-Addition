@@ -96,7 +96,7 @@ public class FinderCommand {
         // 查找周围容器中的物品
         Matcher matcher = new ItemPredicateMatcher(predicate);
         // 创建一个物品查找器对象
-        ItemFinder itemFinder = new ItemFinder(player.getWorld(), sourceBlockPos, range, predicate);
+        ItemFinder itemFinder = new ItemFinder(player.getWorld(), sourceBlockPos, range, matcher);
         // 进行物品查找
         ArrayList<ItemFindResult> list = itemFinder.startSearch();
         if (list.isEmpty()) {

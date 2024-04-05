@@ -33,7 +33,7 @@ public abstract class SpawnerBlockMixin extends BlockWithEntity {
 
     @SuppressWarnings("deprecation")
     @Inject(method = "onStacksDropped", at = @At("HEAD"), cancellable = true)
-    //使用精准采集工具挖掘时不会掉落经验
+    // 使用精准采集工具挖掘时不会掉落经验
     private void onStacksDropped(BlockState state, ServerWorld world, BlockPos pos, ItemStack tool, boolean dropExperience, CallbackInfo ci) {
         if (CarpetOrgAdditionSettings.canMineSpawner && EnchantmentHelper.hasSilkTouch(tool)) {
             super.onStacksDropped(state, world, pos, tool, dropExperience);
@@ -58,7 +58,7 @@ public abstract class SpawnerBlockMixin extends BlockWithEntity {
     }
 
     @Override
-    //放置刷怪笼时读取NBT
+    // 放置刷怪笼时读取NBT
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
         super.onPlaced(world, pos, state, placer, itemStack);
         if (world.isClient) {

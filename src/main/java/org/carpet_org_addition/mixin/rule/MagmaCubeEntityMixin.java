@@ -16,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Objects;
 import java.util.Optional;
 
-//禁止岩浆怪生成于下界荒地
 @Mixin(MagmaCubeEntity.class)
 public class MagmaCubeEntityMixin extends SlimeEntity {
 
@@ -24,6 +23,7 @@ public class MagmaCubeEntityMixin extends SlimeEntity {
         super(entityType, world);
     }
 
+    //禁止岩浆怪生成于下界荒地
     @Inject(method = "canSpawn", at = @At("HEAD"), cancellable = true)
     private void canSpawn(WorldView world, CallbackInfoReturnable<Boolean> cir) {
         if (CarpetOrgAdditionSettings.disableMagmaCubeSpawnNetherWastes) {

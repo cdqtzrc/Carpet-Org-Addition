@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-//村民立即补货
+// 村民立即补货
 @Mixin(VillagerEntity.class)
 public abstract class VillagerEntityMixin extends MerchantEntity {
     @Shadow
@@ -33,7 +33,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
         super(entityType, world);
     }
 
-    //阻止村民变成女巫
+    // 阻止村民变成女巫
     @Inject(method = "onStruckByLightning", at = @At("HEAD"), cancellable = true)
     private void onStruckByLightning(ServerWorld world, LightningEntity lightning, CallbackInfo ci) {
         if (CarpetOrgAdditionSettings.disableVillagerWitch) {
@@ -42,7 +42,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
         }
     }
 
-    //打开村民物品栏
+    // 打开村民物品栏
     @Inject(method = "interactMob", at = @At(value = "HEAD"), cancellable = true)
     private void clearVillagerInventory(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
         if (CarpetOrgAdditionSettings.openVillagerInventory && player.isSneaking()) {
@@ -54,11 +54,12 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
         }
     }
 
-    //村民回血
+    // 村民回血
     @Inject(method = "mobTick", at = @At("HEAD"))
     private void heal(CallbackInfo ci) {
         if (CarpetOrgAdditionSettings.villagerHeal) {
             long worldTime = thisVillager.getWorld().getTime();
+            // 每四秒回一次血
             if (worldTime % 80 == 0) {
                 thisVillager.heal(1.0F);
             }

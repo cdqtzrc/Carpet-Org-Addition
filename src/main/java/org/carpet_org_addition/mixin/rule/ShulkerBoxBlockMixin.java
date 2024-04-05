@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ShulkerBoxBlock.class)
 public class ShulkerBoxBlockMixin {
 
-    //强制开启潜影盒
+    // 强制开启潜影盒
     @Inject(method = "canOpen", at = @At(value = "HEAD"), cancellable = true)
     private static void canOpen(BlockState state, World world, BlockPos pos, ShulkerBoxBlockEntity entity, CallbackInfoReturnable<Boolean> cir) {
         if (canUpdateSuppression(world, pos)) {
@@ -29,7 +29,7 @@ public class ShulkerBoxBlockMixin {
         }
     }
 
-    //CCE更新抑制器
+    // CCE更新抑制器
     @Inject(method = "getComparatorOutput", at = @At("HEAD"))
     private void getComparatorOutput(BlockState state, World world, BlockPos pos, CallbackInfoReturnable<Integer> cir) {
         //!world.isClient： 更新抑制不在客户端进行，防止客户端游戏崩溃

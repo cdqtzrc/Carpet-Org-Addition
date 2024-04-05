@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-//红石线不会连接到打开的活板门上的红石线
+// 红石线不会连接到打开的活板门上的红石线
 @Mixin(RedstoneWireBlock.class)
 public class RedstoneWireBlockMixin {
     // 红石线不会连接到打开的活板门上的红石线
