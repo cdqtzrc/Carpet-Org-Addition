@@ -94,9 +94,7 @@ public class PlayerActionCommand {
                                         .executes(PlayerActionCommand::setRename))))
                         .then(CommandManager.literal("stonecutting").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
                                 .then(CommandManager.argument("button", IntegerArgumentType.integer(1))
-                                        .executes(PlayerActionCommand::setStonecutting))))
-                )
-        );
+                                        .executes(PlayerActionCommand::setStonecutting))))));
     }
 
     // 设置停止

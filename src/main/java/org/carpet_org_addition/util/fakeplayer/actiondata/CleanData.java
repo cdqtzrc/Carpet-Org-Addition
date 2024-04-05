@@ -15,7 +15,13 @@ public final class CleanData extends AbstractActionData {
     private static final String ITEM = "item";
     private static final String ALL_ITEM = "allItem";
     public static final CleanData CLEAN_ALL = new CleanData(null, true);
+    /**
+     * 要从潜影盒中丢出的物品
+     */
     private final Item item;
+    /**
+     * 是否忽略{@link CleanData#item}，并清空潜影盒内的所有物品
+     */
     private final boolean allItem;
 
     /**

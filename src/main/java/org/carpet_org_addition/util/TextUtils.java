@@ -124,7 +124,7 @@ public class TextUtils {
      * @return 可以单击执行命令的可变文本组件
      */
     public static MutableText command(@NotNull MutableText text, @NotNull String command, @Nullable Text hoverText, @Nullable Formatting color, boolean underline) {
-        //添加下划线
+        // 添加下划线
         text.styled(style -> style.withUnderline(underline));
         // 点击后执行命令
         text.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command)));
