@@ -35,7 +35,7 @@ public class RuleSearchCommand {
         MutableText text = TextUtils.getTranslate("carpet.commands.ruleSearch.feedback", rule);
         // 将文本设置为粗体
         text.styled(style -> style.withBold(true));
-        context.getSource().sendFeedback(() -> text, false);
+        context.getSource().sendFeedback(text, false);
         int ruleCount = 0;
         for (CarpetRule<?> carpet : list) {
             if (RuleHelper.translatedName(carpet).contains(rule)) {
