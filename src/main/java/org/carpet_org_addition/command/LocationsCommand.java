@@ -244,5 +244,4 @@ public class LocationsCommand {
         }
         return 1;
     }
-
 }
