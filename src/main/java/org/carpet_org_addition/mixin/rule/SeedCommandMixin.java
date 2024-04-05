@@ -8,9 +8,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-//开放/seed权限
 @Mixin(SeedCommand.class)
 public class SeedCommandMixin {
+    // 开放/seed权限
     @Inject(method = "method_13618", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/command/ServerCommandSource;hasPermissionLevel(I)Z"), cancellable = true)
     private static void privilege(boolean bl, ServerCommandSource source, CallbackInfoReturnable<Boolean> cir) {
         if (CarpetOrgAdditionSettings.openSeedPermissions) {
