@@ -26,17 +26,15 @@ public class CarpetOrgAdditionTestCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("carpetOrgAdditionTest")
                 .requires(source -> FabricLoader.getInstance().isDevelopmentEnvironment())
-                .then(CommandManager.literal("listEnchantBookFactory").executes(context -> {
-                    listEnchantBookFactory(context.getSource());
-                    return 1;
-                })).then(CommandManager.literal("getIndex")
+                .then(CommandManager.literal("listEnchantBookFactory")
+                        .executes(context -> listEnchantBookFactory(context.getSource())))
+                .then(CommandManager.literal("getIndex")
                         .then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                .executes(CarpetOrgAdditionTestCommand::getItemIndex)))
-        );
+                                .executes(CarpetOrgAdditionTestCommand::getItemIndex))));
     }
 
     //列出图书管理员所有可交易的附魔书
-    private static void listEnchantBookFactory(ServerCommandSource source) {
+    private static int listEnchantBookFactory(ServerCommandSource source) {
         List<Enchantment> list = Registries.ENCHANTMENT.stream().filter(Enchantment::isAvailableForEnchantedBookOffer).toList();
         ServerPlayerEntity player = source.getPlayer();
         if (player != null) {
@@ -45,6 +43,7 @@ public class CarpetOrgAdditionTestCommand {
                 player.sendMessage(enchantment.getName(enchantment.getMaxLevel()));
             }
         }
+        return 1;
     }
 
     private static int getItemIndex(CommandContext<ServerCommandSource> context) {

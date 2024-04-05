@@ -13,7 +13,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.MutableText;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.mixin.rule.carpet.SettingsManagerAccessor;
-import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 
 import java.util.List;
@@ -35,7 +34,8 @@ public class RuleSearchCommand {
         List<CarpetRule<?>> list = CarpetServer.settingsManager.getCarpetRules().stream().toList();
         MutableText text = TextUtils.getTranslate("carpet.commands.ruleSearch.feedback", rule);
         // 将文本设置为粗体
-        MessageUtils.sendCommandFeedback(context.getSource(), text.styled(style -> style.withBold(true)));
+        text.styled(style -> style.withBold(true));
+        context.getSource().sendFeedback(() -> text, false);
         int ruleCount = 0;
         for (CarpetRule<?> carpet : list) {
             if (RuleHelper.translatedName(carpet).contains(rule)) {

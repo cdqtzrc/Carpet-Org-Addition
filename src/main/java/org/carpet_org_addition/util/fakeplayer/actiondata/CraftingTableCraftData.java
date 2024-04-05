@@ -13,6 +13,9 @@ import org.carpet_org_addition.util.matcher.Matcher;
 import java.util.ArrayList;
 
 public class CraftingTableCraftData extends AbstractActionData {
+    /**
+     * 合成所使用的物品栏
+     */
     private final Matcher[] matchers = new Matcher[9];
 
     public CraftingTableCraftData(Matcher[] matchers) {

@@ -1,5 +1,6 @@
 package org.carpet_org_addition.util;
 
+import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -50,6 +51,7 @@ public class MessageUtils {
      * @param source  发送消息的消息源
      * @param message 要发送消息的内容
      */
+    @Deprecated
     public static void sendStringMessage(ServerCommandSource source, String message) {
         source.sendMessage(Text.literal(message));
     }
@@ -112,8 +114,12 @@ public class MessageUtils {
         MessageUtils.sendTextMessage(source, TextUtils.getTranslate(key, obj));
     }
 
+    public static void sendCommandFeedback(CommandContext<ServerCommandSource> context, String key, Object... obj) {
+        MessageUtils.sendCommandFeedback(context.getSource(), key, obj);
+    }
+
     public static void sendCommandFeedback(ServerCommandSource source, Text text) {
-        source.sendFeedback(text, false);
+        MessageUtils.sendTextMessage(source, text);
     }
 
     /**

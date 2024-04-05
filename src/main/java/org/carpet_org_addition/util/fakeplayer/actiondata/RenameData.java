@@ -16,7 +16,13 @@ import java.util.ArrayList;
 public class RenameData extends AbstractActionData {
     private static final String ITEM = "item";
     private static final String NEW_NAME = "new_name";
+    /**
+     * 要进行重命名的物品
+     */
     private final Item item;
+    /**
+     * 物品的新名称
+     */
     private final String newName;
 
     public RenameData(Item item, String newName) {
