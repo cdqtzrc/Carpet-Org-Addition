@@ -51,7 +51,7 @@ public class SingleThingCounter {
     /**
      * 判断计数器是否归零
      */
-    public boolean isZero() {
-        return this.count == 0;
+    public boolean nonZero() {
+        return this.count != 0;
     }
 }
