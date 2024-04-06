@@ -56,7 +56,7 @@ public class FakePlayerTrade {
                 return;
             }
             // 尝试交易物品
-            tryTrade(source, fakePlayer, merchantScreenHandler, index);
+            tryTrade(source, fakePlayer, merchantScreenHandler, index, voidTrade);
             if (voidTrade) {
                 // 如果是虚空交易，交易完毕后关闭交易GUI
                 fakePlayer.closeHandledScreen();
@@ -66,7 +66,7 @@ public class FakePlayerTrade {
 
     // 尝试交易物品
     private static void tryTrade(ServerCommandSource source, EntityPlayerMPFake fakePlayer,
-                                 MerchantScreenHandler merchantScreenHandler, int index) {
+                                 MerchantScreenHandler merchantScreenHandler, int index, boolean voidTrade) {
         InfiniteLoopException exception = new InfiniteLoopException();
         //如果村民无限交易未启用，则只循环一次
         do {
@@ -91,7 +91,8 @@ public class FakePlayerTrade {
                 // 除非假玩家物品栏内已经没有足够的物品用来交易，否则填充交易槽位不会失败
                 return;
             }
-        } while (CarpetOrgAdditionSettings.villagerInfiniteTrade);
+            // 如果启用了村民无限交易或当时为虚空交易，则尽可能完成所有交易
+        } while (voidTrade || CarpetOrgAdditionSettings.villagerInfiniteTrade);
     }
 
     // 选择物品
