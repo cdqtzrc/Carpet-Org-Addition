@@ -39,7 +39,7 @@ public class FakePlayerTrade {
                     }
                 }
                 // 检查计数器是否归零
-                if (timer.isZero()) {
+                if (timer.nonZero()) {
                     // 如果没有归零，计数器递减，然后结束方法
                     timer.decrement();
                     return;
