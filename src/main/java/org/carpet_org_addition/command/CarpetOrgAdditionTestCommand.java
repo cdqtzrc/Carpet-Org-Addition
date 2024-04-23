@@ -3,7 +3,9 @@ package org.carpet_org_addition.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.BlockState;
 import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.command.argument.ItemPredicateArgumentType;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
@@ -11,9 +13,12 @@ import net.minecraft.registry.Registries;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
 import org.carpet_org_addition.util.MessageUtils;
+import org.carpet_org_addition.util.TextUtils;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -30,7 +35,10 @@ public class CarpetOrgAdditionTestCommand {
                         .executes(context -> listEnchantBookFactory(context.getSource())))
                 .then(CommandManager.literal("getIndex")
                         .then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                .executes(CarpetOrgAdditionTestCommand::getItemIndex))));
+                                .executes(CarpetOrgAdditionTestCommand::getItemIndex)))
+                .then(CommandManager.literal("getBlockHardness")
+                        .then(CommandManager.argument("pos", BlockPosArgumentType.blockPos())
+                                .executes(CarpetOrgAdditionTestCommand::getBlockHardness))));
     }
 
     //列出图书管理员所有可交易的附魔书
@@ -60,5 +68,43 @@ public class CarpetOrgAdditionTestCommand {
             }
         }
         return -1;
+    }
+
+    /*
+     * 测试结果：
+     * 代码调整后：
+     * 黑曜石：20296，2064，2041，2057，2046，2040
+     * 切石机：20254，20273，20145，20178，19990
+     * 基岩：3941，3898，3801，3799，3810
+     * 石头：20876，20995，20996，20890，20978
+     * 深板岩：19958，20006，20118，20098，19937
+     * ---------------------------------------
+     * 代码调整前：
+     * 黑曜石：15641，16501，16772，16154，16084
+     * 切石机：17817，17437，17555，17666，17560
+     * 基岩：11527，11506，11488，11375，11324
+     * 石头：17397，17194，17470，17326，17319
+     * 深板岩：13134，13113，13174，12931，13175
+     * ---------------------------------------
+     * Set：
+     * 黑曜石：23909，24257，23439
+     * ---------------------------------------
+     * List:
+     * 黑曜石：15704，15787，15658
+     */
+
+    // 获取方块硬度
+    private static int getBlockHardness(CommandContext<ServerCommandSource> context) {
+        BlockPos blockPos = BlockPosArgumentType.getBlockPos(context, "pos");
+        ServerWorld world = context.getSource().getWorld();
+        BlockState blockState = world.getBlockState(blockPos);
+        long timeMillis = System.currentTimeMillis();
+        for (int i = 0; i < Integer.MAX_VALUE; i++) {
+            blockState.getHardness(world, blockPos);
+        }
+        float hardness = blockState.getHardness(world, blockPos);
+        long takeTime = System.currentTimeMillis() - timeMillis;
+        MessageUtils.sendCommandFeedback(context.getSource(), TextUtils.createText(blockState.getBlock().getName().getString() + "的硬度是" + hardness + "，命令执行耗时" + takeTime + "毫秒"));
+        return (int) takeTime;
     }
 }
