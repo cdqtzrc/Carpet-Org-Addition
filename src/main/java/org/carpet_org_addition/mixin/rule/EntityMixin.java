@@ -18,8 +18,9 @@ public abstract class EntityMixin {
     @Inject(method = "discard", at = @At("HEAD"), cancellable = true)
     private void discord(CallbackInfo ci) {
         if (CarpetOrgAdditionSettings.disableMobPeacefulDespawn && (Entity) (Object) this instanceof MobEntity mob) {
-            if (mob.isPersistent() || mob.cannotDespawn())
+            if (mob.isPersistent() || mob.cannotDespawn()) {
                 ci.cancel();
+            }
         }
     }
 

@@ -52,6 +52,8 @@
     "rule.VillagerEntityMixin",
     "rule.WetSpongeBlockMixin",
     "rule.WitherSkeletonEntitySpawnMixin",
+    "rule.blockdropsdirectlyenterinventory.BlockMixin",
+    "rule.blockdropsdirectlyenterinventory.TallPlantBlockMixin",
     "rule.carpet.EntityPlayerMPFakeMixin",
     "rule.carpet.SettingsManagerAccessor",
     "rule.channelingignoreweather.LightningRodBlockMixin",
