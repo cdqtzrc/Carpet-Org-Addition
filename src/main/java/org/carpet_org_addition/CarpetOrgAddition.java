@@ -42,6 +42,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     public void onPlayerLoggedIn(ServerPlayerEntity player) {
         CarpetExtension.super.onPlayerLoggedIn(player);
         // 假玩家生成时不保留上一次的击退，着火时间，摔落高度
+        // TODO 不必要的类型转换
         if (CarpetOrgAdditionSettings.fakePlayerSpawnNoKnockback && player instanceof EntityPlayerMPFake fakePlayer) {
             // 清除速度
             fakePlayer.setVelocity(0, 0, 0);

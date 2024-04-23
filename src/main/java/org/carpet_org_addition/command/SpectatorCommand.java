@@ -53,6 +53,7 @@ public class SpectatorCommand {
     }
 
     // 更改游戏模式
+    @SuppressWarnings("WrongTypeInTranslationArgs")
     private static int setGameMode(CommandContext<ServerCommandSource> context, boolean isFakePlayer) throws CommandSyntaxException {
         ServerPlayerEntity player = isFakePlayer
                 ? CommandUtils.getArgumentFakePlayer(context)
@@ -87,6 +88,7 @@ public class SpectatorCommand {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         requireSpectator(player);
         ServerWorld dimension = DimensionArgumentType.getDimensionArgument(context, "dimension");
+        // TODO 传送时自动换算主世界下界坐标
         player.teleport(dimension, player.getX(), player.getY(), player.getZ(), player.getYaw(), player.getPitch());
         // 发送命令反馈
         MessageUtils.sendCommandFeedback(context, "carpet.commands.spectator.teleport.success.dimension",

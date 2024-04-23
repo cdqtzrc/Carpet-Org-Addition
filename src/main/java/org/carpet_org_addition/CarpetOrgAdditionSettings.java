@@ -530,4 +530,16 @@ public class CarpetOrgAdditionSettings {
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
     public static String commandPlayerManager = "ops";
+
+    // 方块掉落物直接进入物品栏
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean blockDropsDirectlyEnterInventory = false;
+
+    // 海龟蛋快速采集
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean turtleEggFastMine = false;
 }
