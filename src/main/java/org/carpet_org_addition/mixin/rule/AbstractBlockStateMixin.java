@@ -1,12 +1,17 @@
 package org.carpet_org_addition.mixin.rule;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+
 import net.minecraft.block.AbstractBlock.AbstractBlockState;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
+
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
+import org.carpet_org_addition.util.helpers.BlockHardnessModifiers;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,53 +38,99 @@ public abstract class AbstractBlockStateMixin {
                 bedrockHardness = -1;
             }
             cir.setReturnValue(bedrockHardness);
-        } else if (CarpetOrgAdditionSettings.softDeepslate) {
-            // 易碎深板岩
-            if (block == Blocks.DEEPSLATE || block == Blocks.CHISELED_DEEPSLATE
-                    || block == Blocks.POLISHED_DEEPSLATE || block == Blocks.DEEPSLATE_BRICK_SLAB
-                    || block == Blocks.DEEPSLATE_BRICK_STAIRS || block == Blocks.DEEPSLATE_BRICK_WALL
-                    || block == Blocks.POLISHED_DEEPSLATE_SLAB || block == Blocks.POLISHED_DEEPSLATE_STAIRS
-                    || block == Blocks.POLISHED_DEEPSLATE_WALL) {
-                cir.setReturnValue(Blocks.STONE.getHardness());
-                return;
-            } else if (block == Blocks.COBBLED_DEEPSLATE || block == Blocks.COBBLED_DEEPSLATE_SLAB
-                    || block == Blocks.COBBLED_DEEPSLATE_STAIRS || block == Blocks.COBBLED_DEEPSLATE_WALL
-                    || block == Blocks.DEEPSLATE_BRICKS || block == Blocks.DEEPSLATE_TILES
-                    || block == Blocks.DEEPSLATE_TILE_SLAB || block == Blocks.DEEPSLATE_TILE_STAIRS
-                    || block == Blocks.DEEPSLATE_TILE_WALL || block == Blocks.CRACKED_DEEPSLATE_BRICKS
-                    || block == Blocks.CRACKED_DEEPSLATE_TILES) {
-                // 深板岩圆石
-                cir.setReturnValue(Blocks.COBBLESTONE.getHardness());
-                return;
-            }
         }
-        if (block == Blocks.OBSIDIAN && CarpetOrgAdditionSettings.softObsidian) {
-            // 易碎黑曜石
-            cir.setReturnValue(Blocks.END_STONE.getHardness());
+    }
+
+    // 修改深板岩系列方块硬度
+    @ModifyReturnValue(method = "getHardness", at = @At("RETURN"))
+    private float setDeepSlateHardness(float original) {
+        if (CarpetOrgAdditionSettings.softDeepslate) {
+            Block block = this.getBlock();
+            return BlockHardnessModifiers.deepslateModifier(
+                block,
+                original,
+                Blocks.DEEPSLATE,
+                Blocks.CHISELED_DEEPSLATE,
+                Blocks.POLISHED_DEEPSLATE,
+                Blocks.DEEPSLATE_BRICK_SLAB,
+                Blocks.DEEPSLATE_BRICK_STAIRS,
+                Blocks.DEEPSLATE_BRICK_WALL,
+                Blocks.POLISHED_DEEPSLATE_SLAB,
+                Blocks.POLISHED_DEEPSLATE_STAIRS,
+                Blocks.POLISHED_DEEPSLATE_WALL
+            );
         } else {
-            // 易碎矿石
-            if (CarpetOrgAdditionSettings.softOres) {
-                // 普通的石头矿石
-                if (block == Blocks.COAL_ORE || block == Blocks.IRON_ORE
-                        || block == Blocks.COPPER_ORE || block == Blocks.LAPIS_ORE
-                        || block == Blocks.GOLD_ORE || block == Blocks.REDSTONE_ORE
-                        || block == Blocks.DIAMOND_ORE || block == Blocks.EMERALD_ORE) {
-                    cir.setReturnValue(Blocks.STONE.getHardness());
-                    return;
-                }
-                // 深板岩矿石
-                if (block == Blocks.DEEPSLATE_COAL_ORE || block == Blocks.DEEPSLATE_IRON_ORE
-                        || block == Blocks.DEEPSLATE_COPPER_ORE || block == Blocks.DEEPSLATE_LAPIS_ORE
-                        || block == Blocks.DEEPSLATE_GOLD_ORE || block == Blocks.DEEPSLATE_REDSTONE_ORE
-                        || block == Blocks.DEEPSLATE_DIAMOND_ORE || block == Blocks.DEEPSLATE_EMERALD_ORE) {
-                    cir.setReturnValue(Blocks.DEEPSLATE.getHardness());
-                    return;
-                }
-                // 下界矿石
-                if (block == Blocks.NETHER_QUARTZ_ORE || block == Blocks.NETHER_GOLD_ORE) {
-                    cir.setReturnValue(Blocks.NETHERRACK.getHardness());
-                }
-            }
+            return original;
+        }
+    }
+
+    // 修改普通石头矿石方块硬度
+    @ModifyReturnValue(method = "getHardness", at = @At("RETURN"))
+    private float setSimpleOreHardness(float original) {
+        if (CarpetOrgAdditionSettings.softOres) {
+            Block block = this.getBlock();
+            return BlockHardnessModifiers.simpleOreModifier(
+                block,
+                original,
+                Blocks.COAL_ORE,
+                Blocks.IRON_ORE,
+                Blocks.COPPER_ORE,
+                Blocks.LAPIS_ORE,
+                Blocks.GOLD_ORE,
+                Blocks.REDSTONE_ORE,
+                Blocks.DIAMOND_ORE,
+                Blocks.EMERALD_ORE
+            );
+        } else {
+            return original;
+        }
+    }
+
+    // 修改深板岩矿石方块硬度
+    @ModifyReturnValue(method = "getHardness", at = @At("RETURN"))
+    private float setDeepslateOreHardness(float original) {
+        if (CarpetOrgAdditionSettings.softOres) {
+            Block block = this.getBlock();
+            return BlockHardnessModifiers.deepslateOreModifier(
+                block,
+                original,
+                Blocks.DEEPSLATE_COAL_ORE,
+                Blocks.DEEPSLATE_IRON_ORE,
+                Blocks.DEEPSLATE_COPPER_ORE,
+                Blocks.DEEPSLATE_LAPIS_ORE,
+                Blocks.DEEPSLATE_GOLD_ORE,
+                Blocks.DEEPSLATE_REDSTONE_ORE,
+                Blocks.DEEPSLATE_DIAMOND_ORE,
+                Blocks.DEEPSLATE_EMERALD_ORE
+            );
+        } else {
+            return original;
+        }
+    }
+
+    // 修改深下界矿石方块硬度
+    @ModifyReturnValue(method = "getHardness", at = @At("RETURN"))
+    private float setNetherOreHardness(float original) {
+        if (CarpetOrgAdditionSettings.softOres) {
+            Block block = this.getBlock();
+            return BlockHardnessModifiers.netherOreModifier(
+                block,
+                original,
+                Blocks.NETHER_QUARTZ_ORE,
+                Blocks.NETHER_GOLD_ORE
+            );
+        } else {
+            return original;
+        }
+    }
+
+    // 修改黑曜石方块硬度
+    @ModifyReturnValue(method = "getHardness", at = @At("RETURN"))
+    private float setObsidianHardness(float original) {
+        if (CarpetOrgAdditionSettings.softObsidian && this.getBlock().equals(Blocks.OBSIDIAN)) {
+            return Blocks.END_STONE.getHardness();
+        } else {
+            return original;
         }
     }
 
