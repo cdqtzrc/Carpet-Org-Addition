@@ -10,8 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 //绑定诅咒无效化
 @Mixin(EnchantmentHelper.class)
 public class BindingCurseEnchantmentMixin {
-    // TODO TAIL? HEAD!
-    @Inject(method = "hasBindingCurse", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "hasBindingCurse", at = @At("HEAD"), cancellable = true)
     private static void isCursed(CallbackInfoReturnable<Boolean> cir) {
         if (CarpetOrgAdditionSettings.bindingCurseInvalidation) {
             cir.setReturnValue(false);
