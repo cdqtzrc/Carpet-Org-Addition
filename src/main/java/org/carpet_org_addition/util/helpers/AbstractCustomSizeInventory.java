@@ -35,7 +35,7 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
     }
 
     @Override
-    public ItemStack getStack(int slot) {
+    public final ItemStack getStack(int slot) {
         if (slot < this.getActualSize()) {
             return this.getInventory().getStack(slot);
         }
@@ -43,7 +43,7 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
     }
 
     @Override
-    public ItemStack removeStack(int slot, int amount) {
+    public final ItemStack removeStack(int slot, int amount) {
         if (slot < this.getActualSize()) {
             return this.getInventory().removeStack(slot, amount);
         }
@@ -55,7 +55,7 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
     }
 
     @Override
-    public ItemStack removeStack(int slot) {
+    public final ItemStack removeStack(int slot) {
         if (slot < this.getActualSize()) {
             return this.getInventory().removeStack(slot);
         }
@@ -68,7 +68,7 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
     }
 
     @Override
-    public void setStack(int slot, ItemStack stack) {
+    public final void setStack(int slot, ItemStack stack) {
         if (slot < this.getActualSize()) {
             this.getInventory().setStack(slot, stack);
             return;
@@ -81,18 +81,18 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
     }
 
     @Override
-    public void markDirty() {
+    public final void markDirty() {
         this.getInventory().markDirty();
     }
 
     @Override
-    public void clear() {
+    public final void clear() {
         this.getInventory().clear();
         this.stacks.clear();
     }
 
     @Override
-    public boolean isValid(int slot, ItemStack stack) {
+    public final boolean isValid(int slot, ItemStack stack) {
         return slot < this.getActualSize();
     }
 
@@ -103,7 +103,7 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
         }
     }
 
-    protected final int getAmendSlotIndex(int slotIndex) {
+    private int getAmendSlotIndex(int slotIndex) {
         return slotIndex - this.getActualSize();
     }
 }
