@@ -20,6 +20,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
+import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.*;
@@ -88,8 +89,13 @@ public class SpectatorCommand {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         requireSpectator(player);
         ServerWorld dimension = DimensionArgumentType.getDimensionArgument(context, "dimension");
-        // TODO 传送时自动换算主世界下界坐标
-        player.teleport(dimension, player.getX(), player.getY(), player.getZ(), player.getYaw(), player.getPitch());
+        if (player.getWorld().getRegistryKey() == World.OVERWORLD && dimension.getRegistryKey() == World.NETHER) {
+            player.teleport(dimension, player.getX() / 8, player.getY(), player.getZ() / 8, player.getYaw(), player.getPitch());
+        } else if (player.getWorld().getRegistryKey() == World.NETHER && dimension.getRegistryKey() == World.OVERWORLD) {
+            player.teleport(dimension, player.getX() * 8, player.getY(), player.getZ() * 8, player.getYaw(), player.getPitch());
+        } else {
+            player.teleport(dimension, player.getX(), player.getY(), player.getZ(), player.getYaw(), player.getPitch());
+        }
         // 发送命令反馈
         MessageUtils.sendCommandFeedback(context, "carpet.commands.spectator.teleport.success.dimension",
                 player.getDisplayName(), WorldUtils.getDimensionId(dimension));
