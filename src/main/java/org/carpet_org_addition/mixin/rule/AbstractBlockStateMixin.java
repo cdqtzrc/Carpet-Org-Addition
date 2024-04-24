@@ -25,7 +25,7 @@ public abstract class AbstractBlockStateMixin {
      * 修改硬度的基岩不会被推动
      * {@link PistonBlockMixin}
      */
-    @Inject(method = "getHardness", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "getHardness", at = @At("HEAD"), cancellable = true)
     public void getBlockHardness(BlockView world, BlockPos pos, CallbackInfoReturnable<Float> cir) {
         Optional<Float> optional = BlockHardnessModifiers.getHardness(this.getBlock());
         optional.ifPresent(cir::setReturnValue);

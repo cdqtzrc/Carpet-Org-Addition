@@ -697,6 +697,22 @@ CCE更新抑制器(CCEUpdateSuppression)
     - 参考选项：`"true"`, `“false”`, `"ops"`, `"0"`, `"1"`, `"2"`, `"3"`, `"4"`
     - 分类：`Org`，`指令`
 
+方块掉落物直接进入物品栏(blockDropsDirectlyEnterInventory)
+
+- 方块被玩家挖掘后物品不会掉落，而是直接进入玩家物品栏
+    - 类型：`布尔值`
+    - 默认值：`false`
+    - 参考选项：`true`，`false`
+    - 分类：`Org`，`生存`
+
+海龟蛋快速采集(turtleEggFastMine)
+
+- 玩家可以一次性挖掘多个海龟蛋
+    - 类型：`布尔值`
+    - 默认值：`false`
+    - 参考选项：`true`，`false`
+    - 分类：`Org`，`生存`
+
 ## 命令
 
 [/itemshadowing](docs/commands/itemshadowing.md)
