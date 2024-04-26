@@ -154,7 +154,7 @@ public class InventoryUtils {
         if (component == null) {
             return;
         }
-        ContainerComponent copy = ((ContainerDeepCopy) (Object) component).copy(component);
+        ContainerComponent copy = ((ContainerDeepCopy) (Object) component).copy();
         shulkerBox.set(DataComponentTypes.CONTAINER, copy);
     }
 
