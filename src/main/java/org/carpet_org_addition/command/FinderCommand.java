@@ -8,6 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.*;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryKeys;
@@ -31,11 +32,10 @@ import org.carpet_org_addition.util.findtask.result.BlockFindResult;
 import org.carpet_org_addition.util.findtask.result.ItemFindResult;
 import org.carpet_org_addition.util.findtask.result.TradeEnchantedBookResult;
 import org.carpet_org_addition.util.findtask.result.TradeItemFindResult;
-import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
+import org.carpet_org_addition.util.matcher.ItemMatcher;
 import org.carpet_org_addition.util.matcher.Matcher;
 
 import java.util.ArrayList;
-import java.util.function.Predicate;
 
 public class FinderCommand {
     /**
@@ -54,7 +54,7 @@ public class FinderCommand {
                                         .then(CommandManager.argument("maxCount", IntegerArgumentType.integer(1))
                                                 .executes(context -> blockFinder(context, -1, -1))))))
                 .then(CommandManager.literal("item")
-                        .then(CommandManager.argument("itemStack", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                        .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(commandBuildContext))
                                 .executes(context -> findItem(context, 32, 10))
                                 .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
                                         .executes(context -> findItem(context, -1, 10))
@@ -69,7 +69,7 @@ public class FinderCommand {
                                                 .then(CommandManager.argument("maxCount", IntegerArgumentType.integer(1))
                                                         .executes(context -> findTradeItem(context, -1, -1))))))
                         .then(CommandManager.literal("enchantedBook")
-                                .then(CommandManager.argument("enchantment", RegistryEntryArgumentType.registryEntry(commandBuildContext, RegistryKeys.ENCHANTMENT))
+                                .then(CommandManager.argument("enchantment", RegistryEntryReferenceArgumentType.registryEntry(commandBuildContext, RegistryKeys.ENCHANTMENT))
                                         .executes(context -> findEnchantedBookTrade(context, 32, 10))
                                         .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
                                                 .executes(context -> findEnchantedBookTrade(context, -1, 10))
@@ -82,7 +82,7 @@ public class FinderCommand {
         // 获取执行命令的玩家并非空判断
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         // 获取要查找的物品堆栈
-        Predicate<ItemStack> predicate = ItemPredicateArgumentType.getItemStackPredicate(context, "itemStack");
+        Item item = ItemStackArgumentType.getItemStackArgument(context, "itemStack").getItem();
         if (range == -1) {
             // 获取要查找方块的范围
             range = IntegerArgumentType.getInteger(context, "range");
@@ -94,7 +94,7 @@ public class FinderCommand {
         // 获取玩家所在的位置，这是命令开始执行的坐标
         BlockPos sourceBlockPos = player.getBlockPos();
         // 查找周围容器中的物品
-        Matcher matcher = new ItemPredicateMatcher(predicate);
+        Matcher matcher = new ItemMatcher(item);
         // 创建一个物品查找器对象
         ItemFinder itemFinder = new ItemFinder(player.getWorld(), sourceBlockPos, range, matcher);
         // 进行物品查找
@@ -191,7 +191,7 @@ public class FinderCommand {
             maxCount = IntegerArgumentType.getInteger(context, "maxCount");
         }
         // 获取需要查找的附魔
-        Enchantment enchantment = RegistryEntryArgumentType.getEnchantment(context, "enchantment").value();
+        Enchantment enchantment = RegistryEntryReferenceArgumentType.getEnchantment(context, "enchantment").value();
         // 获取玩家所在的位置
         BlockPos sourcePos = player.getBlockPos();
         EnchantedBookTradeFinder enchantedBookTradeFinder = new EnchantedBookTradeFinder(player.getWorld(), sourcePos, range, enchantment);

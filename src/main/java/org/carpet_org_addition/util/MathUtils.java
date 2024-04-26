@@ -2,7 +2,6 @@ package org.carpet_org_addition.util;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.rulevalidator.MaxBlockPlaceDistanceValidator;
 
@@ -86,15 +85,6 @@ public class MathUtils {
             return 6.0;
         }
         return Math.min(distance, MaxBlockPlaceDistanceValidator.MAX_BLOCK_PLACE_DISTANCE_MAX_VALUE);
-    }
-
-    /**
-     * 获取玩家最大交互距离的平方
-     *
-     * @return 当前设置的最大交互距离，然后取平方
-     */
-    public static double getMaxBreakSquaredDistance() {
-        return MathHelper.square(getPlayerMaxInteractionDistance());
     }
 
     /**

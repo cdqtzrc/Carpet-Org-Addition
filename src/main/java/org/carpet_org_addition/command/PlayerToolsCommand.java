@@ -122,7 +122,7 @@ public class PlayerToolsCommand {
 
     //获取维度名称
     private static Text getDimensionText(World world) {
-        Identifier value = world.getDimensionKey().getValue();
+        Identifier value = world.getDimension().effects();
         if (value.equals(DimensionTypes.OVERWORLD_ID)) {
             return TextUtils.getTranslate("carpet.commands.playerTools.pos.overworld");
         } else if (value.equals(DimensionTypes.THE_NETHER_ID)) {

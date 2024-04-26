@@ -3,7 +3,6 @@ package org.carpet_org_addition.util.helpers;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -19,7 +18,7 @@ public final class ImmutableInventory extends SimpleInventory implements Iterabl
      */
     private boolean lock = false;
 
-    public ImmutableInventory(DefaultedList<ItemStack> list) {
+    public ImmutableInventory(List<ItemStack> list) {
         super(list.size());
         for (int i = 0; i < list.size(); i++) {
             // 不能用super.setStack(i, list.get(i))，编译器会自动把super设置为this
@@ -117,9 +116,8 @@ public final class ImmutableInventory extends SimpleInventory implements Iterabl
 
             @Override
             public ItemStack next() {
-                // 由于对象不可变，所以是线程安全的，不需要检查并抛出并发修改异常
+                // 由于对象不可变，所以是线程安全的，不需要考虑并发修改的问题
                 ItemStack itemStack = ImmutableInventory.this.getStack(cursor);
-                // 将变量自增与获取元素分开写，增加可读性
                 this.cursor++;
                 return itemStack;
             }

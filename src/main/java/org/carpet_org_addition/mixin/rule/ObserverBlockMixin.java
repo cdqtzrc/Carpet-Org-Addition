@@ -3,14 +3,15 @@ package org.carpet_org_addition.mixin.rule;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FacingBlock;
 import net.minecraft.block.ObserverBlock;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -28,20 +29,19 @@ public abstract class ObserverBlockMixin extends FacingBlock {
         super(settings);
     }
 
-    //可激活侦测器，打火石右键激活
-    @SuppressWarnings("deprecation")
+    // 可激活侦测器，打火石右键激活
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (CarpetOrgAdditionSettings.canActivatesObserver) {
             ItemStack itemStack = player.getStackInHand(hand);
             if (itemStack.isOf(Items.FLINT_AND_STEEL) && !player.isSneaking()) {
                 this.scheduleTick(world, pos);
-                itemStack.damage(1, player, player1 -> player1.sendToolBreakStatus(hand));
+                stack.damage(1, player, LivingEntity.getSlotForHand(hand));
                 world.playSound(player, pos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1, 1);
                 player.incrementStat(Stats.USED.getOrCreateStat(itemStack.getItem()));
-                return ActionResult.SUCCESS;
+                return ItemActionResult.SUCCESS;
             }
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onUseWithItem(stack, state, world, pos, player, hand, hit);
     }
 }

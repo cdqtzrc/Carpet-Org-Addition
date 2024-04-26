@@ -98,9 +98,9 @@ public class FakePlayerTrade {
     // 选择物品
     private static boolean switchItem(EntityPlayerMPFake fakePlayer, MerchantScreenHandler merchantScreenHandler, TradeOffer tradeOffer) {
         // 获取第一个交易物品
-        ItemStack firstBuyItem = tradeOffer.getAdjustedFirstBuyItem();// 0索引
+        ItemStack firstBuyItem = tradeOffer.getDisplayedFirstBuyItem();// 0索引
         // 获取第二个交易物品
-        ItemStack secondBuyItem = tradeOffer.getSecondBuyItem();// 1索引
+        ItemStack secondBuyItem = tradeOffer.getDisplayedSecondBuyItem();// 1索引
         DefaultedList<Slot> list = merchantScreenHandler.slots;
         return fillTradeSlot(fakePlayer, merchantScreenHandler, firstBuyItem, 0, list)
                 && fillTradeSlot(fakePlayer, merchantScreenHandler, secondBuyItem, 1, list);
@@ -134,7 +134,7 @@ public class FakePlayerTrade {
             ItemStack itemStack = list.get(index).getStack();
             // 如果交易槽位上有物品，就将当前物品与交易槽上的物品比较，同时比较物品NBT
             // 否则，将当前物品直接与村民需要的交易物品进行比较，不比较NBT
-            if (slotItem.isEmpty() ? buyItem.isOf(itemStack.getItem()) : ItemStack.canCombine(slotItem, itemStack)) {
+            if (slotItem.isEmpty() ? buyItem.isOf(itemStack.getItem()) : ItemStack.areItemsAndComponentsEqual(slotItem, itemStack)) {
                 // 如果匹配，将当前物品移动到交易槽位
                 if (FakePlayerUtils.withKeepPickupAndMoveItemStack(merchantScreenHandler, index, slotIndex, fakePlayer)) {
                     // 如果假玩家填充交易槽后光标上有剩余的物品，将剩余的物品放回原槽位

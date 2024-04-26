@@ -58,8 +58,8 @@ public class TradeData extends AbstractActionData {
             list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.trade.option", index));
             // 将交易的物品和价格添加到集合中
             list.add(TextUtils.appendAll("    ",
-                    getWithCountHoverText(tradeOffer.getAdjustedFirstBuyItem()), " ",
-                    getWithCountHoverText(tradeOffer.getSecondBuyItem()), " -> ",
+                    getWithCountHoverText(tradeOffer.getDisplayedFirstBuyItem()), " ",
+                    getWithCountHoverText(tradeOffer.getDisplayedSecondBuyItem()), " -> ",
                     getWithCountHoverText(tradeOffer.getSellItem())));
             // 如果当前交易已禁用，将交易已禁用的消息添加到集合，然后直接结束方法并返回集合
             if (tradeOffer.isDisabled()) {

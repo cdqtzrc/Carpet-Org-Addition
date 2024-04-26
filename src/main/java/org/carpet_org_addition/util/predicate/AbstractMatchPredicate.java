@@ -5,5 +5,8 @@ import net.minecraft.registry.entry.RegistryEntry;
 
 import java.util.function.Predicate;
 
-public abstract class AbstractRegistryEntryPredicate implements Predicate<RegistryEntry<Item>> {
+/**
+ * 这个类没有什么用
+ */
+public abstract class AbstractMatchPredicate implements Predicate<RegistryEntry<Item>> {
 }

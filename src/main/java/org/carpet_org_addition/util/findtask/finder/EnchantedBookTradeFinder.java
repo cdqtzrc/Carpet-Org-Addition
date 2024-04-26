@@ -3,12 +3,8 @@ package org.carpet_org_addition.util.findtask.finder;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.village.TradeOfferList;
@@ -41,24 +37,9 @@ public class EnchantedBookTradeFinder extends AbstractFinder {
                 ItemStack itemStack = offers.get(i).getSellItem();
                 if (itemStack.isOf(Items.ENCHANTED_BOOK)) {
                     int level = 0;
-                    // 获取附魔的注册id
-                    Identifier registryId = EnchantmentHelper.getEnchantmentId(enchantment);
                     // 获取附魔书所有的附魔
-                    NbtList nbtList = EnchantedBookItem.getEnchantmentNbt(itemStack);
-                    for (int j = 0; j < nbtList.size(); j++) {
-                        // 获取每一个附魔的复合NBT标签
-                        NbtCompound nbtCompound = nbtList.getCompound(j);
-                        // 获取这本附魔书上附魔的id
-                        Identifier bookEnchantmentId = EnchantmentHelper.getIdFromNbt(nbtCompound);
-                        if (bookEnchantmentId == null || !bookEnchantmentId.equals(registryId)) {
-                            continue;
-                        }
-                        // 如果附魔书上附魔的id与指定id相同，获取等级，跳出循环
-                        level = EnchantmentHelper.getLevelFromNbt(nbtCompound);
-                        break;
-                    }
-                    // 将符合条件的附魔书添加到集合
-                    if (level > 0) {
+                    if (EnchantmentHelper.getLevel(enchantment, itemStack) > 0) {
+                        // 将符合条件的附魔书添加到集合
                         list.add(new TradeEnchantedBookResult(merchant, offers.get(i), (i + 1), enchantment, level));
                     }
                 }

@@ -3,6 +3,7 @@ package org.carpet_org_addition.util;
 import carpet.patches.EntityPlayerMPFake;
 import carpet.patches.FakeClientConnection;
 import com.mojang.authlib.GameProfile;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
@@ -22,6 +23,7 @@ import org.carpet_org_addition.mixin.rule.PlayerEntityAccessor;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class GameUtils {
     private GameUtils() {
@@ -68,11 +70,11 @@ public class GameUtils {
         // 生成假玩家的逻辑似乎不在主线程
         EntityPlayerMPFake instance = EntityPlayerMPFake.respawnFake(server, worldIn, gameprofile, SyncedClientOptions.createDefault());
         instance.fixStartingPosition = () -> instance.refreshPositionAndAngles(pos.x, pos.y, pos.z, yaw, pitch);
-        server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), instance, new ConnectedClientData(gameprofile, 0, instance.getClientOptions()));
+        server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), instance, new ConnectedClientData(gameprofile, 0, instance.getClientOptions(), false));
         instance.teleport(worldIn, pos.x, pos.y, pos.z, yaw, pitch);
         instance.setHealth(20.0F);
         ((EntityAccessor) instance).cancelRemoved();
-        instance.setStepHeight(0.6F);
+        Objects.requireNonNull(instance.getAttributeInstance(EntityAttributes.GENERIC_STEP_HEIGHT)).setBaseValue(0.6F);
         instance.interactionManager.changeGameMode(gamemode);
         server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(instance, (byte) ((int) (instance.headYaw * 256.0F / 360.0F))), dimensionId);
         server.getPlayerManager().sendToDimension(new EntityPositionS2CPacket(instance), dimensionId);

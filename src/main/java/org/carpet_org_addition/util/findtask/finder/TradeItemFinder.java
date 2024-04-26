@@ -31,7 +31,7 @@ public class TradeItemFinder extends AbstractFinder {
             // 获取集合中的每一个实体，并获取每一个实体的交易选项
             TradeOfferList offerList = merchant.getOffers();
             for (int index = 0; index < offerList.size(); index++) {
-                if (this.argument.test(offerList.get(index).getSellItem())) {
+                if (this.argument.getItem() == offerList.get(index).getSellItem().getItem()) {
                     // 如果交易的输出物品与指定的物品匹配，则将该选项添加到集合
                     this.list.add(new TradeItemFindResult(merchant, offerList.get(index), index + 1));
                 }

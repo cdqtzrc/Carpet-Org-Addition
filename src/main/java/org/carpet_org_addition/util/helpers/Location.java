@@ -187,7 +187,7 @@ public class Location {
         }
         MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.creator_player_name", creatorPlayerName);
         MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.creator_time", creatorTime);
-        Identifier value = player.getWorld().getDimensionKey().getValue();
+        Identifier value = player.getWorld().getDimension().effects();
         if (value.equals(DimensionTypes.OVERWORLD_ID)
                 && (locType == LocationType.OVERWORLD
                 || locType == LocationType.OVERWORLD_AND_THE_NETHER

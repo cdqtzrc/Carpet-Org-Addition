@@ -1,10 +1,11 @@
 package org.carpet_org_addition.mixin.rule;
 
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,9 +26,7 @@ public class ServerPlayerEntityMixin {
                 && damageSource.getAttacker() instanceof CreeperEntity creeperEntity
                 && creeperEntity.shouldDropHead()) {
             ItemStack itemStack = new ItemStack(Items.PLAYER_HEAD);
-            NbtCompound nbt = new NbtCompound();
-            nbt.putString("SkullOwner", thisPlayer.getName().getString());
-            itemStack.setNbt(nbt);
+            itemStack.set(DataComponentTypes.PROFILE, new ProfileComponent(thisPlayer.getGameProfile()));
             creeperEntity.onHeadDropped();
             thisPlayer.dropStack(itemStack);
         }

@@ -308,6 +308,7 @@
   "carpet.commands.playerAction.info.craft.item_tag": "物品标签",
   "carpet.commands.playerAction.info.craft.no_crafting_table": "%s没有打开%s",
   "carpet.commands.playerAction.info.craft.recipe": "%s正在合成物品，配方:",
+  "carpet.commands.playerAction.info.craft.result": "%s正在合成%s:",
   "carpet.commands.playerAction.info.craft.state": "%s当前合成物品的状态:",
   "carpet.commands.playerAction.info.craft.gui": "合成",
   "carpet.commands.playerAction.info.sorting.item": "%s正在分拣%s物品:",

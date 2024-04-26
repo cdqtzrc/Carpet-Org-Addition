@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(EnderPearlEntity.class)
 public class EnderPearlEntityMixin {
-    //无伤末影珍珠
+    // 无伤末影珍珠
     @WrapOperation(method = "onCollision", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"))
     private boolean damage(Entity entity, DamageSource source, float amount, Operation<Boolean> original) {
         if (CarpetOrgAdditionSettings.notDamageEnderPearl) {

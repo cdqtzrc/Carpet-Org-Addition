@@ -2,7 +2,6 @@ package org.carpet_org_addition.util.matcher;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -20,7 +19,7 @@ public class ItemStackMatcher implements Matcher {
 
     @Override
     public boolean test(ItemStack itemStack) {
-        return ItemStack.canCombine(this.itemStack, itemStack);
+        return ItemStack.areItemsAndComponentsEqual(this.itemStack, itemStack);
     }
 
     @Override
@@ -59,15 +58,14 @@ public class ItemStackMatcher implements Matcher {
             return true;
         }
         if (obj instanceof ItemStackMatcher itemStackMatcher) {
-            return ItemStack.canCombine(this.itemStack, itemStackMatcher.itemStack);
+            return ItemStack.areItemsAndComponentsEqual(this.itemStack, itemStackMatcher.itemStack);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        NbtCompound nbt = this.itemStack.getNbt();
-        return this.itemStack.getItem().hashCode() + (nbt == null || nbt.isEmpty() ? 0 : nbt.hashCode());
+        return this.toString().hashCode();
     }
 
     @Override
