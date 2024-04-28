@@ -4,6 +4,8 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -113,5 +115,12 @@ public class WorldUtils {
             return RegistryKey.of(RegistryKeys.WORLD, new Identifier(split[0], split[1]));
         }
         return RegistryKey.of(RegistryKeys.WORLD, new Identifier(worldId));
+    }
+
+    /**
+     * 在指定位置播放一个音效
+     */
+    public static void playSound(World world, BlockPos blockPos, SoundEvent soundEvent, SoundCategory soundCategory) {
+        world.playSound(null, blockPos, soundEvent, soundCategory, 1F, 1F);
     }
 }

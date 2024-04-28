@@ -4,6 +4,8 @@
   "package": "org.carpet_org_addition.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "logger.HUDControllerMixin",
+    "logger.WanderingTraderManagerMixin",
     "rule.AbstractBlockStateMixin",
     "rule.AbstractPiglinEntityMixin",
     "rule.AbstractPlantStemBlockMixin",
