@@ -100,8 +100,22 @@ public class MessageUtils {
      */
     public static void broadcastTextMessage(ServerCommandSource source, Text message) {
         try {
-            PlayerManager playerManager = Objects.requireNonNull(source.getServer()).getPlayerManager();
+            PlayerManager playerManager = source.getServer().getPlayerManager();
             playerManager.broadcast(message, false);
+        } catch (NullPointerException e) {
+            CarpetOrgAddition.LOGGER.error("无法通过服务器命令源获取服务器对象", e);
+        }
+    }
+
+    /**
+     * 广播一条带有特殊样式的文本消息
+     *
+     * @param manager 通过这个玩家管理器对象发送消息
+     * @param message 要广播消息的内容
+     */
+    public static void broadcastTextMessage(PlayerManager manager, Text message) {
+        try {
+            manager.broadcast(message, false);
         } catch (NullPointerException e) {
             CarpetOrgAddition.LOGGER.error("无法通过服务器命令源获取服务器对象", e);
         }

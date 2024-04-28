@@ -359,5 +359,10 @@
   "carpet.commands.playerManager.info.annotation": "注释：%s",
   "carpet.commands.spectator.teleport.fail": "你当前不是%s",
   "carpet.commands.spectator.teleport.success.dimension": "已将%s传送至%s",
-  "carpet.commands.ruleSearch.feedback": "Carpet Mod中符合“%s”的选项：:"
+  "carpet.commands.ruleSearch.feedback": "Carpet Mod中符合“%s”的选项：:",
+  "carpet.logger.wanderingTrader.time.second": "%s秒",
+  "carpet.logger.wanderingTrader.time.minutes_and_seconds": "%s分%s秒",
+  "carpet.logger.wanderingTrader.hud": "距离下一次生成还剩：%s，成功率：%s",
+  "carpet.logger.wanderingTrader.message": "流浪商人在%s成功生成",
+  "carpet.logger.wanderingTrader.gamerule.not_enabled": "游戏规则“%s”未启用"
 }
