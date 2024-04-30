@@ -1,16 +1,19 @@
 package org.carpet_org_addition.mixin.logger;
 
+import carpet.logging.Logger;
+import carpet.utils.CommandHelper;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.WanderingTraderManager;
+import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.logger.WanderingTraderSpawnLogger;
 import org.carpet_org_addition.logger.WanderingTraderSpawnLogger.SpawnCountdown;
 import org.carpet_org_addition.util.MessageUtils;
@@ -22,7 +25,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Mixin(WanderingTraderManager.class)
 public class WanderingTraderManagerMixin {
@@ -55,14 +59,27 @@ public class WanderingTraderManagerMixin {
             if (server == null) {
                 return;
             }
-            PlayerManager playerManager = server.getPlayerManager();
-            // 广播流浪商人生成成功
-            MessageUtils.broadcastTextMessage(playerManager,
-                    TextUtils.getTranslate("carpet.logger.wanderingTrader.message",
-                            TextUtils.blockPos(trader.getBlockPos(), Formatting.GREEN)));
-            List<ServerPlayerEntity> list = playerManager.getPlayerList();
-            // 播放音效通知流浪商人生成
-            for (ServerPlayerEntity player : list) {
+            Logger logger = WanderingTraderSpawnLogger.getLogger();
+            Set<Map.Entry<String, String>> entries = ((LoggerAccessor) logger).getSubscribedOnlinePlayers().entrySet();
+            // 普通消息
+            MutableText message = TextUtils.getTranslate("carpet.logger.wanderingTrader.message",
+                    TextUtils.blockPos(trader.getBlockPos(), Formatting.GREEN));
+            // 带点击导航的消息
+            MutableText command = TextUtils.command(TextUtils.getTranslate("carpet.logger.wanderingTrader.message.navigate"),
+                    "/navigate uuid \"" + trader.getUuid().toString() + "\"",
+                    TextUtils.getTranslate("carpet.logger.wanderingTrader.message.navigate.hover", trader.getName()),
+                    Formatting.AQUA, false);
+            MutableText canClickMessage = TextUtils.getTranslate("carpet.logger.wanderingTrader.message.click",
+                    TextUtils.blockPos(trader.getBlockPos(), Formatting.GREEN), command);
+            for (Map.Entry<String, String> entry : entries) {
+                ServerPlayerEntity player = server.getPlayerManager().getPlayer(entry.getKey());
+                if (player == null) {
+                    continue;
+                }
+                // 广播流浪商人生成成功
+                MessageUtils.sendTextMessage(player, CommandHelper.canUseCommand(player.getCommandSource(),
+                        CarpetOrgAdditionSettings.commandNavigate) ? canClickMessage : message);
+                // 播放音效通知流浪商人生成
                 WorldUtils.playSound(trader.getWorld(), player.getBlockPos(), trader.getYesSound(), trader.getSoundCategory());
             }
         }

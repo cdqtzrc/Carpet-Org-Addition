@@ -6,6 +6,7 @@
   "mixins": [
     "command.ServerPlayerEntityMixin",
     "logger.HUDControllerMixin",
+    "logger.LoggerAccessor",
     "logger.WanderingTraderManagerMixin",
     "rule.AbstractBlockStateMixin",
     "rule.AbstractPiglinEntityMixin",

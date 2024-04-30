@@ -1,6 +1,7 @@
 package org.carpet_org_addition.logger;
 
 import carpet.logging.HUDLogger;
+import carpet.logging.Logger;
 import carpet.logging.LoggerRegistry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
@@ -35,6 +36,11 @@ public class WanderingTraderSpawnLogger {
     // 反射获取wanderingTrader字段
     private static Field getField() throws NoSuchFieldException {
         return WanderingTraderSpawnLogger.class.getField(LOGGER_NAME);
+    }
+
+    // 获取此记录器
+    public static Logger getLogger() {
+        return LoggerRegistry.getLogger(LOGGER_NAME);
     }
 
     // 更新HUD
