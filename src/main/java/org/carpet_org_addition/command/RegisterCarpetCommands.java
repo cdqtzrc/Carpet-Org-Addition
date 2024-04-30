@@ -30,7 +30,7 @@ public class RegisterCarpetCommands {
             PlayerToolsCommand.register(dispatcher);
 
             //发送消息命令
-            SendMessageCommand.register(dispatcher);
+            SendMessageCommand.register(dispatcher, commandBuildContext);
 
             //苦力怕音效命令
             CreeperCommand.register(dispatcher);
@@ -64,6 +64,9 @@ public class RegisterCarpetCommands {
 
             // 玩家管理器命令
             PlayerManagerCommand.register(dispatcher);
+
+            // 追踪器命令
+            NavigatorCommand.register(dispatcher);
 
             /*
               测试用命令

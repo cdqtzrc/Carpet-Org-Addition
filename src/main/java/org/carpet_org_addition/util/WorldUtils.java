@@ -6,11 +6,13 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
+import org.carpet_org_addition.util.constant.TextConstants;
 
 import java.util.ArrayList;
 
@@ -48,16 +50,16 @@ public class WorldUtils {
         return list;
     }
 
-    @SuppressWarnings("unused")
-    public static Formatting getColor(String dimension) {
-        if (dimension == null) {
-            return Formatting.GREEN;
-        }
-        return switch (dimension) {
-            case OVERWORLD -> Formatting.GREEN;
+    /**
+     * 根据维度获取对应的颜色
+     *
+     * @return 如果是下界，返回红色；如果是末地，返回紫色；如果是主世界或者自定义维度，返回绿色
+     */
+    public static Formatting getColor(World world) {
+        return switch (getDimensionId(world)) {
             case THE_NETHER -> Formatting.RED;
             case THE_END -> Formatting.DARK_PURPLE;
-            default -> Formatting.WHITE;
+            default -> Formatting.GREEN;
         };
     }
 
@@ -115,6 +117,22 @@ public class WorldUtils {
             return RegistryKey.of(RegistryKeys.WORLD, new Identifier(split[0], split[1]));
         }
         return RegistryKey.of(RegistryKeys.WORLD, new Identifier(worldId));
+    }
+
+    /**
+     * 获取维度名称
+     *
+     * @param world 要获取维度名称的世界对象
+     * @return 如果是原版的3个维度，返回本Mod翻译后的名称，否则自己返回维度ID
+     */
+    public static Text getDimensionName(World world) {
+        String dimension = WorldUtils.getDimensionId(world);
+        return switch (dimension) {
+            case OVERWORLD -> TextConstants.OVERWORLD;
+            case THE_NETHER -> TextConstants.THE_NETHER;
+            case THE_END -> TextConstants.THE_END;
+            default -> TextUtils.createText(dimension);
+        };
     }
 
     /**

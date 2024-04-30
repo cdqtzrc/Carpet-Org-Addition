@@ -42,6 +42,13 @@ public class TextUtils {
     }
 
     /**
+     * 返回一个简单的没有任何样式的方块坐标可变文本对象
+     */
+    public static MutableText simpleBlockPos(BlockPos blockPos) {
+        return Texts.bracketed(Text.translatable("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+    }
+
+    /**
      * 获取一个可以单击并在聊天框输入文本的可变文本组件
      *
      * @param original  原始文本，直接显示在聊天页面上
@@ -213,6 +220,20 @@ public class TextUtils {
      */
     public static MutableText getBlockName(Block block) {
         return Text.translatable(block.getTranslationKey());
+    }
+
+    /**
+     * 将一个可变文本对象设置为斜体
+     */
+    public static MutableText toItalic(MutableText mutableText) {
+        return mutableText.styled(style -> style.withItalic(true));
+    }
+
+    /**
+     * 设置一个可变文本对象的颜色
+     */
+    public static MutableText setColor(MutableText mutableText, Formatting formatting) {
+        return mutableText.styled(style -> style.withColor(formatting));
     }
 
     /**
