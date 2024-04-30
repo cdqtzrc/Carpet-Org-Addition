@@ -10,8 +10,10 @@ import org.carpet_org_addition.CarpetOrgAddition;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * @see <a href="https://zh.minecraft.wiki/w/Java%E7%89%88%E4%B8%96%E7%95%8C%E6%A0%BC%E5%BC%8F">世界格式</a>
@@ -140,6 +142,7 @@ public class WorldFormat {
 
 
     // 列出当前目录下的所有文件
+    @Deprecated
     public HashSet<File> listFiles() {
         File[] files = this.modFileDirectory.listFiles();
         if (files == null) {
@@ -147,6 +150,14 @@ public class WorldFormat {
             return new HashSet<>();
         }
         return new HashSet<>(Arrays.asList(files));
+    }
+
+    public List<File> toFileList() {
+        File[] files = this.modFileDirectory.listFiles();
+        if (files == null) {
+            return new ArrayList<>();
+        }
+        return Arrays.asList(files);
     }
 
     // 检查该目录下的文件是否存在

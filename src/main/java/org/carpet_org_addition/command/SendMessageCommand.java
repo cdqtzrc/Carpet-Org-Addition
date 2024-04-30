@@ -5,7 +5,10 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.ColorArgumentType;
+import net.minecraft.command.argument.ItemStackArgumentType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -15,8 +18,9 @@ import net.minecraft.util.math.BlockPos;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.*;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class SendMessageCommand {
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("sendMessage")
                 .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandSendMessage))
                 .then(CommandManager.literal("copy")
@@ -37,7 +41,10 @@ public class SendMessageCommand {
                 .then(CommandManager.literal("formatting")
                         .then(CommandManager.argument("text", StringArgumentType.string())
                                 .executes(SendMessageCommand::sendFormattingText)))
-        );
+                .then(CommandManager.literal("item")
+                        .executes(context -> SendMessageCommand.sendItemHoverableText(context, true))
+                        .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(commandBuildContext))
+                                .executes(context -> sendItemHoverableText(context, false)))));
     }
 
     //发送可复制文本
@@ -128,5 +135,25 @@ public class SendMessageCommand {
         }
         // 如果玩家不为null，则发送消息时在文本前添加玩家名
         return TextUtils.appendAll(player.getDisplayName(), ": ", text);
+    }
+
+    // 发送手上的物品的悬停文本
+    private static int sendItemHoverableText(CommandContext<ServerCommandSource> context, boolean requiredPlayer) throws CommandSyntaxException {
+        ItemStack itemStack;
+        if (requiredPlayer) {
+            ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
+            // 获取玩家主手上的物品
+            ItemStack mainHandStack = player.getMainHandStack();
+            // 如果玩家主手上的物品为空，就获取玩家副手的物品
+            itemStack = mainHandStack.isEmpty() ? player.getOffHandStack() : mainHandStack;
+            // 如果副手的物品还是为空，直接抛出异常结束方法
+            if (itemStack.isEmpty()) {
+                throw CommandUtils.createException("carpet.commands.sendMessage.item.empty");
+            }
+        } else {
+            itemStack = ItemStackArgumentType.getItemStackArgument(context, "itemStack").createStack(1, false);
+        }
+        MessageUtils.broadcastTextMessage(context.getSource(), itemStack.toHoverableText());
+        return 1;
     }
 }
