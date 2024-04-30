@@ -53,7 +53,7 @@ public class WanderingTraderManagerMixin {
     @WrapOperation(method = "trySpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/WanderingTraderEntity;setPositionTarget(Lnet/minecraft/util/math/BlockPos;I)V"))
     private void broadcastSpawnSuccess(WanderingTraderEntity trader, BlockPos blockPos, int i, Operation<Void> original) {
         original.call(trader, blockPos, i);
-        if (WanderingTraderSpawnLogger.wanderingTrader && WanderingTraderSpawnLogger.spawnCountdownNonNull()) {
+        if (WanderingTraderSpawnLogger.wanderingTraderSpawnCountdown && WanderingTraderSpawnLogger.spawnCountdownNonNull()) {
             // 获取流浪商人所在的服务器
             MinecraftServer server = trader.getWorld().getServer();
             if (server == null) {
