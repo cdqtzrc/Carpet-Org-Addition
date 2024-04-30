@@ -176,8 +176,8 @@ public class NavigatorCommand {
                 : TextUtils.getTranslate("carpet.commands.navigate.hud.of", target.getDisplayName(), lastDeathLocation);
         // 获取死亡坐标和死亡维度
         GlobalPos globalPos = lastDeathPos.get();
-        NavigatorInterface.getInstance(player).setNavigator(globalPos.getPos(),
-                context.getSource().getServer().getWorld(globalPos.getDimension()), name);
+        NavigatorInterface.getInstance(player).setNavigator(globalPos.pos(),
+                context.getSource().getServer().getWorld(globalPos.dimension()), name);
         MutableText message = TextUtils.getTranslate(START_NAVIGATION, player.getDisplayName(), name);
         if (self || player == target) {
             MessageUtils.sendTextMessage(player, message);
