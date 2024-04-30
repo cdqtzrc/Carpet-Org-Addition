@@ -6,6 +6,7 @@ import carpet.patches.EntityPlayerMPFake;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import org.carpet_org_addition.logger.WanderingTraderSpawnLogger;
 import org.carpet_org_addition.translate.Translate;
 import org.carpet_org_addition.util.helpers.Waypoint;
 import org.slf4j.Logger;
@@ -64,5 +65,12 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     @Override
     public Map<String, String> canHasTranslations(String lang) {
         return Translate.getTranslate();
+    }
+
+    // 注册记录器
+    @Override
+    public void registerLoggers() {
+        CarpetExtension.super.registerLoggers();
+        WanderingTraderSpawnLogger.registerLoggers();
     }
 }

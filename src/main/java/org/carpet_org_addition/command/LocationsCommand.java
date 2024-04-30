@@ -63,7 +63,7 @@ public class LocationsCommand {
     }
 
     // 用来自动补全路径点名称
-    private static SuggestionProvider<ServerCommandSource> suggestion() {
+    public static SuggestionProvider<ServerCommandSource> suggestion() {
         return (context, builder) -> {
             WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), Waypoint.WAYPOINT);
             return CommandSource.suggestMatching(worldFormat.listFiles().stream().map(File::getName)
@@ -181,6 +181,7 @@ public class LocationsCommand {
         }
         MinecraftServer server = context.getSource().getServer();
         WorldFormat worldFormat = new WorldFormat(server, Waypoint.WAYPOINT);
+        // TODO 这个File对象是不是没用
         File file = worldFormat.getFile(name);
         try {
             // 从文件中读取路径点对象

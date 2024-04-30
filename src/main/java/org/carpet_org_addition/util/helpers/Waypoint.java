@@ -143,7 +143,7 @@ public class Waypoint {
         if (WorldFormat.jsonHasElement(json, "x", "y", "z")) {
             blockPos = new BlockPos(json.get("x").getAsInt(), json.get("y").getAsInt(), json.get("z").getAsInt());
         } else {
-            // 如果文件中读取就路径点中没有这三个坐标，直接返回
+            // 如果文件中读取就路径点中没有这三个坐标，直接返回空
             return Optional.empty();
         }
         // 路径点的维度
@@ -211,5 +211,21 @@ public class Waypoint {
 
     public void setBlockPos(BlockPos blockPos) {
         this.blockPos = blockPos;
+    }
+
+    public BlockPos getBlockPos() {
+        return blockPos;
+    }
+
+    public BlockPos getAnotherBlockPos() {
+        return anotherBlockPos;
+    }
+
+    public String getDimension() {
+        return dimension;
+    }
+
+    public String getName() {
+        return name;
     }
 }
