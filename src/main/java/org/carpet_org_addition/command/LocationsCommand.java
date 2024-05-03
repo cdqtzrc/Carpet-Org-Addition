@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 //路径点管理器
@@ -66,7 +66,7 @@ public class LocationsCommand {
     public static SuggestionProvider<ServerCommandSource> suggestion() {
         return (context, builder) -> {
             WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), Waypoint.WAYPOINT);
-            return CommandSource.suggestMatching(worldFormat.listFiles().stream().map(File::getName)
+            return CommandSource.suggestMatching(worldFormat.toImmutableFileList().stream().map(File::getName)
                     .filter(name -> name.endsWith(WorldFormat.JSON_EXTENSION)).map(WorldFormat::removeExtension)
                     .map(StringArgumentType::escapeIfRequired), builder);
         };
@@ -104,13 +104,13 @@ public class LocationsCommand {
     private static int listWayPoint(CommandContext<ServerCommandSource> context, @Nullable String filter) {
         MinecraftServer server = context.getSource().getServer();
         WorldFormat worldFormat = new WorldFormat(server, Waypoint.WAYPOINT);
-        HashSet<File> set = worldFormat.listFiles();
-        // 分隔线
+        List<File> list = worldFormat.toImmutableFileList();
         MutableText dividerLine = TextUtils.createText("------------------------------");
+        // 显示分隔线
         MessageUtils.sendTextMessage(context.getSource(), dividerLine);
         int count = 0;
         // 遍历文件夹下的所有文件
-        for (File file : set) {
+        for (File file : list) {
             String name = file.getName();
             // 只显示包含指定字符串的路径点，如果为null，显示所有路径点
             if (filter != null && !name.contains(filter)) {
@@ -136,14 +136,13 @@ public class LocationsCommand {
 
     // 添加说明文本
     private static int addIllustrateText(CommandContext<ServerCommandSource> context, @Nullable String illustrate) throws CommandSyntaxException {
-        String name = StringArgumentType.getString(context, "name");
         ServerCommandSource source = context.getSource();
         MinecraftServer server = context.getSource().getServer();
-        WorldFormat worldFormat = new WorldFormat(server, Waypoint.WAYPOINT);
-        File file = worldFormat.getFile(name);
+        // 获取路径点的名称
+        String name = StringArgumentType.getString(context, "name");
         try {
             // 从本地文件中读取路径点对象
-            Optional<Waypoint> optional = Waypoint.load(server, file.getName());
+            Optional<Waypoint> optional = Waypoint.load(server, name);
             if (optional.isPresent()) {
                 boolean remove = false;
                 if (illustrate == null || illustrate.isEmpty()) {
@@ -174,18 +173,16 @@ public class LocationsCommand {
     private static int addAnotherPos(CommandContext<ServerCommandSource> context, @Nullable BlockPos blockPos) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         ServerCommandSource source = context.getSource();
-        String name = StringArgumentType.getString(context, "name");
         // 路径点的另一个坐标
         if (blockPos == null) {
             blockPos = player.getBlockPos();
         }
         MinecraftServer server = context.getSource().getServer();
-        WorldFormat worldFormat = new WorldFormat(server, Waypoint.WAYPOINT);
-        // TODO 这个File对象是不是没用
-        File file = worldFormat.getFile(name);
+        // 路径点的名称
+        String name = StringArgumentType.getString(context, "name");
         try {
             // 从文件中读取路径点对象
-            Optional<Waypoint> optional = Waypoint.load(server, file.getName());
+            Optional<Waypoint> optional = Waypoint.load(server, name);
             if (optional.isPresent()) {
                 Waypoint waypoint = optional.get();
                 waypoint.setAnotherBlockPos(blockPos);
@@ -208,7 +205,8 @@ public class LocationsCommand {
         String name = StringArgumentType.getString(context, "name");
         //获取路径点文件对象
         WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), Waypoint.WAYPOINT);
-        File file = worldFormat.createFileObject(name);
+        // 获取路径点文件的对象
+        File file = worldFormat.file(name);
         //从本地文件删除路径点
         if (file.delete()) {
             // 成功删除
@@ -228,10 +226,8 @@ public class LocationsCommand {
             blockPos = player.getBlockPos();
         }
         String fileName = StringArgumentType.getString(context, "name");
-        WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), Waypoint.WAYPOINT);
-        File file = worldFormat.createFileObject(fileName);
         try {
-            Optional<Waypoint> optional = Waypoint.load(context.getSource().getServer(), file.getName());
+            Optional<Waypoint> optional = Waypoint.load(context.getSource().getServer(), fileName);
             if (optional.isPresent()) {
                 Waypoint waypoint = optional.get();
                 waypoint.setBlockPos(blockPos);

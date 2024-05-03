@@ -2,9 +2,15 @@ package org.carpet_org_addition.mixin.rule;
 
 import carpet.patches.EntityPlayerMPFake;
 import carpet.utils.CommandHelper;
+import com.google.common.collect.ImmutableList;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
@@ -17,6 +23,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.List;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin {
@@ -58,6 +66,30 @@ public abstract class PlayerEntityMixin {
                 default: {
                 }
             }
+        }
+    }
+
+    // 玩家死亡产生的掉落物不会自然消失
+    @WrapOperation(method = "dropInventory", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;dropAll()V"))
+    private void drop(PlayerInventory inventory, Operation<Void> original) {
+        if (CarpetOrgAdditionSettings.playerDropsNotDespawning) {
+            for (List<ItemStack> list : ImmutableList.of(inventory.main, inventory.armor, inventory.offHand)) {
+                for (int i = 0; i < list.size(); ++i) {
+                    ItemStack itemStack = list.get(i);
+                    if (!itemStack.isEmpty()) {
+                        ItemEntity itemEntity = inventory.player.dropItem(itemStack, true, false);
+                        list.set(i, ItemStack.EMPTY);
+                        if (itemEntity == null) {
+                            continue;
+                        }
+                        // 设置掉落物不消失
+                        itemEntity.setNeverDespawn();
+                    }
+                }
+            }
+        } else {
+            // 掉落物正常消失
+            original.call(inventory);
         }
     }
 }

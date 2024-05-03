@@ -53,7 +53,7 @@ public class PlayerManagerCommand {
     // 自动补全玩家名
     private static SuggestionProvider<ServerCommandSource> suggests() {
         return (context, builder) -> CommandSource.suggestMatching(new WorldFormat(context.getSource().getServer(),
-                FakePlayerSerial.PLAYER_DATA).listFiles().stream()
+                FakePlayerSerial.PLAYER_DATA).toImmutableFileList().stream()
                 .filter(file -> file.getName().endsWith(WorldFormat.JSON_EXTENSION))
                 .map(file -> WorldFormat.removeExtension(file.getName()))
                 .map(StringArgumentType::escapeIfRequired), builder);

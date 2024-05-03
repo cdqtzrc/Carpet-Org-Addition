@@ -61,7 +61,7 @@ public class FakePlayerSerial implements JsonSerial {
      */
     public boolean save(MinecraftServer server, boolean resave) throws IOException, CommandSyntaxException {
         WorldFormat worldFormat = new WorldFormat(server, PLAYER_DATA);
-        File file = worldFormat.createFileObject(fakePlayer.getName().getString());
+        File file = worldFormat.file(fakePlayer.getName().getString());
         boolean exists = file.exists();
         if (exists && !resave) {
             throw CommandSyntaxExceptionConstants.JSON_FILE_ALREADY_EXIST_EXCEPTION;
@@ -107,7 +107,7 @@ public class FakePlayerSerial implements JsonSerial {
         MutableText offline = TextUtils.getTranslate("carpet.commands.playerManager.click.offline");
         // 使用变量记录列出的数量，而不是直接使用集合的长度，因为集合中可能存在一些非json的文件，或者被损坏的json文件
         int count = 0;
-        for (File file : worldFormat.listFiles()) {
+        for (File file : worldFormat.toImmutableFileList()) {
             try {
                 JsonObject json = WorldFormat.loadJson(file);
                 ArrayList<MutableText> list = info(json);
