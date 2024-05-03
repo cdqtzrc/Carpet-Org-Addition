@@ -543,4 +543,10 @@ public class CarpetOrgAdditionSettings {
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
     public static String commandNavigate = "true";
+
+    // 玩家死亡产生的掉落物不会自然消失
+    @Rule(
+            categories = {ORG, RuleCategory.SURVIVAL}
+    )
+    public static boolean playerDropsNotDespawning = false;
 }

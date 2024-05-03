@@ -129,7 +129,7 @@ public class Waypoint {
             json.addProperty("another_z", this.anotherBlockPos.getZ());
         }
         WorldFormat worldFormat = new WorldFormat(server, WAYPOINT);
-        File file = worldFormat.createFileObject(this.name);
+        File file = worldFormat.file(this.name);
         WorldFormat.saveJson(file, WorldFormat.GSON, json);
     }
 

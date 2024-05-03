@@ -186,6 +186,8 @@
   "carpet.rule.turtleEggFastMine.desc": "玩家可以一次性挖掘多个海龟蛋",
   "carpet.rule.commandNavigate.name": "导航器",
   "carpet.rule.commandNavigate.desc": "启用/navigate命令用来指引玩家前往某一个位置",
+  "carpet.rule.playerDropsNotDespawning.name": "玩家掉落物不消失",
+  "carpet.rule.playerDropsNotDespawning.desc": "将玩家因死亡产生的掉落物的Age设置为-32768来阻止物品消失",
   "carpet.rule.message.disableRespawnBlocksExplode": "已禁用重生方块爆炸",
   "carpet.rule.validate.setBedrockHardness": "值必须大于等于0，或者-1",
   "carpet.rule.validate.portalSpawnZombifiedPiglinProbability": "值必须介于0-2000之间，或者-1",
