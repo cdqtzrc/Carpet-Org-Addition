@@ -10,7 +10,6 @@ import org.carpet_org_addition.CarpetOrgAddition;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -55,7 +54,7 @@ public class WorldFormat {
      *
      * @param fileName 文件名，如果没有扩展名，则自动添加json作为扩展名
      */
-    public File createFileObject(String fileName) {
+    public File file(String fileName) {
         return new File(this.modFileDirectory, suppFileName(fileName));
     }
 
@@ -141,7 +140,10 @@ public class WorldFormat {
     }
 
 
-    // 列出当前目录下的所有文件
+    /**
+     * @return 包含目录下所有文件的Set集合
+     * @deprecated 因为是Set集合，所以集合内的元素是无序的，并且，该集合可变，可以任意添加或修改元素
+     */
     @Deprecated
     public HashSet<File> listFiles() {
         File[] files = this.modFileDirectory.listFiles();
@@ -152,18 +154,22 @@ public class WorldFormat {
         return new HashSet<>(Arrays.asList(files));
     }
 
-    public List<File> toFileList() {
+    /**
+     * @return 包含该目录所有文件的不可变的List集合
+     * @apiNote Java貌似没有对中文的拼音排序做很好的支持，因此，中文的排序依然是无序的
+     */
+    public List<File> toImmutableFileList() {
         File[] files = this.modFileDirectory.listFiles();
         if (files == null) {
-            return new ArrayList<>();
+            return List.of();
         }
-        return Arrays.asList(files);
+        return List.of(files);
     }
 
     // 检查该目录下的文件是否存在
     public boolean fileExists(String fileName) {
         fileName = suppFileName(fileName);
-        File file = this.createFileObject(fileName);
+        File file = this.file(fileName);
         return file.exists();
     }
 
