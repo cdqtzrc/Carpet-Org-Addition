@@ -54,7 +54,6 @@ public class SpectatorCommand {
     }
 
     // 更改游戏模式
-    @SuppressWarnings("WrongTypeInTranslationArgs")
     private static int setGameMode(CommandContext<ServerCommandSource> context, boolean isFakePlayer) throws CommandSyntaxException {
         ServerPlayerEntity player = isFakePlayer
                 ? CommandUtils.getArgumentFakePlayer(context)
@@ -150,7 +149,7 @@ public class SpectatorCommand {
         json.addProperty("dimension", WorldUtils.getDimensionId(player.getWorld()));
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonString = gson.toJson(json, JsonObject.class);
-        File file = worldFormat.createFileObject(player.getUuidAsString() + WorldFormat.JSON_EXTENSION);
+        File file = worldFormat.file(player.getUuidAsString() + WorldFormat.JSON_EXTENSION);
         try {
             try (BufferedWriter writer = WorldFormat.toWriter(file)) {
                 writer.write(jsonString);
@@ -163,7 +162,7 @@ public class SpectatorCommand {
     // 从文件加载位置并传送玩家
     private static void loadPlayerPos(MinecraftServer server, ServerPlayerEntity player) {
         WorldFormat worldFormat = new WorldFormat(server, SPECTATOR);
-        File file = worldFormat.createFileObject(player.getUuidAsString() + WorldFormat.JSON_EXTENSION);
+        File file = worldFormat.file(player.getUuidAsString() + WorldFormat.JSON_EXTENSION);
         try {
             BufferedReader reader = WorldFormat.toReader(file);
             try (reader) {
