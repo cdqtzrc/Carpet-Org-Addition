@@ -71,7 +71,7 @@ public class RegisterCarpetCommands {
             /*
               测试用命令
              */
-            // CarpetOrgAdditionTestCommand.register(dispatcher, commandBuildContext);
+            CarpetOrgAdditionTestCommand.register(dispatcher, commandBuildContext);
 
             CarpetServer.extensions.forEach((e) -> e.registerCommands(dispatcher, commandBuildContext));
         }

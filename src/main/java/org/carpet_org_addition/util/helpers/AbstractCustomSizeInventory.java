@@ -9,10 +9,19 @@ import net.minecraft.util.collection.DefaultedList;
 public abstract class AbstractCustomSizeInventory implements Inventory {
     private final DefaultedList<ItemStack> stacks = DefaultedList.ofSize(this.getSize() - this.getActualSize(), ItemStack.EMPTY);
 
+    /**
+     * @return 物品栏的大小
+     */
     protected abstract int getSize();
 
+    /**
+     * @return 物品栏的实际大小，超出此大小的索引都是在GUI中用来占位的，没有实际用途
+     */
     protected abstract int getActualSize();
 
+    /**
+     * @return 实际可用的物品栏
+     */
     protected abstract Inventory getInventory();
 
     @Override

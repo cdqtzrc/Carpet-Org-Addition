@@ -23,6 +23,7 @@ public class ShulkerBoxBlockMixin {
     private static void canOpen(BlockState state, World world, BlockPos pos, ShulkerBoxBlockEntity entity, CallbackInfoReturnable<Boolean> cir) {
         if (canUpdateSuppression(world, pos)) {
             cir.setReturnValue(false);
+            return;
         }
         if (CarpetOrgAdditionSettings.openShulkerBoxForcibly) {
             cir.setReturnValue(true);

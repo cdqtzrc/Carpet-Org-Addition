@@ -15,6 +15,7 @@ import org.carpet_org_addition.util.fakeplayer.actiondata.CraftingTableCraftData
 import org.carpet_org_addition.util.fakeplayer.actiondata.InventoryCraftData;
 import org.carpet_org_addition.util.matcher.ItemMatcher;
 
+// TODO 是否可以继承工作台的GUI类，使用工作台GUI更方便的设置配方和预览配方的结果
 public class FakePlayerGuiCraftScreenHandler extends Generic3x3ContainerScreenHandler {
     /**
      * 一个假玩家对象，类中所有操作都是围绕这个假玩家进行的
