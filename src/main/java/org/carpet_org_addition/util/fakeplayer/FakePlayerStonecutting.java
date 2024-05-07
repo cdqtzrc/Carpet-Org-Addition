@@ -12,6 +12,7 @@ public class FakePlayerStonecutting {
     private FakePlayerStonecutting() {
     }
 
+    // TODO 丢出物品时立即合并
     public static void stonecutting(StonecuttingData stonecuttingData, EntityPlayerMPFake fakePlayer) {
         if (fakePlayer.currentScreenHandler instanceof StonecutterScreenHandler stonecutterScreenHandler) {
             //获取要切割的物品和按钮的索引

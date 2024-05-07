@@ -22,6 +22,7 @@ public class FakePlayerCraft {
     }
 
     //合成自定义物品，3x3
+    // TODO 准备合成时关闭合成输出槽位更新，结束合成时再打开
     public static void craft3x3(CraftingTableCraftData craftData, EntityPlayerMPFake fakePlayer) {
         if (fakePlayer.currentScreenHandler instanceof CraftingScreenHandler craftingScreenHandler) {
             InfiniteLoopException exception = new InfiniteLoopException(MAX_LOOP_COUNT);
