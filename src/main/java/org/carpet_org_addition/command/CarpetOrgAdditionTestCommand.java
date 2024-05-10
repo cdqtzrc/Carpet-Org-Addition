@@ -43,7 +43,9 @@ public class CarpetOrgAdditionTestCommand {
                 .then(CommandManager.literal("randomTick")
                         .then(CommandManager.argument("pos", BlockPosArgumentType.blockPos())
                                 .then(CommandManager.argument("count", IntegerArgumentType.integer(1))
-                                        .executes(CarpetOrgAdditionTestCommand::randomTick)))));
+                                        .executes(CarpetOrgAdditionTestCommand::randomTick))))
+                .then(CommandManager.literal("switchCraftUpdate")
+                        .executes(context -> switchCraftUpdate())));
     }
 
     //列出图书管理员所有可交易的附魔书
@@ -131,5 +133,11 @@ public class CarpetOrgAdditionTestCommand {
         MessageUtils.sendTextMessage(context.getSource(),
                 TextUtils.createText("给予" + blockState.getBlock().getName().getString() + i + "个随机刻"));
         return i;
+    }
+
+    // 切换假玩家合成自动更新结果槽
+    private static int switchCraftUpdate() {
+        // FakePlayerCraftRecipeInterface.flag.setValue(!FakePlayerCraftRecipeInterface.flag.getValue());
+        return 1;
     }
 }

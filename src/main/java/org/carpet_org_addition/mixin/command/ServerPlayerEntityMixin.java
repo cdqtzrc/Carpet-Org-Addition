@@ -1,5 +1,6 @@
 package org.carpet_org_addition.mixin.command;
 
+import carpet.patches.EntityPlayerMPFake;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -8,6 +9,7 @@ import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.fakeplayer.FakePlayerActionInterface;
 import org.carpet_org_addition.util.helpers.Waypoint;
 import org.carpet_org_addition.util.navigator.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,12 +41,17 @@ public class ServerPlayerEntityMixin implements NavigatorInterface {
         }
     }
 
+    // 玩家穿越末地祭坛的传送门时复制身上的数据
     @Inject(method = "copyFrom", at = @At("HEAD"))
     private void copyFrom(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfo ci) {
         AbstractNavigator oldNavigator = ((NavigatorInterface) oldPlayer).getNavigator();
-        // 复制玩家数据时同时复制追踪器对象
+        // 复制追踪器对象
         if (oldNavigator != null) {
             this.navigator = oldNavigator.copy(thisPlayer);
+        }
+        // 复制假玩家动作管理器对象
+        if (thisPlayer instanceof FakePlayerActionInterface actionInterface && oldPlayer instanceof EntityPlayerMPFake oldFakePlayer) {
+            actionInterface.copyActionManager(oldFakePlayer);
         }
     }
 
