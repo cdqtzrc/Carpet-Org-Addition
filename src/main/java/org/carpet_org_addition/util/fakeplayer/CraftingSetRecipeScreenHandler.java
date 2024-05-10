@@ -4,66 +4,67 @@ import carpet.patches.EntityPlayerMPFake;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.screen.Generic3x3ContainerScreenHandler;
+import net.minecraft.screen.CraftingScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
+import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.command.PlayerActionCommand;
 import org.carpet_org_addition.util.fakeplayer.actiondata.CraftingTableCraftData;
 import org.carpet_org_addition.util.fakeplayer.actiondata.InventoryCraftData;
 import org.carpet_org_addition.util.matcher.ItemMatcher;
 
-// TODO 是否可以继承工作台的GUI类，使用工作台GUI更方便的设置配方和预览配方的结果
-public class FakePlayerGuiCraftScreenHandler extends Generic3x3ContainerScreenHandler {
+public class CraftingSetRecipeScreenHandler extends CraftingScreenHandler {
     /**
      * 一个假玩家对象，类中所有操作都是围绕这个假玩家进行的
      */
     private final EntityPlayerMPFake fakePlayer;
     /**
-     * 假玩家当前打开的GUI的屏幕处理程序上下文对象，用来在关闭GUI时，将GUI内的物品放回玩家物品栏
+     * 控制假玩家合成物品的物品栏，与父类中的input是同一个对象
      */
-    private final ScreenHandlerContext screenHandlerContext;
-    /**
-     * 控制假玩家合成物品的物品栏，不是假玩家背包的物品栏
-     */
-    private final SimpleInventory fakePlayerCraftInventory;
+    private final RecipeInputInventory inputInventory;
     /**
      * 执行/playerAction命令后的命令执行上下文对象，修改假玩家动作类型时会用到这个属性
      */
     private final CommandContext<ServerCommandSource> context;
 
-    public FakePlayerGuiCraftScreenHandler(int syncId,
-                                           PlayerInventory playerInventory,
-                                           EntityPlayerMPFake fakePlayer,
-                                           ScreenHandlerContext screenHandlerContext,
-                                           SimpleInventory fakePlayerCraftInventory,
-                                           CommandContext<ServerCommandSource> context) {
-        super(syncId, playerInventory, fakePlayerCraftInventory);
+    public CraftingSetRecipeScreenHandler(int syncId, PlayerInventory playerInventory, EntityPlayerMPFake fakePlayer,
+                                          ScreenHandlerContext screenHandlerContext,
+                                          CommandContext<ServerCommandSource> context) {
+        super(syncId, playerInventory, screenHandlerContext);
+        this.inputInventory = ((FakePlayerCraftRecipeInterface) this).getInput();
         this.fakePlayer = fakePlayer;
-        this.screenHandlerContext = screenHandlerContext;
-        this.fakePlayerCraftInventory = fakePlayerCraftInventory;
         this.context = context;
+    }
+
+    // 阻止玩家取出输出槽位的物品
+    @Override
+    public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player) {
+        // 比较当前槽位的索引和工作台输出槽位的索引
+        if (slotIndex == this.getCraftingResultSlotIndex()) {
+            return;
+        }
+        super.onSlotClick(slotIndex, button, actionType, player);
     }
 
     // 关闭GUI时，设置假玩家的合成动作和配方
     @Override
     public void onClosed(PlayerEntity player) {
-        super.onClosed(player);
         //如果没有给假玩家指定合成配方，结束方法
-        if (fakePlayerCraftInventory.isEmpty()) {
+        if (inputInventory.isEmpty()) {
             return;
         }
         //修改假玩家的3x3合成配方
         Item[] items = new Item[9];
-        for (int i = 0; i < fakePlayerCraftInventory.size(); i++) {
-            items[i] = fakePlayerCraftInventory.getStack(i).getItem();
+        for (int i = 0; i < inputInventory.size(); i++) {
+            items[i] = inputInventory.getStack(i).getItem();
         }
         // 设置假玩家合成动作
         setCraftAction(items, FakePlayerActionInterface.getManager(fakePlayer));
-        // 关闭GUI后，物品回到玩家背包
-        this.screenHandlerContext.run((world, pos) -> this.dropInventory(player, fakePlayerCraftInventory));
+        // 关闭GUI后，使用父类的方法让物品回到玩家背包
+        super.onClosed(player);
         // 提示启用Ctrl+Q合成修复
         PlayerActionCommand.promptToEnableCtrlQCraftingFix(context.getSource());
     }
@@ -95,5 +96,10 @@ public class FakePlayerGuiCraftScreenHandler extends Generic3x3ContainerScreenHa
             }
             actionManager.setAction(FakePlayerAction.CRAFTING_TABLE_CRAFT, new CraftingTableCraftData(itemMatchersArr));
         }
+    }
+
+    @Override
+    public boolean canUse(PlayerEntity player) {
+        return true;
     }
 }
