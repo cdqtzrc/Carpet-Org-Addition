@@ -7,7 +7,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
-import org.carpet_org_addition.util.helpers.DisabledSlot;
+import net.minecraft.screen.slot.SlotActionType;
+import org.carpet_org_addition.util.MathUtils;
+import org.carpet_org_addition.util.helpers.AbstractCustomSizeInventory;
 
 public class FakePlayerInventoryScreenHandler extends ScreenHandler {
     private static final int SIZE = 41;
@@ -27,7 +29,7 @@ public class FakePlayerInventoryScreenHandler extends ScreenHandler {
                 // 如果槽位id大于假玩家物品栏的大小，添加不可用槽位
                 if (index >= SIZE) {
                     // 添加不可用槽位
-                    this.addSlot(new DisabledSlot(inventory, index, 8 + k * 18, 18 + j * 18));
+                    this.addSlot(new Slot(inventory, index, 8 + k * 18, 18 + j * 18));
                 } else {
                     // 添加普通槽位
                     this.addSlot(new Slot(inventory, getIndex(index), 8 + k * 18, 18 + j * 18));
@@ -106,5 +108,14 @@ public class FakePlayerInventoryScreenHandler extends ScreenHandler {
     public void onClosed(PlayerEntity player) {
         super.onClosed(player);
         this.inventory.dropExcess(player);
+        AbstractCustomSizeInventory.PLACEHOLDER.setCount(1);
+    }
+
+    @Override
+    public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player) {
+        if (MathUtils.betweenTwoNumbers(53, 41, slotIndex)) {
+            return;
+        }
+        super.onSlotClick(slotIndex, button, actionType, player);
     }
 }
