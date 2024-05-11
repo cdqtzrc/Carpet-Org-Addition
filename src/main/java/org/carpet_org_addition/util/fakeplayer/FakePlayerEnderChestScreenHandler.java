@@ -7,7 +7,7 @@ import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-//假玩家末影箱GUI
+// 假玩家末影箱GUI
 public class FakePlayerEnderChestScreenHandler extends GenericContainerScreenHandler {
     /**
      * 不一定是假玩家，也有可能是/playerTools命令的执行者自己

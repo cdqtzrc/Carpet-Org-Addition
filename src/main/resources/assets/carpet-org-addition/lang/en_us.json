@@ -369,5 +369,6 @@
   "carpet.logger.wanderingTrader.message.click": "流浪商人在%s成功生成，点击%s",
   "carpet.logger.wanderingTrader.message.navigate": "[导航]",
   "carpet.logger.wanderingTrader.message.navigate.hover": "点击导航到此%s",
-  "carpet.logger.wanderingTrader.gamerule.not_enabled": "游戏规则“%s”未启用"
+  "carpet.logger.wanderingTrader.gamerule.not_enabled": "游戏规则“%s”未启用",
+  "carpet.inventory.item.placeholder": "占位"
 }

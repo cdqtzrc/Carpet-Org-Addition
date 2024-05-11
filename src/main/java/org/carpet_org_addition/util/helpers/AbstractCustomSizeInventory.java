@@ -4,10 +4,21 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.collection.DefaultedList;
+import org.carpet_org_addition.util.TextUtils;
 
 public abstract class AbstractCustomSizeInventory implements Inventory {
-    private final DefaultedList<ItemStack> stacks = DefaultedList.ofSize(this.getSize() - this.getActualSize(), ItemStack.EMPTY);
+    public static final ItemStack PLACEHOLDER;
+
+    static {
+        ItemStack itemStack = new ItemStack(Items.RED_STAINED_GLASS_PANE);
+        itemStack.setCustomName(TextUtils.setColor(TextUtils.getTranslate("carpet.inventory.item.placeholder"), Formatting.RED));
+        PLACEHOLDER = itemStack;
+    }
+
+    private final DefaultedList<ItemStack> stacks = DefaultedList.ofSize(this.getSize() - this.getActualSize(), PLACEHOLDER);
 
     /**
      * @return 物品栏的大小
@@ -96,8 +107,8 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
 
     @Override
     public final void clear() {
+        // 只清空物品栏即可，用来占位的stacks不需要清空
         this.getInventory().clear();
-        this.stacks.clear();
     }
 
     @Override
@@ -108,6 +119,10 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
     // 丢弃多余的槽位中的物品
     public void dropExcess(PlayerEntity player) {
         for (ItemStack itemStack : stacks) {
+            // 不丢弃占位用的物品
+            if (itemStack == PLACEHOLDER) {
+                continue;
+            }
             player.dropItem(itemStack, false, false);
         }
     }

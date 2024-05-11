@@ -154,6 +154,23 @@ public class MathUtils {
     }
 
     /**
+     * 判断一个整数是否介于两个整数之间，包括最大最小值，最大最小值反过来传递不影响结果
+     *
+     * @param max    范围的最大值
+     * @param min    范围的最小值
+     * @param number 要检查是否介于这两个数之间的数
+     */
+    public static boolean betweenTwoNumbers(int max, int min, int number) {
+        if (min > max) {
+            // 如果最小值大于最大值，交换最大最小值
+            int temp = max;
+            max = min;
+            min = temp;
+        }
+        return max >= number && min <= number;
+    }
+
+    /**
      * 求一个小数数组里所有数的平均值
      *
      * @param args 小数数组
