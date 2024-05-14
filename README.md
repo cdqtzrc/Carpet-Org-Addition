@@ -713,6 +713,22 @@ CCE更新抑制器(CCEUpdateSuppression)
     - 参考选项：`true`，`false`
     - 分类：`Org`，`生存`
 
+导航器(commandNavigate)
+
+- 启用/navigate命令用来指引玩家前往某一个位置
+    - 类型：`字符串`
+    - 默认值：`"true"`
+    - 参考选项：`"true"`, `“false”`, `"ops"`, `"0"`, `"1"`, `"2"`, `"3"`, `"4"`
+    - 分类：`Org`，`指令`
+
+玩家掉落物不消失(playerDropsNotDespawning)
+
+- 将玩家因死亡产生的掉落物的Age设置为-32768来阻止物品消失
+    - 类型：`布尔值`
+    - 默认值：`false`
+    - 参考选项：`true`，`false`
+    - 分类：`Org`，`生存`
+
 ## 命令
 
 [/itemshadowing](docs/commands/itemshadowing.md)
@@ -766,3 +782,7 @@ CCE更新抑制器(CCEUpdateSuppression)
 [/playerManager](docs/commands/playerManager.md)
 
 - 用来快速上线和下线常用假玩家
+
+[/navigate](docs/commands/navigate.md)
+
+- 用来指引玩家前往某一个位置

@@ -18,7 +18,7 @@ public class FakePlayerActionManager implements JsonSerial {
     public void executeAction() {
         switch (function.getAction()) {
             case STOP -> {
-                // 停止：什么也不做
+                // 什么也不做
             }
             // 物品分拣
             case SORTING -> FakePlayerSorting.sorting((SortingData) function.getActionData(), fakePlayer);
