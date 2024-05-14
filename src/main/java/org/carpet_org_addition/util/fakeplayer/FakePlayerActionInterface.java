@@ -2,7 +2,7 @@ package org.carpet_org_addition.util.fakeplayer;
 
 import carpet.patches.EntityPlayerMPFake;
 
-//假玩家动作接口
+// 假玩家动作接口
 public interface FakePlayerActionInterface {
     FakePlayerActionManager getActionManager();
 

@@ -26,6 +26,8 @@ public class FakePlayerCraft {
         if (fakePlayer.currentScreenHandler instanceof CraftingScreenHandler craftingScreenHandler) {
             InfiniteLoopException exception = new InfiniteLoopException(MAX_LOOP_COUNT);
             Matcher[] items = craftData.getMatchers();
+            // 定义变量记录成功完成合成的次数
+            int craftCount = 0;
             do {
                 // 检查循环次数，在循环次数过多时抛出异常
                 exception.checkLoopCount();
@@ -87,9 +89,15 @@ public class FakePlayerCraft {
                 }
                 // 正确材料找到的次数等于9说明全部找到，可以合成
                 if (successCount == 9) {
+                    // 工作台输出槽里有物品，说明配方正确并且前面的合成没有问题，可以取出合成的物品
                     if (craftingScreenHandler.getSlot(0).hasStack()) {
-                        // 合成步骤正确，输出物品
                         FakePlayerUtils.throwItem(craftingScreenHandler, 0, fakePlayer);
+                        // 合成成功，合成计数器自增
+                        craftCount++;
+                        // 避免在一个游戏刻内合成太多物品造成巨量卡顿
+                        if (craftCount >= CarpetOrgAdditionSettings.fakePlayerMaxCraftCount) {
+                            return;
+                        }
                     } else {
                         // 如果没有输出物品，说明之前的合成步骤有误，停止合成
                         stopCraftAction(fakePlayer.getCommandSource(), fakePlayer);
@@ -113,6 +121,8 @@ public class FakePlayerCraft {
         PlayerScreenHandler playerScreenHandler = fakePlayer.playerScreenHandler;
         InfiniteLoopException exception = new InfiniteLoopException(MAX_LOOP_COUNT);
         Matcher[] items = craftData.getMatchers();
+        // 定义变量记录成功完成合成的次数
+        int craftCount = 0;
         do {
             // 检查循环次数
             exception.checkLoopCount();
@@ -173,6 +183,12 @@ public class FakePlayerCraft {
                 // 如果输出槽有物品，则丢出该物品
                 if (playerScreenHandler.getSlot(0).hasStack()) {
                     FakePlayerUtils.throwItem(playerScreenHandler, 0, fakePlayer);
+                    // 合成成功，合成计数器自增
+                    craftCount++;
+                    // 避免在一个游戏刻内合成太多物品造成巨量卡顿
+                    if (craftCount >= CarpetOrgAdditionSettings.fakePlayerMaxCraftCount) {
+                        return;
+                    }
                 } else {
                     // 如果输出槽没有物品，认为前面的合成操作有误，停止合成
                     stopCraftAction(fakePlayer.getCommandSource(), fakePlayer);

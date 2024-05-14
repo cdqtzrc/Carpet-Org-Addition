@@ -10,6 +10,9 @@ import net.minecraft.util.collection.DefaultedList;
 import org.carpet_org_addition.util.TextUtils;
 
 public abstract class AbstractCustomSizeInventory implements Inventory {
+    /**
+     * 用来占位的物品
+     */
     public static final ItemStack PLACEHOLDER;
 
     static {
@@ -107,7 +110,7 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
 
     @Override
     public final void clear() {
-        // 只清空物品栏即可，用来占位的stacks不需要清空
+        // 只清空物品栏即可，不需要清空用来占位的stacks
         this.getInventory().clear();
     }
 
