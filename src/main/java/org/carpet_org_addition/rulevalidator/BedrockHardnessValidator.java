@@ -3,7 +3,7 @@ package org.carpet_org_addition.rulevalidator;
 import carpet.api.settings.CarpetRule;
 import carpet.api.settings.Validator;
 import net.minecraft.server.command.ServerCommandSource;
-import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.constant.RuleValidatorConstants;
 import org.jetbrains.annotations.Nullable;
 
 // 设置基岩硬度校验
@@ -24,6 +24,6 @@ public class BedrockHardnessValidator extends Validator<Float> {
      */
     @Override
     public String description() {
-        return TextUtils.getTranslate("carpet.rule.validate.setBedrockHardness").getString();
+        return RuleValidatorConstants.greaterThanOrEqualOrNumber(0, -1).getString();
     }
 }

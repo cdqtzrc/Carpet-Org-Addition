@@ -556,7 +556,7 @@ public class CarpetOrgAdditionSettings {
     // 假玩家最大合成次数
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL},
-            options = {"1", "3", "5", "2147483647"},
+            options = {"1", "3", "5", "-1"},
             strict = false,
             validators = FakePlayerMaxCraftCountValidator.class
     )

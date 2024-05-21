@@ -14,11 +14,11 @@ public class FakePlayerMaxCraftCountValidator extends Validator<Integer> {
 
     @Override
     public Integer validate(@Nullable ServerCommandSource serverCommandSource, CarpetRule<Integer> carpetRule, Integer integer, String s) {
-        return integer >= MIN_CRAFT_COUNT ? integer : null;
+        return integer >= MIN_CRAFT_COUNT || integer == -1 ? integer : null;
     }
 
     @Override
     public String description() {
-        return RuleValidatorConstants.greaterThan(MIN_CRAFT_COUNT).getString();
+        return RuleValidatorConstants.greaterThanOrEqualOrNumber(MIN_CRAFT_COUNT, -1).getString();
     }
 }
