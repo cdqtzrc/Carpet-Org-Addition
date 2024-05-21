@@ -95,7 +95,7 @@ public class FakePlayerCraft {
                         // 合成成功，合成计数器自增
                         craftCount++;
                         // 避免在一个游戏刻内合成太多物品造成巨量卡顿
-                        if (craftCount >= CarpetOrgAdditionSettings.fakePlayerMaxCraftCount) {
+                        if (shouldStop(craftCount)) {
                             return;
                         }
                     } else {
@@ -186,7 +186,7 @@ public class FakePlayerCraft {
                     // 合成成功，合成计数器自增
                     craftCount++;
                     // 避免在一个游戏刻内合成太多物品造成巨量卡顿
-                    if (craftCount >= CarpetOrgAdditionSettings.fakePlayerMaxCraftCount) {
+                    if (shouldStop(craftCount)) {
                         return;
                     }
                 } else {
@@ -204,6 +204,19 @@ public class FakePlayerCraft {
                 return;
             }
         } while (CarpetSettings.ctrlQCraftingFix);
+    }
+
+    /**
+     * 是否应该因为合成次数过多而停止合成
+     *
+     * @param craftCount 当前合成次数
+     * @return 是否应该停止
+     */
+    private static boolean shouldStop(int craftCount) {
+        if (CarpetOrgAdditionSettings.fakePlayerMaxCraftCount < 0) {
+            return false;
+        }
+        return craftCount >= CarpetOrgAdditionSettings.fakePlayerMaxCraftCount;
     }
 
     /**

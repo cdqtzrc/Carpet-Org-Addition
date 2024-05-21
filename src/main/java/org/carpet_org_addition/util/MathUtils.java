@@ -88,7 +88,7 @@ public class MathUtils {
         if (distance < 0) {
             return 6.0;
         }
-        return Math.min(distance, MaxBlockPlaceDistanceValidator.MAX_BLOCK_PLACE_DISTANCE_MAX_VALUE);
+        return Math.min(distance, MaxBlockPlaceDistanceValidator.MAX_VALUE);
     }
 
     /**

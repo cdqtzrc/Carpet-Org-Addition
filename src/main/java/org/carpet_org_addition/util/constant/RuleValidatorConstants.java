@@ -5,9 +5,23 @@ import org.carpet_org_addition.util.TextUtils;
 
 public class RuleValidatorConstants {
     /**
-     * @return 值必须大于等于number
+     * 值必须小于等于%s
      */
-    public static Text greaterThan(int number) {
-        return TextUtils.getTranslate("carpet.rule.validate.value.greater_than", number);
+    public static Text lessThanOrEqual(int number) {
+        return TextUtils.getTranslate("carpet.rule.validate.less_than_or_equal", number);
+    }
+
+    /**
+     * 值必须大于等于%s，或者为%s
+     */
+    public static Text greaterThanOrEqualOrNumber(int number, int other) {
+        return TextUtils.getTranslate("carpet.rule.validate.greater_than_or_equal_or_number", number, other);
+    }
+
+    /**
+     * 值必须介于%s和%s之间，或者为%s
+     */
+    public static Text betweenTwoNumberOrNumber(int number1, int number2, int other) {
+        return TextUtils.getTranslate("carpet.rule.validate.between_two_number_or_number", number1, number2, other);
     }
 }
