@@ -158,7 +158,7 @@
   "carpet.rule.fakePlayerKeepInventory.name": "假玩家死亡不掉落",
   "carpet.rule.fakePlayerKeepInventory.desc": "假玩家死亡后保留物品栏物品和经验",
   "carpet.rule.commandCreeper.name": "苦力怕命令",
-  "carpet.rule.commandCreeper.desc": "启用/creeper命令用来在指定玩家周围生成一只立即爆炸但不会破坏方块的苦力怕",
+  "carpet.rule.commandCreeper.desc": "启用/creeper命令用来在指定玩家周围制造一场苦力怕爆炸，爆炸只会伤害实体，不会破坏方块",
   "carpet.rule.commandRuleSearch.name": "规则搜索命令",
   "carpet.rule.commandRuleSearch.desc": "启用/ruleSearch命令用来搜索翻译后名称中包含指定字符串的规则",
   "carpet.rule.superChargedCreeper.name": "增强闪电苦力怕",
