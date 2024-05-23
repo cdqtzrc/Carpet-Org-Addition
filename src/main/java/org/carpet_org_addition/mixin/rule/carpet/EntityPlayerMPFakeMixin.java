@@ -6,35 +6,22 @@ import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
-import org.carpet_org_addition.util.MessageUtils;
-import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionInterface;
-import org.carpet_org_addition.util.fakeplayer.FakePlayerActionManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@SuppressWarnings("AddedMixinMembersNamePattern")
 @Mixin(EntityPlayerMPFake.class)
 public abstract class EntityPlayerMPFakeMixin extends ServerPlayerEntity implements FakePlayerActionInterface {
     @Unique
     private final EntityPlayerMPFake thisPlayer = (EntityPlayerMPFake) (Object) this;
 
-    @Unique
-    private final FakePlayerActionManager actionManager = new FakePlayerActionManager(thisPlayer);
-
     //私有化构造方法，防止被创建对象
     private EntityPlayerMPFakeMixin(MinecraftServer server, ServerWorld world, GameProfile profile, SyncedClientOptions clientOptions) {
         super(server, world, profile, clientOptions);
-    }
-
-    @Override
-    public FakePlayerActionManager getActionManager() {
-        return this.actionManager;
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
