@@ -1,5 +1,6 @@
 package org.carpet_org_addition.command;
 
+import carpet.patches.EntityPlayerMPFake;
 import carpet.utils.CommandHelper;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -71,7 +72,7 @@ public class NavigatorCommand {
         // 如果目标是玩家，广播消息
         MutableText text = TextUtils.getTranslate(START_NAVIGATION, player.getDisplayName(), entity.getDisplayName());
         ((NavigatorInterface) player).setNavigator(entity, isContinue);
-        if (entity instanceof ServerPlayerEntity && entity != player) {
+        if (shouldBeBroadcasted(entity, player)) {
             // 设置为斜体淡灰色
             text = TextUtils.toItalic(TextUtils.setColor(text, Formatting.GRAY));
             MessageUtils.broadcastTextMessage(context.getSource(), text);
@@ -119,7 +120,7 @@ public class NavigatorCommand {
             }
             ((NavigatorInterface) player).setNavigator(entity, false);
             MutableText text = TextUtils.getTranslate(START_NAVIGATION, player.getDisplayName(), entity.getDisplayName());
-            if (entity instanceof ServerPlayerEntity && entity != player) {
+            if (shouldBeBroadcasted(entity, player)) {
                 // 将字体设置为灰色斜体
                 text = TextUtils.toItalic(TextUtils.setColor(text, Formatting.GRAY));
                 MessageUtils.broadcastTextMessage(context.getSource(), text);
@@ -130,6 +131,14 @@ public class NavigatorCommand {
         }
         // 未找到实体
         throw EntityArgumentType.ENTITY_NOT_FOUND_EXCEPTION.create();
+    }
+
+    // 是否应该广播导航消息
+    private static boolean shouldBeBroadcasted(Entity entity, ServerPlayerEntity player) {
+        if (entity == player || entity instanceof EntityPlayerMPFake) {
+            return false;
+        }
+        return entity instanceof ServerPlayerEntity;
     }
 
     // 停止导航
