@@ -119,7 +119,7 @@ public class LocationsCommand {
             Optional<Waypoint> optional;
             try {
                 optional = Waypoint.load(server, name);
-            } catch (IOException e) {
+            } catch (IOException | NullPointerException e) {
                 //无法解析坐标
                 MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.locations.list.parse", WorldFormat.removeExtension(name));
                 continue;
@@ -161,7 +161,7 @@ public class LocationsCommand {
                     MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.illustrate.add", illustrate, name);
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             //无法添加说明文本
             CarpetOrgAddition.LOGGER.error("无法为路径点[" + name + "]添加说明文本", e);
             throw CommandUtils.createException("carpet.commands.locations.illustrate.io", name);
@@ -191,7 +191,7 @@ public class LocationsCommand {
                 //添加对向坐标
                 MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.another.add");
             }
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             CarpetOrgAddition.LOGGER.error("无法解析路径点[" + name + "]:", e);
             throw CommandUtils.createException("carpet.commands.locations.another.io", name);
         }
@@ -236,7 +236,7 @@ public class LocationsCommand {
                 //发送命令执行后的反馈
                 MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.set", fileName);
             }
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             throw CommandUtils.createException("carpet.commands.locations.set.io", fileName);
         }
         return 1;
