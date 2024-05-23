@@ -87,7 +87,7 @@ public class MathUtils {
         if (distance < 0) {
             return 6.0;
         }
-        return Math.min(distance, MaxBlockPlaceDistanceValidator.MAX_BLOCK_PLACE_DISTANCE_MAX_VALUE);
+        return Math.min(distance, MaxBlockPlaceDistanceValidator.MAX_VALUE);
     }
 
     /**
@@ -141,6 +141,23 @@ public class MathUtils {
             min = temp;
         }
         return RANDOM.nextInt(max - min + 1) + min;
+    }
+
+    /**
+     * 判断一个整数是否介于两个整数之间，包括最大最小值，最大最小值反过来传递不影响结果
+     *
+     * @param max    范围的最大值
+     * @param min    范围的最小值
+     * @param number 要检查是否介于这两个数之间的数
+     */
+    public static boolean betweenTwoNumbers(int max, int min, int number) {
+        if (min > max) {
+            // 如果最小值大于最大值，交换最大最小值
+            int temp = max;
+            max = min;
+            min = temp;
+        }
+        return max >= number && min <= number;
     }
 
     /**

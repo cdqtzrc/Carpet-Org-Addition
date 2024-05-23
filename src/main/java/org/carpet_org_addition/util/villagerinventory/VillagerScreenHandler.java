@@ -7,6 +7,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.screen.slot.SlotActionType;
+import org.carpet_org_addition.util.MathUtils;
+import org.carpet_org_addition.util.helpers.AbstractCustomSizeInventory;
 import org.carpet_org_addition.util.helpers.DisabledSlot;
 
 public class VillagerScreenHandler extends ScreenHandler {
@@ -45,7 +48,7 @@ public class VillagerScreenHandler extends ScreenHandler {
     }
 
     // 快速移动物品的方法，代码直接从其他类中复制过来再改一下
-    // 虽然这里对快速移动的方法进行了重写，但是在客户端仍然会调用Generic3x3ContainerScreenHandler类中的快速移动方法
+    // 虽然这里对快速移动的方法进行了重写，但是在客户端仍然会调用Generic3x3ContainerScreenHandler类中的快速移动方法（需要验证）
     @Override
     public ItemStack quickMove(PlayerEntity player, int slotIndex) {
         // 创建一个空物品堆栈对象
@@ -109,22 +112,31 @@ public class VillagerScreenHandler extends ScreenHandler {
         return player.distanceTo(villagerEntity) < 8;
     }
 
-    // 是否可以选项槽位中放入物品
+    // 是否可以向槽位中放入物品
     @Override
     public boolean canInsertIntoSlot(Slot slot) {
         // 槽位不能是禁用的槽位
         return !(slot instanceof DisabledSlot);
     }
 
-    // 是否可以选项槽位中放入物品
+    // 是否可以向槽位中放入物品
     @Override
     public boolean canInsertIntoSlot(ItemStack stack, Slot slot) {
         return !(slot instanceof DisabledSlot);
     }
 
     @Override
+    public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player) {
+        if (MathUtils.betweenTwoNumbers(8, 8, slotIndex)) {
+            return;
+        }
+        super.onSlotClick(slotIndex, button, actionType, player);
+    }
+
+    @Override
     public void onClosed(PlayerEntity player) {
         super.onClosed(player);
         this.inventory.dropExcess(player);
+        AbstractCustomSizeInventory.PLACEHOLDER.setCount(1);
     }
 }

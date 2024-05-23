@@ -155,7 +155,7 @@ public class SpectatorCommand {
                 writer.write(jsonString);
             }
         } catch (IOException e) {
-            CarpetOrgAddition.LOGGER.warn("无法正常" + GameUtils.getPlayerName(player) + "的位置信息写入文件", e);
+            CarpetOrgAddition.LOGGER.warn("无法正常将" + GameUtils.getPlayerName(player) + "的位置信息写入文件", e);
         }
     }
 
@@ -177,7 +177,7 @@ public class SpectatorCommand {
                 ServerWorld world = WorldUtils.getWorld(server, dimension);
                 player.teleport(world, x, y, z, yaw, pitch);
             }
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             CarpetOrgAddition.LOGGER.warn("无法正常读取" + GameUtils.getPlayerName(player) + "的位置信息");
         }
     }

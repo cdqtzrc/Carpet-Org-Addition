@@ -69,7 +69,7 @@ public final class ImmutableInventory extends SimpleInventory implements Iterabl
     /**
      * @return 潜影盒内是否有物品
      */
-    public boolean nonEmpty() {
+    public boolean hasItem() {
         return !this.isEmpty();
     }
 

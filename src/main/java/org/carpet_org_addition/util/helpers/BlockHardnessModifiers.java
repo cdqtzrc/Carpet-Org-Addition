@@ -23,30 +23,26 @@ public class BlockHardnessModifiers {
      */
     private static final List<Block> COBBLED_DEEPSLATE = Stream.of(Blocks.COBBLED_DEEPSLATE,
             Blocks.COBBLED_DEEPSLATE_SLAB, Blocks.COBBLED_DEEPSLATE_STAIRS, Blocks.COBBLED_DEEPSLATE_WALL,
-            Blocks.DEEPSLATE_BRICKS, Blocks.DEEPSLATE_TILES, Blocks.DEEPSLATE_TILE_SLAB,
-            Blocks.DEEPSLATE_TILE_STAIRS, Blocks.DEEPSLATE_TILE_WALL, Blocks.CRACKED_DEEPSLATE_BRICKS,
-            Blocks.CRACKED_DEEPSLATE_TILES).toList();
+            Blocks.DEEPSLATE_BRICKS, Blocks.DEEPSLATE_TILES, Blocks.DEEPSLATE_TILE_SLAB, Blocks.DEEPSLATE_TILE_STAIRS,
+            Blocks.DEEPSLATE_TILE_WALL, Blocks.CRACKED_DEEPSLATE_BRICKS, Blocks.CRACKED_DEEPSLATE_TILES).toList();
 
     /**
      * 普通矿石
      */
     private static final List<Block> ORE = Stream.of(Blocks.COAL_ORE, Blocks.IRON_ORE, Blocks.COPPER_ORE,
-            Blocks.LAPIS_ORE, Blocks.GOLD_ORE, Blocks.REDSTONE_ORE, Blocks.DIAMOND_ORE,
-            Blocks.EMERALD_ORE).toList();
+            Blocks.LAPIS_ORE, Blocks.GOLD_ORE, Blocks.REDSTONE_ORE, Blocks.DIAMOND_ORE, Blocks.EMERALD_ORE).toList();
 
     /**
      * 深层矿石
      */
-    private static final List<Block> DEEPSLATE_ORE = Stream.of(Blocks.DEEPSLATE_COAL_ORE,
-            Blocks.DEEPSLATE_IRON_ORE, Blocks.DEEPSLATE_COPPER_ORE, Blocks.DEEPSLATE_LAPIS_ORE,
-            Blocks.DEEPSLATE_GOLD_ORE, Blocks.DEEPSLATE_REDSTONE_ORE, Blocks.DEEPSLATE_DIAMOND_ORE,
-            Blocks.DEEPSLATE_EMERALD_ORE).toList();
+    private static final List<Block> DEEPSLATE_ORE = Stream.of(Blocks.DEEPSLATE_COAL_ORE, Blocks.DEEPSLATE_IRON_ORE,
+            Blocks.DEEPSLATE_COPPER_ORE, Blocks.DEEPSLATE_LAPIS_ORE, Blocks.DEEPSLATE_GOLD_ORE,
+            Blocks.DEEPSLATE_REDSTONE_ORE, Blocks.DEEPSLATE_DIAMOND_ORE, Blocks.DEEPSLATE_EMERALD_ORE).toList();
 
     /**
      * 下界矿石
      */
-    private static final List<Block> NETHER_ORE = Stream.of(Blocks.NETHER_QUARTZ_ORE,
-            Blocks.NETHER_GOLD_ORE).toList();
+    private static final List<Block> NETHER_ORE = Stream.of(Blocks.NETHER_QUARTZ_ORE, Blocks.NETHER_GOLD_ORE).toList();
 
     // 获取方块硬度
     public static Optional<Float> getHardness(Block block) {

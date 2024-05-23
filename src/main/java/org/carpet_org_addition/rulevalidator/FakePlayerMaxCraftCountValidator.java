@@ -6,17 +6,19 @@ import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.util.constant.RuleValidatorConstants;
 import org.jetbrains.annotations.Nullable;
 
-// 信标范围验证
-public class BeaconRangeExpandValidator extends Validator<Integer> {
-    public static final int MAX_VALUE = 1024;
+public class FakePlayerMaxCraftCountValidator extends Validator<Integer> {
+    /**
+     * 最小合成次数
+     */
+    public static final int MIN_CRAFT_COUNT = 1;
 
     @Override
     public Integer validate(@Nullable ServerCommandSource serverCommandSource, CarpetRule<Integer> carpetRule, Integer integer, String s) {
-        return integer <= MAX_VALUE ? integer : null;
+        return integer >= MIN_CRAFT_COUNT || integer == -1 ? integer : null;
     }
 
     @Override
     public String description() {
-        return RuleValidatorConstants.lessThanOrEqual(MAX_VALUE).getString();
+        return RuleValidatorConstants.greaterThanOrEqualOrNumber(MIN_CRAFT_COUNT, -1).getString();
     }
 }

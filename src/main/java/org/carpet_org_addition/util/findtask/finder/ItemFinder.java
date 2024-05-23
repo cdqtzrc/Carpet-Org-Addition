@@ -97,7 +97,7 @@ public class ItemFinder extends AbstractFinder {
                     continue;
                 }
                 // 从潜影盒内查找物品
-                if (immutableInventory.nonEmpty()) {
+                if (immutableInventory.hasItem()) {
                     // 遍历潜影盒内的物品栏，找到与匹配器对应的物品
                     for (ItemStack stack : immutableInventory) {
                         if (matcher.test(stack)) {

@@ -1,5 +1,6 @@
 package org.carpet_org_addition.command;
 
+import carpet.patches.EntityPlayerMPFake;
 import carpet.utils.CommandHelper;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -68,16 +69,16 @@ public class NavigatorCommand {
     private static int navigateToEntity(CommandContext<ServerCommandSource> context, boolean isContinue) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         Entity entity = EntityArgumentType.getEntity(context, "entity");
-        MutableText text;
         // 如果目标是玩家，广播消息
-        text = TextUtils.getTranslate(START_NAVIGATION, player.getDisplayName(), entity.getDisplayName());
-        if (entity instanceof ServerPlayerEntity && entity != player) {
+        MutableText text = TextUtils.getTranslate(START_NAVIGATION, player.getDisplayName(), entity.getDisplayName());
+        ((NavigatorInterface) player).setNavigator(entity, isContinue);
+        if (shouldBeBroadcasted(entity, player)) {
             // 设置为斜体淡灰色
             text = TextUtils.toItalic(TextUtils.setColor(text, Formatting.GRAY));
-
+            MessageUtils.broadcastTextMessage(context.getSource(), text);
+        } else {
+            MessageUtils.sendCommandFeedback(context.getSource(), text);
         }
-        ((NavigatorInterface) player).setNavigator(entity, isContinue);
-        MessageUtils.broadcastTextMessage(context.getSource(), text);
         return 1;
     }
 
@@ -118,11 +119,26 @@ public class NavigatorCommand {
                 continue;
             }
             ((NavigatorInterface) player).setNavigator(entity, false);
-            MessageUtils.sendCommandFeedback(context, START_NAVIGATION, player.getDisplayName(), entity.getDisplayName());
+            MutableText text = TextUtils.getTranslate(START_NAVIGATION, player.getDisplayName(), entity.getDisplayName());
+            if (shouldBeBroadcasted(entity, player)) {
+                // 将字体设置为灰色斜体
+                text = TextUtils.toItalic(TextUtils.setColor(text, Formatting.GRAY));
+                MessageUtils.broadcastTextMessage(context.getSource(), text);
+            } else {
+                MessageUtils.sendCommandFeedback(context.getSource(), text);
+            }
             return 1;
         }
         // 未找到实体
         throw EntityArgumentType.ENTITY_NOT_FOUND_EXCEPTION.create();
+    }
+
+    // 是否应该广播导航消息
+    private static boolean shouldBeBroadcasted(Entity entity, ServerPlayerEntity player) {
+        if (entity == player || entity instanceof EntityPlayerMPFake) {
+            return false;
+        }
+        return entity instanceof ServerPlayerEntity;
     }
 
     // 停止导航

@@ -1,6 +1,7 @@
 package org.carpet_org_addition.command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
@@ -38,7 +39,13 @@ public class CarpetOrgAdditionTestCommand {
                                 .executes(CarpetOrgAdditionTestCommand::getItemIndex)))
                 .then(CommandManager.literal("getBlockHardness")
                         .then(CommandManager.argument("pos", BlockPosArgumentType.blockPos())
-                                .executes(CarpetOrgAdditionTestCommand::getBlockHardness))));
+                                .executes(CarpetOrgAdditionTestCommand::getBlockHardness)))
+                .then(CommandManager.literal("randomTick")
+                        .then(CommandManager.argument("pos", BlockPosArgumentType.blockPos())
+                                .then(CommandManager.argument("count", IntegerArgumentType.integer(1))
+                                        .executes(CarpetOrgAdditionTestCommand::randomTick))))
+                .then(CommandManager.literal("switchCraftUpdate")
+                        .executes(context -> switchCraftUpdate())));
     }
 
     //列出图书管理员所有可交易的附魔书
@@ -106,5 +113,31 @@ public class CarpetOrgAdditionTestCommand {
         long takeTime = System.currentTimeMillis() - timeMillis;
         MessageUtils.sendCommandFeedback(context.getSource(), TextUtils.createText(blockState.getBlock().getName().getString() + "的硬度是" + hardness + "，命令执行耗时" + takeTime + "毫秒"));
         return (int) takeTime;
+    }
+
+    // 给予指定方块一个随机刻
+    private static int randomTick(CommandContext<ServerCommandSource> context) {
+        BlockPos blockPos = BlockPosArgumentType.getBlockPos(context, "pos");
+        int count = IntegerArgumentType.getInteger(context, "count");
+        ServerWorld world = context.getSource().getWorld();
+        BlockState blockState = world.getBlockState(blockPos);
+        int i;
+        for (i = 0; i < count; i++) {
+            BlockState worldBlockState = world.getBlockState(blockPos);
+            if (blockState.equals(worldBlockState)) {
+                worldBlockState.randomTick(world, blockPos, world.getRandom());
+                continue;
+            }
+            break;
+        }
+        MessageUtils.sendTextMessage(context.getSource(),
+                TextUtils.createText("给予" + blockState.getBlock().getName().getString() + i + "个随机刻"));
+        return i;
+    }
+
+    // 切换假玩家合成自动更新结果槽
+    private static int switchCraftUpdate() {
+        // FakePlayerCraftRecipeInterface.flag.setValue(!FakePlayerCraftRecipeInterface.flag.getValue());
+        return 1;
     }
 }
