@@ -17,6 +17,7 @@
     "rule.BeaconBlockEntityMixin",
     "rule.BindingCurseEnchantmentMixin",
     "rule.BiomeMixin",
+    "rule.ComparatorBlockMixin",
     "rule.ContainerComponentAccessor",
     "rule.ContainerComponentMixin",
     "rule.CreeperEntityMixin",
@@ -46,6 +47,7 @@
     "rule.PlayerEntityMixin",
     "rule.ProtectionEnchantmentMixin",
     "rule.RedstoneWireBlockMixin",
+    "rule.RepeaterBlockMixin",
     "rule.SculkShriekerBlockMixin",
     "rule.SeedCommandMixin",
     "rule.ServerPlayerEntityMixin",
@@ -74,7 +76,6 @@
     "rule.respawnblocksexplode.BedBlockMixin",
     "rule.respawnblocksexplode.RespawnAnchorBlockMixin",
     "util.CraftingScreenHandlerMixin",
-    "util.ItemPredicateArgumentTypeMixin",
     "util.RegisterCarpetCommandsMixin",
     "util.TranslatableTextContentMixin"
   ],

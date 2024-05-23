@@ -1,5 +1,6 @@
 package org.carpet_org_addition.util.helpers;
 
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
@@ -17,7 +18,7 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
 
     static {
         ItemStack itemStack = new ItemStack(Items.RED_STAINED_GLASS_PANE);
-        itemStack.setCustomName(TextUtils.setColor(TextUtils.getTranslate("carpet.inventory.item.placeholder"), Formatting.RED));
+        itemStack.set(DataComponentTypes.CUSTOM_NAME, TextUtils.setColor(TextUtils.getTranslate("carpet.inventory.item.placeholder"), Formatting.RED));
         PLACEHOLDER = itemStack;
     }
 
