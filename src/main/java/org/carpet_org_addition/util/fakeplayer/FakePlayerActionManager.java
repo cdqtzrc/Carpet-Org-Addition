@@ -18,7 +18,7 @@ public class FakePlayerActionManager implements JsonSerial {
     public void executeAction() {
         switch (function.getAction()) {
             case STOP -> {
-                // 停止：什么也不做
+                // 什么也不做
             }
             // 物品分拣
             case SORTING -> FakePlayerSorting.sorting((SortingData) function.getActionData(), fakePlayer);
@@ -27,10 +27,11 @@ public class FakePlayerActionManager implements JsonSerial {
             // 填充潜影盒
             case FILL -> FakePlayerFill.fill((FillData) function.getActionData(), fakePlayer);
             // 在生存模式物品栏合成物品
-            case INVENTORY_CRAFT -> FakePlayerCraft.craft2x2((InventoryCraftData) function.getActionData(), fakePlayer);
+            case INVENTORY_CRAFT ->
+                    FakePlayerCraft.inventoryCraft((InventoryCraftData) function.getActionData(), fakePlayer);
             // 在工作台合成物品
             case CRAFTING_TABLE_CRAFT ->
-                    FakePlayerCraft.craft3x3((CraftingTableCraftData) function.getActionData(), fakePlayer);
+                    FakePlayerCraft.craftingTableCraft((CraftingTableCraftData) function.getActionData(), fakePlayer);
             // 重命名物品
             case RENAME -> FakePlayerRename.rename((RenameData) function.getActionData(), fakePlayer);
             // 使用切石机
@@ -61,6 +62,12 @@ public class FakePlayerActionManager implements JsonSerial {
     // 让假玩家停止当前的动作
     public void stop() {
         this.function.setAction(FakePlayerAction.STOP, StopData.STOP);
+    }
+
+    // 从另一个玩家浅拷贝此动作管理器
+    public void copyActionData(EntityPlayerMPFake oldPlayer) {
+        FakePlayerActionManager actionManager = ((FakePlayerActionInterface) oldPlayer).getActionManager();
+        this.setAction(actionManager.getAction(), actionManager.getActionData());
     }
 
     public static void load(EntityPlayerMPFake fakePlayer, JsonObject json) {

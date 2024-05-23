@@ -13,7 +13,6 @@ import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.ItemPredicateArgumentType;
 import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.command.argument.Vec3ArgumentType;
-import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandlerContext;
@@ -28,10 +27,10 @@ import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.fakeplayer.CraftingSetRecipeScreenHandler;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerAction;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionInterface;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionManager;
-import org.carpet_org_addition.util.fakeplayer.FakePlayerGuiCraftScreenHandler;
 import org.carpet_org_addition.util.fakeplayer.actiondata.*;
 import org.carpet_org_addition.util.matcher.ItemMatcher;
 import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
@@ -258,8 +257,8 @@ public class PlayerActionCommand {
         EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
         // 打开合成GUI
         SimpleNamedScreenHandlerFactory screen = new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity)
-                -> new FakePlayerGuiCraftScreenHandler(i, playerInventory, fakePlayer,
-                ScreenHandlerContext.create(player.getWorld(), player.getBlockPos()), new SimpleInventory(9), context),
+                -> new CraftingSetRecipeScreenHandler(i, playerInventory, fakePlayer,
+                ScreenHandlerContext.create(player.getWorld(), player.getBlockPos()), context),
                 TextUtils.getTranslate("carpet.commands.playerAction.info.craft.gui"));
         player.openHandledScreen(screen);
         return 4;

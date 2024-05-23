@@ -70,7 +70,7 @@ public final class ImmutableInventory extends SimpleInventory implements Iterabl
     /**
      * @return 潜影盒内是否有物品
      */
-    public boolean nonEmpty() {
+    public boolean hasItem() {
         return !this.isEmpty();
     }
 
@@ -117,9 +117,8 @@ public final class ImmutableInventory extends SimpleInventory implements Iterabl
 
             @Override
             public ItemStack next() {
-                // 由于对象不可变，所以是线程安全的，不需要检查并抛出并发修改异常
+                // 由于对象不可变，所以是线程安全的，不需要考虑并发修改的问题
                 ItemStack itemStack = ImmutableInventory.this.getStack(cursor);
-                // 将变量自增与获取元素分开写，增加可读性
                 this.cursor++;
                 return itemStack;
             }

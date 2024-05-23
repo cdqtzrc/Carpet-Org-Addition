@@ -4,6 +4,7 @@
   "package": "org.carpet_org_addition.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "command.EntityPlayerMPFakeMixin",
     "command.ServerPlayerEntityMixin",
     "logger.HUDControllerMixin",
     "logger.LoggerAccessor",
@@ -72,6 +73,7 @@
     "rule.playerinteraction.ServerPlayNetworkHandlerMixin",
     "rule.respawnblocksexplode.BedBlockMixin",
     "rule.respawnblocksexplode.RespawnAnchorBlockMixin",
+    "util.CraftingScreenHandlerMixin",
     "util.ItemPredicateArgumentTypeMixin",
     "util.RegisterCarpetCommandsMixin",
     "util.TranslatableTextContentMixin"

@@ -85,7 +85,7 @@ public class CommandUtils {
     }
 
     /**
-     * 让一名玩家执行一条命令
+     * 让一名玩家执行一条命令，命令的前缀“/”可有可无，但不建议有
      */
     public static void execute(ServerPlayerEntity player, String command) {
         CommandUtils.execute(player.getCommandSource(), command);

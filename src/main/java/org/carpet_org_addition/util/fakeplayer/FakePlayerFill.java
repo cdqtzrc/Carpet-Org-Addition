@@ -14,11 +14,10 @@ public class FakePlayerFill {
     public static void fill(FillData fillData, EntityPlayerMPFake fakePlayer) {
         if (fakePlayer.currentScreenHandler instanceof ShulkerBoxScreenHandler shulkerBoxScreenHandler) {
             boolean allItem = fillData.isAllItem();
-            //获取要装在潜影盒的物品
+            // 获取要装在潜影盒的物品
             Item item = allItem ? null : fillData.getItem();
-            //只遍历玩家物品栏，不遍历潜影盒容器
-            //前27个格子是潜影盒的槽位
-            // 定义变量记录潜影盒是否已满
+            // 只遍历玩家物品栏，不遍历潜影盒容器
+            // 前27个格子是潜影盒的槽位
             for (int index = 63 - 36; index < 63; index++) {  // 63-36=27
                 // 获取玩家物品栏槽位内每一个槽位对象
                 Slot slot = shulkerBoxScreenHandler.slots.get(index);
@@ -26,7 +25,7 @@ public class FakePlayerFill {
                 if (slot.hasStack()) {
                     ItemStack itemStack = slot.getStack();
                     if ((allItem && itemStack.getItem().canBeNested()) || itemStack.isOf(item)) {
-                        //相当于按住Shift键移动物品
+                        // 相当于按住Shift键移动物品
                         FakePlayerUtils.quickMove(shulkerBoxScreenHandler, index, fakePlayer);
                         // 继续判断槽位内是否有物品，如果有说明潜影盒已满，关闭潜影盒，然后直接结束方法
                         if (slot.hasStack()) {

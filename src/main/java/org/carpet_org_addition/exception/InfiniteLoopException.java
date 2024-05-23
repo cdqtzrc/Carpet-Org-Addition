@@ -11,14 +11,14 @@ public class InfiniteLoopException extends RuntimeException {
     /**
      * 最大的循环次数，当前循环次数超过这个值时抛出自身的异常
      */
-    private final int MAX_LOOP_COUNT;
+    private final int maxLoopCount;
 
     public InfiniteLoopException() {
-        this.MAX_LOOP_COUNT = 1000;
+        this.maxLoopCount = 1000;
     }
 
     public InfiniteLoopException(int maxLoopCount) {
-        this.MAX_LOOP_COUNT = maxLoopCount;
+        this.maxLoopCount = maxLoopCount;
     }
 
     /**
@@ -26,7 +26,7 @@ public class InfiniteLoopException extends RuntimeException {
      */
     public void checkLoopCount() {
         loopCount++;
-        if (loopCount >= MAX_LOOP_COUNT) {
+        if (loopCount >= maxLoopCount) {
             throw this;
         }
     }
