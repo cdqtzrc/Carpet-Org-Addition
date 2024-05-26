@@ -50,7 +50,7 @@ public class SpectatorCommand {
                                                 .executes(SpectatorCommand::tpToDimensionLocation))))
                         .then(CommandManager.literal("entity")
                                 .then(CommandManager.argument("entity", EntityArgumentType.entity())
-                                        .executes(SpectatorCommand::tpTpEntity)))));
+                                        .executes(SpectatorCommand::tpToEntity)))));
     }
 
     // 更改游戏模式
@@ -116,7 +116,7 @@ public class SpectatorCommand {
     }
 
     // 传送到实体
-    private static int tpTpEntity(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private static int tpToEntity(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         // 检查玩家是不是旁观模式
         requireSpectator(player);

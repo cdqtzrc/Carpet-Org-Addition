@@ -28,6 +28,10 @@ import org.carpet_org_addition.util.fakeplayer.FakePlayerInventoryScreenHandler;
 
 @SuppressWarnings("SameReturnValue")
 public class PlayerToolsCommand {
+    /*
+     TODO 添加一条新命令将inventory和enderChest这两个子命令独立出来，并添加背包整理功能
+          可以整理背包内潜影盒中的物品，背包内和潜影盒内的物品分开整理
+     */
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("playerTools")
                 .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerTools))

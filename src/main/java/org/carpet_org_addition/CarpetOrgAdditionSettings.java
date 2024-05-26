@@ -516,6 +516,7 @@ public class CarpetOrgAdditionSettings {
     public static MobWhetherOrNotCanPickItem mobWhetherOrNotCanPickItem = MobWhetherOrNotCanPickItem.VANILLA;
 
     // 可高亮路径点
+    // TODO 规则名不准确，默认值改为true
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL, RuleCategory.CLIENT}
     )
