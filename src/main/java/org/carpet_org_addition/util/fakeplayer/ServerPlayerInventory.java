@@ -1,16 +1,16 @@
 package org.carpet_org_addition.util.fakeplayer;
 
-import carpet.patches.EntityPlayerMPFake;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.server.network.ServerPlayerEntity;
 import org.carpet_org_addition.util.helpers.AbstractCustomSizeInventory;
 
-public class FakePlayerInventory extends AbstractCustomSizeInventory {
-    private final EntityPlayerMPFake fakePlayer;
+public class ServerPlayerInventory extends AbstractCustomSizeInventory {
+    private final ServerPlayerEntity fakePlayer;
     private final PlayerInventory inventory;
 
-    public FakePlayerInventory(EntityPlayerMPFake fakePlayer) {
+    public ServerPlayerInventory(ServerPlayerEntity fakePlayer) {
         this.fakePlayer = fakePlayer;
         this.inventory = fakePlayer.getInventory();
     }
@@ -32,7 +32,7 @@ public class FakePlayerInventory extends AbstractCustomSizeInventory {
 
     @Override
     public boolean canPlayerUse(PlayerEntity player) {
-        // 假玩家活着，并且假玩家没有被删除
+        // 玩家活着，并且玩家没有被删除
         return !this.fakePlayer.isDead() && !this.fakePlayer.isRemoved();
     }
 }

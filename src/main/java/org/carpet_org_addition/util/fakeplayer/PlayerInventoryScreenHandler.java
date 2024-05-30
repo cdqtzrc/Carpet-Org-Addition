@@ -1,32 +1,31 @@
 package org.carpet_org_addition.util.fakeplayer;
 
-import carpet.patches.EntityPlayerMPFake;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.server.network.ServerPlayerEntity;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.helpers.AbstractCustomSizeInventory;
 
-public class FakePlayerInventoryScreenHandler extends ScreenHandler {
+public class PlayerInventoryScreenHandler extends ScreenHandler {
     private static final int SIZE = 41;
-    private final EntityPlayerMPFake fakePlayer;
-    private final FakePlayerInventory inventory;
+    private final ServerPlayerEntity player;
+    private final ServerPlayerInventory inventory;
 
-    public FakePlayerInventoryScreenHandler(int syncId, PlayerInventory playerInventory, EntityPlayerMPFake fakePlayer) {
+    public PlayerInventoryScreenHandler(int syncId, net.minecraft.entity.player.PlayerInventory playerInventory, ServerPlayerEntity player) {
         super(ScreenHandlerType.GENERIC_9X6, syncId);
-        this.fakePlayer = fakePlayer;
-        this.inventory = new FakePlayerInventory(fakePlayer);
+        this.player = player;
+        this.inventory = new ServerPlayerInventory(player);
         this.inventory.onOpen(playerInventory.player);
         // 定义变量记录添加的槽位的索引
         int index = 0;
         // 添加上半部分的槽位
         for (int j = 0; j < 6; ++j) {
             for (int k = 0; k < 9; ++k) {
-                // 如果槽位id大于假玩家物品栏的大小，添加不可用槽位
+                // 如果槽位id大于玩家物品栏的大小，添加不可用槽位
                 if (index >= SIZE) {
                     // 添加不可用槽位
                     this.addSlot(new Slot(inventory, index, 8 + k * 18, 18 + j * 18));
@@ -82,7 +81,7 @@ public class FakePlayerInventoryScreenHandler extends ScreenHandler {
                     return ItemStack.EMPTY;
                 }
             } else {
-                // 否则，将物品从玩家物品栏移动到假玩家物品栏
+                // 否则，将物品从玩家物品栏移动到玩家物品栏
                 if (!this.insertItem(slotItemStack, 0, 41, false)) {
                     return ItemStack.EMPTY;
                 }
@@ -100,8 +99,8 @@ public class FakePlayerInventoryScreenHandler extends ScreenHandler {
     // 是否可以打开GUI，如果为false，打开的GUI会自动关闭
     @Override
     public boolean canUse(PlayerEntity player) {
-        // 假玩家活着，并且假玩家没有被删除
-        return !this.fakePlayer.isDead() && !this.fakePlayer.isRemoved();
+        // 玩家活着，并且玩家没有被删除
+        return !this.player.isDead() && !this.player.isRemoved();
     }
 
     @Override

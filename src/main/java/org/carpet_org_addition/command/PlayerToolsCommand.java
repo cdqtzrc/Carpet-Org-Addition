@@ -23,15 +23,11 @@ import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.fakeplayer.FakePlayerEnderChestScreenHandler;
-import org.carpet_org_addition.util.fakeplayer.FakePlayerInventoryScreenHandler;
+import org.carpet_org_addition.util.fakeplayer.PlayerEnderChestScreenHandler;
+import org.carpet_org_addition.util.fakeplayer.PlayerInventoryScreenHandler;
 
 @SuppressWarnings("SameReturnValue")
 public class PlayerToolsCommand {
-    /*
-     TODO 添加一条新命令将inventory和enderChest这两个子命令独立出来，并添加背包整理功能
-          可以整理背包内潜影盒中的物品，背包内和潜影盒内的物品分开整理
-     */
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("playerTools")
                 .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerTools))
@@ -70,8 +66,7 @@ public class PlayerToolsCommand {
         if (fakePlayer instanceof EntityPlayerMPFake || fakePlayer == player) {
             //创建GUI对象
             SimpleNamedScreenHandlerFactory screen = new SimpleNamedScreenHandlerFactory((i, inventory, playerEntity1) ->
-                    new FakePlayerEnderChestScreenHandler(i, inventory,
-                            fakePlayer.getEnderChestInventory(), fakePlayer), fakePlayer.getName());
+                    new PlayerEnderChestScreenHandler(i, inventory, fakePlayer), fakePlayer.getName());
             //打开末影箱GUI
             player.openHandledScreen(screen);
         } else {
@@ -144,8 +139,7 @@ public class PlayerToolsCommand {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         if (CommandUtils.checkFakePlayer(fakePlayer)) {
             SimpleNamedScreenHandlerFactory screen = new SimpleNamedScreenHandlerFactory((syncId, playerInventory, playerEntity)
-                    -> new FakePlayerInventoryScreenHandler(syncId, playerInventory,
-                    (EntityPlayerMPFake) fakePlayer), fakePlayer.getName());
+                    -> new PlayerInventoryScreenHandler(syncId, playerInventory, fakePlayer), fakePlayer.getName());
             player.openHandledScreen(screen);
         }
         return 1;

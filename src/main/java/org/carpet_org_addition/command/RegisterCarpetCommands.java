@@ -68,6 +68,9 @@ public class RegisterCarpetCommands {
             // 追踪器命令
             NavigatorCommand.register(dispatcher);
 
+            // 物品栏命令
+            // InventoryCommand.register(dispatcher);
+
             /*
               测试用命令
              */
