@@ -515,12 +515,11 @@ public class CarpetOrgAdditionSettings {
     )
     public static MobWhetherOrNotCanPickItem mobWhetherOrNotCanPickItem = MobWhetherOrNotCanPickItem.VANILLA;
 
-    // 可高亮路径点
-    // TODO 规则名不准确，默认值改为true
+    // 可高亮方块坐标
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL, RuleCategory.CLIENT}
     )
-    public static boolean canHighlightWaypoint = false;
+    public static boolean canHighlightBlockPos = true;
 
     // 玩家管理器命令
     @Rule(

@@ -67,11 +67,15 @@ java {
     if (JavaVersion.current() < javaVersion) {
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
     }
-    archivesBaseName = project.archives_base_name + "-mc" + project.minecraft_version + "-" + DateTimeFormatter.ofPattern("yyMMddHHmm").format(LocalDateTime.now())
+    archivesBaseName = "${project.archives_base_name}-mc${project.minecraft_version}"
+    // 时间戳
+    def timeStamp = DateTimeFormatter.ofPattern("yyMMddHHmm").format(LocalDateTime.now())
+    version = "v${project.mod_version}-${timeStamp}"
     // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
     // if it is present.
     // If you remove this line, sources will not be generated.
     withSourcesJar()
+    version = project.version
 }
 
 jar {

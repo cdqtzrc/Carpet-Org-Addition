@@ -46,7 +46,7 @@ public class WorldFormat {
             return;
         }
         // 如果这个文件夹不存在并且没有创建成功，将信息写入日志
-        CarpetOrgAddition.LOGGER.error(this.modFileDirectory + "文件夹创建失败");
+        CarpetOrgAddition.LOGGER.error("{}文件夹创建失败", this.modFileDirectory);
     }
 
     /**
