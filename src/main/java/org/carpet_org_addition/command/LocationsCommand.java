@@ -163,7 +163,7 @@ public class LocationsCommand {
             }
         } catch (IOException | NullPointerException e) {
             //无法添加说明文本
-            CarpetOrgAddition.LOGGER.error("无法为路径点[" + name + "]添加说明文本", e);
+            CarpetOrgAddition.LOGGER.error("无法为路径点[{}]添加说明文本", name, e);
             throw CommandUtils.createException("carpet.commands.locations.illustrate.io", name);
         }
         return 1;

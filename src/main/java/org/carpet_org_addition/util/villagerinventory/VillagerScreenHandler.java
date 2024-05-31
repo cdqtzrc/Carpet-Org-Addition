@@ -8,7 +8,6 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
-import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.helpers.AbstractCustomSizeInventory;
 import org.carpet_org_addition.util.helpers.DisabledSlot;
 
@@ -127,7 +126,7 @@ public class VillagerScreenHandler extends ScreenHandler {
 
     @Override
     public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player) {
-        if (MathUtils.betweenTwoNumbers(8, 8, slotIndex)) {
+        if (slotIndex == 8) {
             return;
         }
         super.onSlotClick(slotIndex, button, actionType, player);
