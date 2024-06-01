@@ -3,30 +3,19 @@ package org.carpet_org_addition.util;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ContainerComponent;
-import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.Registries;
-import net.minecraft.util.collection.DefaultedList;
 import org.carpet_org_addition.exception.NoNbtException;
 import org.carpet_org_addition.util.helpers.ContainerDeepCopy;
 import org.carpet_org_addition.util.helpers.ImmutableInventory;
 import org.carpet_org_addition.util.matcher.Matcher;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class InventoryUtils {
-    public static final String BLOCK_ENTITY_TAG = "BlockEntityTag";
-    public static final String ITEMS = "Items";
-    public static final String INVENTORY = "Inventory";
-
     /**
      * 潜影盒工具类，私有化构造方法
      */
@@ -219,7 +208,7 @@ public class InventoryUtils {
                     continue;
                 }
                 // 物品是否可以合并
-                if (ItemStack.canCombine(itemStack, otherStack)) {
+                if (ItemStack.areItemsAndComponentsEqual(itemStack, otherStack)) {
                     if (count - otherStack.getCount() > 0) {
                         // 合并后堆叠数量仍然不满
                         itemStack.increment(otherStack.getCount());

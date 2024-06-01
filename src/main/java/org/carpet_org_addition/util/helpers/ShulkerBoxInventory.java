@@ -1,17 +1,16 @@
 package org.carpet_org_addition.util.helpers;
 
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.collection.DefaultedList;
 import org.carpet_org_addition.util.InventoryUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ShulkerBoxInventory implements Inventory {
 
@@ -27,13 +26,10 @@ public class ShulkerBoxInventory implements Inventory {
                     continue;
                 }
                 this.shulkerBoxList.add(itemStack);
-                // 获取潜影盒NBT
-                NbtCompound nbt = Objects.requireNonNull(itemStack.getNbt()).getCompound(InventoryUtils.BLOCK_ENTITY_TAG);
-                if (nbt != null && nbt.contains(InventoryUtils.ITEMS, NbtElement.LIST_TYPE)) {
-                    DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
-                    // 读取潜影盒NBT
-                    Inventories.readNbt(nbt, defaultedList);
-                    list.addAll(defaultedList);
+                // 获取潜影盒物品栏组件
+                ContainerComponent component = itemStack.get(DataComponentTypes.CONTAINER);
+                if (component != null) {
+                    list.addAll(component.stream().toList());
                 }
             }
         }
@@ -98,23 +94,22 @@ public class ShulkerBoxInventory implements Inventory {
     }
 
     /**
-     * 清除空潜影盒的物品栏NBT
+     * 清除空潜影盒的物品栏组件
      */
     public void removeInventoryNbt() {
         for (ItemStack itemStack : this.shulkerBoxList) {
             if (InventoryUtils.isEmptyShulkerBox(itemStack)) {
-                itemStack.removeSubNbt(InventoryUtils.BLOCK_ENTITY_TAG);
+                itemStack.remove(DataComponentTypes.CONTAINER);
             }
         }
     }
 
     /**
-     * 应用对潜影盒的更改：将物品集合写入NBT
+     * 应用对潜影盒的更改：将物品集合写入物品组件
      */
     public void application() {
         int number = 0;
         for (ItemStack itemStack : this.shulkerBoxList) {
-            NbtCompound nbt = new NbtCompound();
             DefaultedList<ItemStack> defaultedList;
             if (number < this.size()) {
                 List<ItemStack> list = this.stacks.subList(number, (number + 27) > this.size() ? this.size() : (number + 27));
@@ -124,8 +119,7 @@ public class ShulkerBoxInventory implements Inventory {
             } else {
                 defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
             }
-            nbt.put(InventoryUtils.BLOCK_ENTITY_TAG, Inventories.writeNbt(new NbtCompound(), defaultedList));
-            itemStack.setNbt(nbt);
+            itemStack.set(DataComponentTypes.CONTAINER, ContainerComponent.fromStacks(defaultedList));
         }
     }
 }
