@@ -95,7 +95,7 @@ public class LocationsCommand {
             // 成功添加路径点
             MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.locations.add.success", name, WorldUtils.toPosString(blockPos));
         } catch (IOException e) {
-            CarpetOrgAddition.LOGGER.error(GameUtils.getPlayerName(player) + "在尝试将路径点写入本地文件时出现意外问题:", e);
+            CarpetOrgAddition.LOGGER.error("{}在尝试将路径点写入本地文件时出现意外问题:", GameUtils.getPlayerName(player), e);
         }
         return 1;
     }
@@ -192,7 +192,7 @@ public class LocationsCommand {
                 MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.another.add");
             }
         } catch (IOException | NullPointerException e) {
-            CarpetOrgAddition.LOGGER.error("无法解析路径点[" + name + "]:", e);
+            CarpetOrgAddition.LOGGER.error("无法解析路径点[{}]:", name, e);
             throw CommandUtils.createException("carpet.commands.locations.another.io", name);
         }
         return 1;

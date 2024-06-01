@@ -40,7 +40,7 @@ public class FakePlayerActionManager implements JsonSerial {
             // 自动交易
             case TRADE -> FakePlayerTrade.trade((TradeData) function.actionData, fakePlayer);
             default -> {
-                CarpetOrgAddition.LOGGER.error(this.function.getAction() + "的行为没有预先定义");
+                CarpetOrgAddition.LOGGER.error("{}的行为没有预先定义", this.function.getAction());
                 this.stop();
             }
         }

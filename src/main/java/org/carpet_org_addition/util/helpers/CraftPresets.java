@@ -44,7 +44,7 @@ public class CraftPresets {
         // 将字符串以空格或逗号切割
         String[] split = this.presets.split("[ ,，]+");
         if (split.length != 9) {
-            CarpetOrgAddition.LOGGER.warn("无法解析字符串:“" + this.presets + "”");
+            CarpetOrgAddition.LOGGER.warn("无法解析字符串:“{}”", this.presets);
             throw CommandUtils.createException("carpet.commands.presets.parse.string.fail", presets);
         }
         // 填充数组，填充前源数组中的元素去除头尾的空格（虽然可能不会有空格）
@@ -61,7 +61,7 @@ public class CraftPresets {
                 bw.write(json);
             }
         } catch (IOException e) {
-            CarpetOrgAddition.LOGGER.warn("将" + name + "写入本地文件时出现意外问题", e);
+            CarpetOrgAddition.LOGGER.warn("将{}写入本地文件时出现意外问题", name, e);
         }
     }
 

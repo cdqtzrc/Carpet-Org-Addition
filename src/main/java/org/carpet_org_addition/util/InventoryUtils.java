@@ -248,15 +248,6 @@ public class InventoryUtils {
             if (o1.isEmpty() && !o2.isEmpty()) {
                 return 1;
             }
-            // 空潜影盒放在有物品的潜影盒后面
-            if (InventoryUtils.isShulkerBoxItem(o1) && InventoryUtils.isShulkerBoxItem(o2)) {
-                if (!InventoryUtils.isEmptyShulkerBox(o1) && InventoryUtils.isEmptyShulkerBox(o2)) {
-                    return -1;
-                }
-                if (InventoryUtils.isEmptyShulkerBox(o1) && !InventoryUtils.isEmptyShulkerBox(o2)) {
-                    return 1;
-                }
-            }
             // 按物品ID排序
             return Registries.ITEM.getId(o1.getItem()).toString().compareTo(Registries.ITEM.getId(o2.getItem()).toString());
         });

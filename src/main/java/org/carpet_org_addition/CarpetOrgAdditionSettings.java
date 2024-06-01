@@ -7,6 +7,7 @@ import org.carpet_org_addition.rulevalue.MobWhetherOrNotCanPickItem;
 import org.carpet_org_addition.rulevalue.QuickSettingFakePlayerCraft;
 import org.carpet_org_addition.rulevalue.WetSpongeImmediatelyDry;
 
+@SuppressWarnings("CanBeFinal")
 public class CarpetOrgAdditionSettings {
     private CarpetOrgAdditionSettings() {
     }

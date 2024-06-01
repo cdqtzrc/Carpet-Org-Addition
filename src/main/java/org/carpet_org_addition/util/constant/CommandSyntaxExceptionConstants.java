@@ -19,10 +19,10 @@ public class CommandSyntaxExceptionConstants {
     /**
      * 无法读取json文件
      */
-    public static CommandSyntaxException READ_JSON_FILE_EXCEPTION = new SimpleCommandExceptionType(TextUtils.getTranslate("carpet.command.file.json.read")).create();
+    public static final CommandSyntaxException READ_JSON_FILE_EXCEPTION = new SimpleCommandExceptionType(TextUtils.getTranslate("carpet.command.file.json.read")).create();
 
     /**
      * 找不到json文件
      */
-    public static CommandSyntaxException NOT_JSON_FILE_EXCEPTION = new SimpleCommandExceptionType(TextUtils.getTranslate("carpet.command.file.json.not_file")).create();
+    public static final CommandSyntaxException NOT_JSON_FILE_EXCEPTION = new SimpleCommandExceptionType(TextUtils.getTranslate("carpet.command.file.json.not_file")).create();
 }
