@@ -23,7 +23,7 @@
     ]
   },
   "mixins": [
-    "carpet_org.mixins.json"
+    "carpet_org_addition.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",

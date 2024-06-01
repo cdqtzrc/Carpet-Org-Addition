@@ -7,6 +7,7 @@ import org.carpet_org_addition.rulevalue.MobWhetherOrNotCanPickItem;
 import org.carpet_org_addition.rulevalue.QuickSettingFakePlayerCraft;
 import org.carpet_org_addition.rulevalue.WetSpongeImmediatelyDry;
 
+@SuppressWarnings("CanBeFinal")
 public class CarpetOrgAdditionSettings {
     private CarpetOrgAdditionSettings() {
     }
@@ -359,195 +360,195 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean canActivatesObserver = false;
 
-    //禁止水结冰
+    // 禁止水结冰
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean disableWaterFreezes = false;
 
-    //假玩家合成保留物品
+    // 假玩家合成保留物品
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean fakePlayerCraftKeepItem = false;
 
-    //绘制粒子线命令
+    // 绘制粒子线命令
     @Rule(
             categories = {ORG, RuleCategory.COMMAND},
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
-    public static String commandParticleLine = "true";//默认为true，方便无权限玩家调用
+    public static String commandParticleLine = "true";// 默认为true，方便无权限玩家调用
 
-    //禁止特定生物在和平模式下被清除
+    // 禁止特定生物在和平模式下被清除
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean disableMobPeacefulDespawn = false;
 
-    //船可以直接走向一格高的方块
+    // 船可以直接走向一格高的方块
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean climbingBoat = false;
 
-    //可重复使用的锻造模板
+    // 可重复使用的锻造模板
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean reusableSmithingTemplate = false;
 
-    //开放/tp命令权限
+    // 开放/tp命令权限
     @Rule(
             categories = {ORG, RuleCategory.COMMAND}
     )
     public static boolean openTpPermissions = false;
 
-    //易碎深板岩
+    // 易碎深板岩
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean softDeepslate = false;
 
-    //易碎黑曜石
+    // 易碎黑曜石
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean softObsidian = false;
 
-    //易碎矿石
+    // 易碎矿石
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean softOres = false;
 
-    //更好的不死图腾
+    // 更好的不死图腾
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean betterTotemOfUndying = false;
 
-    //假玩家动作命令
+    // 假玩家动作命令
     @Rule(
             categories = {ORG, RuleCategory.COMMAND},
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
     public static String commandPlayerAction = "ops";
 
-    //假玩家合成支持潜影盒
+    // 假玩家合成支持潜影盒
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean fakePlayerCraftPickItemFromShulkerBox = false;
 
-    //自定义猪灵交易时间
+    // 自定义猪灵交易时间
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL},
             validators = PiglinBarteringTimeValidator.class
     )
     public static long customPiglinBarteringTime = -1;
 
-    //快速设置假玩家合成
+    // 快速设置假玩家合成
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static QuickSettingFakePlayerCraft quickSettingFakePlayerCraft = QuickSettingFakePlayerCraft.FALSE;
 
-    //湿海绵立即干燥
+    // 湿海绵立即干燥
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static WetSpongeImmediatelyDry wetSpongeImmediatelyDry = WetSpongeImmediatelyDry.FALSE;
 
-    //假玩家死亡不掉落
+    // 假玩家死亡不掉落
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean fakePlayerKeepInventory = false;
 
-    //苦力怕命令
+    // 苦力怕命令
     @Rule(
             categories = {ORG, RuleCategory.COMMAND},
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
     public static String commandCreeper = "false";
 
-    //规则搜索命令
+    // 规则搜索命令
     @Rule(
             categories = {ORG, RuleCategory.COMMAND},
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
     public static String commandRuleSearch = "ops";
 
-    //增强闪电苦力怕
+    // 增强闪电苦力怕
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean superChargedCreeper = false;
 
-    //玩家掉落头颅
+    // 玩家掉落头颅
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean playerDropHead = false;
 
-    //信标范围扩展
+    // 信标范围扩展
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL},
             validators = BeaconRangeExpandValidator.class
     )
     public static int beaconRangeExpand = 0;
 
-    //信标世界高度
+    // 信标世界高度
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean beaconWorldHeight = false;
 
-    //生物是否可以捡起物品
+    // 生物是否可以捡起物品
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static MobWhetherOrNotCanPickItem mobWhetherOrNotCanPickItem = MobWhetherOrNotCanPickItem.VANILLA;
 
-    //可高亮路径点
+    // 可高亮方块坐标
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL, RuleCategory.CLIENT}
     )
-    public static boolean canHighlightWaypoint = false;
+    public static boolean canHighlightBlockPos = true;
 
-    //玩家管理器命令
+    // 玩家管理器命令
     @Rule(
             categories = {ORG, RuleCategory.COMMAND},
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
     public static String commandPlayerManager = "ops";
 
-    //方块掉落物直接进入物品栏
+    // 方块掉落物直接进入物品栏
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean blockDropsDirectlyEnterInventory = false;
 
-    //海龟蛋快速采集
+    // 海龟蛋快速采集
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean turtleEggFastMine = false;
 
-    //导航器
+    // 导航器
     @Rule(
             categories = {ORG, RuleCategory.COMMAND},
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
     public static String commandNavigate = "true";
 
-    //玩家死亡产生的掉落物不会自然消失
+    // 玩家死亡产生的掉落物不会自然消失
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean playerDropsNotDespawning = false;
 
-    //假玩家最大合成次数
+    // 假玩家最大合成次数
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL},
             options = {"1", "3", "5", "-1"},

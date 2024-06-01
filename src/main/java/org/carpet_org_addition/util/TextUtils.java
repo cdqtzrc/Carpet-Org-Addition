@@ -32,7 +32,7 @@ public class TextUtils {
             //修改文本颜色
             pos.styled(style -> style.withColor(color));
         }
-        if (CarpetOrgAdditionSettings.canHighlightWaypoint) {
+        if (CarpetOrgAdditionSettings.canHighlightBlockPos) {
             MutableText highlight = createText(" [H]");
             TextUtils.command(highlight, "/highlightWaypoint " + WorldUtils.toPosString(blockPos),
                     TextUtils.getTranslate("ommc.highlight_waypoint.tooltip"), color, false);

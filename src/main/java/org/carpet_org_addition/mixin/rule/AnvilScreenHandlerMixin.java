@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
  * @see <a href="https://zh.minecraft.wiki/w/%E9%93%81%E7%A0%A7%E6%9C%BA%E5%88%B6#%E7%B4%AF%E7%A7%AF%E6%83%A9%E7%BD%9A">铁砧机制#累积惩罚</a>
  */
 //防止铁砧过于昂贵
+@SuppressWarnings("CommentedOutCode")
 @Mixin(AnvilScreenHandler.class)
 public class AnvilScreenHandlerMixin {
 

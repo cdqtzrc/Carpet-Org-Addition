@@ -135,7 +135,7 @@ public class FakePlayerSerial implements JsonSerial {
                 MessageUtils.sendCommandFeedback(context.getSource(), mutableText);
                 count++;
             } catch (IOException | NullPointerException e) {
-                CarpetOrgAddition.LOGGER.warn("无法从文件" + file.getName() + "加载玩家信息");
+                CarpetOrgAddition.LOGGER.warn("无法从文件{}加载玩家信息", file.getName());
             }
         }
         return count;

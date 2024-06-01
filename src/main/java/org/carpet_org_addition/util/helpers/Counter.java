@@ -43,6 +43,7 @@ public class Counter<E> implements Iterable<E> {
      * @param element 要增加数量的元素
      * @param count   增加的个数
      */
+    @SuppressWarnings("Java8MapApi")
     public void add(E element, int count) {
         Integer i = this.COUNTER.get(element);
         this.COUNTER.put(element, i == null ? count : i + count);

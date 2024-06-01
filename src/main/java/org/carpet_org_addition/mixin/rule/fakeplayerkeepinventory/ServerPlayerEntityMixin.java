@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(ServerPlayerEntity.class)
 public class ServerPlayerEntityMixin {
     @Unique
-    ServerPlayerEntity thisPlayer = (ServerPlayerEntity) (Object) this;
+    private final ServerPlayerEntity thisPlayer = (ServerPlayerEntity) (Object) this;
 
     @WrapOperation(method = "copyFrom", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameRules;getBoolean(Lnet/minecraft/world/GameRules$Key;)Z"))
     private boolean keepItem(GameRules instance, GameRules.Key<GameRules.BooleanRule> rule, Operation<Boolean> original) {
