@@ -42,6 +42,7 @@ public class GameUtils {
      *
      * @return 当前系统时间的字符串形式
      */
+    @Deprecated
     public static String getDateString() {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH:mm:ss");

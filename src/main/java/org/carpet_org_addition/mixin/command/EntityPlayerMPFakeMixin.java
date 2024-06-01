@@ -38,7 +38,8 @@ public class EntityPlayerMPFakeMixin implements FakePlayerActionInterface {
             this.getActionManager().executeAction();
         } catch (RuntimeException e) {
             // 将错误信息写入日志
-            CarpetOrgAddition.LOGGER.error(thisPlayer.getName().getString() + "在执行操作“" + this.getActionManager().getAction().toString() + "”时遇到意外错误:", e);
+            CarpetOrgAddition.LOGGER.error("{}在执行操作“{}”时遇到意外错误:", thisPlayer.getName().getString(),
+                    this.getActionManager().getAction().toString(), e);
             // 让假玩家停止当前操作
             this.getActionManager().stop();
             // 向聊天栏发送错误消息的反馈

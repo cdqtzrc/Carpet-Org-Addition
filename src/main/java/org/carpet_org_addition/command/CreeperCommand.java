@@ -40,8 +40,8 @@ public class CreeperCommand {
         creeper.discard();
         ServerPlayerEntity sourcePlayer = context.getSource().getPlayer();
         if (sourcePlayer != null) {
-            CarpetOrgAddition.LOGGER.info(sourcePlayer.getName().getString() + "在" + targetPlayer.getName().getString()
-                    + "周围制造了一场苦力怕爆炸");
+            CarpetOrgAddition.LOGGER.info("{}在{}周围制造了一场苦力怕爆炸",
+                    sourcePlayer.getName().getString(), targetPlayer.getName().getString());
         }
         return 1;
     }

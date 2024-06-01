@@ -154,7 +154,7 @@ public class ItemMatchers {
     public static Item asItem(String id) {
         String[] split = id.split(":");
         if (split.length != 2) {
-            CarpetOrgAddition.LOGGER.error("无法根据物品id:“" + id + "”获取物品");
+            CarpetOrgAddition.LOGGER.error("无法根据物品id:“{}”获取物品", id);
             throw new IllegalArgumentException();
         }
         return Registries.ITEM.get(new Identifier(split[0], split[1]));

@@ -7,6 +7,7 @@ import org.carpet_org_addition.rulevalue.MobWhetherOrNotCanPickItem;
 import org.carpet_org_addition.rulevalue.QuickSettingFakePlayerCraft;
 import org.carpet_org_addition.rulevalue.WetSpongeImmediatelyDry;
 
+@SuppressWarnings("CanBeFinal")
 public class CarpetOrgAdditionSettings {
     private CarpetOrgAdditionSettings() {
     }
@@ -509,11 +510,11 @@ public class CarpetOrgAdditionSettings {
     )
     public static MobWhetherOrNotCanPickItem mobWhetherOrNotCanPickItem = MobWhetherOrNotCanPickItem.VANILLA;
 
-    // 可高亮路径点
+    // 可高亮方块坐标
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL, RuleCategory.CLIENT}
     )
-    public static boolean canHighlightWaypoint = false;
+    public static boolean canHighlightBlockPos = true;
 
     // 玩家管理器命令
     @Rule(

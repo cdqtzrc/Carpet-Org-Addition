@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 public class WanderingTraderSpawnLogger {
     // wanderingTrader这个名字已经被另一个Carpet扩展使用了
     public static final String LOGGER_NAME = "wanderingTraderSpawnCountdown";
+    @SuppressWarnings("CanBeFinal")
     public static boolean wanderingTraderSpawnCountdown = false;
     private static SpawnCountdown spawnCountdown;
 

@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(MobEntity.class)
 public class MobEntityMixin {
     @Unique
-    MobEntity thisMob = (MobEntity) (Object) this;
+    private final MobEntity thisMob = (MobEntity) (Object) this;
 
     // 生物是否可以减轻物品
     @WrapOperation(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/MobEntity;canPickUpLoot()Z"))

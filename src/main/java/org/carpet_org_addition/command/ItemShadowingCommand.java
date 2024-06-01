@@ -42,22 +42,19 @@ public class ItemShadowingCommand {
             if (InventoryUtils.isShulkerBoxItem(main)) {
                 try {
                     ImmutableInventory inventory = InventoryUtils.getInventory(main);
-                    CarpetOrgAddition.LOGGER.info(GameUtils.getPlayerName(player) + "制作了一个"
-                            + main.getItem().getName().getString() + "的物品分身，包含" + inventory.slotCount()
-                            + "个物品，分别是：" + inventory + "，在"
-                            + WorldUtils.getDimensionId(player.getWorld()) + "，坐标:["
-                            + WorldUtils.toPosString(player.getBlockPos()) + "]");
+                    CarpetOrgAddition.LOGGER.info("{}制作了一个{}的物品分身，包含{}个物品，分别是：{}，在{}，坐标:[{}]",
+                            GameUtils.getPlayerName(player), main.getItem().getName().getString(),
+                            inventory.slotCount(), inventory, WorldUtils.getDimensionId(player.getWorld()),
+                            WorldUtils.toPosString(player.getBlockPos()));
                 } catch (NoNbtException e) {
-                    CarpetOrgAddition.LOGGER.info(GameUtils.getPlayerName(player) + "制作了一个空["
-                            + main.getItem().getName().getString() + "]的物品分身，在"
-                            + WorldUtils.getDimensionId(player.getWorld()) + "，坐标:["
-                            + WorldUtils.toPosString(player.getBlockPos()) + "]");
+                    CarpetOrgAddition.LOGGER.info("{}制作了一个空[{}]的物品分身，在{}，坐标:[{}]",
+                            GameUtils.getPlayerName(player), main.getItem().getName().getString(),
+                            WorldUtils.getDimensionId(player.getWorld()), WorldUtils.toPosString(player.getBlockPos()));
                 }
             } else {
-                CarpetOrgAddition.LOGGER.info(GameUtils.getPlayerName(player) + "制作了一个["
-                        + main.getItem().getName().getString() + "]的物品分身，在"
-                        + WorldUtils.getDimensionId(player.getWorld()) + "，坐标:["
-                        + WorldUtils.toPosString(player.getBlockPos()) + "]");
+                CarpetOrgAddition.LOGGER.info("{}制作了一个[{}]的物品分身，在{}，坐标:[{}]",
+                        GameUtils.getPlayerName(player), main.getItem().getName().getString(),
+                        WorldUtils.getDimensionId(player.getWorld()), WorldUtils.toPosString(player.getBlockPos()));
             }
             return 1;
         } else {

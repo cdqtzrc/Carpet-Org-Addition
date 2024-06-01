@@ -1,22 +1,26 @@
 package org.carpet_org_addition.util;
 
 import net.minecraft.inventory.Inventories;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.collection.DefaultedList;
 import org.carpet_org_addition.exception.NoNbtException;
 import org.carpet_org_addition.util.helpers.ImmutableInventory;
 import org.carpet_org_addition.util.matcher.Matcher;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class InventoryUtils {
-    private static final String BLOCK_ENTITY_TAG = "BlockEntityTag";
-    private static final String ITEMS = "Items";
-    private static final String INVENTORY = "Inventory";
+    public static final String BLOCK_ENTITY_TAG = "BlockEntityTag";
+    public static final String ITEMS = "Items";
+    public static final String INVENTORY = "Inventory";
 
     /**
      * 潜影盒工具类，私有化构造方法
@@ -195,5 +199,65 @@ public class InventoryUtils {
                 || shulkerBoxItemStack.isOf(Items.GREEN_SHULKER_BOX)
                 || shulkerBoxItemStack.isOf(Items.RED_SHULKER_BOX)
                 || shulkerBoxItemStack.isOf(Items.BLACK_SHULKER_BOX);
+    }
+
+    /**
+     * 整理物品栏，合并未堆叠满的物品，然后物品按照ID排序，空气物品放在最后
+     *
+     * @param list 包含物品的集合
+     */
+    public static void sortInventory(List<ItemStack> list) {
+        for (int i = 0; i < list.size(); i++) {
+            ItemStack itemStack = list.get(i);
+            // 物品到最大堆叠还需要多少物品
+            int count = itemStack.getMaxCount() - itemStack.getCount();
+            // 该物品堆叠已满，跳过该物品的合并
+            if (count <= 0) {
+                continue;
+            }
+            // 合并物品
+            for (int j = i + 1; j < list.size(); j++) {
+                ItemStack otherStack = list.get(j);
+                if (otherStack.isEmpty()) {
+                    continue;
+                }
+                // 物品是否可以合并
+                if (ItemStack.canCombine(itemStack, otherStack)) {
+                    if (count - otherStack.getCount() > 0) {
+                        // 合并后堆叠数量仍然不满
+                        itemStack.increment(otherStack.getCount());
+                        list.set(j, ItemStack.EMPTY);
+                        count = itemStack.getMaxCount() - itemStack.getCount();
+                    } else {
+                        // 合并后堆叠数量已满
+                        // 一共需要移动多少个物品
+                        int moveCount = itemStack.getMaxCount() - itemStack.getCount();
+                        itemStack.increment(moveCount);
+                        otherStack.decrement(moveCount);
+                        break;
+                    }
+                }
+            }
+        }
+        // 物品排序
+        list.sort((o1, o2) -> {
+            // 空物品放在最后
+            if (!o1.isEmpty() && o2.isEmpty()) {
+                return -1;
+            }
+            if (o1.isEmpty() && !o2.isEmpty()) {
+                return 1;
+            }
+            // 按物品ID排序
+            return Registries.ITEM.getId(o1.getItem()).toString().compareTo(Registries.ITEM.getId(o2.getItem()).toString());
+        });
+    }
+
+    public static List<ItemStack> toList(Inventory inventory) {
+        ArrayList<ItemStack> list = new ArrayList<>();
+        for (int index = 0; index < inventory.size(); index++) {
+            list.add(inventory.getStack(index));
+        }
+        return list;
     }
 }

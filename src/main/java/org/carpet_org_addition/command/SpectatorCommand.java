@@ -50,7 +50,7 @@ public class SpectatorCommand {
                                                 .executes(SpectatorCommand::tpToDimensionLocation))))
                         .then(CommandManager.literal("entity")
                                 .then(CommandManager.argument("entity", EntityArgumentType.entity())
-                                        .executes(SpectatorCommand::tpTpEntity)))));
+                                        .executes(SpectatorCommand::tpToEntity)))));
     }
 
     // 更改游戏模式
@@ -116,7 +116,7 @@ public class SpectatorCommand {
     }
 
     // 传送到实体
-    private static int tpTpEntity(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private static int tpToEntity(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         // 检查玩家是不是旁观模式
         requireSpectator(player);
@@ -155,7 +155,7 @@ public class SpectatorCommand {
                 writer.write(jsonString);
             }
         } catch (IOException e) {
-            CarpetOrgAddition.LOGGER.warn("无法正常将" + GameUtils.getPlayerName(player) + "的位置信息写入文件", e);
+            CarpetOrgAddition.LOGGER.warn("无法正常将{}的位置信息写入文件", GameUtils.getPlayerName(player), e);
         }
     }
 
@@ -178,7 +178,7 @@ public class SpectatorCommand {
                 player.teleport(world, x, y, z, yaw, pitch);
             }
         } catch (IOException | NullPointerException e) {
-            CarpetOrgAddition.LOGGER.warn("无法正常读取" + GameUtils.getPlayerName(player) + "的位置信息");
+            CarpetOrgAddition.LOGGER.warn("无法正常读取{}的位置信息", GameUtils.getPlayerName(player));
         }
     }
 
