@@ -113,6 +113,7 @@ public class MessageUtils {
      * @param manager 通过这个玩家管理器对象发送消息
      * @param message 要广播消息的内容
      */
+    @SuppressWarnings("unused")
     public static void broadcastTextMessage(PlayerManager manager, Text message) {
         try {
             manager.broadcast(message, false);
