@@ -320,7 +320,7 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.COMMAND},
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
-    public static String commandFinder = "ops";
+    public static String commandFinder = "true";
 
     // 自杀
     @Rule(
