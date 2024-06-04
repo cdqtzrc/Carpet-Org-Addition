@@ -23,7 +23,6 @@ public abstract class ServerWorldMixin implements ServerWorldInterface {
     private final ArrayList<ServerTask> tasks = new ArrayList<>();
 
     @Inject(method = "tick", at = @At("HEAD"))
-
     private void tick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
         this.tasks.removeIf(ServerTask::isEndOfExecution);
         this.tasks.forEach(ServerTask::tick);
