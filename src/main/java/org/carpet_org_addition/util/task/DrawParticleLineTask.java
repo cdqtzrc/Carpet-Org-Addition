@@ -8,7 +8,9 @@ public class DrawParticleLineTask extends ServerTask {
     private final ServerWorld world;
     private final ParticleEffect particleEffect;
     private final double distance;
+    // 粒子线的起点
     private final Vec3d from;
+    // 粒子线延伸的方向
     private final Vec3d vector;
     private Vec3d origin = new Vec3d(0.0, 0.0, 0.0);
 
@@ -44,6 +46,6 @@ public class DrawParticleLineTask extends ServerTask {
 
     @Override
     public boolean isEndOfExecution() {
-        return this.distance < this.origin.lengthSquared();
+        return this.distance <= this.origin.lengthSquared();
     }
 }
