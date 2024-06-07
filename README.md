@@ -11,11 +11,13 @@
 | Carpet      | 必须 | [MC百科](https://www.mcmod.cn/class/2361.html) &#124; [Modrinth](https://modrinth.com/mod/carpet) &#124; [CurseForge](https://www.curseforge.com/minecraft/mc-mods/carpet) |
 | MixinExtras | 内置 | [MC百科](https://www.mcmod.cn/class/12750.html)                                                                                                                            |
 
-## 规则
+## 文档
+
+### 规则
 
 [所有规则](docs/rules.md)
 
-## 命令
+### 命令
 
 [所有命令](docs/commands.md)
 
