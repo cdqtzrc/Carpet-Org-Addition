@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+// TODO 清除未使用的翻译
 public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     static {
         CarpetServer.manageExtension(new CarpetOrgAddition());
