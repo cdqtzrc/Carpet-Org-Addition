@@ -97,19 +97,20 @@ public class ItemFinder extends AbstractFinder {
                     continue;
                 }
                 // 从潜影盒内查找物品
-                if (immutableInventory.hasItem()) {
-                    // 遍历潜影盒内的物品栏，找到与匹配器对应的物品
-                    for (ItemStack stack : immutableInventory) {
-                        if (matcher.test(stack)) {
-                            // 如果从潜影盒内找到了指定物品，将inTheBox标记为true，表示找到的物品包含从潜影盒内找到的
-                            inTheBox = true;
-                            // 成员位置的匹配器记录可能是物品标签而不是具体的物品
-                            // 如果匹配器记录的是物品标签，则命令完显示反馈时，反馈中的内容可能不正确
-                            // 如果是原木（#minecraft:logs），可能对应多种物品：橡木原木白桦原木等
-                            // 为了命令执行反馈的正确显示，比如计算堆叠数，匹配器匹配成功的每一种物品都创建一个新的物品匹配器，只对应一种物品
-                            // 计数器统计的是新物品匹配器的数量，每一种物品单独计数
-                            counter.add(new ItemMatcher(stack), stack.getCount());
-                        }
+                if (immutableInventory.isEmpty()) {
+                    continue;
+                }
+                // 遍历潜影盒内的物品栏，找到与匹配器对应的物品
+                for (ItemStack stack : immutableInventory) {
+                    if (matcher.test(stack)) {
+                        // 如果从潜影盒内找到了指定物品，将inTheBox标记为true，表示找到的物品包含从潜影盒内找到的
+                        inTheBox = true;
+                        // 成员位置的匹配器记录可能是物品标签而不是具体的物品
+                        // 如果匹配器记录的是物品标签，则命令完显示反馈时，反馈中的内容可能不正确
+                        // 如果是原木（#minecraft:logs），可能对应多种物品：橡木原木白桦原木等
+                        // 为了命令执行反馈的正确显示，比如计算堆叠数，匹配器匹配成功的每一种物品都创建一个新的物品匹配器，只对应一种物品
+                        // 计数器统计的是新物品匹配器的数量，每一种物品单独计数
+                        counter.add(new ItemMatcher(stack), stack.getCount());
                     }
                 }
             }
