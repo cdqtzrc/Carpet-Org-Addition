@@ -113,6 +113,7 @@ public class InventoryUtils {
      * @param shulkerBoxItemStack 当前要检查是否为空的潜影盒物品
      * @return 潜影盒内没有物品返回true，有物品返回false
      */
+    // TODO 更改形参变量名
     public static boolean isEmptyShulkerBox(ItemStack shulkerBoxItemStack) {
         // 正常情况下有物品的潜影盒无法堆叠
         if (shulkerBoxItemStack.getCount() != 1) {
