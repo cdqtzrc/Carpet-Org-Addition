@@ -6,6 +6,10 @@ import com.google.gson.JsonObject;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class RuleDocument {
@@ -13,6 +17,10 @@ public class RuleDocument {
     private final JsonObject json;
 
     public static void main(String[] args) throws IOException, NoSuchFieldException, ClassNotFoundException {
+        // 生成文档前备份旧的文件
+        String time = DateTimeFormatter.ofPattern("yyMMddHHmmss").format(LocalDateTime.now());
+        FileInputStream fileInputStream = new FileInputStream("docs/rules.md");
+        Files.copy(fileInputStream, Path.of("docs/backups/rules/" + time + ".md"));
         RuleDocument ruleDocument = new RuleDocument();
         BufferedWriter writer = new BufferedWriter(new FileWriter("docs/rules.md"));
         writer.write("## 所有规则");

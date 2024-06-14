@@ -91,15 +91,6 @@
 - 参考选项：`true`，`false`
 - 分类：`Org`，`生存`，`特性`
 
-### 凋零骷髅可生成在传送门方块(witherSkeletonCanSpawnToPortal)
-
-凋零骷髅可以生成下界传送门方块或其他亮度不高于11的方块上
-
-- 类型：`布尔值`
-- 默认值：`false`
-- 参考选项：`true`，`false`
-- 分类：`Org`，`生存`
-
 ### 最大方块放置距离(maxBlockPlaceDistance)
 
 服务器不会拒绝在此交互范围内的操作<br/>
@@ -154,15 +145,6 @@ _对方块的破坏和交互同样有效_<br/>
 - 参考选项：`true`，`false`
 - 分类：`Org`，`特性`
 
-### 禁止传送门方块更新(disablePortalUpdate)
-
-下界传送门方块收到方块更新不会做出反应
-
-- 类型：`布尔值`
-- 默认值：`false`
-- 参考选项：`true`，`false`
-- 分类：`Org`，`创造`
-
 ### 干草捆完全抵消摔落伤害(hayBlockCompleteOffsetFall)
 
 落在干草捆上时不会受到摔落伤害
@@ -193,15 +175,6 @@ _对方块的破坏和交互同样有效_<br/>
 ### 海龟蛋快速孵化(turtleEggFastHatch)
 
 海龟蛋在白天也能快速孵化
-
-- 类型：`布尔值`
-- 默认值：`false`
-- 参考选项：`true`，`false`
-- 分类：`Org`，`特性`
-
-### 禁止海带生长(disableKelpGrow)
-
-阻止海带自然生长
 
 - 类型：`布尔值`
 - 默认值：`false`
@@ -315,15 +288,6 @@ _对方块的破坏和交互同样有效_<br/>
 - 默认值：`ops`
 - 参考选项：`true`，`false`，`ops`，`0`，`1`，`2`，`3`，`4`
 - 分类：`Org`，`命令`
-
-### 禁止岩浆怪生成于下界荒地(disableMagmaCubeSpawnNetherWastes)
-
-岩浆怪不会在下界荒地生成
-
-- 类型：`布尔值`
-- 默认值：`false`
-- 参考选项：`true`，`false`
-- 分类：`Org`，`特性`
 
 ### 最大方块放置距离适用于实体(maxBlockPlaceDistanceReferToEntity)
 
@@ -447,7 +411,7 @@ _对方块的破坏和交互同样有效_<br/>
 启用/finder命令用来在指定范围内查找指定方块或物品
 
 - 类型：`字符串`
-- 默认值：`ops`
+- 默认值：`true`
 - 参考选项：`true`，`false`，`ops`，`0`，`1`，`2`，`3`，`4`
 - 分类：`Org`，`命令`
 
