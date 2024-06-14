@@ -3,6 +3,7 @@ package org.docs.rule;
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.io.IOException;
+import java.util.Objects;
 
 public class SingleRuleDoc {
     private static final String RULE = "fakePlayerMaxCraftCount";
@@ -17,7 +18,7 @@ public class SingleRuleDoc {
         Transferable contents = clipboard.getContents(null);
         // 避免重复写入
         if (contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-            if (contents.getTransferData(DataFlavor.stringFlavor).equals(substring)) {
+            if (Objects.equals(contents.getTransferData(DataFlavor.stringFlavor), substring)) {
                 return;
             }
         }
