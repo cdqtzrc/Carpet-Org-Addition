@@ -469,15 +469,6 @@ _对方块的破坏和交互同样有效_<br/>
 - 参考选项：`true`，`false`
 - 分类：`Org`，`特性`，`生存`
 
-### 禁用无序聊天数据包检查(disableOutOfOrderChatCheck)
-
-玩家发送无序的聊天数据包时不会被踢出游戏
-
-- 类型：`布尔值`
-- 默认值：`false`
-- 参考选项：`true`，`false`
-- 分类：`Org`，`生存`
-
 ### 禁止水结冰(disableWaterFreezes)
 
 在寒冷的生物群系中水不会结冰
