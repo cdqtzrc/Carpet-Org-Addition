@@ -474,7 +474,6 @@ public class CarpetOrgAdditionSettings {
     public static boolean playerDropHead = false;
 
     // 信标范围扩展
-    // TODO 说明可以为负数，表示收缩范围
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL},
             validators = BeaconRangeExpandValidator.class
