@@ -105,8 +105,6 @@
   "carpet.rule.fakePlayerSpawnNoKnockback.desc": "假玩家生成时不会保留上一次的击退、着火时间，摔落距离",
   "carpet.rule.canActivatesObserver.name": "可激活侦测器",
   "carpet.rule.canActivatesObserver.desc": "侦测器可以通过用打火石右键直接激活",
-  "carpet.rule.disableOutOfOrderChatCheck.name": "禁用无序聊天数据包检查",
-  "carpet.rule.disableOutOfOrderChatCheck.desc": "玩家发送无序的聊天数据包时不会被踢出游戏",
   "carpet.rule.disableWaterFreezes.name": "禁止水结冰",
   "carpet.rule.disableWaterFreezes.desc": "在寒冷的生物群系中水不会结冰",
   "carpet.rule.fakePlayerCraftKeepItem.name": "假玩家合成保留物品",
