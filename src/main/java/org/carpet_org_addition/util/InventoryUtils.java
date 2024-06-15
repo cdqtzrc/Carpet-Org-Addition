@@ -164,27 +164,27 @@ public class InventoryUtils {
     /**
      * 判断指定物品是否为潜影盒
      *
-     * @param shulkerBoxItemStack 要判断是否为潜影盒的物品
+     * @param shulkerBox 要判断是否为潜影盒的物品
      * @return 指定物品是否是潜影盒
      */
-    public static boolean isShulkerBoxItem(ItemStack shulkerBoxItemStack) {
-        return shulkerBoxItemStack.isOf(Items.SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.WHITE_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.ORANGE_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.MAGENTA_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.LIGHT_BLUE_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.YELLOW_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.LIME_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.PINK_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.GRAY_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.LIGHT_GRAY_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.CYAN_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.PURPLE_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.BLUE_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.BROWN_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.GREEN_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.RED_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.BLACK_SHULKER_BOX);
+    public static boolean isShulkerBoxItem(ItemStack shulkerBox) {
+        return shulkerBox.isOf(Items.SHULKER_BOX)
+                || shulkerBox.isOf(Items.WHITE_SHULKER_BOX)
+                || shulkerBox.isOf(Items.ORANGE_SHULKER_BOX)
+                || shulkerBox.isOf(Items.MAGENTA_SHULKER_BOX)
+                || shulkerBox.isOf(Items.LIGHT_BLUE_SHULKER_BOX)
+                || shulkerBox.isOf(Items.YELLOW_SHULKER_BOX)
+                || shulkerBox.isOf(Items.LIME_SHULKER_BOX)
+                || shulkerBox.isOf(Items.PINK_SHULKER_BOX)
+                || shulkerBox.isOf(Items.GRAY_SHULKER_BOX)
+                || shulkerBox.isOf(Items.LIGHT_GRAY_SHULKER_BOX)
+                || shulkerBox.isOf(Items.CYAN_SHULKER_BOX)
+                || shulkerBox.isOf(Items.PURPLE_SHULKER_BOX)
+                || shulkerBox.isOf(Items.BLUE_SHULKER_BOX)
+                || shulkerBox.isOf(Items.BROWN_SHULKER_BOX)
+                || shulkerBox.isOf(Items.GREEN_SHULKER_BOX)
+                || shulkerBox.isOf(Items.RED_SHULKER_BOX)
+                || shulkerBox.isOf(Items.BLACK_SHULKER_BOX);
     }
 
     /**

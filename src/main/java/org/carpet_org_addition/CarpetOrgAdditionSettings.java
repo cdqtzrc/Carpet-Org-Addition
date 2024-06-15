@@ -76,12 +76,6 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean farmlandPreventStepping = false;
 
-    // 凋零骷髅可以生成在传送门方块
-    @Rule(
-            categories = {ORG, RuleCategory.SURVIVAL}
-    )
-    public static boolean witherSkeletonCanSpawnToPortal = false;
-
     // 最大方块交互距离
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL, RuleCategory.FEATURE},
@@ -119,12 +113,6 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean disableDamageImmunity = false;
 
-    // 禁止传送门更新
-    @Rule(
-            categories = {ORG, RuleCategory.CREATIVE}
-    )
-    public static boolean disablePortalUpdate = false;
-
     // 干草捆完全抵消摔落伤害
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
@@ -148,12 +136,6 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean turtleEggFastHatch = false;
-
-    // 禁止海带生长
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE}
-    )
-    public static boolean disableKelpGrow = false;
 
     // 强制开启潜影盒
     @Rule(
@@ -227,12 +209,6 @@ public class CarpetOrgAdditionSettings {
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
     public static String commandPlayerTools = "ops";
-
-    // 禁止岩浆怪生成于下界荒地
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE}
-    )
-    public static boolean disableMagmaCubeSpawnNetherWastes = false;
 
     // 最大方块交互距离适用于实体
     @Rule(
@@ -320,7 +296,7 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.COMMAND},
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
-    public static String commandFinder = "ops";
+    public static String commandFinder = "true";
 
     // 自杀
     @Rule(
@@ -377,7 +353,7 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.COMMAND},
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
-    public static String commandParticleLine = "true";// 默认为true，方便无权限玩家调用
+    public static String commandParticleLine = "true";
 
     // 禁止特定生物在和平模式下被清除
     @Rule(

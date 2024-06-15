@@ -19,7 +19,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
         CarpetServer.manageExtension(new CarpetOrgAddition());
     }
 
-    //日志
+    // 日志
     public static final Logger LOGGER = LoggerFactory.getLogger("CarpetOrgAddition");
     public static final String MOD_NAME_LOWER_CASE = "carpetorgaddition";
 
@@ -61,7 +61,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
         Waypoint.replaceWaypoint(server);
     }
 
-    //设置可以有翻译
+    // 设置模组翻译
     @Override
     public Map<String, String> canHasTranslations(String lang) {
         return Translate.getTranslate();
