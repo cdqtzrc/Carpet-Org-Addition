@@ -127,15 +127,6 @@ _对方块的破坏和交互同样有效_<br/>
 - 参考选项：`true`，`false`
 - 分类：`Org`，`生存`
 
-### 保护类魔咒兼容(protectionEnchantmentCompatible)
-
-所有的保护类附魔可以共存
-
-- 类型：`布尔值`
-- 默认值：`false`
-- 参考选项：`true`，`false`
-- 分类：`Org`，`特性`
-
 ### 禁用伤害免疫(disableDamageImmunity)
 
 阻止游戏限制生物受到伤害的频率
@@ -271,15 +262,6 @@ _对方块的破坏和交互同样有效_<br/>
 - 参考选项：`true`，`false`
 - 分类：`Org`，`特性`
 
-### 伤害附魔兼容(damageEnchantmentCompatible)
-
-允许伤害类附魔共存
-
-- 类型：`布尔值`
-- 默认值：`false`
-- 参考选项：`true`，`false`
-- 分类：`Org`，`特性`
-
 ### 假玩家工具(commandPlayerTools)
 
 启用/playerTools命令用来提供一些假玩家相关的辅助工具
@@ -292,15 +274,6 @@ _对方块的破坏和交互同样有效_<br/>
 ### 最大方块放置距离适用于实体(maxBlockPlaceDistanceReferToEntity)
 
 玩家可以选中最大方块交互距离内的实体
-
-- 类型：`布尔值`
-- 默认值：`false`
-- 参考选项：`true`，`false`
-- 分类：`Org`，`特性`
-
-### 可再生迅捷潜行(renewableSwiftSneak)
-
-图书管理员可以交易迅捷潜行附魔书
 
 - 类型：`布尔值`
 - 默认值：`false`

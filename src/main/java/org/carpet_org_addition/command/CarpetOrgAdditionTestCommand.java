@@ -8,9 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.command.argument.ItemPredicateArgumentType;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -21,19 +19,18 @@ import net.minecraft.util.math.BlockPos;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 
-import java.util.List;
 import java.util.function.Predicate;
 
 /**
  * 测试用，不会添加到游戏
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "CommentedOutCode", "GrazieInspection"})
 public class CarpetOrgAdditionTestCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("carpetOrgAdditionTest")
                 .requires(source -> FabricLoader.getInstance().isDevelopmentEnvironment())
-                .then(CommandManager.literal("listEnchantBookFactory")
-                        .executes(context -> listEnchantBookFactory(context.getSource())))
+/*                .then(CommandManager.literal("listEnchantBookFactory")
+                        .executes(context -> listEnchantBookFactory(context.getSource())))*/
                 .then(CommandManager.literal("getIndex")
                         .then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                 .executes(CarpetOrgAdditionTestCommand::getItemIndex)))
@@ -49,8 +46,9 @@ public class CarpetOrgAdditionTestCommand {
     }
 
     //列出图书管理员所有可交易的附魔书
-    private static int listEnchantBookFactory(ServerCommandSource source) {
-        List<Enchantment> list = Registries.ENCHANTMENT.stream().filter(Enchantment::isAvailableForEnchantedBookOffer).toList();
+/*    private static int listEnchantBookFactory(ServerCommandSource source, CommandRegistryAccess commandRegistryAccess) {
+        List<Enchantment> list = RegistryEntryReferenceArgumentType.registryEntry(commandRegistryAccess, RegistryKeys.ENCHANTMENT).getExamples()
+                .stream().filter(Enchantment::isAvailableForEnchantedBookOffer).toList();
         ServerPlayerEntity player = source.getPlayer();
         if (player != null) {
             player.sendMessage(Text.of("图书管理员所有可交易的附魔书:"));
@@ -59,7 +57,7 @@ public class CarpetOrgAdditionTestCommand {
             }
         }
         return 1;
-    }
+    }*/
 
     private static int getItemIndex(CommandContext<ServerCommandSource> context) {
         Predicate<ItemStack> item = ItemPredicateArgumentType.getItemStackPredicate(context, "item");

@@ -5,6 +5,7 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.village.TradeOffer;
+import org.carpet_org_addition.util.EnchantmentUtils;
 import org.carpet_org_addition.util.TextUtils;
 
 public class TradeEnchantedBookResult extends AbstractTradeFindResult {
@@ -29,7 +30,8 @@ public class TradeEnchantedBookResult extends AbstractTradeFindResult {
 
     @Override
     public MutableText toText() {
+        MutableText enchantmentName = EnchantmentUtils.getName(this.enchantment, this.level);
         return TextUtils.getTranslate("carpet.commands.finder.trade.enchanted_book.each",
-                TextUtils.blockPos(merchant.getBlockPos(), Formatting.GREEN), merchantName, tradeIndex, enchantment.getName(level));
+                TextUtils.blockPos(merchant.getBlockPos(), Formatting.GREEN), merchantName, tradeIndex, enchantmentName);
     }
 }

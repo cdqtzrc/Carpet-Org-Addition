@@ -93,9 +93,9 @@ public class WorldUtils {
         String[] split = dimension.split(":");
         Identifier identifier;
         if (split.length == 1) {
-            identifier = new Identifier("minecraft", dimension);
+            identifier = Identifier.of("minecraft", dimension);
         } else if (split.length == 2) {
-            identifier = new Identifier(split[0], split[1]);
+            identifier = Identifier.of(split[0], split[1]);
         } else {
             throw new IllegalArgumentException();
         }
@@ -114,9 +114,9 @@ public class WorldUtils {
             if (split.length != 2) {
                 throw new IllegalArgumentException();
             }
-            return RegistryKey.of(RegistryKeys.WORLD, new Identifier(split[0], split[1]));
+            return RegistryKey.of(RegistryKeys.WORLD, Identifier.of(split[0], split[1]));
         }
-        return RegistryKey.of(RegistryKeys.WORLD, new Identifier(worldId));
+        return RegistryKey.of(RegistryKeys.WORLD, Identifier.of(worldId));
     }
 
     /**

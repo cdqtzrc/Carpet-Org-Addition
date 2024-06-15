@@ -21,6 +21,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
+import org.carpet_org_addition.util.EnchantmentUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.findtask.feedback.*;
@@ -199,13 +200,7 @@ public class FinderCommand {
         ArrayList<TradeEnchantedBookResult> list = enchantedBookTradeFinder.startSearch();
         // 找不到出售指定物品的村民，直接结束方法
         if (list.isEmpty()) {
-            MutableText mutableText = Text.translatable(enchantment.getTranslationKey());
-            // 如果是诅咒附魔，设置为红色
-            if (enchantment.isCursed()) {
-                mutableText.formatted(Formatting.RED);
-            } else {
-                mutableText.formatted(Formatting.GRAY);
-            }
+            MutableText mutableText = EnchantmentUtils.getName(enchantment);
             MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.trade.find.not_trade",
                     TextUtils.appendAll(mutableText, Items.ENCHANTED_BOOK.getName()),
                     TextUtils.getTranslate("entity.minecraft.villager"),

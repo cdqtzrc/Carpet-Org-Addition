@@ -2,12 +2,12 @@ package org.carpet_org_addition.util.fakeplayer.actiondata;
 
 import carpet.patches.EntityPlayerMPFake;
 import com.google.gson.JsonObject;
-import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.StonecuttingRecipe;
+import net.minecraft.recipe.input.SingleStackRecipeInput;
 import net.minecraft.registry.Registries;
 import net.minecraft.screen.StonecutterScreenHandler;
 import net.minecraft.text.MutableText;
@@ -52,19 +52,16 @@ public class StonecuttingData extends AbstractActionData {
     @Override
     public ArrayList<MutableText> info(EntityPlayerMPFake fakePlayer) {
         // 创建一个物品栏对象用来获取配方的输出物品
-        SimpleInventory simpleInventory = new SimpleInventory(1);
-        // 获取要切制的材料物品
-        ItemStack inputItemStack = this.item.getDefaultStack();
-        simpleInventory.setStack(0, inputItemStack);
+        SingleStackRecipeInput input = new SingleStackRecipeInput(this.item.getDefaultStack());
         // 获取假玩家所在的世界对象
         World world = fakePlayer.getWorld();
         ItemStack outputItemStack;
         try {
             // 获取与材料和按钮索引对应的配方对象
-            StonecuttingRecipe stonecuttingRecipe = world.getRecipeManager().getAllMatches(RecipeType.STONECUTTING,
-                    simpleInventory, world).get(button).value();
+            StonecuttingRecipe stonecuttingRecipe = world.getRecipeManager()
+                    .getAllMatches(RecipeType.STONECUTTING, input, world).get(button).value();
             // 获取与配方对应的物品
-            outputItemStack = stonecuttingRecipe.craft(simpleInventory, world.getRegistryManager());
+            outputItemStack = stonecuttingRecipe.craft(input, world.getRegistryManager());
         } catch (IndexOutOfBoundsException e) {
             // 如果索引越界了，将输出物品设置为空
             outputItemStack = ItemStack.EMPTY;

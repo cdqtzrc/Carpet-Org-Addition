@@ -5,9 +5,8 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Items;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import org.carpet_org_addition.util.EnchantmentUtils;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.findtask.result.TradeEnchantedBookResult;
@@ -43,13 +42,7 @@ public class TradeEnchantedBookFeedback extends AbstractTradeFindFeedback<TradeE
 
     @Override
     protected MutableText getFindItemText() {
-        MutableText mutableText = Text.translatable(enchantment.getTranslationKey());
-        // 如果是诅咒附魔，设置为红色
-        if (enchantment.isCursed()) {
-            mutableText.formatted(Formatting.RED);
-        } else {
-            mutableText.formatted(Formatting.GRAY);
-        }
+        MutableText mutableText = EnchantmentUtils.getName(this.enchantment);
         return TextUtils.appendAll(mutableText, Items.ENCHANTED_BOOK.getName());
     }
 }

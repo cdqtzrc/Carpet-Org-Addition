@@ -101,12 +101,6 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean notDamageEnderPearl = false;
 
-    // 保护类魔咒兼容
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE}
-    )
-    public static boolean protectionEnchantmentCompatible = false;
-
     // 禁用伤害免疫
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
@@ -197,12 +191,6 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean fakePlayerHeal = false;
 
-    // 伤害附魔兼容
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE}
-    )
-    public static boolean damageEnchantmentCompatible = false;
-
     // 假玩家工具命令
     @Rule(
             categories = {ORG, RuleCategory.COMMAND},
@@ -215,12 +203,6 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.FEATURE}
     )
     public static boolean maxBlockPlaceDistanceReferToEntity = false;
-
-    // 可再生迅捷潜行
-    @Rule(
-            categories = {ORG, RuleCategory.FEATURE}
-    )
-    public static boolean renewableSwiftSneak = false;
 
     // 击退棒
     @Rule(

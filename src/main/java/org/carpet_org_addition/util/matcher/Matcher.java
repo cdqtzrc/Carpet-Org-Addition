@@ -7,7 +7,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-public interface Matcher extends SimpleMatcher{
+public interface Matcher extends SimpleMatcher {
     /**
      * 判断当前匹配器的内容物是否为物品
      *
@@ -54,8 +54,8 @@ public interface Matcher extends SimpleMatcher{
     static Item asItem(String id) {
         String[] split = id.strip().split(":");
         Identifier identifier = (split.length == 1
-                ? new Identifier(Identifier.DEFAULT_NAMESPACE, split[0])
-                : new Identifier(split[0], split[1]));
+                ? Identifier.of(Identifier.DEFAULT_NAMESPACE, split[0])
+                : Identifier.of(split[0], split[1]));
         return Registries.ITEM.get(identifier);
     }
 }

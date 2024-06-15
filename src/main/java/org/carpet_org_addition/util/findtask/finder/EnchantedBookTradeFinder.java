@@ -1,7 +1,6 @@
 package org.carpet_org_addition.util.findtask.finder;
 
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -9,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.village.TradeOfferList;
 import net.minecraft.world.World;
+import org.carpet_org_addition.util.EnchantmentUtils;
 import org.carpet_org_addition.util.findtask.result.TradeEnchantedBookResult;
 import org.carpet_org_addition.util.helpers.SelectionArea;
 
@@ -38,7 +38,7 @@ public class EnchantedBookTradeFinder extends AbstractFinder {
                 if (itemStack.isOf(Items.ENCHANTED_BOOK)) {
                     int level = 0;
                     // 获取附魔书所有的附魔
-                    if (EnchantmentHelper.getLevel(enchantment, itemStack) > 0) {
+                    if (EnchantmentUtils.getLevel(this.world, enchantment, itemStack) > 0) {
                         // 将符合条件的附魔书添加到集合
                         list.add(new TradeEnchantedBookResult(merchant, offers.get(i), (i + 1), enchantment, level));
                     }
