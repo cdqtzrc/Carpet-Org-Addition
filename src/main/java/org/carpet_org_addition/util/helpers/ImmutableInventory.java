@@ -68,13 +68,6 @@ public final class ImmutableInventory extends SimpleInventory implements Iterabl
     }
 
     /**
-     * @return 潜影盒内是否有物品
-     */
-    public boolean hasItem() {
-        return !this.isEmpty();
-    }
-
-    /**
      * 潜影盒内的物品共占了多少个槽位，不是指潜影盒内物品的总数
      */
     public int slotCount() {

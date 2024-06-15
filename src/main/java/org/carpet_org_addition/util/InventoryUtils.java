@@ -36,19 +36,19 @@ public class InventoryUtils {
      * 如果将物品分成10份后再取出，则每个潜影盒都可以取出1组物品，总共可以取出10组物品。但是如果直接使用本方法取出物品，则只能取出一组物品，然后获得
      * 一个10堆叠的空潜影盒，这会损失一些物品。因为本方法操作的整组物品堆栈，操作时并不会考虑物品堆叠数量，所以需要事先将堆叠潜影盒分开。
      *
-     * @param shulkerBoxItemStack 当前要操作的潜影盒
+     * @param shulkerBox 当前要操作的潜影盒
      * @return 潜影盒内第一个非空气物品，如果潜影盒内没有物品，返回ItemStack.EMPTY
      */
-    public static ItemStack getShulkerBoxItem(ItemStack shulkerBoxItemStack) throws NoNbtException {
-        if (!InventoryUtils.isShulkerBoxItem(shulkerBoxItemStack)) {
+    public static ItemStack getShulkerBoxItem(ItemStack shulkerBox) throws NoNbtException {
+        if (!InventoryUtils.isShulkerBoxItem(shulkerBox)) {
             // 物品不是潜影盒，自然不会有潜影盒的NBT
             throw new NoNbtException();
         }
         // 正常情况下有物品的潜影盒不可堆叠，所以可堆叠的潜影盒内部没有物品
-        if (shulkerBoxItemStack.getCount() != 1) {
+        if (shulkerBox.getCount() != 1) {
             return ItemStack.EMPTY;
         }
-        NbtCompound nbt = shulkerBoxItemStack.getNbt();
+        NbtCompound nbt = shulkerBox.getNbt();
         NbtList list;
         try {
             list = Objects.requireNonNull(nbt).getCompound(BLOCK_ENTITY_TAG).getList(ITEMS, NbtElement.COMPOUND_TYPE);
@@ -65,8 +65,8 @@ public class InventoryUtils {
             }
             // 如果有物品，才将潜影盒内的物品删除，再将该物品的对象作为方法返回值返回
             list.remove(index);
-            if (isEmptyShulkerBox(shulkerBoxItemStack)) {
-                shulkerBoxItemStack.removeSubNbt(BLOCK_ENTITY_TAG);
+            if (isEmptyShulkerBox(shulkerBox)) {
+                shulkerBox.removeSubNbt(BLOCK_ENTITY_TAG);
             }
             return itemStack;
         }
@@ -110,15 +110,15 @@ public class InventoryUtils {
     /**
      * 判断当前潜影盒是否是空潜影盒
      *
-     * @param shulkerBoxItemStack 当前要检查是否为空的潜影盒物品
+     * @param shulkerBox 当前要检查是否为空的潜影盒物品
      * @return 潜影盒内没有物品返回true，有物品返回false
      */
-    public static boolean isEmptyShulkerBox(ItemStack shulkerBoxItemStack) {
+    public static boolean isEmptyShulkerBox(ItemStack shulkerBox) {
         // 正常情况下有物品的潜影盒无法堆叠
-        if (shulkerBoxItemStack.getCount() != 1) {
+        if (shulkerBox.getCount() != 1) {
             return true;
         }
-        NbtCompound nbt = shulkerBoxItemStack.getNbt();
+        NbtCompound nbt = shulkerBox.getNbt();
         NbtList list;
         try {
             list = Objects.requireNonNull(nbt).getCompound(BLOCK_ENTITY_TAG).getList(ITEMS, NbtElement.COMPOUND_TYPE);
@@ -138,14 +138,14 @@ public class InventoryUtils {
     /**
      * 获取潜影盒物品的物品栏
      *
-     * @param shulkerBoxItemStack 要获取物品栏的潜影盒
+     * @param shulkerBox 要获取物品栏的潜影盒
      * @return 潜影盒内的物品栏
      * @throws NoNbtException 物品不是潜影盒，或者潜影盒没有NBT时抛出
      */
-    public static ImmutableInventory getInventory(ItemStack shulkerBoxItemStack) throws NoNbtException {
+    public static ImmutableInventory getInventory(ItemStack shulkerBox) throws NoNbtException {
         try {
             // 获取潜影盒NBT
-            NbtCompound nbt = Objects.requireNonNull(shulkerBoxItemStack.getNbt()).getCompound(BLOCK_ENTITY_TAG);
+            NbtCompound nbt = Objects.requireNonNull(shulkerBox.getNbt()).getCompound(BLOCK_ENTITY_TAG);
             if (nbt != null && nbt.contains(ITEMS, NbtElement.LIST_TYPE)) {
                 DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
                 // 读取潜影盒NBT
@@ -178,27 +178,27 @@ public class InventoryUtils {
     /**
      * 判断指定物品是否为潜影盒
      *
-     * @param shulkerBoxItemStack 要判断是否为潜影盒的物品
+     * @param shulkerBox 要判断是否为潜影盒的物品
      * @return 指定物品是否是潜影盒
      */
-    public static boolean isShulkerBoxItem(ItemStack shulkerBoxItemStack) {
-        return shulkerBoxItemStack.isOf(Items.SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.WHITE_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.ORANGE_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.MAGENTA_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.LIGHT_BLUE_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.YELLOW_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.LIME_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.PINK_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.GRAY_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.LIGHT_GRAY_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.CYAN_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.PURPLE_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.BLUE_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.BROWN_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.GREEN_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.RED_SHULKER_BOX)
-                || shulkerBoxItemStack.isOf(Items.BLACK_SHULKER_BOX);
+    public static boolean isShulkerBoxItem(ItemStack shulkerBox) {
+        return shulkerBox.isOf(Items.SHULKER_BOX)
+                || shulkerBox.isOf(Items.WHITE_SHULKER_BOX)
+                || shulkerBox.isOf(Items.ORANGE_SHULKER_BOX)
+                || shulkerBox.isOf(Items.MAGENTA_SHULKER_BOX)
+                || shulkerBox.isOf(Items.LIGHT_BLUE_SHULKER_BOX)
+                || shulkerBox.isOf(Items.YELLOW_SHULKER_BOX)
+                || shulkerBox.isOf(Items.LIME_SHULKER_BOX)
+                || shulkerBox.isOf(Items.PINK_SHULKER_BOX)
+                || shulkerBox.isOf(Items.GRAY_SHULKER_BOX)
+                || shulkerBox.isOf(Items.LIGHT_GRAY_SHULKER_BOX)
+                || shulkerBox.isOf(Items.CYAN_SHULKER_BOX)
+                || shulkerBox.isOf(Items.PURPLE_SHULKER_BOX)
+                || shulkerBox.isOf(Items.BLUE_SHULKER_BOX)
+                || shulkerBox.isOf(Items.BROWN_SHULKER_BOX)
+                || shulkerBox.isOf(Items.GREEN_SHULKER_BOX)
+                || shulkerBox.isOf(Items.RED_SHULKER_BOX)
+                || shulkerBox.isOf(Items.BLACK_SHULKER_BOX);
     }
 
     /**
