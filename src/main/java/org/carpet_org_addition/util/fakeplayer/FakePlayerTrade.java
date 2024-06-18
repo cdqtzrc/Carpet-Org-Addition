@@ -5,7 +5,9 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.MerchantScreenHandler;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.village.Merchant;
@@ -15,6 +17,8 @@ import org.carpet_org_addition.exception.InfiniteLoopException;
 import org.carpet_org_addition.mixin.rule.MerchantScreenHandlerAccessor;
 import org.carpet_org_addition.util.fakeplayer.actiondata.TradeData;
 import org.carpet_org_addition.util.helpers.SingleThingCounter;
+
+import java.util.UUID;
 
 public class FakePlayerTrade {
     //假玩家交易
@@ -31,9 +35,8 @@ public class FakePlayerTrade {
                 MerchantScreenHandlerAccessor accessor = (MerchantScreenHandlerAccessor) merchantScreenHandler;
                 Merchant merchant = accessor.getMerchant();
                 if (merchant instanceof MerchantEntity merchantEntity) {
-                    ChunkPos chunkPos = merchantEntity.getChunkPos();
-                    if (merchantEntity.getWorld().isChunkLoaded(chunkPos.x, chunkPos.z)) {
-                        // 如果村民位于已加载区块内，重置计数器，然后直接结束方法
+                    // 是否应该等待区块卸载
+                    if (shouldWait(merchantEntity)) {
                         timer.set(5);
                         return;
                     }
@@ -150,6 +153,27 @@ public class FakePlayerTrade {
             }
         }
         // 假玩家身上没有足够的物品用来交易，返回false
+        return false;
+    }
+
+    // 是否应该等待区块卸载
+    private static boolean shouldWait(MerchantEntity merchant) {
+        // 如果村民所在区块没有被加载，可以交易
+        ChunkPos chunkPos = merchant.getChunkPos();
+        if (merchant.getWorld().isChunkLoaded(chunkPos.x, chunkPos.z)) {
+            // 检查村民是否存在于任何一个维度，如果不存在，可以交易
+            UUID uuid = merchant.getUuid();
+            MinecraftServer server = merchant.getServer();
+            if (server == null) {
+                return true;
+            }
+            for (ServerWorld world : server.getWorlds()) {
+                if (world.getEntity(uuid) == null) {
+                    continue;
+                }
+                return true;
+            }
+        }
         return false;
     }
 

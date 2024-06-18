@@ -17,7 +17,7 @@ import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.task.DrawParticleLineTask;
-import org.carpet_org_addition.util.task.ServerWorldInterface;
+import org.carpet_org_addition.util.task.ServerTaskManagerInterface;
 
 public class ParticleLineCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -44,7 +44,7 @@ public class ParticleLineCommand {
         if (distance == 0) {
             return 0;
         }
-        ServerWorldInterface worldInterface = (ServerWorldInterface) (player.getServerWorld());
+        ServerTaskManagerInterface worldInterface = ServerTaskManagerInterface.getInstance(player.getServer());
         // 新建绘制粒子线任务
         worldInterface.addTask(new DrawParticleLineTask(player.getServerWorld(), mainParticle, from, to));
         // 发送箭头

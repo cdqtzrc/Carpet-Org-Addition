@@ -6,7 +6,7 @@
   "mixins": [
     "command.EntityPlayerMPFakeMixin",
     "command.ServerPlayerEntityMixin",
-    "command.ServerWorldMixin",
+    "command.MinecraftServerMixin",
     "logger.HUDControllerMixin",
     "logger.LoggerAccessor",
     "logger.WanderingTraderManagerMixin",

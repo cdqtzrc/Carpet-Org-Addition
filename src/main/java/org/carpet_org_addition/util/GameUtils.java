@@ -83,4 +83,10 @@ public class GameUtils {
         instance.getAbilities().flying = flying;
         return instance;
     }
+
+    /**
+     * 一个占位符，什么也不做
+     */
+    public static void pass() {
+    }
 }
