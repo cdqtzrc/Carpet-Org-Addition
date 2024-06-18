@@ -30,4 +30,10 @@ public class GameUtils {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH:mm:ss");
         return formatter.format(localDateTime);
     }
+
+    /**
+     * 一个占位符，什么也不做
+     */
+    public static void pass() {
+    }
 }

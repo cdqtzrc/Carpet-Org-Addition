@@ -356,6 +356,7 @@
   "carpet.commands.navigate.hud.target_death": "目标已死亡或已被清除",
   "carpet.commands.navigate.hud.stop": "导航已结束",
   "carpet.commands.ruleSearch.feedback": "Carpet Mod中符合“%s”的选项：:",
+  "carpet.commands.relogin.set_interval": "%s上下线时间周期改为%s",
   "carpet.logger.wanderingTrader.time.second": "%s秒",
   "carpet.logger.wanderingTrader.time.minutes_and_seconds": "%s分%s秒",
   "carpet.logger.wanderingTrader.hud": "距离下一次生成还剩：%s，成功率：%s",
