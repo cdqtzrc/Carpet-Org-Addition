@@ -1,8 +1,8 @@
 package org.carpet_org_addition.mixin.command;
 
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.server.MinecraftServer;
 import org.carpet_org_addition.util.task.ServerTask;
-import org.carpet_org_addition.util.task.ServerWorldInterface;
+import org.carpet_org_addition.util.task.ServerTaskManagerInterface;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 
 @SuppressWarnings("AddedMixinMembersNamePattern")
-@Mixin(ServerWorld.class)
-public abstract class ServerWorldMixin implements ServerWorldInterface {
+@Mixin(MinecraftServer.class)
+public abstract class MinecraftServerMixin implements ServerTaskManagerInterface {
     @Shadow
     public abstract void tick(BooleanSupplier shouldKeepTicking);
 
@@ -26,6 +26,11 @@ public abstract class ServerWorldMixin implements ServerWorldInterface {
     private void tick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
         this.tasks.removeIf(ServerTask::isEndOfExecution);
         this.tasks.forEach(ServerTask::tick);
+    }
+
+    @Override
+    public ArrayList<ServerTask> getTaskList() {
+        return this.tasks;
     }
 
     @Override
