@@ -3,11 +3,14 @@ package org.carpet_org_addition.util.task;
 import carpet.patches.EntityPlayerMPFake;
 import carpet.patches.FakeClientConnection;
 import com.mojang.authlib.GameProfile;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.network.NetworkSide;
+import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
 import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntitySetHeadYawS2CPacket;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.UserCache;
@@ -16,6 +19,8 @@ import net.minecraft.world.World;
 import org.carpet_org_addition.mixin.rule.EntityAccessor;
 import org.carpet_org_addition.mixin.rule.PlayerEntityAccessor;
 import org.carpet_org_addition.util.GameUtils;
+
+import java.util.Objects;
 
 public class ReLoginTask extends ServerTask {
     private final String name;
@@ -95,12 +100,12 @@ public class ReLoginTask extends ServerTask {
         if (gameprofile == null) {
             gameprofile = new GameProfile(Uuids.getOfflinePlayerUuid(username), username);
         }
-        EntityPlayerMPFake fakePlayer = EntityPlayerMPFake.respawnFake(server, worldIn, gameprofile);
+        EntityPlayerMPFake fakePlayer = EntityPlayerMPFake.respawnFake(server, worldIn, gameprofile, SyncedClientOptions.createDefault());
         fakePlayer.fixStartingPosition = GameUtils::pass;
-        server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), fakePlayer);
+        server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), fakePlayer, new ConnectedClientData(gameprofile, 0, fakePlayer.getClientOptions(), false));
         fakePlayer.setHealth(20.0F);
         ((EntityAccessor) fakePlayer).cancelRemoved();
-        fakePlayer.setStepHeight(0.6F);
+        Objects.requireNonNull(fakePlayer.getAttributeInstance(EntityAttributes.GENERIC_STEP_HEIGHT)).setBaseValue(0.6F);
         server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(fakePlayer, (byte) ((int) (fakePlayer.headYaw * 256.0F / 360.0F))), dimensionId);
         server.getPlayerManager().sendToDimension(new EntityPositionS2CPacket(fakePlayer), dimensionId);
         fakePlayer.getDataTracker().set(PlayerEntityAccessor.getPlayerModelParts(), (byte) 127);
