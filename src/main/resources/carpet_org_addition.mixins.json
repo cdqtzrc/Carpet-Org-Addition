@@ -5,8 +5,8 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "command.EntityPlayerMPFakeMixin",
-    "command.ServerPlayerEntityMixin",
     "command.MinecraftServerMixin",
+    "command.ServerPlayerEntityMixin",
     "logger.HUDControllerMixin",
     "logger.LoggerAccessor",
     "logger.WanderingTraderManagerMixin",
@@ -62,6 +62,8 @@
     "rule.carpet.SettingsManagerAccessor",
     "rule.channelingignoreweather.LightningRodBlockMixin",
     "rule.channelingignoreweather.TridentEntityMixin",
+    "rule.disablemobpeacefuldespawn.MobEntityMixin",
+    "rule.disablemobpeacefuldespawn.WitherEntityMixin",
     "rule.entityplayeractionpack.ActionAccessor",
     "rule.entityplayeractionpack.EntityPlayerActionPackAccessor",
     "rule.fakeplayerkeepinventory.PlayerEntityMixin",
