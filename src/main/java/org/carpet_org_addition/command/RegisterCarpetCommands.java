@@ -72,7 +72,7 @@ public class RegisterCarpetCommands {
             // InventoryCommand.register(dispatcher);
 
             // 假玩家重复上下线
-            ReloginCommand.register(dispatcher);
+            // ReloginCommand.register(dispatcher);
 
             /*
               测试用命令

@@ -15,8 +15,8 @@ import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.util.*;
 import org.carpet_org_addition.util.constant.CommandSyntaxExceptionConstants;
 import org.carpet_org_addition.util.constant.TextConstants;
-import org.carpet_org_addition.util.helpers.JsonSerial;
-import org.carpet_org_addition.util.helpers.WorldFormat;
+import org.carpet_org_addition.util.wheel.JsonSerial;
+import org.carpet_org_addition.util.wheel.WorldFormat;
 
 import java.io.File;
 import java.io.IOException;
@@ -110,6 +110,7 @@ public class FakePlayerSerial implements JsonSerial {
         for (File file : worldFormat.toImmutableFileList()) {
             try {
                 JsonObject json = WorldFormat.loadJson(file);
+                // 添加悬停文本
                 ArrayList<MutableText> list = info(json);
                 boolean hasAnnotation = json.has("annotation");
                 if (hasAnnotation) {
@@ -123,6 +124,7 @@ public class FakePlayerSerial implements JsonSerial {
                         info.append("\n");
                     }
                 }
+                // 添加快捷命令
                 String playerName = WorldFormat.removeExtension(file.getName());
                 String onlineCommand = "/playerManager spawn " + playerName;
                 String offlineCommand = "/player " + playerName + " kill";

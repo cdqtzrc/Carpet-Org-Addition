@@ -1,4 +1,4 @@
-package org.carpet_org_addition.util.helpers;
+package org.carpet_org_addition.util.wheel;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;

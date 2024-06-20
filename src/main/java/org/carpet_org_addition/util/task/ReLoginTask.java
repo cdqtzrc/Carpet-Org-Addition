@@ -3,11 +3,14 @@ package org.carpet_org_addition.util.task;
 import carpet.patches.EntityPlayerMPFake;
 import carpet.patches.FakeClientConnection;
 import com.mojang.authlib.GameProfile;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.minecraft.command.CommandSource;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntitySetHeadYawS2CPacket;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.UserCache;
@@ -16,6 +19,10 @@ import net.minecraft.world.World;
 import org.carpet_org_addition.mixin.rule.EntityAccessor;
 import org.carpet_org_addition.mixin.rule.PlayerEntityAccessor;
 import org.carpet_org_addition.util.GameUtils;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.HashSet;
+import java.util.List;
 
 public class ReLoginTask extends ServerTask {
     private final String name;
@@ -31,6 +38,23 @@ public class ReLoginTask extends ServerTask {
         this.remainingTick = this.interval;
         this.server = server;
         this.dimensionId = dimensionId;
+    }
+
+    // 补全玩家名称
+    public static @NotNull SuggestionProvider<ServerCommandSource> suggests() {
+        return (context, builder) -> {
+            MinecraftServer server = context.getSource().getServer();
+            ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
+            List<String> taskList = instance.getTaskList().stream()
+                    .filter(task -> task instanceof ReLoginTask)
+                    .map(task -> ((ReLoginTask) task).getName()).toList();
+            List<String> onlineList = server.getPlayerManager().getPlayerList().stream()
+                    .map(player -> player.getName().getString()).toList();
+            HashSet<String> players = new HashSet<>();
+            players.addAll(taskList);
+            players.addAll(onlineList);
+            return CommandSource.suggestMatching(players.stream(), builder);
+        };
     }
 
     @Override

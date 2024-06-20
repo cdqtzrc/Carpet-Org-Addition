@@ -29,7 +29,7 @@ public class WorldUtils {
      *
      * @param box 用来指定的区域盒子对象
      * @return 盒子内所有的方块坐标
-     * @see org.carpet_org_addition.util.helpers.SelectionArea
+     * @see org.carpet_org_addition.util.wheel.SelectionArea
      * @deprecated 如果Box对象的范围比较大，则会将这个范围内的所有方块坐标对象全部返回，
      * 这对内存是一个较大的负担。例如：如果Box的范围是长宽高各256，那么将有256*256*256=16777216个对象被创建，
      * 并且在集合对象使用完毕之前不会被回收，短时间内多次调用时，容易导致{@link OutOfMemoryError}

@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.io.IOUtils;
-import org.carpet_org_addition.exception.UnableToTranslateError;
+import org.carpet_org_addition.exception.UnableToTranslateException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,7 +42,7 @@ public class Translate {
             resourceAsStream.close();
         } catch (NullPointerException | IOException e) {
             // 不应试图捕获这个异常，游戏只会在开始时获取翻译文件，当执行出现错误时，只需要直接结束游戏运行
-            throw new UnableToTranslateError("未能成功读取翻译文件", e);
+            throw new UnableToTranslateException("未能成功读取翻译文件", e);
         }
         Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
         Map<String, String> translate = gson.fromJson(translateJson, new TypeToken<Map<String, String>>() {

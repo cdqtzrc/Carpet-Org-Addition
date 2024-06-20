@@ -5,27 +5,44 @@ import carpet.utils.CommandHelper;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
+import org.carpet_org_addition.util.GameUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.constant.CommandSyntaxExceptionConstants;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerSerial;
-import org.carpet_org_addition.util.helpers.WorldFormat;
+import org.carpet_org_addition.util.wheel.WorldFormat;
+import org.carpet_org_addition.util.task.DelayedLoginTask;
+import org.carpet_org_addition.util.task.ReLoginTask;
+import org.carpet_org_addition.util.task.ServerTaskManagerInterface;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 
 public class PlayerManagerCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+        // 时间节点
+        RequiredArgumentBuilder<ServerCommandSource, Integer> timeNode = CommandManager.argument("delayed", IntegerArgumentType.integer(0));
+        for (TimeUnit unit : TimeUnit.values()) {
+            // 添加时间单位
+            timeNode.then(CommandManager.literal(unit.getName())
+                    .executes(context -> addDelayedLoginTask(context, unit)));
+        }
         dispatcher.register(CommandManager.literal("playerManager")
                 .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerManager))
                 .then(CommandManager.literal("save")
@@ -47,7 +64,19 @@ public class PlayerManagerCommand {
                 .then(CommandManager.literal("delete")
                         .then(CommandManager.argument("name", StringArgumentType.string())
                                 .suggests(suggests())
-                                .executes(PlayerManagerCommand::delete))));
+                                .executes(PlayerManagerCommand::delete)))
+                .then(CommandManager.literal("schedule")
+                        .then(CommandManager.literal("relogin")
+                                .then(CommandManager.argument("name", StringArgumentType.string())
+                                        .suggests(ReLoginTask.suggests())
+                                        .then(CommandManager.argument("interval", IntegerArgumentType.integer(1))
+                                                .executes(PlayerManagerCommand::setReLogin))
+                                        .then(CommandManager.literal("stop")
+                                                .executes(PlayerManagerCommand::stopReLogin))))
+                        .then(CommandManager.literal("login")
+                                .then(CommandManager.argument("name", StringArgumentType.string())
+                                        .suggests(suggests())
+                                        .then(timeNode)))));
     }
 
     // 自动补全玩家名
@@ -134,5 +163,116 @@ public class PlayerManagerCommand {
             throw CommandUtils.createException("carpet.commands.playerManager.delete.fail");
         }
         return 1;
+    }
+
+    // 设置不断重新上线下线
+    private static int setReLogin(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        // 获取目标假玩家名
+        String name = StringArgumentType.getString(context, "name");
+        int interval = IntegerArgumentType.getInteger(context, "interval");
+        MinecraftServer server = context.getSource().getServer();
+        ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
+        // 如果任务存在，修改任务，否则添加任务
+        ReLoginTask task = getReLoginTask(instance, name);
+        if (task == null) {
+            // 添加任务
+            ServerPlayerEntity player = server.getPlayerManager().getPlayer(name);
+            if (player == null) {
+                // 玩家不存在
+                throw CommandUtils.createException("argument.entity.notfound.player");
+            } else {
+                // 目标玩家不是假玩家
+                CommandUtils.checkFakePlayer(player);
+            }
+            instance.addTask(new ReLoginTask(name, interval, server, player.getServerWorld().getRegistryKey()));
+        } else {
+            // 修改周期时间
+            task.setInterval(interval);
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.relogin.set_interval", name, interval);
+        }
+        return interval;
+    }
+
+    // 获取假玩家周期上下线任务
+    private static ReLoginTask getReLoginTask(ServerTaskManagerInterface instance, String name) {
+        List<ReLoginTask> list = instance.getTaskList().stream()
+                .filter(task -> task instanceof ReLoginTask)
+                .map(task -> (ReLoginTask) task).toList();
+        for (ReLoginTask task : list) {
+            if (Objects.equals(task.getName(), name)) {
+                return task;
+            }
+        }
+        return null;
+    }
+
+    // 停止重新上线下线
+    private static int stopReLogin(CommandContext<ServerCommandSource> context) {
+        // 获取目标假玩家名
+        String name = StringArgumentType.getString(context, "name");
+        ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(context.getSource().getServer());
+        instance.getTaskList().stream()
+                .filter(task -> task instanceof ReLoginTask)
+                .map(task -> (ReLoginTask) task)
+                .filter(reLoginTask -> Objects.equals(name, reLoginTask.getName()))
+                .forEach(ReLoginTask::stop);
+        return 1;
+    }
+
+    // 延时登录
+    private static int addDelayedLoginTask(CommandContext<ServerCommandSource> context, TimeUnit unit) {
+        MinecraftServer server = context.getSource().getServer();
+        ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
+        String name = StringArgumentType.getString(context, "name");
+        // 等待时间
+        long tick = unit.getDelayed(context);
+        instance.addTask(new DelayedLoginTask(server, name, tick));
+        // 发送命令反馈
+        MessageUtils.sendCommandFeedback(context,
+                "carpet.commands.playerManager.schedule.login", name, GameUtils.tickToTime(tick));
+        return (int) tick;
+    }
+
+    /**
+     * 时间单位
+     */
+    private enum TimeUnit {
+        /**
+         * tick
+         */
+        TICK,
+        /**
+         * 秒
+         */
+        SECOND,
+        /**
+         * 分钟
+         */
+        MINUTE,
+        /**
+         * 小时
+         */
+        HOUR;
+
+        // 获取单位名称
+        private String getName() {
+            return switch (this) {
+                case TICK -> "t";
+                case SECOND -> "s";
+                case MINUTE -> "min";
+                case HOUR -> "h";
+            };
+        }
+
+        // 将游戏刻转化为对应单位
+        private long getDelayed(CommandContext<ServerCommandSource> context) {
+            int delayed = IntegerArgumentType.getInteger(context, "delayed");
+            return switch (this) {
+                case TICK -> delayed;
+                case SECOND -> delayed * 20L;
+                case MINUTE -> delayed * 1200L;
+                case HOUR -> delayed * 72000L;
+            };
+        }
     }
 }

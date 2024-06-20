@@ -8,7 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.carpet_org_addition.logger.WanderingTraderSpawnLogger;
 import org.carpet_org_addition.translate.Translate;
-import org.carpet_org_addition.util.helpers.Waypoint;
+import org.carpet_org_addition.util.wheel.Waypoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -14,7 +14,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.village.TradeOfferList;
 import net.minecraft.world.World;
 import org.carpet_org_addition.util.findtask.result.TradeEnchantedBookResult;
-import org.carpet_org_addition.util.helpers.SelectionArea;
+import org.carpet_org_addition.util.wheel.SelectionArea;
 
 import java.util.ArrayList;
 import java.util.List;

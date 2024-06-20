@@ -4,7 +4,7 @@ import carpet.patches.EntityPlayerMPFake;
 import com.google.gson.JsonObject;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.util.fakeplayer.actiondata.*;
-import org.carpet_org_addition.util.helpers.JsonSerial;
+import org.carpet_org_addition.util.wheel.JsonSerial;
 
 public class FakePlayerActionManager implements JsonSerial {
     private final EntityPlayerMPFake fakePlayer;
