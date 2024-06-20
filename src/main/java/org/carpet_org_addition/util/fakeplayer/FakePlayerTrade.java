@@ -16,7 +16,7 @@ import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.exception.InfiniteLoopException;
 import org.carpet_org_addition.mixin.rule.MerchantScreenHandlerAccessor;
 import org.carpet_org_addition.util.fakeplayer.actiondata.TradeData;
-import org.carpet_org_addition.util.helpers.SingleThingCounter;
+import org.carpet_org_addition.util.wheel.SingleThingCounter;
 
 import java.util.UUID;
 

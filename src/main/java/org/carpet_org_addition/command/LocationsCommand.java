@@ -17,8 +17,8 @@ import net.minecraft.util.math.BlockPos;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.*;
-import org.carpet_org_addition.util.helpers.Waypoint;
-import org.carpet_org_addition.util.helpers.WorldFormat;
+import org.carpet_org_addition.util.wheel.Waypoint;
+import org.carpet_org_addition.util.wheel.WorldFormat;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;

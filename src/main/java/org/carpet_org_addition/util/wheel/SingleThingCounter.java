@@ -1,4 +1,4 @@
-package org.carpet_org_addition.util.helpers;
+package org.carpet_org_addition.util.wheel;
 
 /**
  * 统计单一种类的事物数量的计数器

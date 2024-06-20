@@ -5,7 +5,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.carpet_org_addition.util.helpers.Waypoint;
+import org.carpet_org_addition.util.wheel.Waypoint;
 
 public interface NavigatorInterface {
     AbstractNavigator getNavigator();

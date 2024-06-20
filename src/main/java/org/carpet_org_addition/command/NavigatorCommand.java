@@ -24,7 +24,7 @@ import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.WorldUtils;
-import org.carpet_org_addition.util.helpers.Waypoint;
+import org.carpet_org_addition.util.wheel.Waypoint;
 import org.carpet_org_addition.util.navigator.NavigatorInterface;
 
 import java.io.IOException;

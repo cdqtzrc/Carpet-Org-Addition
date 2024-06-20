@@ -1,4 +1,4 @@
-package org.carpet_org_addition.util.helpers;
+package org.carpet_org_addition.util.wheel;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
