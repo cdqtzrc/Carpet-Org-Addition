@@ -5,31 +5,28 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.MinecraftServer;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerSerial;
-import org.carpet_org_addition.util.wheel.WorldFormat;
-
-import java.io.IOException;
 
 public class DelayedLoginTask extends ServerTask {
 
     private final MinecraftServer server;
     private final String name;
+    private final JsonObject jsonObject;
     private long delayed;
 
-    public DelayedLoginTask(MinecraftServer server, String name, long delayed) {
+    public DelayedLoginTask(MinecraftServer server, String name, JsonObject jsonObject, long delayed) {
         this.server = server;
         this.name = name;
+        this.jsonObject = jsonObject;
         this.delayed = delayed;
     }
 
     @Override
     public void tick() {
-        if (this.delayed == 0) {
-            WorldFormat worldFormat = new WorldFormat(this.server, FakePlayerSerial.PLAYER_DATA);
+        if (this.delayed == 0L) {
             try {
                 // 生成假玩家
-                JsonObject jsonObject = WorldFormat.loadJson(worldFormat.getFile(this.name));
                 FakePlayerSerial.spawn(this.name, this.server, jsonObject);
-            } catch (CommandSyntaxException | IOException | NullPointerException e) {
+            } catch (CommandSyntaxException | NullPointerException e) {
                 CarpetOrgAddition.LOGGER.error("玩家{}未能在指定时间上线", this.name, e);
             } finally {
                 // 将此任务设为已执行结束
@@ -40,8 +37,20 @@ public class DelayedLoginTask extends ServerTask {
         }
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setDelayed(long delayed) {
+        this.delayed = delayed;
+    }
+
+    public JsonObject getJsonObject() {
+        return jsonObject;
+    }
+
     @Override
     public boolean isEndOfExecution() {
-        return this.delayed < 0;
+        return this.delayed < 0L;
     }
 }
