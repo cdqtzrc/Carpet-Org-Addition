@@ -155,7 +155,6 @@ public class TextUtils {
                 -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal(hover))));
     }
 
-
     public static MutableText hoverText(MutableText initialText, Text hover, @Nullable Formatting color) {
         initialText.styled(style
                 -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover)));
@@ -163,6 +162,17 @@ public class TextUtils {
             initialText.styled(style -> style.withColor(color));
         }
         return initialText;
+    }
+
+    public static MutableText hoverText(Object obj, Text hover) {
+        if (obj instanceof Text text) {
+            return hoverText((text instanceof MutableText ? (MutableText) text : text.copy()), hover, null);
+        } else {
+            MutableText mutableText = createEmpty();
+            mutableText.append(obj.toString())
+                    .styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover)));
+            return mutableText;
+        }
     }
 
     /**

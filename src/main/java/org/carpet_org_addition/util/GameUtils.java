@@ -33,7 +33,7 @@ public class GameUtils {
     }
 
     /**
-     * 将游戏刻时间转换为几分几秒的形式
+     * 将游戏刻时间转换为几分几秒的形式，如果时间非常接近整点，例如一小时零一秒，则会直接返回一小时，多出来的一秒会被忽略
      *
      * @param tick 游戏刻时间
      */
@@ -60,6 +60,18 @@ public class GameUtils {
         }
         // 小时和分钟
         return TextUtils.getTranslate("carpet.command.time.hour_minute", tick / 72000L, (tick / 20L / 60L) % 60L);
+    }
+
+    /**
+     * 将当前系统时间偏移指定游戏刻数后返回时间的年月日时分秒形式
+     *
+     * @param offsetTick 时间偏移的游戏刻数
+     */
+    public static MutableText tickToRealTime(long offsetTick) {
+        LocalDateTime time = LocalDateTime.now().plusSeconds(offsetTick / 20);
+        return TextUtils.getTranslate("carpet.command.time.format",
+                time.getYear(), time.getMonth().ordinal() + 1, time.getDayOfMonth(),
+                time.getHour(), time.getMinute(), time.getSecond());
     }
 
     /**
