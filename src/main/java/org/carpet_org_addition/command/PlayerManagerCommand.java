@@ -25,19 +25,19 @@ import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.constant.CommandSyntaxExceptionConstants;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerSerial;
-import org.carpet_org_addition.util.task.DelayedLoginTask;
-import org.carpet_org_addition.util.task.DelayedLogoutTask;
-import org.carpet_org_addition.util.task.ReLoginTask;
-import org.carpet_org_addition.util.task.ServerTaskManagerInterface;
+import org.carpet_org_addition.util.task.*;
 import org.carpet_org_addition.util.wheel.WorldFormat;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class PlayerManagerCommand {
-
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         // 延迟登录节点
         RequiredArgumentBuilder<ServerCommandSource, Integer> loginNode = CommandManager.argument("delayed", IntegerArgumentType.integer(1));
@@ -61,7 +61,7 @@ public class PlayerManagerCommand {
                                         .executes(context -> withAnnotationSavePlayer(context, false)))))
                 .then(CommandManager.literal("spawn")
                         .then(CommandManager.argument("name", StringArgumentType.string())
-                                .suggests(suggests())
+                                .suggests(defaultSuggests())
                                 .executes(PlayerManagerCommand::spawnPlayer)))
                 .then(CommandManager.literal("resave")
                         .then(CommandManager.argument(CommandUtils.PLAYER, EntityArgumentType.player())
@@ -72,32 +72,67 @@ public class PlayerManagerCommand {
                         .executes(PlayerManagerCommand::list))
                 .then(CommandManager.literal("delete")
                         .then(CommandManager.argument("name", StringArgumentType.string())
-                                .suggests(suggests())
+                                .suggests(defaultSuggests())
                                 .executes(PlayerManagerCommand::delete)))
                 .then(CommandManager.literal("schedule")
                         .then(CommandManager.literal("relogin")
                                 .then(CommandManager.argument("name", StringArgumentType.string())
-                                        .suggests(ReLoginTask.suggests())
+                                        .suggests(reLoginTaskSuggests())
                                         .then(CommandManager.argument("interval", IntegerArgumentType.integer(1))
                                                 .executes(PlayerManagerCommand::setReLogin))
                                         .then(CommandManager.literal("stop")
                                                 .executes(PlayerManagerCommand::stopReLogin))))
                         .then(CommandManager.literal("login")
                                 .then(CommandManager.argument("name", StringArgumentType.string())
-                                        .suggests(suggests())
+                                        .suggests(defaultSuggests())
                                         .then(loginNode)))
                         .then(CommandManager.literal("logout")
                                 .then(CommandManager.argument(CommandUtils.PLAYER, EntityArgumentType.player())
-                                        .then(logoutNode)))));
+                                        .then(logoutNode)))
+                        .then(CommandManager.literal("cancel")
+                                .then(CommandManager.argument("name", StringArgumentType.string())
+                                        .suggests(cancelSuggests())
+                                        .executes(PlayerManagerCommand::cancelScheduleTask)))
+                        .then(CommandManager.literal("list")
+                                .executes(PlayerManagerCommand::listScheduleTask))));
+    }
+
+    // cancel子命令自动补全
+    private static @NotNull SuggestionProvider<ServerCommandSource> cancelSuggests() {
+        return (context, builder) -> {
+            MinecraftServer server = context.getSource().getServer();
+            ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
+            ArrayList<String> list = new ArrayList<>();
+            // 将任务的玩家名添加到集合
+            instance.findTask(PlayerScheduleTask.class, task -> true).forEach(task -> list.add(task.getPlayerName()));
+            return CommandSource.suggestMatching(list, builder);
+        };
     }
 
     // 自动补全玩家名
-    private static SuggestionProvider<ServerCommandSource> suggests() {
+    private static SuggestionProvider<ServerCommandSource> defaultSuggests() {
         return (context, builder) -> CommandSource.suggestMatching(new WorldFormat(context.getSource().getServer(),
                 FakePlayerSerial.PLAYER_DATA).toImmutableFileList().stream()
                 .filter(file -> file.getName().endsWith(WorldFormat.JSON_EXTENSION))
                 .map(file -> WorldFormat.removeExtension(file.getName()))
                 .map(StringArgumentType::escapeIfRequired), builder);
+    }
+
+    // relogin子命令自动补全
+    public static @NotNull SuggestionProvider<ServerCommandSource> reLoginTaskSuggests() {
+        return (context, builder) -> {
+            MinecraftServer server = context.getSource().getServer();
+            ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
+            List<String> taskList = instance.getTaskList().stream()
+                    .filter(task -> task instanceof ReLoginTask)
+                    .map(task -> ((ReLoginTask) task).getPlayerName()).toList();
+            List<String> onlineList = server.getPlayerManager().getPlayerList().stream()
+                    .map(player -> player.getName().getString()).toList();
+            HashSet<String> players = new HashSet<>();
+            players.addAll(taskList);
+            players.addAll(onlineList);
+            return CommandSource.suggestMatching(players.stream(), builder);
+        };
     }
 
     // 列出每一个玩家
@@ -211,7 +246,7 @@ public class PlayerManagerCommand {
                 .filter(task -> task instanceof ReLoginTask)
                 .map(task -> (ReLoginTask) task).toList();
         for (ReLoginTask task : list) {
-            if (Objects.equals(task.getName(), name)) {
+            if (Objects.equals(task.getPlayerName(), name)) {
                 return task;
             }
         }
@@ -226,8 +261,12 @@ public class PlayerManagerCommand {
         instance.getTaskList().stream()
                 .filter(task -> task instanceof ReLoginTask)
                 .map(task -> (ReLoginTask) task)
-                .filter(reLoginTask -> Objects.equals(name, reLoginTask.getName()))
-                .forEach(ReLoginTask::stop);
+                .filter(reLoginTask -> Objects.equals(name, reLoginTask.getPlayerName()))
+                .forEach(task -> {
+                    // 停止并发送消息
+                    task.stop();
+                    MessageUtils.sendCommandFeedback(context.getSource(), task.getCancelMessage());
+                });
         return 1;
     }
 
@@ -238,7 +277,7 @@ public class PlayerManagerCommand {
         String name = StringArgumentType.getString(context, "name");
         // 等待时间
         long tick = unit.getDelayed(context);
-        List<DelayedLoginTask> list = instance.findTask(DelayedLoginTask.class, loginTask -> Objects.equals(name, loginTask.getName()));
+        List<DelayedLoginTask> list = instance.findTask(DelayedLoginTask.class, loginTask -> Objects.equals(name, loginTask.getPlayerName()));
         MutableText time = TextUtils.hoverText(GameUtils.tickToTime(tick), GameUtils.tickToRealTime(tick));
         if (list.isEmpty()) {
             // 添加上线任务
@@ -291,6 +330,35 @@ public class PlayerManagerCommand {
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.logout.modify", fakePlayer.getDisplayName(), time);
         }
         return (int) tick;
+    }
+
+    // 取消任务
+    private static int cancelScheduleTask(CommandContext<ServerCommandSource> context) {
+        MinecraftServer server = context.getSource().getServer();
+        ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
+        String name = StringArgumentType.getString(context, "name");
+        // 获取符合条件的任务列表
+        List<PlayerScheduleTask> list = instance.findTask(PlayerScheduleTask.class, task -> Objects.equals(task.getPlayerName(), name));
+        ArrayList<ServerTask> tasks = instance.getTaskList();
+        list.forEach(task -> {
+            // 删除任务，发送命令反馈
+            tasks.remove(task);
+            MessageUtils.sendTextMessage(context.getSource(), task.getCancelMessage());
+        });
+        return list.size();
+    }
+
+    // 列出所有任务
+    private static int listScheduleTask(CommandContext<ServerCommandSource> context) {
+        MinecraftServer server = context.getSource().getServer();
+        ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
+        List<PlayerScheduleTask> list = instance.findTask(PlayerScheduleTask.class, take -> true);
+        if (list.isEmpty()) {
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.list.empty");
+        } else {
+            list.forEach(task -> task.sendEachMessage(context.getSource()));
+        }
+        return list.size();
     }
 
     /**

@@ -2,9 +2,15 @@ package org.carpet_org_addition.util.task;
 
 import carpet.patches.EntityPlayerMPFake;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.MutableText;
+import org.carpet_org_addition.util.GameUtils;
+import org.carpet_org_addition.util.MessageUtils;
+import org.carpet_org_addition.util.TextUtils;
+import org.jetbrains.annotations.NotNull;
 
-public class DelayedLogoutTask extends ServerTask {
+public class DelayedLogoutTask extends PlayerScheduleTask {
     private final MinecraftServer server;
     private final EntityPlayerMPFake fakePlayer;
     private long delayed;
@@ -39,6 +45,27 @@ public class DelayedLogoutTask extends ServerTask {
 
     public EntityPlayerMPFake getFakePlayer() {
         return fakePlayer;
+    }
+
+    @Override
+    public String getPlayerName() {
+        return this.fakePlayer.getName().getString();
+    }
+
+    @Override
+    public MutableText getCancelMessage() {
+        return TextUtils.getTranslate("carpet.commands.playerManager.schedule.logout.cancel",
+                this.fakePlayer.getDisplayName(), this.getDisplayTime());
+    }
+
+    private @NotNull MutableText getDisplayTime() {
+        return TextUtils.hoverText(GameUtils.tickToTime(this.delayed), GameUtils.tickToRealTime(this.delayed));
+    }
+
+    @Override
+    public void sendEachMessage(ServerCommandSource source) {
+        MessageUtils.sendCommandFeedback(source, "carpet.commands.playerManager.schedule.logout",
+                this.fakePlayer.getDisplayName(), this.getDisplayTime());
     }
 
     @Override
