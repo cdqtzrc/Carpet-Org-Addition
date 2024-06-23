@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 public class PlayerActionCommand {
+    // TODO 文档中命令结果与返回值有误
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("playerAction").requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerAction))
                 .then(CommandManager.argument("player", EntityArgumentType.player())

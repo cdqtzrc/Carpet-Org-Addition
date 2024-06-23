@@ -2,19 +2,27 @@ package org.carpet_org_addition.util.task;
 
 import carpet.patches.EntityPlayerMPFake;
 import carpet.patches.FakeClientConnection;
+import carpet.utils.Messenger;
 import com.mojang.authlib.GameProfile;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntitySetHeadYawS2CPacket;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerTask;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TextContent;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.UserCache;
 import net.minecraft.util.Uuids;
 import net.minecraft.world.World;
+import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.mixin.rule.EntityAccessor;
 import org.carpet_org_addition.mixin.rule.PlayerEntityAccessor;
 import org.carpet_org_addition.util.GameUtils;
@@ -49,11 +57,53 @@ public class ReLoginTask extends PlayerScheduleTask {
                 if (fakePlayer.getY() < fakePlayer.getServerWorld().getBottomY() - 64) {
                     this.stop();
                 }
-                fakePlayer.kill();
+                // 让假玩家退出游戏
+                this.logoutPlayer(fakePlayer);
             }
         } else {
             this.remainingTick--;
         }
+    }
+
+
+    /**
+     * 让假玩家退出游戏
+     *
+     * @see EntityPlayerMPFake#kill(Text)
+     * @see EntityPlayerMPFake#shakeOff()
+     */
+    private void logoutPlayer(EntityPlayerMPFake fakePlayer) {
+        Text reason = Messenger.s("Killed");
+        // 停止骑行
+        if (fakePlayer.getVehicle() instanceof PlayerEntity) {
+            fakePlayer.stopRiding();
+        }
+        for (Entity passenger : fakePlayer.getPassengersDeep()) {
+            if (passenger instanceof PlayerEntity) {
+                passenger.stopRiding();
+            }
+        }
+        // 退出游戏
+        TextContent var3 = reason.getContent();
+        if (var3 instanceof TranslatableTextContent text) {
+            if (text.getKey().equals("multiplayer.disconnect.duplicate_login")) {
+                try {
+                    CarpetOrgAddition.hiddenLoginMessages = true;
+                    fakePlayer.networkHandler.onDisconnected(reason);
+                } finally {
+                    CarpetOrgAddition.hiddenLoginMessages = false;
+                }
+                return;
+            }
+        }
+        this.server.send(new ServerTask(this.server.getTicks(), () -> {
+            try {
+                CarpetOrgAddition.hiddenLoginMessages = true;
+                fakePlayer.networkHandler.onDisconnected(reason);
+            } finally {
+                CarpetOrgAddition.hiddenLoginMessages = false;
+            }
+        }));
     }
 
     @Override
@@ -112,7 +162,13 @@ public class ReLoginTask extends PlayerScheduleTask {
         }
         EntityPlayerMPFake fakePlayer = EntityPlayerMPFake.respawnFake(server, worldIn, gameprofile);
         fakePlayer.fixStartingPosition = GameUtils::pass;
-        server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), fakePlayer);
+        try {
+            CarpetOrgAddition.hiddenLoginMessages = true;
+            server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), fakePlayer);
+        } finally {
+            // 假玩家加入游戏后，这个变量必须重写设置为false，防止影响其它广播消息的方法
+            CarpetOrgAddition.hiddenLoginMessages = false;
+        }
         fakePlayer.setHealth(20.0F);
         ((EntityAccessor) fakePlayer).cancelRemoved();
         fakePlayer.setStepHeight(0.6F);
