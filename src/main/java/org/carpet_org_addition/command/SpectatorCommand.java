@@ -24,7 +24,7 @@ import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.*;
-import org.carpet_org_addition.util.helpers.WorldFormat;
+import org.carpet_org_addition.util.wheel.WorldFormat;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

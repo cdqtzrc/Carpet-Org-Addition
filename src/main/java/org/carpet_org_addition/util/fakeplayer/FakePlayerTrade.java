@@ -16,11 +16,16 @@ import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.exception.InfiniteLoopException;
 import org.carpet_org_addition.mixin.rule.MerchantScreenHandlerAccessor;
 import org.carpet_org_addition.util.fakeplayer.actiondata.TradeData;
-import org.carpet_org_addition.util.helpers.SingleThingCounter;
+import org.carpet_org_addition.util.wheel.SingleThingCounter;
 
 import java.util.UUID;
 
 public class FakePlayerTrade {
+    /**
+     * 虚空交易等待时间，如果村民被卸载后立即交易，那么交易仍然会被锁定
+     */
+    public static final int TRADE_WAIT_TIME = 1;
+
     //假玩家交易
     public static void trade(TradeData tradeData, EntityPlayerMPFake fakePlayer) {
         //获取按钮的索引
@@ -37,7 +42,7 @@ public class FakePlayerTrade {
                 if (merchant instanceof MerchantEntity merchantEntity) {
                     // 是否应该等待区块卸载
                     if (shouldWait(merchantEntity)) {
-                        timer.set(5);
+                        timer.set(TRADE_WAIT_TIME);
                         return;
                     }
                 }
@@ -48,7 +53,7 @@ public class FakePlayerTrade {
                     return;
                 } else {
                     // 如果归零，重置计数器，然后开始交易
-                    timer.set(5);
+                    timer.set(TRADE_WAIT_TIME);
                 }
             }
             ServerCommandSource source = fakePlayer.getCommandSource();

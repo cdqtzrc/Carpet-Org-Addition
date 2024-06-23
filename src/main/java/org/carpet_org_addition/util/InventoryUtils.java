@@ -10,6 +10,7 @@ import net.minecraft.registry.Registries;
 import org.carpet_org_addition.exception.NoNbtException;
 import org.carpet_org_addition.util.helpers.ContainerDeepCopy;
 import org.carpet_org_addition.util.helpers.ImmutableInventory;
+import org.carpet_org_addition.util.wheel.ImmutableInventory;
 import org.carpet_org_addition.util.matcher.Matcher;
 
 import java.util.ArrayList;

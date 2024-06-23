@@ -1,4 +1,4 @@
-package org.carpet_org_addition.util.helpers;
+package org.carpet_org_addition.util.wheel;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Box;

@@ -8,8 +8,8 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
-import org.carpet_org_addition.util.helpers.AbstractCustomSizeInventory;
-import org.carpet_org_addition.util.helpers.DisabledSlot;
+import org.carpet_org_addition.util.wheel.AbstractCustomSizeInventory;
+import org.carpet_org_addition.util.wheel.DisabledSlot;
 
 public class VillagerScreenHandler extends ScreenHandler {
     // 物品栏的大小

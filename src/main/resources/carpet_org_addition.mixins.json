@@ -7,6 +7,7 @@
     "command.EntityPlayerMPFakeMixin",
     "command.ServerPlayerEntityMixin",
     "command.MinecraftServerMixin",
+    "command.ServerPlayerEntityMixin",
     "logger.HUDControllerMixin",
     "logger.LoggerAccessor",
     "logger.WanderingTraderManagerMixin",
@@ -62,6 +63,10 @@
     "rule.carpet.EntityPlayerMPFakeMixin",
     "rule.carpet.SettingsManagerAccessor",
     "rule.TridentEntityMixin",
+    "rule.channelingignoreweather.LightningRodBlockMixin",
+    "rule.channelingignoreweather.TridentEntityMixin",
+    "rule.disablemobpeacefuldespawn.MobEntityMixin",
+    "rule.disablemobpeacefuldespawn.WitherEntityMixin",
     "rule.entityplayeractionpack.ActionAccessor",
     "rule.entityplayeractionpack.EntityPlayerActionPackAccessor",
     "rule.fakeplayerkeepinventory.PlayerEntityMixin",
@@ -70,6 +75,7 @@
     "rule.respawnblocksexplode.RespawnAnchorBlockMixin",
     "util.CraftingScreenHandlerMixin",
     "util.RegisterCarpetCommandsMixin",
+    "util.PlayerManagerMixin",
     "util.TranslatableTextContentMixin"
   ],
   "client": [
