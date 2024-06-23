@@ -45,16 +45,7 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
 
     @Override
     public final boolean isEmpty() {
-        if (this.getInventory().isEmpty()) {
-            for (ItemStack itemStack : stacks) {
-                if (itemStack.isEmpty()) {
-                    continue;
-                }
-                return false;
-            }
-            return true;
-        }
-        return false;
+        return this.getInventory().isEmpty();
     }
 
     @Override

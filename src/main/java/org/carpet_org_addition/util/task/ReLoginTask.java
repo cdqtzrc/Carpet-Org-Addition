@@ -72,6 +72,7 @@ public class ReLoginTask extends PlayerScheduleTask {
      * @see EntityPlayerMPFake#kill(Text)
      * @see EntityPlayerMPFake#shakeOff()
      */
+    @SuppressWarnings("JavadocReference")
     private void logoutPlayer(EntityPlayerMPFake fakePlayer) {
         Text reason = Messenger.s("Killed");
         // 停止骑行
