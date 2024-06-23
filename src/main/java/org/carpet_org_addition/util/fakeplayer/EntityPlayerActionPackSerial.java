@@ -8,7 +8,7 @@ import carpet.patches.EntityPlayerMPFake;
 import com.google.gson.JsonObject;
 import org.carpet_org_addition.mixin.rule.entityplayeractionpack.ActionAccessor;
 import org.carpet_org_addition.mixin.rule.entityplayeractionpack.EntityPlayerActionPackAccessor;
-import org.carpet_org_addition.util.helpers.JsonSerial;
+import org.carpet_org_addition.util.wheel.JsonSerial;
 
 import java.util.Map;
 

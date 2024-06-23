@@ -6,7 +6,7 @@ import net.minecraft.screen.MerchantScreenHandler;
 import net.minecraft.text.MutableText;
 import net.minecraft.village.TradeOffer;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.helpers.SingleThingCounter;
+import org.carpet_org_addition.util.wheel.SingleThingCounter;
 
 import java.util.ArrayList;
 

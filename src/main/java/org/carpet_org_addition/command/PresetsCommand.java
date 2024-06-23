@@ -8,7 +8,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.carpet_org_addition.util.MessageUtils;
-import org.carpet_org_addition.util.helpers.CraftPresets;
+import org.carpet_org_addition.util.wheel.CraftPresets;
 
 import java.io.File;
 

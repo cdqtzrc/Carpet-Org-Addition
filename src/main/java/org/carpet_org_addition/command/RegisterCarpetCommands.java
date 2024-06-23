@@ -71,6 +71,9 @@ public class RegisterCarpetCommands {
             // 物品栏命令
             // InventoryCommand.register(dispatcher);
 
+            // 假玩家重复上下线
+            // ReloginCommand.register(dispatcher);
+
             /*
               测试用命令
              */

@@ -4,7 +4,7 @@ import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
-import org.carpet_org_addition.util.helpers.AbstractCustomSizeInventory;
+import org.carpet_org_addition.util.wheel.AbstractCustomSizeInventory;
 
 public class VillagerInventory extends AbstractCustomSizeInventory {
     private final VillagerEntity villager;

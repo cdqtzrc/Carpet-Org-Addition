@@ -8,17 +8,22 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.carpet_org_addition.logger.WanderingTraderSpawnLogger;
 import org.carpet_org_addition.translate.Translate;
-import org.carpet_org_addition.util.helpers.Waypoint;
+import org.carpet_org_addition.util.wheel.Waypoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+// TODO 1.21中/particleLine命令不可用
 public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     static {
         CarpetServer.manageExtension(new CarpetOrgAddition());
     }
 
+    /**
+     * 控制玩家登录登出的消息是否显示
+     */
+    public static boolean hiddenLoginMessages = false;
     // 日志
     public static final Logger LOGGER = LoggerFactory.getLogger("CarpetOrgAddition");
     public static final String MOD_NAME_LOWER_CASE = "carpetorgaddition";

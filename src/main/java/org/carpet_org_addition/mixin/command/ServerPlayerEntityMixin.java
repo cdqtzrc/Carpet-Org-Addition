@@ -10,7 +10,7 @@ import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionInterface;
-import org.carpet_org_addition.util.helpers.Waypoint;
+import org.carpet_org_addition.util.wheel.Waypoint;
 import org.carpet_org_addition.util.navigator.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

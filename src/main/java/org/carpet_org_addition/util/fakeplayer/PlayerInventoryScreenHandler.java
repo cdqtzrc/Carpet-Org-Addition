@@ -8,7 +8,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.carpet_org_addition.util.MathUtils;
-import org.carpet_org_addition.util.helpers.AbstractCustomSizeInventory;
+import org.carpet_org_addition.util.wheel.AbstractCustomSizeInventory;
 
 public class PlayerInventoryScreenHandler extends ScreenHandler {
     private static final int SIZE = 41;

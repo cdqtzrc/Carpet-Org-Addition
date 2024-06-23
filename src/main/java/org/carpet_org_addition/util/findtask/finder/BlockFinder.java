@@ -8,7 +8,7 @@ import org.carpet_org_addition.command.FinderCommand;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.findtask.result.BlockFindResult;
-import org.carpet_org_addition.util.helpers.SelectionArea;
+import org.carpet_org_addition.util.wheel.SelectionArea;
 
 import java.util.ArrayList;
 

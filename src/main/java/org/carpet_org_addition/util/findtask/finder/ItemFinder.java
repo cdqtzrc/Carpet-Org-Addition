@@ -16,9 +16,9 @@ import org.carpet_org_addition.exception.NoNbtException;
 import org.carpet_org_addition.util.InventoryUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.findtask.result.ItemFindResult;
-import org.carpet_org_addition.util.helpers.Counter;
-import org.carpet_org_addition.util.helpers.ImmutableInventory;
-import org.carpet_org_addition.util.helpers.SelectionArea;
+import org.carpet_org_addition.util.wheel.Counter;
+import org.carpet_org_addition.util.wheel.ImmutableInventory;
+import org.carpet_org_addition.util.wheel.SelectionArea;
 import org.carpet_org_addition.util.matcher.ItemMatcher;
 import org.carpet_org_addition.util.matcher.Matcher;
 

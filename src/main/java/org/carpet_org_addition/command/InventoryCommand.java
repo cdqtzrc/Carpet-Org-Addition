@@ -20,7 +20,7 @@ import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.InventoryUtils;
 import org.carpet_org_addition.util.fakeplayer.PlayerEnderChestScreenHandler;
 import org.carpet_org_addition.util.fakeplayer.PlayerInventoryScreenHandler;
-import org.carpet_org_addition.util.helpers.ShulkerBoxInventory;
+import org.carpet_org_addition.util.wheel.ShulkerBoxInventory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

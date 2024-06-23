@@ -5,6 +5,12 @@
 - `playerManager (save|resave) <player> [<annotation>]`
 - `playerManager (spawn|delete) <name>`
 - `playerManager list`
+- `playerManager schedule`
+    - `... relogin <name> <interval>`：用来控制假玩家每隔指定时间重复的上线下线
+    - `... relogin <name> stop`：停止上述操作
+    - `... (login|logout) <name> <delayed> (h|min|s|t)`：用来控制指定假玩家在指定时间后上线/下线
+    - `... cancel <name>`：取消指定玩家的上线/下线计划
+    - `... list`：列出所有上述计划
 
 ## 参数
 
@@ -20,6 +26,14 @@
 
 保存假玩家时添加的注释
 
+`interval`:integer
+
+假玩家重复上下线的时间间隔
+
+`delayed`:integer
+
+假玩家等待上线下线的时间
+
 ## 效果
 
 <table>
@@ -30,7 +44,7 @@
     </tr>
     <tr>
       <td>playerManager save &lt;player&gt;</td>
-      <td rowspan="5">执行成功</td>
+      <td rowspan="10">执行成功</td>
       <td>将一名假玩家信息保存到本地文件</td>
     </tr>
     <tr>
@@ -48,6 +62,26 @@
     <tr>
       <td>playerManager list</td>
       <td>列出所有已保存的假玩家</td>
+    </tr>
+    <tr>
+      <td>... schedule relogin ...</td>
+      <td>让假玩家周期性的上线下线</td>
+    </tr>
+    <tr>
+      <td>... schedule login ...</td>
+      <td>让假玩家在指定时间后上线</td>
+    </tr>
+    <tr>
+      <td>... schedule logout ...</td>
+      <td>让假玩家在指定时间后下线</td>
+    </tr>
+    <tr>
+      <td>... schedule cancel ...</td>
+      <td>取消上述上线下线的计划</td>
+    </tr>
+    <tr>
+      <td>... schedule list</td>
+      <td>列出上述所有计划</td>
     </tr>
 </table>
 
@@ -70,7 +104,7 @@
           <td>0</td>
         </tr>
         <tr>
-          <td>任意，除了list子命令</td>
+          <td>任意，除了list和schedule子命令</td>
           <td>执行成功</td>
           <td>1</td>
           <td>1</td>
@@ -82,6 +116,34 @@
           <td>1</td>
           <td>1</td>
           <td>列出玩家的数量</td>
+        </tr>
+        <tr>
+          <td>... schedule relogin ...</td>
+          <td>执行成功</td>
+          <td>1</td>
+          <td>1</td>
+          <td>上下线的时间间隔</td>
+        </tr>
+        <tr>
+          <td>... schedule login|logout ...</td>
+          <td>执行成功</td>
+          <td>1</td>
+          <td>1</td>
+          <td>上线/下线的等待时间</td>
+        </tr>
+        <tr>
+          <td>... schedule cancel ...</td>
+          <td>执行成功</td>
+          <td>1</td>
+          <td>1</td>
+          <td>取消计划的数量</td>
+        </tr>
+        <tr>
+          <td>... schedule list</td>
+          <td>执行成功</td>
+          <td>1</td>
+          <td>1</td>
+          <td>列出计划的数量</td>
         </tr>
     </tbody>
 </table>

@@ -1,4 +1,4 @@
-package org.carpet_org_addition.util.helpers;
+package org.carpet_org_addition.util.wheel;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
@@ -45,16 +45,7 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
 
     @Override
     public final boolean isEmpty() {
-        if (this.getInventory().isEmpty()) {
-            for (ItemStack itemStack : stacks) {
-                if (itemStack.isEmpty()) {
-                    continue;
-                }
-                return false;
-            }
-            return true;
-        }
-        return false;
+        return this.getInventory().isEmpty();
     }
 
     @Override

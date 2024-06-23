@@ -15,7 +15,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.helpers.JsonSerial;
+import org.carpet_org_addition.util.wheel.JsonSerial;
 import org.carpet_org_addition.util.matcher.Matcher;
 import org.jetbrains.annotations.NotNull;
 

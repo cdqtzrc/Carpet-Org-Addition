@@ -15,8 +15,8 @@ import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.util.*;
 import org.carpet_org_addition.util.constant.CommandSyntaxExceptionConstants;
 import org.carpet_org_addition.util.constant.TextConstants;
-import org.carpet_org_addition.util.helpers.JsonSerial;
-import org.carpet_org_addition.util.helpers.WorldFormat;
+import org.carpet_org_addition.util.wheel.JsonSerial;
+import org.carpet_org_addition.util.wheel.WorldFormat;
 
 import java.io.File;
 import java.io.IOException;
@@ -110,19 +110,9 @@ public class FakePlayerSerial implements JsonSerial {
         for (File file : worldFormat.toImmutableFileList()) {
             try {
                 JsonObject json = WorldFormat.loadJson(file);
-                ArrayList<MutableText> list = info(json);
-                boolean hasAnnotation = json.has("annotation");
-                if (hasAnnotation) {
-                    // 添加注释
-                    list.add(TextUtils.getTranslate("carpet.commands.playerManager.info.annotation", json.get("annotation").getAsString()));
-                }
-                MutableText info = TextUtils.createText("");
-                for (int i = 0; i < list.size(); i++) {
-                    info.append(list.get(i));
-                    if (i < list.size() - 1) {
-                        info.append("\n");
-                    }
-                }
+                // 添加悬停文本
+                MutableText info = info(json);
+                // 添加快捷命令
                 String playerName = WorldFormat.removeExtension(file.getName());
                 String onlineCommand = "/playerManager spawn " + playerName;
                 String offlineCommand = "/player " + playerName + " kill";
@@ -130,7 +120,10 @@ public class FakePlayerSerial implements JsonSerial {
                         TextUtils.command(TextUtils.createText("[↑]"), onlineCommand, online, Formatting.GREEN, false), " ",
                         TextUtils.command(TextUtils.createText("[↓]"), offlineCommand, offline, Formatting.RED, false), " ",
                         TextUtils.hoverText(TextUtils.createText("[?]"), info, Formatting.GRAY), " ",
-                        hasAnnotation ? TextUtils.hoverText(playerName, json.get("annotation").getAsString()) : playerName);
+                        // 如果有注释，在列出的玩家的名字上也添加注释
+                        json.has("annotation")
+                                ? TextUtils.hoverText(playerName, json.get("annotation").getAsString())
+                                : playerName);
                 // 发送消息
                 MessageUtils.sendCommandFeedback(context.getSource(), mutableText);
                 count++;
@@ -142,7 +135,7 @@ public class FakePlayerSerial implements JsonSerial {
     }
 
     // 显示json信息
-    private static ArrayList<MutableText> info(JsonObject json) {
+    public static MutableText info(JsonObject json) {
         ArrayList<MutableText> list = new ArrayList<>();
         // 玩家位置
         JsonObject pos = json.get("pos").getAsJsonObject();
@@ -172,7 +165,19 @@ public class FakePlayerSerial implements JsonSerial {
         // 是否潜行
         boolean sneaking = json.get("sneaking").getAsBoolean();
         list.add(TextUtils.getTranslate("carpet.commands.playerManager.info.sneaking", TextConstants.getBoolean(sneaking)));
-        return list;
+        boolean hasAnnotation = json.has("annotation");
+        if (hasAnnotation) {
+            // 添加注释
+            list.add(TextUtils.getTranslate("carpet.commands.playerManager.info.annotation", json.get("annotation").getAsString()));
+        }
+        MutableText info = TextUtils.createText("");
+        for (int i = 0; i < list.size(); i++) {
+            info.append(list.get(i));
+            if (i < list.size() - 1) {
+                info.append("\n");
+            }
+        }
+        return info;
     }
 
     @Override
