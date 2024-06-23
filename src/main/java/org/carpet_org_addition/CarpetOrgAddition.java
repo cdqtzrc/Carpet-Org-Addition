@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-// TODO 1.21中/particleLine命令不可用
 public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     static {
         CarpetServer.manageExtension(new CarpetOrgAddition());
