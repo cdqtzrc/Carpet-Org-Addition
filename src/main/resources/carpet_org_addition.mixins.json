@@ -76,6 +76,7 @@
     "util.CraftingScreenHandlerMixin",
     "util.ItemPredicateArgumentTypeMixin",
     "util.RegisterCarpetCommandsMixin",
+    "util.PlayerManagerMixin",
     "util.TranslatableTextContentMixin"
   ],
   "client": [

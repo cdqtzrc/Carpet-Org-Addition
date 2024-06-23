@@ -20,6 +20,10 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
         CarpetServer.manageExtension(new CarpetOrgAddition());
     }
 
+    /**
+     * 控制玩家登录登出的消息是否显示
+     */
+    public static boolean hiddenLoginMessages = false;
     // 日志
     public static final Logger LOGGER = LoggerFactory.getLogger("CarpetOrgAddition");
     public static final String MOD_NAME_LOWER_CASE = "carpetorgaddition";
