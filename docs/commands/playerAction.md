@@ -112,7 +112,7 @@
     <tr>
       <td>stop</td>
       <td rowspan="15">执行成功</td>
-      <td>0</td>
+      <td>1</td>
       <td>1</td>
       <td>1</td>
     </tr>
@@ -124,9 +124,9 @@
     </tr>
     <tr>
       <td>craft one</td>
+      <td rowspan="3">1</td>
+      <td rowspan="3">1</td>
       <td rowspan="3">2</td>
-      <td rowspan="3">1</td>
-      <td rowspan="3">1</td>
     </tr>
     <tr>
       <td>craft four</td>
@@ -136,60 +136,60 @@
     </tr>
     <tr>
       <td>craft nine</td>
+      <td rowspan="2">1</td>
+      <td rowspan="2">1</td>
       <td rowspan="2">3</td>
-      <td rowspan="2">1</td>
-      <td rowspan="2">1</td>
     </tr>
     <tr>
       <td>craft 3x3</td>
     </tr>
     <tr>
       <td>craft gui</td>
+      <td>1</td>
+      <td>1</td>
       <td>4</td>
-      <td>1</td>
-      <td>1</td>
     </tr>
     <tr>
       <td>fill</td>
+      <td>1</td>
+      <td>1</td>
       <td>5</td>
-      <td>1</td>
-      <td>1</td>
     </tr>
     <tr>
       <td>info</td>
+      <td>1</td>
+      <td>1</td>
       <td>6</td>
-      <td>1</td>
-      <td>1</td>
     </tr>
     <tr>
       <td>rename</td>
+      <td>1</td>
+      <td>1</td>
       <td>7</td>
-      <td>1</td>
-      <td>1</td>
     </tr>
     <tr>
       <td>sorting</td>
+      <td>1</td>
+      <td>1</td>
       <td>8</td>
-      <td>1</td>
-      <td>1</td>
     </tr>
     <tr>
       <td>sorting</td>
+      <td>1</td>
+      <td>1</td>
       <td>8</td>
-      <td>1</td>
-      <td>1</td>
     </tr>
     <tr>
       <td>stonecutting</td>
+      <td>1</td>
+      <td>1</td>
       <td>9</td>
-      <td>1</td>
-      <td>1</td>
     </tr>
     <tr>
       <td>trade</td>
+      <td>1</td>
+      <td>1</td>
       <td>10</td>
-      <td>1</td>
-      <td>1</td>
     </tr>
   </tbody>
 </table>
