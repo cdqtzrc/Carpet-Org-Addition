@@ -4,18 +4,19 @@ import carpet.patches.EntityPlayerMPFake;
 import carpet.patches.FakeClientConnection;
 import carpet.utils.Messenger;
 import com.mojang.authlib.GameProfile;
-import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.DisconnectionInfo;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
 import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntitySetHeadYawS2CPacket;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.ServerTask;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
@@ -34,7 +35,6 @@ import org.carpet_org_addition.util.TextUtils;
 
 import java.util.Objects;
 
-public class ReLoginTask extends ServerTask {
 public class ReLoginTask extends PlayerScheduleTask {
     private final String name;
     private int interval;
@@ -96,7 +96,7 @@ public class ReLoginTask extends PlayerScheduleTask {
             if (text.getKey().equals("multiplayer.disconnect.duplicate_login")) {
                 try {
                     CarpetOrgAddition.hiddenLoginMessages = true;
-                    fakePlayer.networkHandler.onDisconnected(reason);
+                    fakePlayer.networkHandler.onDisconnected(new DisconnectionInfo(reason));
                 } finally {
                     CarpetOrgAddition.hiddenLoginMessages = false;
                 }
@@ -106,7 +106,7 @@ public class ReLoginTask extends PlayerScheduleTask {
         this.server.send(new ServerTask(this.server.getTicks(), () -> {
             try {
                 CarpetOrgAddition.hiddenLoginMessages = true;
-                fakePlayer.networkHandler.onDisconnected(reason);
+                fakePlayer.networkHandler.onDisconnected(new DisconnectionInfo(reason));
             } finally {
                 CarpetOrgAddition.hiddenLoginMessages = false;
             }

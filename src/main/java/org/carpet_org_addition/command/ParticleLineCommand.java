@@ -1,12 +1,12 @@
 package org.carpet_org_addition.command;
 
-import carpet.script.utils.ParticleParser;
 import carpet.utils.CommandHelper;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.command.argument.Vec3ArgumentType;
+import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -18,6 +18,7 @@ import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.task.DrawParticleLineTask;
 import org.carpet_org_addition.util.task.ServerTaskManagerInterface;
+import org.joml.Vector3f;
 
 public class ParticleLineCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -36,7 +37,7 @@ public class ParticleLineCommand {
         Vec3d from = Vec3ArgumentType.getVec3(context, "from");
         Vec3d to = Vec3ArgumentType.getVec3(context, "to");
         // 获取粒子的效果类型
-        ParticleEffect mainParticle = ParticleParser.getEffect("dust 0 0 0 1", player.getWorld().getRegistryManager());
+        ParticleEffect mainParticle = new DustParticleEffect(new Vector3f(0, 0, 0), 1);
         // 计算粒子线的长度（平方）
         double distanceTo = from.squaredDistanceTo(to);
         // 计算粒子线长度

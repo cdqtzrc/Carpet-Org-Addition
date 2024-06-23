@@ -63,8 +63,6 @@
     "rule.carpet.EntityPlayerMPFakeMixin",
     "rule.carpet.SettingsManagerAccessor",
     "rule.TridentEntityMixin",
-    "rule.channelingignoreweather.LightningRodBlockMixin",
-    "rule.channelingignoreweather.TridentEntityMixin",
     "rule.disablemobpeacefuldespawn.MobEntityMixin",
     "rule.disablemobpeacefuldespawn.WitherEntityMixin",
     "rule.entityplayeractionpack.ActionAccessor",
