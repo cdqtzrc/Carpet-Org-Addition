@@ -14,7 +14,7 @@ public class MobEntityMixin {
     @Unique
     private final MobEntity thisMob = (MobEntity) (Object) this;
 
-    // 生物是否可以减轻物品
+    // 生物是否可以捡起物品
     @WrapOperation(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/MobEntity;canPickUpLoot()Z"))
     private boolean canPickUpLoot(MobEntity instance, Operation<Boolean> original) {
         return switch (CarpetOrgAdditionSettings.mobWhetherOrNotCanPickItem) {

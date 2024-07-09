@@ -191,6 +191,7 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean villagerHeal = false;
 
+    // TODO 同时回复饥饿值
     // 假玩家回血
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
@@ -324,6 +325,7 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean canMineSpawner = false;
 
+    // TODO 移除中毒掉落等效果
     // 假玩家生成时无击退
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
@@ -373,6 +375,7 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean climbingBoat = false;
 
+    // TODO 添加选项：仅升级模板
     // 可重复使用的锻造模板
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}

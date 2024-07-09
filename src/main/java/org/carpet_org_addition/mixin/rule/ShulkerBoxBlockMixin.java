@@ -42,6 +42,7 @@ public class ShulkerBoxBlockMixin {
     // 潜影盒是否可以更新抑制
     @Unique
     private static boolean canUpdateSuppression(World world, BlockPos pos) {
+        // TODO 对玩家提示不能打开更新抑制潜影盒
         if (CarpetOrgAdditionSettings.CCEUpdateSuppression) {
             if (world.getBlockEntity(pos) instanceof ShulkerBoxBlockEntity shulkerBoxBlockEntity) {
                 String blockName = shulkerBoxBlockEntity.getDisplayName().getString();

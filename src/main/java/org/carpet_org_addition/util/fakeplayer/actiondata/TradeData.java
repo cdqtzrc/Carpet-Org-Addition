@@ -29,6 +29,7 @@ public class TradeData extends AbstractActionData {
     public TradeData(int index, boolean voidTrade) {
         this.index = index;
         this.voidTrade = voidTrade;
+        // TODO 默认值改为1:FakePlayerTrade.TRADE_WAIT_TIME
         timer.set(5);
     }
 
@@ -50,6 +51,7 @@ public class TradeData extends AbstractActionData {
     public ArrayList<MutableText> info(EntityPlayerMPFake fakePlayer) {
         ArrayList<MutableText> list = new ArrayList<>();
         // 获取按钮的索引，从1开始
+        // TODO index的值可能从0开始
         list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.trade.item", fakePlayer.getDisplayName(), index));
         if (fakePlayer.currentScreenHandler instanceof MerchantScreenHandler merchantScreenHandler) {
             // 获取当前交易内容的对象，因为按钮索引从1开始，所以此处减去1

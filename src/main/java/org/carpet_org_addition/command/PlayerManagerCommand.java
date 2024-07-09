@@ -235,6 +235,7 @@ public class PlayerManagerCommand {
         } else {
             // 修改周期时间
             task.setInterval(interval);
+            // TODO 更改命令反馈消息
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.relogin.set_interval", name, interval);
         }
         return interval;
@@ -255,6 +256,7 @@ public class PlayerManagerCommand {
 
     // 停止重新上线下线
     private static int stopReLogin(CommandContext<ServerCommandSource> context) {
+        // TODO 代码冗余
         // 获取目标假玩家名
         String name = StringArgumentType.getString(context, "name");
         ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(context.getSource().getServer());
@@ -345,6 +347,7 @@ public class PlayerManagerCommand {
             tasks.remove(task);
             MessageUtils.sendTextMessage(context.getSource(), task.getCancelMessage());
         });
+        // TODO 没有计划被取消时不会发送反馈
         return list.size();
     }
 

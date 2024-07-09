@@ -14,6 +14,7 @@ import org.carpet_org_addition.util.matcher.Matcher;
 
 import java.util.ArrayList;
 
+// TODO 不必要的final
 public final class SortingData extends AbstractActionData {
 
     private static final String ITEM = "item";

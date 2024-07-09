@@ -142,6 +142,7 @@ public class InventoryUtils {
      * @return 潜影盒内的物品栏
      * @throws NoNbtException 物品不是潜影盒，或者潜影盒没有NBT时抛出
      */
+    // TODO 没有NBT时返回一个空物品栏
     public static ImmutableInventory getInventory(ItemStack shulkerBox) throws NoNbtException {
         try {
             // 获取潜影盒NBT

@@ -40,6 +40,7 @@ public abstract class AbstractActionData implements JsonSerial {
             return TextUtils.hoverText(Text.literal("[A]"), Items.AIR.getName(), Formatting.DARK_GRAY);
         }
         // 获取物品ID的首字母，然后转为大写，再放进中括号里
+        // TODO 首字母全部为M：minecraft:stone -> M
         String capitalizeFirstLetter = "[" + String.valueOf(matcher.toString().charAt(0)).toUpperCase() + "]";
         return TextUtils.hoverText(Text.literal(capitalizeFirstLetter), matcher.getName(), null);
     }

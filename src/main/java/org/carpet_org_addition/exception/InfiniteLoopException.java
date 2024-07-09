@@ -24,6 +24,7 @@ public class InfiniteLoopException extends RuntimeException {
     /**
      * 将当前循环次数+1，然后检查循环次数，如果循环次数过多抛出异常
      */
+    // TODO 条件成立时不直接抛出，而是返回一个布尔值，让调用者自行决定是否抛出
     public void checkLoopCount() {
         loopCount++;
         if (loopCount >= maxLoopCount) {

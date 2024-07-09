@@ -65,6 +65,7 @@ public class PlayerActionCommand {
                                 .then(CommandManager.literal("four").then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                         .executes(PlayerActionCommand::setFourCraft)))
                                 .then(CommandManager.literal("3x3")
+                                        // TODO 使用循环for优化代码
                                         .then(CommandManager.argument("item1", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                 .then(CommandManager.argument("item2", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                         .then(CommandManager.argument("item3", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
