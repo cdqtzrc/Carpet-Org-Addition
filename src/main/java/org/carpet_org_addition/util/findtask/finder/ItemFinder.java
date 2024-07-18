@@ -12,15 +12,14 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
-import org.carpet_org_addition.exception.NoNbtException;
 import org.carpet_org_addition.util.InventoryUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.findtask.result.ItemFindResult;
+import org.carpet_org_addition.util.matcher.ItemMatcher;
+import org.carpet_org_addition.util.matcher.Matcher;
 import org.carpet_org_addition.util.wheel.Counter;
 import org.carpet_org_addition.util.wheel.ImmutableInventory;
 import org.carpet_org_addition.util.wheel.SelectionArea;
-import org.carpet_org_addition.util.matcher.ItemMatcher;
-import org.carpet_org_addition.util.matcher.Matcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,14 +89,10 @@ public class ItemFinder extends AbstractFinder {
                 counter.add(new ItemMatcher(itemStack), itemStack.getCount());
             } else if (InventoryUtils.isShulkerBoxItem(itemStack)) {
                 // 检查潜影盒内的物品
-                ImmutableInventory immutableInventory;
-                try {
-                    immutableInventory = InventoryUtils.getInventory(itemStack);
-                } catch (NoNbtException e) {
-                    continue;
-                }
+                ImmutableInventory immutableInventory = InventoryUtils.getInventory(itemStack);
                 // 从潜影盒内查找物品
                 if (immutableInventory.isEmpty()) {
+                    // 潜影盒中没有物品，结束本轮循环，检查下一个槽位
                     continue;
                 }
                 // 遍历潜影盒内的物品栏，找到与匹配器对应的物品

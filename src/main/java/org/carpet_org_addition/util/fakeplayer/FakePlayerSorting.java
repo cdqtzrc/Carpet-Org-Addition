@@ -7,7 +7,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 import org.carpet_org_addition.exception.InfiniteLoopException;
-import org.carpet_org_addition.exception.NoNbtException;
 import org.carpet_org_addition.util.InventoryUtils;
 import org.carpet_org_addition.util.fakeplayer.actiondata.SortingData;
 
@@ -67,19 +66,15 @@ public class FakePlayerSorting {
             } else {
                 // 获取潜影盒内第一个非空气物品，获取后，该物品会在潜影盒内删除
                 // 设置当前物品为潜影盒内容物的第一个非空物品
-                try {
-                    itemStack = InventoryUtils.getShulkerBoxItem(itemStack);
-                } catch (NoNbtException e) {
-                    // 空潜影盒异常，潜影盒可能没有NBT，如直接从创造模式物品栏中拿取出的潜影盒
-                    // 丢出这个异常的潜影盒
+                itemStack = InventoryUtils.getShulkerBoxItem(itemStack);
+                if (itemStack.isEmpty()) {
                     itemStack = inventory.getStack(index);
-                    //设置当前朝向为丢出非指定物品朝向
+                    // 设置当前朝向为丢出非指定物品朝向，然后丢弃这个潜影盒
                     fakePlayer.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, otherVec);
                     break;
                 }
                 // 根据当前物品设置朝向
-                fakePlayer.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES,
-                        itemStack.getItem() == item ? thisVec : otherVec);
+                fakePlayer.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, itemStack.isOf(item) ? thisVec : otherVec);
             }
             // 丢弃潜影盒内物品堆栈
             FakePlayerUtils.dropItem(fakePlayer, itemStack);
