@@ -325,7 +325,6 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean canMineSpawner = false;
 
-    // TODO 移除中毒掉落等效果
     // 假玩家生成时无击退
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
