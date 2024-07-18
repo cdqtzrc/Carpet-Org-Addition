@@ -75,10 +75,13 @@ public class FakePlayerTrade {
     // 尝试交易物品
     private static void tryTrade(ServerCommandSource source, EntityPlayerMPFake fakePlayer,
                                  MerchantScreenHandler merchantScreenHandler, int index, boolean voidTrade) {
-        InfiniteLoopException exception = new InfiniteLoopException();
+        int loopCount = 0;
         // 如果村民无限交易未启用或当前交易不是虚空交易，则只循环一次
         do {
-            exception.checkLoopCount();
+            loopCount++;
+            if (loopCount > 1000) {
+                throw new InfiniteLoopException();
+            }
             //如果当前交易以锁定，直接结束方法
             TradeOffer tradeOffer = merchantScreenHandler.getRecipes().get(index);
             if (tradeOffer.isDisabled()) {
