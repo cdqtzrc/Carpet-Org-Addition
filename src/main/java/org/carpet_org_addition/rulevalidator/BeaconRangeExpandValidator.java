@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 public class BeaconRangeExpandValidator extends Validator<Integer> {
     public static final int MAX_VALUE = 1024;
 
+    // TODO 变量名不够见名之意
     @Override
     public Integer validate(@Nullable ServerCommandSource serverCommandSource, CarpetRule<Integer> carpetRule, Integer integer, String s) {
         return integer <= MAX_VALUE ? integer : null;

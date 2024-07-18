@@ -77,7 +77,6 @@
     "util.TranslatableTextContentMixin"
   ],
   "client": [
-    "rule.client.GameRendererMixin",
     "rule.client.carpet.SettingsManagerMixin"
   ],
   "injectors": {
