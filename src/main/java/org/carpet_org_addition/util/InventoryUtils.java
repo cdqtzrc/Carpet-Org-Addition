@@ -140,7 +140,6 @@ public class InventoryUtils {
      * @param shulkerBox 要获取物品栏的潜影盒
      * @return 潜影盒内的物品栏
      */
-    // TODO 没有NBT时返回一个空物品栏
     public static ImmutableInventory getInventory(ItemStack shulkerBox) {
         try {
             // 获取潜影盒NBT

@@ -185,6 +185,7 @@
   "carpet.rule.fakePlayerMaxCraftCount.desc": "控制假玩家在一个游戏刻内最多合成多少次物品",
   "carpet.rule.fakePlayerMaxCraftCount.extra.0": "-1表示无限制",
   "carpet.rule.message.disableRespawnBlocksExplode": "已禁用重生方块爆炸",
+  "carpet.rule.message.CCEUpdateSuppression": "你不能打开用于更新抑制的潜影盒",
   "carpet.rule.validate.less_than_or_equal": "值必须小于等于%s",
   "carpet.rule.validate.greater_than_or_equal_or_number": "值必须大于等于%s，或者为%s",
   "carpet.rule.validate.between_two_number_or_number": "值必须介于%s和%s之间，或者为%s",
