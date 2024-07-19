@@ -27,7 +27,10 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity {
         if (CarpetOrgAdditionSettings.fakePlayerHeal) {
             long time = thisPlayer.getWorld().getTime();
             if (time % 40 == 0) {
+                // 回复血量
                 thisPlayer.heal(1);
+                // 回复饥饿值
+                thisPlayer.getHungerManager().add(1, 0);
             }
         }
     }

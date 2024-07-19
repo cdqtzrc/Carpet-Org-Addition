@@ -191,7 +191,6 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean villagerHeal = false;
 
-    // TODO 同时回复饥饿值
     // 假玩家回血
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
