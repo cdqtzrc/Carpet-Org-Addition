@@ -72,22 +72,14 @@ public class CraftingSetRecipeScreenHandler extends CraftingScreenHandler {
     // 设置假玩家合成动作
     private void setCraftAction(Item[] items, FakePlayerActionManager actionManager) {
         // 如果能在2x2合成格中合成，优先使用2x2
-        if (items[0] == Items.AIR && items[1] == Items.AIR && items[2] == Items.AIR
-                && items[5] == Items.AIR && items[8] == Items.AIR) {
-            actionManager.setAction(FakePlayerAction.INVENTORY_CRAFT, new InventoryCraftData(new ItemMatcher[]{
-                    new ItemMatcher(items[3]), new ItemMatcher(items[4]), new ItemMatcher(items[6]), new ItemMatcher(items[7])}));
-        } else if (items[0] == Items.AIR && items[3] == Items.AIR && items[6] == Items.AIR
-                && items[7] == Items.AIR && items[8] == Items.AIR) {
-            actionManager.setAction(FakePlayerAction.INVENTORY_CRAFT, new InventoryCraftData(new ItemMatcher[]{
-                    new ItemMatcher(items[1]), new ItemMatcher(items[2]), new ItemMatcher(items[4]), new ItemMatcher(items[5])}));
-        } else if (items[2] == Items.AIR && items[5] == Items.AIR && items[6] == Items.AIR
-                && items[7] == Items.AIR && items[8] == Items.AIR) {
-            actionManager.setAction(FakePlayerAction.INVENTORY_CRAFT, new InventoryCraftData(new ItemMatcher[]{
-                    new ItemMatcher(items[0]), new ItemMatcher(items[1]), new ItemMatcher(items[3]), new ItemMatcher(items[4])}));
-        } else if (items[0] == Items.AIR && items[1] == Items.AIR && items[2] == Items.AIR
-                && items[3] == Items.AIR && items[6] == Items.AIR) {
-            actionManager.setAction(FakePlayerAction.INVENTORY_CRAFT, new InventoryCraftData(new ItemMatcher[]{
-                    new ItemMatcher(items[4]), new ItemMatcher(items[5]), new ItemMatcher(items[7]), new ItemMatcher(items[8])}));
+        if (canInventoryCraft(items, 0, 1, 2, 5, 8)) {
+            actionManager.setAction(FakePlayerAction.INVENTORY_CRAFT, createData(items, 3, 4, 6, 7));
+        } else if (canInventoryCraft(items, 0, 3, 6, 7, 8)) {
+            actionManager.setAction(FakePlayerAction.INVENTORY_CRAFT, createData(items, 1, 2, 4, 5));
+        } else if (canInventoryCraft(items, 2, 5, 6, 7, 8)) {
+            actionManager.setAction(FakePlayerAction.INVENTORY_CRAFT, createData(items, 0, 1, 3, 4));
+        } else if (canInventoryCraft(items, 0, 1, 2, 3, 6)) {
+            actionManager.setAction(FakePlayerAction.INVENTORY_CRAFT, createData(items, 4, 5, 7, 8));
         } else {
             //将假玩家动作设置为3x3合成
             ItemMatcher[] itemMatchersArr = new ItemMatcher[9];
@@ -96,6 +88,27 @@ public class CraftingSetRecipeScreenHandler extends CraftingScreenHandler {
             }
             actionManager.setAction(FakePlayerAction.CRAFTING_TABLE_CRAFT, new CraftingTableCraftData(itemMatchersArr));
         }
+    }
+
+    // 可以在物品栏合成
+    private boolean canInventoryCraft(Item[] items, int... indices) {
+        for (int index : indices) {
+            if (items[index] == Items.AIR) {
+                continue;
+            }
+            return false;
+        }
+        return true;
+    }
+
+    // 创建合成数据
+    private InventoryCraftData createData(Item[] items, int... indices) {
+        ItemMatcher[] matchers = new ItemMatcher[4];
+        // 这里的index并不是indices里保存的元素
+        for (int index = 0; index < 4; index++) {
+            matchers[index] = new ItemMatcher(items[indices[index]]);
+        }
+        return new InventoryCraftData(matchers);
     }
 
     @Override

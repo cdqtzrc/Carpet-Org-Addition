@@ -70,6 +70,7 @@ public class PlayerActionCommand {
                                 .then(CommandManager.literal("four")
                                         .then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
                                                 .executes(PlayerActionCommand::setFourCraft)))
+                                // TODO 更改子命令名称
                                 .then(CommandManager.literal("3x3")
                                         .then(registerItemPredicateNode(9, commandBuildContext, PlayerActionCommand::setCraftingTableCraft)))
                                 .then(CommandManager.literal("2x2")
