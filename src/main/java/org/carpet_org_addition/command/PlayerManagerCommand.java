@@ -235,7 +235,6 @@ public class PlayerManagerCommand {
         } else {
             // 修改周期时间
             task.setInterval(interval);
-            // TODO 更改命令反馈消息
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.relogin.set_interval", name, interval);
         }
         return interval;
@@ -255,20 +254,18 @@ public class PlayerManagerCommand {
     }
 
     // 停止重新上线下线
-    private static int stopReLogin(CommandContext<ServerCommandSource> context) {
-        // TODO 代码冗余
+    private static int stopReLogin(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         // 获取目标假玩家名
         String name = StringArgumentType.getString(context, "name");
         ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(context.getSource().getServer());
-        instance.getTaskList().stream()
-                .filter(task -> task instanceof ReLoginTask)
-                .map(task -> (ReLoginTask) task)
-                .filter(reLoginTask -> Objects.equals(name, reLoginTask.getPlayerName()))
-                .forEach(task -> {
-                    // 停止并发送消息
-                    task.stop();
-                    MessageUtils.sendCommandFeedback(context.getSource(), task.getCancelMessage());
-                });
+        List<ReLoginTask> list = instance.findTask(ReLoginTask.class, task -> Objects.equals(task.getPlayerName(), name));
+        if (list.isEmpty()) {
+            throw CommandUtils.createException("carpet.commands.playerManager.schedule.cancel.fail");
+        }
+        list.forEach(task -> {
+            instance.getTaskList().remove(task);
+            MessageUtils.sendCommandFeedback(context.getSource(), task.getCancelMessage());
+        });
         return 1;
     }
 
@@ -335,19 +332,21 @@ public class PlayerManagerCommand {
     }
 
     // 取消任务
-    private static int cancelScheduleTask(CommandContext<ServerCommandSource> context) {
+    private static int cancelScheduleTask(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         MinecraftServer server = context.getSource().getServer();
         ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
         String name = StringArgumentType.getString(context, "name");
         // 获取符合条件的任务列表
         List<PlayerScheduleTask> list = instance.findTask(PlayerScheduleTask.class, task -> Objects.equals(task.getPlayerName(), name));
+        if (list.isEmpty()) {
+            throw CommandUtils.createException("carpet.commands.playerManager.schedule.cancel.fail");
+        }
         ArrayList<ServerTask> tasks = instance.getTaskList();
         list.forEach(task -> {
             // 删除任务，发送命令反馈
             tasks.remove(task);
             MessageUtils.sendTextMessage(context.getSource(), task.getCancelMessage());
         });
-        // TODO 没有计划被取消时不会发送反馈
         return list.size();
     }
 

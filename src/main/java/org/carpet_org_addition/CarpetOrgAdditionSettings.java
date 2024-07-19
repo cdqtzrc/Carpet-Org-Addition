@@ -408,6 +408,7 @@ public class CarpetOrgAdditionSettings {
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
+    // TODO 添加选项：潜影盒中的不死图腾
     public static boolean betterTotemOfUndying = false;
 
     // 假玩家动作命令

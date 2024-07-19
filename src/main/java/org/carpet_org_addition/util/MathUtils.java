@@ -32,7 +32,7 @@ public class MathUtils {
         int x = fromBlockPos.getX() - toBlockPos.getX();
         int y = fromBlockPos.getY() - toBlockPos.getY();
         int z = fromBlockPos.getZ() - toBlockPos.getZ();
-        return x * x + y * y + z * z;
+        return x * (double) x + y * (double) y + z * (double) z;
     }
 
     /**
