@@ -3,9 +3,11 @@ package org.carpet_org_addition.command;
 import carpet.CarpetSettings;
 import carpet.patches.EntityPlayerMPFake;
 import carpet.utils.CommandHelper;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandRegistryAccess;
@@ -56,45 +58,56 @@ public class PlayerActionCommand {
                                 .executes(context -> setFIll(context, true))
                                 .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
                                         .executes(context -> setFIll(context, false))))
-                        .then(CommandManager.literal("stop").executes(PlayerActionCommand::setStop))
+                        .then(CommandManager.literal("stop")
+                                .executes(PlayerActionCommand::setStop))
                         .then(CommandManager.literal("craft")
-                                .then(CommandManager.literal("one").then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                        .executes(PlayerActionCommand::setOneCraft)))
-                                .then(CommandManager.literal("nine").then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                        .executes(PlayerActionCommand::setNineCraft)))
-                                .then(CommandManager.literal("four").then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                        .executes(PlayerActionCommand::setFourCraft)))
+                                .then(CommandManager.literal("one")
+                                        .then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                                .executes(PlayerActionCommand::setOneCraft)))
+                                .then(CommandManager.literal("nine")
+                                        .then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                                .executes(PlayerActionCommand::setNineCraft)))
+                                .then(CommandManager.literal("four")
+                                        .then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                                .executes(PlayerActionCommand::setFourCraft)))
                                 .then(CommandManager.literal("3x3")
-                                        // TODO 使用循环for优化代码
-                                        .then(CommandManager.argument("item1", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                .then(CommandManager.argument("item2", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                        .then(CommandManager.argument("item3", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                .then(CommandManager.argument("item4", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                        .then(CommandManager.argument("item5", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                                .then(CommandManager.argument("item6", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                                        .then(CommandManager.argument("item7", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                                                .then(CommandManager.argument("item8", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                                                        .then(CommandManager.argument("item9", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                                                                .executes(PlayerActionCommand::setCraftingTableCraft)))))))))))
+                                        .then(registerItemPredicateNode(9, commandBuildContext, PlayerActionCommand::setCraftingTableCraft)))
                                 .then(CommandManager.literal("2x2")
-                                        .then(CommandManager.argument("item1", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                .then(CommandManager.argument("item2", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                        .then(CommandManager.argument("item3", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                .then(CommandManager.argument("item4", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                        .executes(PlayerActionCommand::setInventoryCraft))))))
-                                .then(CommandManager.literal("gui").executes(PlayerActionCommand::openFakePlayerCraftGui)))
+                                        .then(registerItemPredicateNode(4, commandBuildContext, PlayerActionCommand::setInventoryCraft)))
+                                .then(CommandManager.literal("gui")
+                                        .executes(PlayerActionCommand::openFakePlayerCraftGui)))
                         .then(CommandManager.literal("trade")
                                 .then(CommandManager.argument("index", IntegerArgumentType.integer(1))
                                         .executes(context -> setTrade(context, false))
                                         .then(CommandManager.literal("void_trade")
                                                 .executes(context -> setTrade(context, true)))))
-                        .then(CommandManager.literal("info").executes(PlayerActionCommand::getAction))
-                        .then(CommandManager.literal("rename").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
-                                .then(CommandManager.argument("name", StringArgumentType.string())
-                                        .executes(PlayerActionCommand::setRename))))
-                        .then(CommandManager.literal("stonecutting").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
-                                .then(CommandManager.argument("button", IntegerArgumentType.integer(1))
-                                        .executes(PlayerActionCommand::setStonecutting))))));
+                        .then(CommandManager.literal("info")
+                                .executes(PlayerActionCommand::getAction))
+                        .then(CommandManager.literal("rename")
+                                .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
+                                        .then(CommandManager.argument("name", StringArgumentType.string())
+                                                .executes(PlayerActionCommand::setRename))))
+                        .then(CommandManager.literal("stonecutting")
+                                .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
+                                        .then(CommandManager.argument("button", IntegerArgumentType.integer(1))
+                                                .executes(PlayerActionCommand::setStonecutting))))));
+    }
+
+    // 注册物品谓词节点
+    private static RequiredArgumentBuilder<ServerCommandSource, ItemPredicateArgumentType.ItemStackPredicateArgument>
+    registerItemPredicateNode(int maxValue, CommandRegistryAccess commandBuildContext, Command<ServerCommandSource> function) {
+        RequiredArgumentBuilder<ServerCommandSource, ItemPredicateArgumentType.ItemStackPredicateArgument> result = null;
+        for (int i = maxValue; i >= 1; i--) {
+            RequiredArgumentBuilder<ServerCommandSource, ItemPredicateArgumentType.ItemStackPredicateArgument> nobe
+                    = CommandManager.argument("item" + i, ItemPredicateArgumentType.itemPredicate(commandBuildContext));
+            if (result == null) {
+                result = nobe.executes(function);
+            } else {
+                nobe.then(result);
+                result = nobe;
+            }
+        }
+        return result;
     }
 
     // 设置停止
