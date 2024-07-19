@@ -15,8 +15,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.wheel.JsonSerial;
 import org.carpet_org_addition.util.matcher.Matcher;
+import org.carpet_org_addition.util.wheel.JsonSerial;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -40,9 +40,21 @@ public abstract class AbstractActionData implements JsonSerial {
         if (matcher.isEmpty()) {
             return TextUtils.hoverText(Text.literal("[A]"), Items.AIR.getName(), Formatting.DARK_GRAY);
         }
-        // 获取物品ID的首字母，然后转为大写，再放进中括号里
-        String capitalizeFirstLetter = "[" + String.valueOf(matcher.toString().charAt(0)).toUpperCase() + "]";
-        return TextUtils.hoverText(Text.literal(capitalizeFirstLetter), matcher.getName(), null);
+        return TextUtils.hoverText(Text.literal(getInitial(matcher)), matcher.getName(), null);
+    }
+
+    // 获取物品ID的首字母，然后转为大写，再放进中括号里
+    private static @NotNull String getInitial(Matcher matcher) {
+        // 将物品名称的字符串切割为命名空间（如果有）和物品id
+        String name = matcher.toString();
+        if (name.startsWith("#")) {
+            return "[#]";
+        }
+        String[] split = name.split(":");
+        // 获取数组的索引，如果有命名空间，返回1索引，否则返回0索引，即舍弃命名空间
+        int index = (split.length == 1) ? 0 : 1;
+        // 获取物品id的首字母，然后大写
+        return "[" + String.valueOf(split[index].charAt(0)).toUpperCase() + "]";
     }
 
     // 获取物品堆栈的可变文本形式：物品名称x堆叠数量

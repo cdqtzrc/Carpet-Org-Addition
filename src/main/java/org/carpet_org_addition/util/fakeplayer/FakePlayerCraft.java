@@ -24,13 +24,17 @@ public class FakePlayerCraft {
     // 在工作台合成物品
     public static void craftingTableCraft(CraftingTableCraftData craftData, EntityPlayerMPFake fakePlayer) {
         if (fakePlayer.currentScreenHandler instanceof CraftingScreenHandler craftingScreenHandler) {
-            InfiniteLoopException exception = new InfiniteLoopException(MAX_LOOP_COUNT);
             Matcher[] items = craftData.getMatchers();
             // 定义变量记录成功完成合成的次数
             int craftCount = 0;
+            // 记录循环次数用来在游戏可能进入死循环时抛出异常
+            int loopCount = 0;
             do {
                 // 检查循环次数，在循环次数过多时抛出异常
-                exception.checkLoopCount();
+                loopCount++;
+                if (loopCount > MAX_LOOP_COUNT) {
+                    throw new InfiniteLoopException();
+                }
                 // 定义变量记录找到正确合成材料的次数
                 int successCount = 0;
                 // 依次获取每一个合成材料和遍历合成格
@@ -119,13 +123,17 @@ public class FakePlayerCraft {
     // 在生存模式物品栏合成物品
     public static void inventoryCraft(InventoryCraftData craftData, EntityPlayerMPFake fakePlayer) {
         PlayerScreenHandler playerScreenHandler = fakePlayer.playerScreenHandler;
-        InfiniteLoopException exception = new InfiniteLoopException(MAX_LOOP_COUNT);
         Matcher[] items = craftData.getMatchers();
         // 定义变量记录成功完成合成的次数
         int craftCount = 0;
+        // 记录循环次数用来在游戏可能进入死循环时抛出异常
+        int loopCount = 0;
         do {
             // 检查循环次数
-            exception.checkLoopCount();
+            loopCount++;
+            if (loopCount > MAX_LOOP_COUNT) {
+                throw new InfiniteLoopException();
+            }
             // 定义变量记录找到正确合成材料的次数
             int successCount = 0;
             // 遍历4x4合成格

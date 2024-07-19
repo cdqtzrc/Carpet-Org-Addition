@@ -6,6 +6,7 @@ import net.minecraft.screen.MerchantScreenHandler;
 import net.minecraft.text.MutableText;
 import net.minecraft.village.TradeOffer;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.fakeplayer.FakePlayerTrade;
 import org.carpet_org_addition.util.wheel.SingleThingCounter;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class TradeData extends AbstractActionData {
     public TradeData(int index, boolean voidTrade) {
         this.index = index;
         this.voidTrade = voidTrade;
-        timer.set(5);
+        timer.set(FakePlayerTrade.TRADE_WAIT_TIME);
     }
 
     public static TradeData load(JsonObject json) {
@@ -49,19 +50,17 @@ public class TradeData extends AbstractActionData {
     @Override
     public ArrayList<MutableText> info(EntityPlayerMPFake fakePlayer) {
         ArrayList<MutableText> list = new ArrayList<>();
-        // 获取按钮的索引，从1开始
-        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.trade.item", fakePlayer.getDisplayName(), index));
+        // 获取按钮的索引
+        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.trade.item", fakePlayer.getDisplayName(), index + 1));
         if (fakePlayer.currentScreenHandler instanceof MerchantScreenHandler merchantScreenHandler) {
-            // 获取当前交易内容的对象，因为按钮索引从1开始，所以此处减去1
-            TradeOffer tradeOffer = merchantScreenHandler.getRecipes().get(index - 1);
-            // 将“交易选项”文本信息添加到集合中
-            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.trade.option", index));
+            // 获取当前交易内容的对象
+            TradeOffer tradeOffer = merchantScreenHandler.getRecipes().get(index);
             // 将交易的物品和价格添加到集合中
             list.add(TextUtils.appendAll("    ",
                     getWithCountHoverText(tradeOffer.getAdjustedFirstBuyItem()), " ",
                     getWithCountHoverText(tradeOffer.getSecondBuyItem()), " -> ",
                     getWithCountHoverText(tradeOffer.getSellItem())));
-            // 如果当前交易已禁用，将交易已禁用的消息添加到集合，然后直接结束方法并返回集合
+            // 如果当前交易已被锁定，将交易已锁定的消息添加到集合，然后直接结束方法并返回集合
             if (tradeOffer.isDisabled()) {
                 list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.trade.disabled"));
                 return list;

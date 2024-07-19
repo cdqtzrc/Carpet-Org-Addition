@@ -14,7 +14,7 @@ import org.carpet_org_addition.util.matcher.Matcher;
 
 import java.util.ArrayList;
 
-public final class SortingData extends AbstractActionData {
+public class SortingData extends AbstractActionData {
 
     private static final String ITEM = "item";
     private static final String THIS_VEC = "thisVec";

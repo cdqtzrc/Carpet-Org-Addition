@@ -367,6 +367,7 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean climbingBoat = false;
 
+    // TODO 添加选项：仅升级模板
     // 可重复使用的锻造模板
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}

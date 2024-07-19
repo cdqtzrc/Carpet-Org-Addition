@@ -4,8 +4,10 @@ import carpet.CarpetExtension;
 import carpet.CarpetServer;
 import carpet.patches.EntityPlayerMPFake;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.Vec3d;
 import org.carpet_org_addition.logger.WanderingTraderSpawnLogger;
 import org.carpet_org_addition.translate.Translate;
 import org.carpet_org_addition.util.wheel.Waypoint;
@@ -14,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-// TODO 1.21中/particleLine命令不可用
 public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     static {
         CarpetServer.manageExtension(new CarpetOrgAddition());
@@ -50,11 +51,13 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
         // 假玩家生成时不保留上一次的击退，着火时间，摔落高度
         if (CarpetOrgAdditionSettings.fakePlayerSpawnNoKnockback && player instanceof EntityPlayerMPFake) {
             // 清除速度
-            player.setVelocity(0, 0, 0);
+            player.setVelocity(Vec3d.ZERO);
             // 清除着火时间
             player.setFireTicks(0);
             // 清除摔落高度
             player.fallDistance = 0;
+            // 清除负面效果
+            player.getStatusEffects().removeIf(effect -> effect.getEffectType().getCategory() == StatusEffectCategory.HARMFUL);
         }
     }
 

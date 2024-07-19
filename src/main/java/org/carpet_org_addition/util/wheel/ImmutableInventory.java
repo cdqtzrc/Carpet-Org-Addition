@@ -18,6 +18,10 @@ public final class ImmutableInventory extends SimpleInventory implements Iterabl
      * 当前物品栏是否已锁定，锁定后，物品栏不能改变
      */
     private boolean lock = false;
+    /**
+     * 空物品栏
+     */
+    public static final ImmutableInventory EMPTY = new ImmutableInventory(DefaultedList.copyOf(ItemStack.EMPTY));
 
     public ImmutableInventory(DefaultedList<ItemStack> list) {
         super(list.size());
@@ -26,6 +30,11 @@ public final class ImmutableInventory extends SimpleInventory implements Iterabl
             this.setStack(i, list.get(i));
         }
         this.lock = true;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return this == EMPTY || super.isEmpty();
     }
 
     @Override
@@ -65,19 +74,6 @@ public final class ImmutableInventory extends SimpleInventory implements Iterabl
     @Override
     public ItemStack addStack(ItemStack stack) {
         throw new UnsupportedOperationException();
-    }
-
-    /**
-     * 潜影盒内的物品共占了多少个槽位，不是指潜影盒内物品的总数
-     */
-    public int slotCount() {
-        int count = 0;
-        for (int index = 0; index < this.size(); index++) {
-            if (!this.getStack(index).isEmpty()) {
-                count++;
-            }
-        }
-        return count;
     }
 
     @Override

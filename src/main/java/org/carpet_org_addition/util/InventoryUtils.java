@@ -9,9 +9,8 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.collection.DefaultedList;
-import org.carpet_org_addition.exception.NoNbtException;
-import org.carpet_org_addition.util.wheel.ImmutableInventory;
 import org.carpet_org_addition.util.matcher.Matcher;
+import org.carpet_org_addition.util.wheel.ImmutableInventory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +38,10 @@ public class InventoryUtils {
      * @param shulkerBox 当前要操作的潜影盒
      * @return 潜影盒内第一个非空气物品，如果潜影盒内没有物品，返回ItemStack.EMPTY
      */
-    public static ItemStack getShulkerBoxItem(ItemStack shulkerBox) throws NoNbtException {
+    public static ItemStack getShulkerBoxItem(ItemStack shulkerBox) {
         if (!InventoryUtils.isShulkerBoxItem(shulkerBox)) {
             // 物品不是潜影盒，自然不会有潜影盒的NBT
-            throw new NoNbtException();
+            return ItemStack.EMPTY;
         }
         // 正常情况下有物品的潜影盒不可堆叠，所以可堆叠的潜影盒内部没有物品
         if (shulkerBox.getCount() != 1) {
@@ -53,7 +52,7 @@ public class InventoryUtils {
         try {
             list = Objects.requireNonNull(nbt).getCompound(BLOCK_ENTITY_TAG).getList(ITEMS, NbtElement.COMPOUND_TYPE);
         } catch (NullPointerException e) {
-            throw new NoNbtException();
+            return ItemStack.EMPTY;
         }
         // 依次遍历潜影盒内部每一个槽位
         for (int index = 0; index < list.size(); index++) {
@@ -140,9 +139,8 @@ public class InventoryUtils {
      *
      * @param shulkerBox 要获取物品栏的潜影盒
      * @return 潜影盒内的物品栏
-     * @throws NoNbtException 物品不是潜影盒，或者潜影盒没有NBT时抛出
      */
-    public static ImmutableInventory getInventory(ItemStack shulkerBox) throws NoNbtException {
+    public static ImmutableInventory getInventory(ItemStack shulkerBox) {
         try {
             // 获取潜影盒NBT
             NbtCompound nbt = Objects.requireNonNull(shulkerBox.getNbt()).getCompound(BLOCK_ENTITY_TAG);
@@ -152,10 +150,10 @@ public class InventoryUtils {
                 Inventories.readNbt(nbt, defaultedList);
                 return new ImmutableInventory(defaultedList);
             }
-            throw new NoNbtException();
+            return ImmutableInventory.EMPTY;
         } catch (NullPointerException e) {
             // 潜影盒物品没有NBT，说明该潜影盒物品为空
-            throw new NoNbtException();
+            return ImmutableInventory.EMPTY;
         }
     }
 

@@ -26,6 +26,7 @@ public class CreeperCommand {
 
     // 创建苦力怕并爆炸
     private static int creeperExplosion(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        // TODO 添加爆炸前延迟，并播放引线音效
         ServerPlayerEntity targetPlayer = CommandUtils.getArgumentPlayer(context);
         World world = targetPlayer.getWorld();
         // 创建苦力怕对象
