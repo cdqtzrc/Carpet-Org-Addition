@@ -123,9 +123,11 @@ public class PlayerManagerCommand {
         return (context, builder) -> {
             MinecraftServer server = context.getSource().getServer();
             ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
+            // 所有正在周期性上下线的玩家
             List<String> taskList = instance.getTaskList().stream()
                     .filter(task -> task instanceof ReLoginTask)
                     .map(task -> ((ReLoginTask) task).getPlayerName()).toList();
+            // 所有在线玩家
             List<String> onlineList = server.getPlayerManager().getPlayerList().stream()
                     .map(player -> player.getName().getString()).toList();
             HashSet<String> players = new HashSet<>();
@@ -138,7 +140,13 @@ public class PlayerManagerCommand {
     // 列出每一个玩家
     private static int list(CommandContext<ServerCommandSource> context) {
         WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), FakePlayerSerial.PLAYER_DATA);
-        return FakePlayerSerial.list(context, worldFormat);
+        int count = FakePlayerSerial.list(context, worldFormat);
+        if (count == 0) {
+            // 没有玩家被保存
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.list.no_player");
+            return 0;
+        }
+        return count;
     }
 
     // 保存假玩家数据

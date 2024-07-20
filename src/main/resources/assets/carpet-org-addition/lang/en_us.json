@@ -348,6 +348,7 @@
   "carpet.commands.playerManager.info.flying": "是否飞行：%s",
   "carpet.commands.playerManager.info.sneaking": "是否潜行：%s",
   "carpet.commands.playerManager.info.annotation": "注释：%s",
+  "carpet.commands.playerManager.list.no_player": "没有玩家被保存",
   "carpet.commands.playerManager.schedule.read_file": "无法从文件读取玩家数据",
   "carpet.commands.playerManager.schedule.login": "%s将于%s后上线",
   "carpet.commands.playerManager.schedule.login.try": "%s将于%s后再次尝试上线",
