@@ -29,6 +29,15 @@ public class SelectionArea implements Iterable<BlockPos> {
         this.maxZ = sourcePos.getZ() + Math.abs(range);
     }
 
+    public SelectionArea(Box box) {
+        this.minX = (int) box.minX;
+        this.minY = (int) box.minY;
+        this.minZ = (int) box.minZ;
+        this.maxX = (int) box.maxX;
+        this.maxY = (int) box.maxY;
+        this.maxZ = (int) box.maxZ;
+    }
+
     /**
      * @return 选区内方块的总数
      */

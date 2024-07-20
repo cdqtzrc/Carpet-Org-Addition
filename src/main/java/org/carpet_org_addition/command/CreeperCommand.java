@@ -10,11 +10,20 @@ import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
+import net.minecraft.world.event.GameEvent;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MathUtils;
+import org.carpet_org_addition.util.task.ServerTask;
+import org.carpet_org_addition.util.task.ServerTaskManagerInterface;
+import org.carpet_org_addition.util.wheel.SelectionArea;
+
+import java.util.ArrayList;
 
 public class CreeperCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -26,24 +35,78 @@ public class CreeperCommand {
 
     // 创建苦力怕并爆炸
     private static int creeperExplosion(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        // TODO 添加爆炸前延迟，并播放引线音效
         ServerPlayerEntity targetPlayer = CommandUtils.getArgumentPlayer(context);
-        World world = targetPlayer.getWorld();
-        // 创建苦力怕对象
-        CreeperEntity creeper = new CreeperEntity(EntityType.CREEPER, world);
-        // 产生爆炸
-        targetPlayer.getWorld().createExplosion(creeper,
-                targetPlayer.getX() + MathUtils.randomInt(-3, 3),
-                targetPlayer.getY() + MathUtils.randomInt(-1, 1),
-                targetPlayer.getZ() + MathUtils.randomInt(-3, 3),
-                3F, false, World.ExplosionSourceType.NONE);
-        // 删除这只苦力怕
-        creeper.discard();
+        ServerTaskManagerInterface anInterface = ServerTaskManagerInterface.getInstance(context.getSource().getServer());
+        // 添加苦力怕爆炸任务
+        anInterface.addTask(new CreeperExplosionTask(targetPlayer));
         ServerPlayerEntity sourcePlayer = context.getSource().getPlayer();
         if (sourcePlayer != null) {
             CarpetOrgAddition.LOGGER.info("{}在{}周围制造了一场苦力怕爆炸",
                     sourcePlayer.getName().getString(), targetPlayer.getName().getString());
         }
         return 1;
+    }
+
+    private static class CreeperExplosionTask extends ServerTask {
+        // 苦力怕爆炸延迟
+        private int countdown = 30;
+        private final ServerPlayerEntity player;
+        private final CreeperEntity creeper;
+
+        private CreeperExplosionTask(ServerPlayerEntity player) {
+            this.player = player;
+            this.creeper = new CreeperEntity(EntityType.CREEPER, player.getWorld());
+            // 传送到玩家周围
+            this.teleport();
+        }
+
+        // 将苦力怕传送到合适位置
+        private void teleport() {
+            BlockPos playerPos = player.getBlockPos();
+            BlockPos fromPos = new BlockPos(playerPos.getX() - 3, playerPos.getY() - 1, playerPos.getZ() - 3);
+            BlockPos toPos = new BlockPos(playerPos.getX() + 3, playerPos.getY() + 1, playerPos.getZ() + 3);
+            SelectionArea selectionArea = new SelectionArea(new Box(fromPos, toPos));
+            ArrayList<BlockPos> list = new ArrayList<>();
+            World world = this.player.getWorld();
+            // 获取符合条件的坐标
+            for (BlockPos blockPos : selectionArea) {
+                // 当前方块是空气
+                if (world.getBlockState(blockPos).isAir()
+                        // 下方方块是实心方块
+                        && world.getBlockState(blockPos.down()).isSolidBlock(world, blockPos.down())
+                        // 上方方块是空气
+                        && world.getBlockState(blockPos.up()).isAir()) {
+                    list.add(blockPos);
+                }
+            }
+            // 将苦力怕传送到随机坐标
+            BlockPos randomPos = list.isEmpty() ? playerPos : list.get(MathUtils.randomInt(1, list.size()) - 1);
+            this.creeper.teleport(randomPos.getX(), randomPos.getY(), randomPos.getZ());
+        }
+
+        @Override
+        public void tick() {
+            if (this.countdown == 30) {
+                // 播放爆炸引线音效
+                this.creeper.playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0f, 0.5f);
+                this.creeper.emitGameEvent(GameEvent.PRIME_FUSE);
+            }
+            this.countdown--;
+            if (this.countdown == 0) {
+                // 产生爆炸
+                this.player.getWorld().createExplosion(creeper, this.creeper.getX(), this.player.getY(),
+                        this.player.getZ(), 3F, false, World.ExplosionSourceType.NONE);
+            }
+        }
+
+        @Override
+        public boolean isEndOfExecution() {
+            // 苦力怕倒计时结束或苦力怕距离玩家超过7格
+            if (this.countdown < 0 || this.player.distanceTo(this.creeper) > 7) {
+                this.creeper.discard();
+                return true;
+            }
+            return false;
+        }
     }
 }

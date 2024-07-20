@@ -54,7 +54,6 @@ public class MathUtils {
      * @return 两个方块之间四舍五入的整数距离
      */
     public static int getBlockIntegerDistance(BlockPos fromBlockPos, BlockPos toBlockPos) {
-        // TODO 数值过大时可能溢出
         return (int) Math.round(Math.sqrt(getBlockSquareDistance(fromBlockPos, toBlockPos)));
     }
 
