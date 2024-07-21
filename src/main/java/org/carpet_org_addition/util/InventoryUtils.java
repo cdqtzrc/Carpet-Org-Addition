@@ -49,9 +49,7 @@ public class InventoryUtils {
             if (matcher.test(itemStack)) {
                 list.remove(index);
                 // 如果潜影盒最后一个物品被取出，就删除潜影盒的“BlockEntityTag”标签以保证潜影盒堆叠的正常运行
-                if (isEmptyShulkerBox(shulkerBox)) {
-                    shulkerBox.removeSubNbt(BLOCK_ENTITY_TAG);
-                }
+                ifItIsEmptyRemoveIt(shulkerBox);
                 return itemStack;
             }
         }
@@ -77,10 +75,25 @@ public class InventoryUtils {
             ItemStack copyStack = itemStack.copy();
             if (matcher.test(itemStack)) {
                 consumer.accept(itemStack);
+                // 当前槽位的物品被清除，删除对应NBT
+                if (itemStack.isEmpty()) {
+                    list.remove(index);
+                    ifItIsEmptyRemoveIt(shulkerBox);
+                } else {
+                    // 将修改过的物品写回NBT
+                    list.setElement(index, itemStack.writeNbt(new NbtCompound()));
+                }
                 return copyStack;
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    // 如果潜影盒为空，删除对应的NBT
+    private static void ifItIsEmptyRemoveIt(ItemStack shulkerBox) {
+        if (isEmptyShulkerBox(shulkerBox)) {
+            shulkerBox.removeSubNbt(BLOCK_ENTITY_TAG);
+        }
     }
 
     /**
