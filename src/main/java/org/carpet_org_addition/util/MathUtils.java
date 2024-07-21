@@ -29,10 +29,12 @@ public class MathUtils {
      * @return 两个方块坐标距离的平方
      */
     public static double getBlockSquareDistance(BlockPos fromBlockPos, BlockPos toBlockPos) {
-        int x = fromBlockPos.getX() - toBlockPos.getX();
-        int y = fromBlockPos.getY() - toBlockPos.getY();
-        int z = fromBlockPos.getZ() - toBlockPos.getZ();
-        return x * (double) x + y * (double) y + z * (double) z;
+        // 虽然是两个整数相减，但此处的结果不能使用int接收
+        // 因为整数和整数之间的运算结果只能是整数，而整数的取值范围相对有限，如果数值较大，有可能发生数值溢出
+        double x = fromBlockPos.getX() - toBlockPos.getX();
+        double y = fromBlockPos.getY() - toBlockPos.getY();
+        double z = fromBlockPos.getZ() - toBlockPos.getZ();
+        return x * x + y * y + z * z;
     }
 
     /**

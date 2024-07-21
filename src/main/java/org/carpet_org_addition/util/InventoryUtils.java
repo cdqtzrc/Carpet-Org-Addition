@@ -1,9 +1,10 @@
 package org.carpet_org_addition.util;
 
+import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
@@ -109,6 +110,7 @@ public class InventoryUtils {
             return true;
         }
         NbtCompound nbt = shulkerBox.getNbt();
+        // 潜影盒没有NBT，所以一定是空潜影盒
         if (nbt == null) {
             return true;
         }
@@ -134,7 +136,8 @@ public class InventoryUtils {
             return ImmutableInventory.EMPTY;
         }
         // 获取潜影盒NBT
-        //noinspection DataFlowIssue shulkerBox.getNbt()不会返回null
+        // 因为有空潜影盒的判断，shulkerBox.getNbt()不会返回null
+        // noinspection DataFlowIssue
         NbtCompound nbt = shulkerBox.getNbt().getCompound(BLOCK_ENTITY_TAG);
         if (nbt != null && nbt.contains(ITEMS, NbtElement.LIST_TYPE)) {
             DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
@@ -168,23 +171,10 @@ public class InventoryUtils {
      * @return 指定物品是否是潜影盒
      */
     public static boolean isShulkerBoxItem(ItemStack shulkerBox) {
-        return shulkerBox.isOf(Items.SHULKER_BOX)
-                || shulkerBox.isOf(Items.WHITE_SHULKER_BOX)
-                || shulkerBox.isOf(Items.ORANGE_SHULKER_BOX)
-                || shulkerBox.isOf(Items.MAGENTA_SHULKER_BOX)
-                || shulkerBox.isOf(Items.LIGHT_BLUE_SHULKER_BOX)
-                || shulkerBox.isOf(Items.YELLOW_SHULKER_BOX)
-                || shulkerBox.isOf(Items.LIME_SHULKER_BOX)
-                || shulkerBox.isOf(Items.PINK_SHULKER_BOX)
-                || shulkerBox.isOf(Items.GRAY_SHULKER_BOX)
-                || shulkerBox.isOf(Items.LIGHT_GRAY_SHULKER_BOX)
-                || shulkerBox.isOf(Items.CYAN_SHULKER_BOX)
-                || shulkerBox.isOf(Items.PURPLE_SHULKER_BOX)
-                || shulkerBox.isOf(Items.BLUE_SHULKER_BOX)
-                || shulkerBox.isOf(Items.BROWN_SHULKER_BOX)
-                || shulkerBox.isOf(Items.GREEN_SHULKER_BOX)
-                || shulkerBox.isOf(Items.RED_SHULKER_BOX)
-                || shulkerBox.isOf(Items.BLACK_SHULKER_BOX);
+        if (shulkerBox.getItem() instanceof BlockItem blockItem) {
+            return blockItem.getBlock() instanceof ShulkerBoxBlock;
+        }
+        return false;
     }
 
     /**
