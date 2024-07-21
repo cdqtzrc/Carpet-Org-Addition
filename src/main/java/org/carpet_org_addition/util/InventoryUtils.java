@@ -9,12 +9,13 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.collection.DefaultedList;
-import org.carpet_org_addition.util.matcher.Matcher;
+import org.carpet_org_addition.util.matcher.SimpleMatcher;
 import org.carpet_org_addition.util.wheel.ImmutableInventory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class InventoryUtils {
     public static final String BLOCK_ENTITY_TAG = "BlockEntityTag";
@@ -28,69 +29,20 @@ public class InventoryUtils {
     }
 
     /**
-     * 取出并删除潜影盒内容物的第一个非空气物品，堆叠的潜影盒会被视为空潜影盒。<br/>
-     * <br/>
-     * 因为正常情况下有物品的潜影盒无法堆叠（原版的潜影盒不可堆叠，但是空潜影盒可以通过Carpet或Tweakeroo的功能堆叠），即便是有物品，也不能使用
-     * 本方法取出物品，如果需要取出，应该现将物品堆分开，否则如果直接取出，则堆叠的所有潜影盒都会受影响。假设有一个堆叠数为10的潜影盒，内含一组物品，
-     * 如果将物品分成10份后再取出，则每个潜影盒都可以取出1组物品，总共可以取出10组物品。但是如果直接使用本方法取出物品，则只能取出一组物品，然后获得
-     * 一个10堆叠的空潜影盒，这会损失一些物品。因为本方法操作的整组物品堆栈，操作时并不会考虑物品堆叠数量，所以需要事先将堆叠潜影盒分开。
-     *
-     * @param shulkerBox 当前要操作的潜影盒
-     * @return 潜影盒内第一个非空气物品，如果潜影盒内没有物品，返回ItemStack.EMPTY
-     */
-    public static ItemStack getShulkerBoxItem(ItemStack shulkerBox) {
-        if (!InventoryUtils.isShulkerBoxItem(shulkerBox)) {
-            // 物品不是潜影盒，自然不会有潜影盒的NBT
-            return ItemStack.EMPTY;
-        }
-        // 正常情况下有物品的潜影盒不可堆叠，所以可堆叠的潜影盒内部没有物品
-        if (shulkerBox.getCount() != 1) {
-            return ItemStack.EMPTY;
-        }
-        NbtCompound nbt = shulkerBox.getNbt();
-        NbtList list;
-        try {
-            list = Objects.requireNonNull(nbt).getCompound(BLOCK_ENTITY_TAG).getList(ITEMS, NbtElement.COMPOUND_TYPE);
-        } catch (NullPointerException e) {
-            return ItemStack.EMPTY;
-        }
-        // 依次遍历潜影盒内部每一个槽位
-        for (int index = 0; index < list.size(); index++) {
-            // 依次取出潜影盒内部的每一个物品，此时潜影盒内部的物品没有被删除，所以相当于把物品复制了一份
-            ItemStack itemStack = ItemStack.fromNbt(list.getCompound(index));
-            // 如果物品为空，结束本轮循环，不再向下执行
-            if (itemStack.isEmpty()) {
-                continue;
-            }
-            // 如果有物品，才将潜影盒内的物品删除，再将该物品的对象作为方法返回值返回
-            list.remove(index);
-            if (isEmptyShulkerBox(shulkerBox)) {
-                shulkerBox.removeSubNbt(BLOCK_ENTITY_TAG);
-            }
-            return itemStack;
-        }
-        return ItemStack.EMPTY;
-    }
-
-    /**
      * 从物品形式的潜影盒中获取第一个指定的物品，并将该物品从潜影盒的NBT中删除，使用时，为避免不必要的物品浪费，取出来的物品必须使用或丢出
      *
      * @param shulkerBox 潜影盒物品
      * @param matcher    一个物品匹配器对象，用来指定要从潜影盒中拿取的物品
      * @return 潜影盒中获取的指定物品
      */
-    public static ItemStack pickItemFromShulkerBox(ItemStack shulkerBox, Matcher matcher) {
+    public static ItemStack pickItemFromShulkerBox(ItemStack shulkerBox, SimpleMatcher matcher) {
         // 判断潜影盒是否为空，空潜影盒直接返回空物品
         if (isEmptyShulkerBox(shulkerBox)) {
+            // 因为这个判断，可以保证下方的shulkerBox.getNbt()不会返回null
             return ItemStack.EMPTY;
         }
-        NbtCompound nbt = shulkerBox.getNbt();
-        NbtList list;
-        try {
-            list = Objects.requireNonNull(nbt).getCompound(BLOCK_ENTITY_TAG).getList(ITEMS, NbtElement.COMPOUND_TYPE);
-        } catch (NullPointerException e) {
-            return ItemStack.EMPTY;
-        }
+        @SuppressWarnings("DataFlowIssue")
+        NbtList list = shulkerBox.getNbt().getCompound(BLOCK_ENTITY_TAG).getList(ITEMS, NbtElement.COMPOUND_TYPE);
         for (int index = 0; index < list.size(); index++) {
             ItemStack itemStack = ItemStack.fromNbt(list.getCompound(index));
             // 依次检查潜影盒内每个物品是否为指定物品，如果是，从NBT中删除该物品，并将该物品的副本返回
@@ -107,10 +59,36 @@ public class InventoryUtils {
     }
 
     /**
+     * 获取潜影盒中指定物品，并让这个物品执行一个函数，然后将执行函数前的物品返回
+     *
+     * @param matcher  匹配物品的谓词
+     * @param consumer 要执行的函数
+     * @return 执行函数前的物品
+     */
+    public static ItemStack shulkerBoxConsumer(ItemStack shulkerBox, SimpleMatcher matcher, Consumer<ItemStack> consumer) {
+        if (isEmptyShulkerBox(shulkerBox)) {
+            // 因为这个判断，可以保证下方的shulkerBox.getNbt()不会返回null
+            return ItemStack.EMPTY;
+        }
+        @SuppressWarnings("DataFlowIssue")
+        NbtList list = shulkerBox.getNbt().getCompound(BLOCK_ENTITY_TAG).getList(ITEMS, NbtElement.COMPOUND_TYPE);
+        for (int index = 0; index < list.size(); index++) {
+            ItemStack itemStack = ItemStack.fromNbt(list.getCompound(index));
+            ItemStack copyStack = itemStack.copy();
+            if (matcher.test(itemStack)) {
+                consumer.accept(itemStack);
+                return copyStack;
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    /**
      * 判断当前潜影盒是否是空潜影盒
      *
      * @param shulkerBox 当前要检查是否为空的潜影盒物品
      * @return 潜影盒内没有物品返回true，有物品返回false
+     * @apiNote 此方法可以保证返回值为false时，shulkerBox.getNbt()永远不会返回null
      */
     public static boolean isEmptyShulkerBox(ItemStack shulkerBox) {
         // 正常情况下有物品的潜影盒无法堆叠
@@ -118,18 +96,16 @@ public class InventoryUtils {
             return true;
         }
         NbtCompound nbt = shulkerBox.getNbt();
-        NbtList list;
-        try {
-            list = Objects.requireNonNull(nbt).getCompound(BLOCK_ENTITY_TAG).getList(ITEMS, NbtElement.COMPOUND_TYPE);
-        } catch (NullPointerException e) {
-            // 潜影盒物品没有NBT，说明该潜影盒物品为空
+        if (nbt == null) {
             return true;
         }
+        NbtList list = Objects.requireNonNull(nbt).getCompound(BLOCK_ENTITY_TAG).getList(ITEMS, NbtElement.COMPOUND_TYPE);
         for (int index = 0; index < list.size(); index++) {
             ItemStack itemStack = ItemStack.fromNbt(list.getCompound(index));
-            if (!itemStack.isEmpty()) {
-                return false;
+            if (itemStack.isEmpty()) {
+                continue;
             }
+            return false;
         }
         return true;
     }
@@ -141,20 +117,19 @@ public class InventoryUtils {
      * @return 潜影盒内的物品栏
      */
     public static ImmutableInventory getInventory(ItemStack shulkerBox) {
-        try {
-            // 获取潜影盒NBT
-            NbtCompound nbt = Objects.requireNonNull(shulkerBox.getNbt()).getCompound(BLOCK_ENTITY_TAG);
-            if (nbt != null && nbt.contains(ITEMS, NbtElement.LIST_TYPE)) {
-                DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
-                // 读取潜影盒NBT
-                Inventories.readNbt(nbt, defaultedList);
-                return new ImmutableInventory(defaultedList);
-            }
-            return ImmutableInventory.EMPTY;
-        } catch (NullPointerException e) {
-            // 潜影盒物品没有NBT，说明该潜影盒物品为空
+        if (isEmptyShulkerBox(shulkerBox)) {
             return ImmutableInventory.EMPTY;
         }
+        // 获取潜影盒NBT
+        //noinspection DataFlowIssue shulkerBox.getNbt()不会返回null
+        NbtCompound nbt = shulkerBox.getNbt().getCompound(BLOCK_ENTITY_TAG);
+        if (nbt != null && nbt.contains(ITEMS, NbtElement.LIST_TYPE)) {
+            DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
+            // 读取潜影盒NBT
+            Inventories.readNbt(nbt, defaultedList);
+            return new ImmutableInventory(defaultedList);
+        }
+        return ImmutableInventory.EMPTY;
     }
 
     /**

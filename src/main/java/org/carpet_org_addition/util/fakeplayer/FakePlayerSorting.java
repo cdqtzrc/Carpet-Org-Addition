@@ -69,7 +69,7 @@ public class FakePlayerSorting {
             } else {
                 // 获取潜影盒内第一个非空气物品，获取后，该物品会在潜影盒内删除
                 // 设置当前物品为潜影盒内容物的第一个非空物品
-                itemStack = InventoryUtils.getShulkerBoxItem(itemStack);
+                itemStack = InventoryUtils.pickItemFromShulkerBox(itemStack, stack -> !stack.isEmpty());
                 if (itemStack.isEmpty()) {
                     itemStack = inventory.getStack(index);
                     // 设置当前朝向为丢出非指定物品朝向，然后丢弃这个潜影盒

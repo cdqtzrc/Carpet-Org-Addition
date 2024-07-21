@@ -19,7 +19,6 @@ import net.minecraft.util.collection.DefaultedList;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.rulevalue.BetterTotemOfUndying;
 import org.carpet_org_addition.util.InventoryUtils;
-import org.carpet_org_addition.util.matcher.ItemMatcher;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -81,25 +80,13 @@ public abstract class LivingEntityMixin {
                     break;
                 } else if (CarpetOrgAdditionSettings.betterTotemOfUndying == BetterTotemOfUndying.SHULKER_BOX
                         && InventoryUtils.isShulkerBoxItem(totemOfUndying)) {
-                    // 从潜影盒中获取不死图腾
-                    ItemStack itemInTheBox = InventoryUtils.pickItemFromShulkerBox(totemOfUndying, new ItemMatcher(Items.TOTEM_OF_UNDYING));
-                    if (itemInTheBox.isEmpty()) {
-                        continue;
-                    }
+                    // 从潜影盒中拿取不死图腾
+                    ItemStack itemInTheBox = InventoryUtils.shulkerBoxConsumer(totemOfUndying,
+                            stack -> stack.isOf(Items.TOTEM_OF_UNDYING),
+                            stack -> stack.decrement(1));
                     itemStack = itemInTheBox.copy();
-                    // 处理潜影盒中堆叠的不死图腾
-                    if (itemInTheBox.getCount() > 1) {
-                        itemStack.setCount(1);
-                        itemInTheBox.decrement(1);
-                        // 插入到玩家物品栏中
-                        playerEntity.getInventory().insertStack(itemInTheBox);
-                        if (itemInTheBox.isEmpty()) {
-                            break;
-                        }
-                        // 丢出剩余的不死图腾
-                        playerEntity.dropItem(itemInTheBox.copy(), false, false);
-                        itemInTheBox.setCount(0);
-                    }
+                    // 潜影盒中的不死图腾可能是堆叠的
+                    itemStack.setCount(1);
                     break;
                 }
             }
