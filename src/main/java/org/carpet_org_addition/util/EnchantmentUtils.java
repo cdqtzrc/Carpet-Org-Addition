@@ -1,8 +1,11 @@
 package org.carpet_org_addition.util;
 
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -10,7 +13,6 @@ import net.minecraft.registry.tag.EnchantmentTags;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
-import net.minecraft.text.Text;
 import net.minecraft.text.Texts;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
@@ -29,6 +31,10 @@ public class EnchantmentUtils {
      */
     public static int getLevel(World world, Enchantment enchantment, ItemStack itemStack) {
         RegistryEntry<Enchantment> entry = world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(enchantment);
+        if (itemStack.isOf(Items.ENCHANTED_BOOK)) {
+            ItemEnchantmentsComponent component = itemStack.getOrDefault(DataComponentTypes.STORED_ENCHANTMENTS, ItemEnchantmentsComponent.DEFAULT);
+            return component.getLevel(entry);
+        }
         return EnchantmentHelper.getLevel(entry, itemStack);
     }
 
@@ -53,7 +59,7 @@ public class EnchantmentUtils {
     public static MutableText getName(Enchantment enchantment, int level) {
         MutableText mutableText = getName(enchantment);
         if (level != 1 || enchantment.getMaxLevel() != 1) {
-            mutableText.append(ScreenTexts.SPACE).append(Text.translatable("enchantment.level." + level));
+            mutableText = TextUtils.appendAll(mutableText, ScreenTexts.SPACE, TextUtils.getTranslate("enchantment.level." + level));
         }
         return mutableText;
     }

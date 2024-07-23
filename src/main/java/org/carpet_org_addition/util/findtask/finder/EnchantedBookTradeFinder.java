@@ -36,9 +36,9 @@ public class EnchantedBookTradeFinder extends AbstractFinder {
                 // 判断出售的物品是不是附魔书
                 ItemStack itemStack = offers.get(i).getSellItem();
                 if (itemStack.isOf(Items.ENCHANTED_BOOK)) {
-                    int level = 0;
+                    int level = EnchantmentUtils.getLevel(this.world, enchantment, itemStack);
                     // 获取附魔书所有的附魔
-                    if (EnchantmentUtils.getLevel(this.world, enchantment, itemStack) > 0) {
+                    if (level > 0) {
                         // 将符合条件的附魔书添加到集合
                         list.add(new TradeEnchantedBookResult(merchant, offers.get(i), (i + 1), enchantment, level));
                     }
