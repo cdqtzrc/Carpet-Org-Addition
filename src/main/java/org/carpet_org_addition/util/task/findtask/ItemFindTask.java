@@ -32,7 +32,7 @@ import org.carpet_org_addition.util.wheel.SelectionArea;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class ItemFinderTask extends ServerTask {
+public class ItemFindTask extends ServerTask {
     private final World world;
     private final SelectionArea selectionArea;
     private final CommandContext<ServerCommandSource> context;
@@ -50,10 +50,9 @@ public class ItemFinderTask extends ServerTask {
      */
     private int tickCount;
     private final Matcher matcher;
-    private static final long MAX_FIND_TIME = 200;
     private final ArrayList<Result> results = new ArrayList<>();
 
-    public ItemFinderTask(World world, Matcher matcher, SelectionArea selectionArea, CommandContext<ServerCommandSource> context) {
+    public ItemFindTask(World world, Matcher matcher, SelectionArea selectionArea, CommandContext<ServerCommandSource> context) {
         this.world = world;
         this.selectionArea = selectionArea;
         this.findState = FindState.BLOCK;
@@ -66,7 +65,7 @@ public class ItemFinderTask extends ServerTask {
     public void tick() {
         this.startTime = System.currentTimeMillis();
         this.tickCount++;
-        if (tickCount > 50) {
+        if (tickCount > FinderCommand.MAX_TICK_COUNT) {
             // 任务超时
             MessageUtils.sendCommandErrorFeedback(context, AbstractFindFeedback.TIME_OUT);
             this.findState = FindState.END;
@@ -227,7 +226,7 @@ public class ItemFinderTask extends ServerTask {
 
     // 当前任务是否超时
     private boolean timeout() {
-        return (System.currentTimeMillis() - this.startTime) > MAX_FIND_TIME;
+        return (System.currentTimeMillis() - this.startTime) > FinderCommand.MAX_FIND_TIME;
     }
 
     @Override
@@ -235,8 +234,7 @@ public class ItemFinderTask extends ServerTask {
         return this.findState == FindState.END;
     }
 
-    private record Result(Item item, BlockPos blockPos, MutableText containerName,
-                          int count, boolean shulkerBox) {
+    private record Result(Item item, BlockPos blockPos, MutableText containerName, int count, boolean shulkerBox) {
         private MutableText toText() {
             // 获取要执行的命令，使用%f是因为数值较大时小数可能变成科学计数法
             String command = "/particleLine ~ ~1 ~ %.1f %.1f %.1f"
