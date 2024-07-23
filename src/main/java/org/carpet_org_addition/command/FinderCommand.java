@@ -18,21 +18,26 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.findtask.feedback.*;
+import org.carpet_org_addition.util.findtask.feedback.AbstractTradeFindFeedback;
+import org.carpet_org_addition.util.findtask.feedback.BlockFindFeedback;
+import org.carpet_org_addition.util.findtask.feedback.TradeEnchantedBookFeedback;
+import org.carpet_org_addition.util.findtask.feedback.TradeItemFindFeedback;
 import org.carpet_org_addition.util.findtask.finder.BlockFinder;
 import org.carpet_org_addition.util.findtask.finder.EnchantedBookTradeFinder;
-import org.carpet_org_addition.util.findtask.finder.ItemFinder;
 import org.carpet_org_addition.util.findtask.finder.TradeItemFinder;
 import org.carpet_org_addition.util.findtask.result.BlockFindResult;
-import org.carpet_org_addition.util.findtask.result.ItemFindResult;
 import org.carpet_org_addition.util.findtask.result.TradeEnchantedBookResult;
 import org.carpet_org_addition.util.findtask.result.TradeItemFindResult;
 import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
 import org.carpet_org_addition.util.matcher.Matcher;
+import org.carpet_org_addition.util.task.ServerTaskManagerInterface;
+import org.carpet_org_addition.util.task.findtask.ItemFinderTask;
+import org.carpet_org_addition.util.wheel.SelectionArea;
 
 import java.util.ArrayList;
 import java.util.function.Predicate;
@@ -41,7 +46,8 @@ public class FinderCommand {
     /**
      * 最大统计数量
      */
-    public static final int MAXIMUM_STATISTICS = 300000;
+    public static final int MAXIMUM_STATISTICAL_COUNT = 30000;
+    public static final int MAX_FEEDBACK_COUNT = 10;
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("finder")
@@ -55,11 +61,9 @@ public class FinderCommand {
                                                 .executes(context -> blockFinder(context, -1, -1))))))
                 .then(CommandManager.literal("item")
                         .then(CommandManager.argument("itemStack", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                .executes(context -> findItem(context, 32, 10))
-                                .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
-                                        .executes(context -> findItem(context, -1, 10))
-                                        .then(CommandManager.argument("maxCount", IntegerArgumentType.integer(1))
-                                                .executes(context -> findItem(context, -1, -1))))))
+                                .executes(context -> findItem(context, 32))
+                                .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 256))
+                                        .executes(context -> findItem(context, -1)))))
                 .then(CommandManager.literal("trade")
                         .then(CommandManager.literal("item")
                                 .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(commandBuildContext))
@@ -78,7 +82,7 @@ public class FinderCommand {
     }
 
     // 物品查找
-    private static int findItem(CommandContext<ServerCommandSource> context, int range, int maxCount) throws CommandSyntaxException {
+    private static int findItem(CommandContext<ServerCommandSource> context, int range) throws CommandSyntaxException {
         // 获取执行命令的玩家并非空判断
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         // 获取要查找的物品堆栈
@@ -87,31 +91,14 @@ public class FinderCommand {
             // 获取要查找方块的范围
             range = IntegerArgumentType.getInteger(context, "range");
         }
-        if (maxCount == -1) {
-            // 设置最多显示几条消息
-            maxCount = IntegerArgumentType.getInteger(context, "maxCount");
-        }
         // 获取玩家所在的位置，这是命令开始执行的坐标
         BlockPos sourceBlockPos = player.getBlockPos();
         // 查找周围容器中的物品
         Matcher matcher = new ItemPredicateMatcher(predicate);
-        // 创建一个物品查找器对象
-        ItemFinder itemFinder = new ItemFinder(player.getWorld(), sourceBlockPos, range, matcher);
-        // 进行物品查找
-        ArrayList<ItemFindResult> list = itemFinder.startSearch();
-        if (list.isEmpty()) {
-            // 在周围的容器中找不到指定物品
-            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.item.find.not_item",
-                    matcher.toText());
-            return 0;
-        } else if (list.size() > MAXIMUM_STATISTICS) {
-            // 容器太多，无法统计
-            throw CommandUtils.createException("carpet.commands.finder.item.too_much_container",
-                    matcher.toText(), list.size());
-        }
-        // 在一个单独的线程中处理数据
-        new ItemFindFeedback(context, list, matcher, maxCount).start();
-        return list.size();
+        ServerTaskManagerInterface taskManager = ServerTaskManagerInterface.getInstance(context.getSource().getServer());
+        World world = player.getWorld();
+        taskManager.addTask(new ItemFinderTask(world, matcher, new SelectionArea(world, sourceBlockPos, range), context));
+        return 1;
     }
 
     // 方块查找

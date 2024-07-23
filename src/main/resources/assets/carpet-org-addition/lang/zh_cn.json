@@ -225,7 +225,7 @@
   "carpet.commands.finder.item.group": "%s组",
   "carpet.commands.finder.item.remainder": "%s个",
   "carpet.commands.finder.item.count": "%s组%s个",
-  "carpet.commands.finder.item.too_much_container": "周围包含%s的容器过多，无法统计（数量：%s）",
+  "carpet.commands.finder.item.too_much_container": "周围包含%s的容器过多，无法统计",
   "carpet.commands.finder.item.find.not_item": "在周围的容器中找不到%s",
   "carpet.commands.finder.item.find": "在周围%s个容器中找到%s个%s",
   "carpet.commands.finder.item.find.limit": "在周围%s个容器中找到%s个%s，数量最多的前%s个分别是：",

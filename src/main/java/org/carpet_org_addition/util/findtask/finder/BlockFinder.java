@@ -28,7 +28,7 @@ public class BlockFinder extends AbstractFinder {
         for (BlockPos blockPos : selectionArea) {
             checkTimeOut(startTimeMillis);
             // 如果找到的方块数量过多，直接抛出异常结束方法，不再进行排序
-            if (list.size() > FinderCommand.MAXIMUM_STATISTICS) {
+            if (list.size() > FinderCommand.MAXIMUM_STATISTICAL_COUNT) {
                 throw CommandUtils.createException("carpet.commands.finder.block.too_much_blocks",
                         TextUtils.getBlockName(this.argument.getBlockState().getBlock()));
             }

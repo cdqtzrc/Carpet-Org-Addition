@@ -59,7 +59,6 @@ public class SelectionArea implements Iterable<BlockPos> {
     @Override
     public Iterator<BlockPos> iterator() {
         return new Iterator<>() {
-            // TODO 改为可变坐标
             // 迭代器当前遍历到的位置
             private BlockPos currentPos = new BlockPos(SelectionArea.this.minX, SelectionArea.this.minY, SelectionArea.this.minZ);
 
