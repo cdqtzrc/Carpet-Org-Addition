@@ -3,10 +3,13 @@ package org.carpet_org_addition.command;
 import carpet.script.utils.ParticleParser;
 import carpet.utils.CommandHelper;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.Vec3ArgumentType;
+import net.minecraft.entity.Entity;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.CommandManager;
@@ -17,6 +20,7 @@ import net.minecraft.util.math.Vec3d;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
+import org.carpet_org_addition.util.WorldUtils;
 import org.carpet_org_addition.util.task.DrawParticleLineTask;
 import org.carpet_org_addition.util.task.ServerTaskManagerInterface;
 
@@ -26,16 +30,28 @@ public class ParticleLineCommand {
                 .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandParticleLine))
                 .then(CommandManager.argument("from", Vec3ArgumentType.vec3())
                         .then(CommandManager.argument("to", Vec3ArgumentType.vec3())
-                                .executes(ParticleLineCommand::draw))));
+                                .executes(context -> draw(context, false)))
+                        .then(CommandManager.argument("uuid", StringArgumentType.string())
+                                .executes(context -> draw(context, true)))));
     }
 
     // 准备绘制粒子线
-    public static int draw(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    public static int draw(CommandContext<ServerCommandSource> context, boolean isUuid) throws CommandSyntaxException {
         // 获取玩家对象
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         // 获取粒子线的起始和结束点
         Vec3d from = Vec3ArgumentType.getVec3(context, "from");
-        Vec3d to = Vec3ArgumentType.getVec3(context, "to");
+        Vec3d to;
+        if (isUuid) {
+            String uuid = StringArgumentType.getString(context, "uuid");
+            Entity entity = WorldUtils.getEntityFromUUID(context.getSource().getServer(), CommandUtils.parseUuidFromString(uuid));
+            if (entity == null) {
+                throw EntityArgumentType.ENTITY_NOT_FOUND_EXCEPTION.create();
+            }
+            to = new Vec3d(entity.getX(), entity.getBodyY(0.618), entity.getZ());
+        } else {
+            to = Vec3ArgumentType.getVec3(context, "to");
+        }
         // 获取粒子的效果类型
         ParticleEffect mainParticle = ParticleParser.getEffect("dust 0 0 0 1",
                 player.getWorld().createCommandRegistryWrapper(RegistryKeys.PARTICLE_TYPE));

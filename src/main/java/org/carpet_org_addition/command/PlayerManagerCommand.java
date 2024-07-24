@@ -221,6 +221,7 @@ public class PlayerManagerCommand {
     }
 
     // 设置不断重新上线下线
+    // TODO 设置为假玩家离线时立即重新上线
     private static int setReLogin(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         // 获取目标假玩家名
         String name = StringArgumentType.getString(context, "name");

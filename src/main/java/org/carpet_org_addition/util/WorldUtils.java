@@ -1,5 +1,6 @@
 package org.carpet_org_addition.util;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.MinecraftServer;
@@ -13,8 +14,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import org.carpet_org_addition.util.constant.TextConstants;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class WorldUtils {
     private WorldUtils() {
@@ -117,6 +120,21 @@ public class WorldUtils {
             return RegistryKey.of(RegistryKeys.WORLD, new Identifier(split[0], split[1]));
         }
         return RegistryKey.of(RegistryKeys.WORLD, new Identifier(worldId));
+    }
+
+    /**
+     * 从服务器寻找一个指定UUID的实体
+     */
+    @Nullable
+    public static Entity getEntityFromUUID(MinecraftServer server, UUID uuid) {
+        for (ServerWorld world : server.getWorlds()) {
+            Entity entity = world.getEntity(uuid);
+            if (entity == null) {
+                continue;
+            }
+            return entity;
+        }
+        return null;
     }
 
     /**

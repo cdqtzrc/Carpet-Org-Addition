@@ -9,7 +9,6 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.*;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -22,23 +21,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
-import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.findtask.feedback.AbstractTradeFindFeedback;
-import org.carpet_org_addition.util.findtask.feedback.TradeEnchantedBookFeedback;
-import org.carpet_org_addition.util.findtask.feedback.TradeItemFindFeedback;
-import org.carpet_org_addition.util.findtask.finder.EnchantedBookTradeFinder;
-import org.carpet_org_addition.util.findtask.finder.TradeItemFinder;
-import org.carpet_org_addition.util.findtask.result.TradeEnchantedBookResult;
-import org.carpet_org_addition.util.findtask.result.TradeItemFindResult;
 import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
+import org.carpet_org_addition.util.matcher.ItemStackMatcher;
 import org.carpet_org_addition.util.matcher.Matcher;
 import org.carpet_org_addition.util.task.ServerTaskManagerInterface;
 import org.carpet_org_addition.util.task.findtask.BlockFindTask;
 import org.carpet_org_addition.util.task.findtask.ItemFindTask;
+import org.carpet_org_addition.util.task.findtask.TradeFindTask;
 import org.carpet_org_addition.util.wheel.SelectionArea;
 
-import java.util.ArrayList;
 import java.util.function.Predicate;
 
 public class FinderCommand {
@@ -117,19 +109,6 @@ public class FinderCommand {
         SelectionArea selectionArea = new SelectionArea(world, sourceBlockPos, range);
         tackManager.addTask(new BlockFindTask(world, sourceBlockPos, selectionArea, context, blockStateArgument));
         return 1;
-/*        BlockFinder blockFinder = new BlockFinder(world, sourceBlockPos, range, blockStateArgument);
-        // 开始查找方块，然后返回查询结果
-        ArrayList<BlockFindResult> list = blockFinder.startSearch();
-        int count = list.size();
-        //判断集合中是否有元素，如果没有，直接在聊天栏发送反馈并结束方法
-        if (list.isEmpty()) {
-            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.not_found_block",
-                    TextUtils.getBlockName(blockStateArgument.getBlockState().getBlock()));
-            return 0;
-        }
-        // 在一个单独的线程中对查找到的方块进行排序和发送反馈
-        new BlockFindFeedback(context, list, sourceBlockPos, blockStateArgument.getBlockState().getBlock(), maxCount).start();
-        return count;*/
     }
 
     // 准备根据物品查找交易项
@@ -148,21 +127,12 @@ public class FinderCommand {
         ItemStackArgument itemStackArgument = ItemStackArgumentType.getItemStackArgument(context, "itemStack");
         // 获取玩家所在的坐标
         BlockPos sourcePos = player.getBlockPos();
-        TradeItemFinder tradeItemFinder = new TradeItemFinder(player.getWorld(), sourcePos, range, itemStackArgument);
-        // 开始查找物品
-        ArrayList<TradeItemFindResult> list = tradeItemFinder.startSearch();
-        ItemStack itemStack = itemStackArgument.createStack(1, true);
-        // 找不到出售指定物品的村民，直接结束方法
-        if (list.isEmpty()) {
-            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.trade.find.not_trade",
-                    itemStack.toHoverableText(),
-                    AbstractTradeFindFeedback.VILLAGER,
-                    AbstractTradeFindFeedback.WANDERING_TRADER);
-            return 0;
-        }
-        // 在单独的线程中处理查找结果
-        new TradeItemFindFeedback(context, list, sourcePos, itemStack, maxCount).start();
-        return list.size();
+        ServerTaskManagerInterface taskManager = ServerTaskManagerInterface.getInstance(context.getSource().getServer());
+        World world = player.getWorld();
+        ItemStackMatcher matcher = new ItemStackMatcher(itemStackArgument.createStack(1, false));
+        TradeFindTask.TradePredicate predicate = new TradeFindTask.TradePredicate(matcher);
+        taskManager.addTask(new TradeFindTask(world, new SelectionArea(world, sourcePos, range), sourcePos, context, predicate));
+        return 1;
     }
 
     // 准备查找出售指定附魔书的村民
@@ -181,26 +151,12 @@ public class FinderCommand {
         Enchantment enchantment = RegistryEntryArgumentType.getEnchantment(context, "enchantment").value();
         // 获取玩家所在的位置
         BlockPos sourcePos = player.getBlockPos();
-        EnchantedBookTradeFinder enchantedBookTradeFinder = new EnchantedBookTradeFinder(player.getWorld(), sourcePos, range, enchantment);
-        // 开始查找周围附近出售指定附魔书的村民
-        ArrayList<TradeEnchantedBookResult> list = enchantedBookTradeFinder.startSearch();
-        // 找不到出售指定物品的村民，直接结束方法
-        if (list.isEmpty()) {
-            MutableText mutableText = Text.translatable(enchantment.getTranslationKey());
-            // 如果是诅咒附魔，设置为红色
-            if (enchantment.isCursed()) {
-                mutableText.formatted(Formatting.RED);
-            } else {
-                mutableText.formatted(Formatting.GRAY);
-            }
-            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.trade.find.not_trade",
-                    TextUtils.appendAll(mutableText, Items.ENCHANTED_BOOK.getName()),
-                    TextUtils.getTranslate("entity.minecraft.villager"),
-                    TextUtils.getTranslate("entity.minecraft.wandering_trader"));
-            return 0;
-        }
-        new TradeEnchantedBookFeedback(context, list, sourcePos, enchantment, maxCount).start();
-        return list.size();
+        World world = player.getWorld();
+        ServerTaskManagerInterface taskManager = ServerTaskManagerInterface.getInstance(context.getSource().getServer());
+        TradeFindTask.TradePredicate predicate = new TradeFindTask.TradePredicate(enchantment);
+        SelectionArea selectionArea = new SelectionArea(world, sourcePos, range);
+        taskManager.addTask(new TradeFindTask(world, selectionArea, sourcePos, context, predicate));
+        return 1;
     }
 
     // 将物品数量转换为“多少组多少个”的形式

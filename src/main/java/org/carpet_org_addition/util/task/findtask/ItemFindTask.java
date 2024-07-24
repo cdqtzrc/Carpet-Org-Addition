@@ -28,9 +28,11 @@ import org.carpet_org_addition.util.task.ServerTask;
 import org.carpet_org_addition.util.wheel.Counter;
 import org.carpet_org_addition.util.wheel.ImmutableInventory;
 import org.carpet_org_addition.util.wheel.SelectionArea;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.UUID;
 
 public class ItemFindTask extends ServerTask {
     private final World world;
@@ -110,7 +112,7 @@ public class ItemFindTask extends ServerTask {
                         = inventory instanceof LockableContainerBlockEntity lockableContainer
                         ? lockableContainer.getName().copy()
                         : this.world.getBlockState(blockPos).getBlock().getName();
-                this.count(inventory, blockPos, containerName);
+                this.count(inventory, null, blockPos, containerName);
             }
         }
         this.findState = FindState.ENTITY;
@@ -129,25 +131,25 @@ public class ItemFindTask extends ServerTask {
             Entity entity = this.entitySearchIterator.next();
             // 掉落物
             if (entity instanceof ItemEntity itemEntity) {
-                this.count(new SimpleInventory(itemEntity.getStack()), itemEntity.getBlockPos(),
+                this.count(new SimpleInventory(itemEntity.getStack()), entity.getUuid(), itemEntity.getBlockPos(),
                         TextUtils.getTranslate("carpet.commands.finder.item.drops"));
                 continue;
             }
             // 假玩家
             if (entity instanceof EntityPlayerMPFake fakePlayer) {
-                this.count(fakePlayer.getInventory(), fakePlayer.getBlockPos(), fakePlayer.getName().copy());
+                this.count(fakePlayer.getInventory(), entity.getUuid(), fakePlayer.getBlockPos(), fakePlayer.getName().copy());
                 continue;
             }
             // 容器实体
             if (entity instanceof VehicleInventory inventory) {
-                this.count(inventory, entity.getBlockPos(), entity.getName().copy());
+                this.count(inventory, entity.getUuid(), entity.getBlockPos(), entity.getName().copy());
             }
         }
         this.findState = FindState.SORT;
     }
 
     // 统计符合条件的物品
-    private void count(Inventory inventory, BlockPos blockPos, MutableText containerName) {
+    private void count(Inventory inventory, @Nullable UUID uuid, BlockPos blockPos, MutableText containerName) {
         // 是否有物品是在潜影盒中找到的
         boolean shulkerBox = false;
         Counter<Item> counter = new Counter<>();
@@ -180,7 +182,7 @@ public class ItemFindTask extends ServerTask {
             if (shulkerBox) {
                 this.shulkerBox = true;
             }
-            this.results.add(new Result(item, blockPos, containerName, count, shulkerBox));
+            this.results.add(new Result(item, uuid, blockPos, containerName, count, shulkerBox));
         }
     }
 
@@ -234,11 +236,17 @@ public class ItemFindTask extends ServerTask {
         return this.findState == FindState.END;
     }
 
-    private record Result(Item item, BlockPos blockPos, MutableText containerName, int count, boolean shulkerBox) {
+    private record Result(Item item, @Nullable UUID uuid, BlockPos blockPos,
+                          MutableText containerName, int count, boolean shulkerBox) {
         private MutableText toText() {
-            // 获取要执行的命令，使用%f是因为数值较大时小数可能变成科学计数法
-            String command = "/particleLine ~ ~1 ~ %.1f %.1f %.1f"
-                    .formatted(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5);
+            String command;
+            if (uuid == null) {
+                // 获取要执行的命令，使用%f是因为数值较大时小数可能变成科学计数法
+                Object[] args = {blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5};
+                command = "/particleLine ~ ~1 ~ %.1f %.1f %.1f".formatted(args);
+            } else {
+                command = "/particleLine ~ ~1 ~ " + uuid;
+            }
             return TextUtils.getTranslate("carpet.commands.finder.item.each", TextUtils.blockPos(blockPos, Formatting.GREEN),
                     TextUtils.command(containerName, command, null, null, true),
                     FinderCommand.showCount(item.getDefaultStack(), count, shulkerBox));
