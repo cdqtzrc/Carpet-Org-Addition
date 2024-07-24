@@ -333,7 +333,7 @@
   "carpet.commands.playerAction.rename": "无法重命名，操作自动停止",
   "carpet.commands.playerAction.farming": "%s正在种植%s",
   "carpet.commands.playerAction.farming.none": "%s未在种植农作物",
-  // TODO "%s在%s时遇到了一个意料之外的错误"
+  // TODO "%s在%s时遇到了意料之外的错误"
   "carpet.commands.playerAction.exception.runtime": "%s在执行操作时遇到意外错误",
   "carpet.commands.playerAction.closeScreen.fail": "%s没有打开一个GUI",
   "carpet.commands.playerAction.closeScreen": "关闭了%s打开的GUI",
@@ -369,7 +369,7 @@
   "carpet.commands.playerManager.schedule.relogin.cancel": "结束了%s的周期上下线任务",
   "carpet.commands.playerManager.schedule.list.empty": "计划列表中没有玩家",
   "carpet.commands.playerManager.schedule.cancel.fail": "没有计划被取消",
-  // TODO "你当前未处于%s"
+  // TODO "你未处于%s"
   "carpet.commands.spectator.teleport.fail": "你当前不是%s",
   "carpet.commands.spectator.teleport.success.dimension": "已将%s传送至%s",
   "carpet.commands.navigate.start_navigation": "%s开始导航 -> %s",
@@ -377,7 +377,7 @@
   "carpet.commands.navigate.unable_to_find": "查询不到%s的%s",
   "carpet.commands.navigate.name.spawnpoint": "重生点",
   "carpet.commands.navigate.name.last_death_location": "上一次死亡位置",
-  // TODO 导航器遇到了一个意料之外的错误
+  // TODO 导航器遇到了意料之外的错误
   "carpet.commands.navigate.exception": "导航器出现了意料之外的问题",
   "carpet.commands.navigate.hud.reach": "已到达目的地",
   "carpet.commands.navigate.hud.of": "%s的%s",

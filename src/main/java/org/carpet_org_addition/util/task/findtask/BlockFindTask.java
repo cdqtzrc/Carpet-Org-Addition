@@ -13,7 +13,6 @@ import org.carpet_org_addition.exception.TaskExecutionException;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.findtask.feedback.AbstractFindFeedback;
 import org.carpet_org_addition.util.task.ServerTask;
 import org.carpet_org_addition.util.wheel.SelectionArea;
 
@@ -54,7 +53,7 @@ public class BlockFindTask extends ServerTask {
         this.tickCount++;
         if (this.tickCount > FinderCommand.MAX_TICK_COUNT) {
             // 任务超时
-            MessageUtils.sendCommandErrorFeedback(context, AbstractFindFeedback.TIME_OUT);
+            MessageUtils.sendCommandErrorFeedback(context, FinderCommand.TIME_OUT);
             this.findState = FindState.END;
             return;
         }

@@ -38,9 +38,26 @@ public class FinderCommand {
      * 最大统计数量
      */
     public static final int MAXIMUM_STATISTICAL_COUNT = 30000;
+    /**
+     * 最大反馈消息数量
+     */
     public static final int MAX_FEEDBACK_COUNT = 10;
+    /**
+     * 每个游戏刻最大查找时间
+     */
     public static final long MAX_FIND_TIME = 200;
+    /**
+     * 任务执行的最大游戏刻数
+     */
     public static final int MAX_TICK_COUNT = 50;
+    /**
+     * 村民的游戏内名称
+     */
+    public static final MutableText VILLAGER = TextUtils.getTranslate("entity.minecraft.villager");
+    /**
+     * 查找超时时抛出异常的反馈消息
+     */
+    public static final String TIME_OUT = "carpet.commands.finder.timeout";
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("finder")
@@ -58,18 +75,14 @@ public class FinderCommand {
                 .then(CommandManager.literal("trade")
                         .then(CommandManager.literal("item")
                                 .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(commandBuildContext))
-                                        .executes(context -> findTradeItem(context, 32, 10))
-                                        .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
-                                                .executes(context -> findTradeItem(context, -1, 10))
-                                                .then(CommandManager.argument("maxCount", IntegerArgumentType.integer(1))
-                                                        .executes(context -> findTradeItem(context, -1, -1))))))
-                        .then(CommandManager.literal("enchantedBook")
+                                        .executes(context -> findTradeItem(context, 32))
+                                        .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 256))
+                                                .executes(context -> findTradeItem(context, -1)))))
+                        .then(CommandManager.literal("enchanted_book")
                                 .then(CommandManager.argument("enchantment", RegistryEntryArgumentType.registryEntry(commandBuildContext, RegistryKeys.ENCHANTMENT))
-                                        .executes(context -> findEnchantedBookTrade(context, 32, 10))
-                                        .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
-                                                .executes(context -> findEnchantedBookTrade(context, -1, 10))
-                                                .then(CommandManager.argument("maxCount", IntegerArgumentType.integer(1))
-                                                        .executes(context -> findEnchantedBookTrade(context, -1, -1))))))));
+                                        .executes(context -> findEnchantedBookTrade(context, 32))
+                                        .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 256))
+                                                .executes(context -> findEnchantedBookTrade(context, -1)))))));
     }
 
     // 物品查找
@@ -112,16 +125,12 @@ public class FinderCommand {
     }
 
     // 准备根据物品查找交易项
-    private static int findTradeItem(CommandContext<ServerCommandSource> context, int range, int maxCount) throws CommandSyntaxException {
+    private static int findTradeItem(CommandContext<ServerCommandSource> context, int range) throws CommandSyntaxException {
         // 获取执行命令的玩家对象
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         if (range == -1) {
             // 获取要查找方块的范围
             range = IntegerArgumentType.getInteger(context, "range");
-        }
-        if (maxCount == -1) {
-            // 设置最多显示几条消息
-            maxCount = IntegerArgumentType.getInteger(context, "maxCount");
         }
         // 获取要匹配的物品
         ItemStackArgument itemStackArgument = ItemStackArgumentType.getItemStackArgument(context, "itemStack");
@@ -136,16 +145,12 @@ public class FinderCommand {
     }
 
     // 准备查找出售指定附魔书的村民
-    private static int findEnchantedBookTrade(CommandContext<ServerCommandSource> context, int range, int maxCount) throws CommandSyntaxException {
+    private static int findEnchantedBookTrade(CommandContext<ServerCommandSource> context, int range) throws CommandSyntaxException {
         // 获取执行命令的玩家
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         if (range == -1) {
             // 获取要查找方块的范围
             range = IntegerArgumentType.getInteger(context, "range");
-        }
-        if (maxCount == -1) {
-            // 设置最多显示几条消息
-            maxCount = IntegerArgumentType.getInteger(context, "maxCount");
         }
         // 获取需要查找的附魔
         Enchantment enchantment = RegistryEntryArgumentType.getEnchantment(context, "enchantment").value();

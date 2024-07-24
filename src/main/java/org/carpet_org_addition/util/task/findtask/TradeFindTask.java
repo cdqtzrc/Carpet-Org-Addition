@@ -22,8 +22,6 @@ import org.carpet_org_addition.exception.TaskExecutionException;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.findtask.feedback.AbstractFindFeedback;
-import org.carpet_org_addition.util.findtask.feedback.AbstractTradeFindFeedback;
 import org.carpet_org_addition.util.matcher.ItemStackMatcher;
 import org.carpet_org_addition.util.task.ServerTask;
 import org.carpet_org_addition.util.wheel.SelectionArea;
@@ -69,7 +67,7 @@ public class TradeFindTask extends ServerTask {
         this.tickCount++;
         if (tickCount > FinderCommand.MAX_TICK_COUNT) {
             // 任务超时
-            MessageUtils.sendCommandErrorFeedback(context, AbstractFindFeedback.TIME_OUT);
+            MessageUtils.sendCommandErrorFeedback(context, FinderCommand.TIME_OUT);
             this.findState = FindState.END;
             return;
         }
@@ -140,13 +138,13 @@ public class TradeFindTask extends ServerTask {
             switch (this.predicate.taskType) {
                 case ITEM ->
                         MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.trade.find.not_trade",
-                                this.predicate.getTradeName(), AbstractTradeFindFeedback.VILLAGER);
+                                this.predicate.getTradeName(), FinderCommand.VILLAGER);
                 case ENCHANTED_BOOK -> {
                     // 重置supplier的内容
                     this.predicate.test(ItemStack.EMPTY);
                     MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.trade.find.not_trade",
                             TextUtils.appendAll(this.predicate.getTradeName(), Items.ENCHANTED_BOOK.getName()),
-                            AbstractTradeFindFeedback.VILLAGER);
+                            FinderCommand.VILLAGER);
                 }
             }
             this.findState = FindState.END;
@@ -162,8 +160,8 @@ public class TradeFindTask extends ServerTask {
         ArrayList<Object> list = new ArrayList<>();
         list.add(this.villagerCount);
         list.add(this.predicate.getTradeName());
-        list.add(AbstractTradeFindFeedback.VILLAGER);
-        list.add(AbstractTradeFindFeedback.WANDERING_TRADER);
+        list.add(FinderCommand.VILLAGER);
+        list.add(this.results.size());
         // 消息的翻译键
         String key;
         if (limit) {
@@ -238,7 +236,7 @@ public class TradeFindTask extends ServerTask {
         private final Predicate<ItemStack> predicate;
         private final MutableText tradeName;
         // 获取附魔的对组
-        // 请注意，每次调用test()方法都会改变supplier的值，确保在下一次调用test()方法之前接收
+        // 请注意，每次调用test()方法都会改变supplier的值，确保在下一次调用test()方法之前接收supplier的值
         private Supplier<Pair<Enchantment, Integer>> supplier;
 
         public TradePredicate(ItemStackMatcher itemStackMatcher) {
