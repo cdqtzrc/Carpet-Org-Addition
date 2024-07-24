@@ -184,7 +184,7 @@ public class TradeFindTask extends ServerTask {
     }
 
     @Override
-    public boolean isEndOfExecution() {
+    public boolean stopped() {
         return this.findState == FindState.END;
     }
 
@@ -310,5 +310,10 @@ public class TradeFindTask extends ServerTask {
 
     private enum TaskType {
         ITEM, ENCHANTED_BOOK
+    }
+
+    @Override
+    public String toString() {
+        return "交易查找";
     }
 }

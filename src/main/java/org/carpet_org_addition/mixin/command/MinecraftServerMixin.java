@@ -24,8 +24,7 @@ public abstract class MinecraftServerMixin implements ServerTaskManagerInterface
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void tick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
-        this.tasks.removeIf(ServerTask::isEndOfExecution);
-        this.tasks.forEach(ServerTask::tick);
+        this.tasks.removeIf(ServerTask::taskTick);
     }
 
     @Override

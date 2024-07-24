@@ -231,7 +231,7 @@ public class ItemFindTask extends ServerTask {
     }
 
     @Override
-    public boolean isEndOfExecution() {
+    public boolean stopped() {
         return this.findState == FindState.END;
     }
 
@@ -254,5 +254,10 @@ public class ItemFindTask extends ServerTask {
 
     private enum FindState {
         BLOCK, ENTITY, SORT, FEEDBACK, END
+    }
+
+    @Override
+    public String toString() {
+        return "物品查找";
     }
 }

@@ -100,13 +100,18 @@ public class CreeperCommand {
         }
 
         @Override
-        public boolean isEndOfExecution() {
+        public boolean stopped() {
             // 苦力怕倒计时结束或苦力怕距离玩家超过7格
             if (this.countdown < 0 || this.player.distanceTo(this.creeper) > 7) {
                 this.creeper.discard();
                 return true;
             }
             return false;
+        }
+
+        @Override
+        public String toString() {
+            return "苦力怕爆炸";
         }
     }
 }

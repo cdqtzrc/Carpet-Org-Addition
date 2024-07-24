@@ -45,7 +45,12 @@ public class DrawParticleLineTask extends ServerTask {
     }
 
     @Override
-    public boolean isEndOfExecution() {
+    public boolean stopped() {
         return this.distance <= this.origin.lengthSquared();
+    }
+
+    @Override
+    public String toString() {
+        return "绘制粒子线";
     }
 }

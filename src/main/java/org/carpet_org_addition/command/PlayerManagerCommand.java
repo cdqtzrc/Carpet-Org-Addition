@@ -221,7 +221,6 @@ public class PlayerManagerCommand {
     }
 
     // 设置不断重新上线下线
-    // TODO 设置为假玩家离线时立即重新上线
     private static int setReLogin(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         // 获取目标假玩家名
         String name = StringArgumentType.getString(context, "name");
@@ -273,7 +272,7 @@ public class PlayerManagerCommand {
         }
         list.forEach(task -> {
             instance.getTaskList().remove(task);
-            MessageUtils.sendCommandFeedback(context.getSource(), task.getCancelMessage());
+            task.onCancel(context);
         });
         return 1;
     }
@@ -354,7 +353,7 @@ public class PlayerManagerCommand {
         list.forEach(task -> {
             // 删除任务，发送命令反馈
             tasks.remove(task);
-            MessageUtils.sendTextMessage(context.getSource(), task.getCancelMessage());
+            task.onCancel(context);
         });
         return list.size();
     }

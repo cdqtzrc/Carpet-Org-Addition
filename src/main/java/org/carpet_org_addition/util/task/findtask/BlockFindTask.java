@@ -140,7 +140,7 @@ public class BlockFindTask extends ServerTask {
     }
 
     @Override
-    public boolean isEndOfExecution() {
+    public boolean stopped() {
         return this.findState == FindState.END;
     }
 
@@ -154,5 +154,10 @@ public class BlockFindTask extends ServerTask {
 
     private enum FindState {
         SEARCH, SORT, FEEDBACK, END
+    }
+
+    @Override
+    public String toString() {
+        return "方块查找";
     }
 }
