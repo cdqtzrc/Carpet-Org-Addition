@@ -1,4 +1,4 @@
-package org.carpet_org_addition.util.task;
+package org.carpet_org_addition.util.task.playerscheduletask;
 
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.context.CommandContext;
