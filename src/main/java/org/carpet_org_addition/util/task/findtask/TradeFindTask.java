@@ -128,8 +128,8 @@ public class TradeFindTask extends ServerTask {
                 // 增加销售指定物品村民的数量
                 this.villagerCount++;
             }
-            this.findState = FindState.SORT;
         }
+        this.findState = FindState.SORT;
     }
 
     // 对结果进行排序
