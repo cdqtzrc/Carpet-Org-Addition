@@ -47,6 +47,7 @@ public class DrawParticleLineTask extends ServerTask {
 
     @Override
     public boolean stopped() {
+        // TODO 粒子端点距离玩家过远时结束绘制
         return this.distance <= this.origin.lengthSquared();
     }
 

@@ -284,6 +284,7 @@ public class PlayerActionCommand {
             return;
         }
         //判断当前命令执行者是否有足够的权限
+        // TODO 不检查权限
         boolean hasPermission = source.hasPermissionLevel(getCarpetPermissionLevel(source));
         MutableText suggest;
         if (hasPermission) {

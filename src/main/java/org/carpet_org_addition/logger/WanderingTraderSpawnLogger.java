@@ -16,7 +16,7 @@ import java.lang.reflect.Field;
  */
 public class WanderingTraderSpawnLogger {
     // wanderingTrader这个名字已经被另一个Carpet扩展使用了
-    public static final String LOGGER_NAME = "wanderingTraderSpawnCountdown";
+    private static final String LOGGER_NAME = "wanderingTraderSpawnCountdown";
     @SuppressWarnings("CanBeFinal")
     public static boolean wanderingTraderSpawnCountdown = false;
     private static SpawnCountdown spawnCountdown;
@@ -49,6 +49,7 @@ public class WanderingTraderSpawnLogger {
     public static void updateHud(MinecraftServer server) {
         if (server.getGameRules().getBoolean(GameRules.DO_TRADER_SPAWNING)) {
             if (wanderingTraderSpawnCountdown && spawnCountdown != null) {
+                // TODO 时间偏移一秒，0秒时不再显示秒
                 // 计算流浪商人生成概率的百分比
                 double chance = spawnCountdown.spawnChance / 10.0;
                 Text time = spawnCountdown.countdown <= 60
