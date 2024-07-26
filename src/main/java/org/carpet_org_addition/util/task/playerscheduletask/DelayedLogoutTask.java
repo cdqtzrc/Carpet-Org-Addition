@@ -1,6 +1,7 @@
-package org.carpet_org_addition.util.task;
+package org.carpet_org_addition.util.task.playerscheduletask;
 
 import carpet.patches.EntityPlayerMPFake;
+import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -53,8 +54,8 @@ public class DelayedLogoutTask extends PlayerScheduleTask {
     }
 
     @Override
-    public MutableText getCancelMessage() {
-        return TextUtils.getTranslate("carpet.commands.playerManager.schedule.logout.cancel",
+    public void onCancel(CommandContext<ServerCommandSource> context) {
+        MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.logout.cancel",
                 this.fakePlayer.getDisplayName(), this.getDisplayTime());
     }
 
@@ -69,7 +70,12 @@ public class DelayedLogoutTask extends PlayerScheduleTask {
     }
 
     @Override
-    public boolean isEndOfExecution() {
+    public boolean stopped() {
         return this.delayed < 0L;
+    }
+
+    @Override
+    public String toString() {
+        return this.getPlayerName() + "延迟下线";
     }
 }

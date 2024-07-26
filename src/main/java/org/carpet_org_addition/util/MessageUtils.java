@@ -6,6 +6,7 @@ import net.minecraft.server.PlayerManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import org.carpet_org_addition.CarpetOrgAddition;
 
 import java.util.ArrayList;
@@ -125,16 +126,27 @@ public class MessageUtils {
     /**
      * 发送一条可以被翻译的消息做为命令的执行反馈，消息内容仅消息发送者可见
      */
-    public static void sendCommandFeedback(ServerCommandSource source, String key, Object... obj) {
-        MessageUtils.sendTextMessage(source, TextUtils.getTranslate(key, obj));
-    }
-
     public static void sendCommandFeedback(CommandContext<ServerCommandSource> context, String key, Object... obj) {
         MessageUtils.sendCommandFeedback(context.getSource(), key, obj);
     }
 
+    public static void sendCommandFeedback(ServerCommandSource source, String key, Object... obj) {
+        MessageUtils.sendTextMessage(source, TextUtils.getTranslate(key, obj));
+    }
+
     public static void sendCommandFeedback(ServerCommandSource source, Text text) {
         MessageUtils.sendTextMessage(source, text);
+    }
+
+    /**
+     * 发送一条红色的可以被翻译的消息做为命令的执行反馈，消息内容仅消息发送者可见
+     */
+    public static void sendCommandErrorFeedback(CommandContext<ServerCommandSource> context, String key, Object... obj) {
+        MessageUtils.sendCommandErrorFeedback(context.getSource(), key, obj);
+    }
+
+    public static void sendCommandErrorFeedback(ServerCommandSource source, String key, Object... obj) {
+        MessageUtils.sendTextMessage(source, TextUtils.setColor(TextUtils.getTranslate(key, obj), Formatting.RED));
     }
 
     /**

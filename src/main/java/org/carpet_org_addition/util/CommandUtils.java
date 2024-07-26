@@ -10,6 +10,8 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 
+import java.util.UUID;
+
 public class CommandUtils {
     public static final String PLAYER = "player";
 
@@ -81,6 +83,17 @@ public class CommandUtils {
         } else {
             //不是假玩家的反馈消息
             throw createException("carpet.command.not_fake_player", fakePlayer.getDisplayName());
+        }
+    }
+
+    /**
+     * 从字符串解析一个UUID
+     */
+    public static UUID parseUuidFromString(String uuid) throws CommandSyntaxException {
+        try {
+            return UUID.fromString(uuid);
+        } catch (IllegalArgumentException e) {
+            throw createException("carpet.command.uuid.parse.fail");
         }
     }
 

@@ -8,10 +8,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.util.MessageUtils;
-import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionInterface;
-import org.carpet_org_addition.util.wheel.Waypoint;
 import org.carpet_org_addition.util.navigator.*;
+import org.carpet_org_addition.util.wheel.Waypoint;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,7 +33,7 @@ public class ServerPlayerEntityMixin implements NavigatorInterface {
         try {
             this.navigator.tick();
         } catch (RuntimeException e) {
-            MessageUtils.sendTextMessage(thisPlayer, TextUtils.getTranslate("carpet.commands.navigate.exception"));
+            MessageUtils.sendCommandErrorFeedback(thisPlayer.getCommandSource(), "carpet.commands.navigate.exception");
             CarpetOrgAddition.LOGGER.error("导航器没有按照预期工作", e);
             // 清除导航器
             this.clearNavigator();

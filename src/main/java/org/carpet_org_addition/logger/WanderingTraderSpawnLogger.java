@@ -4,6 +4,7 @@ import carpet.logging.HUDLogger;
 import carpet.logging.Logger;
 import carpet.logging.LoggerRegistry;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.world.GameRules;
 import org.carpet_org_addition.CarpetOrgAddition;
@@ -16,7 +17,7 @@ import java.lang.reflect.Field;
  */
 public class WanderingTraderSpawnLogger {
     // wanderingTrader这个名字已经被另一个Carpet扩展使用了
-    public static final String LOGGER_NAME = "wanderingTraderSpawnCountdown";
+    private static final String LOGGER_NAME = "wanderingTraderSpawnCountdown";
     @SuppressWarnings("CanBeFinal")
     public static boolean wanderingTraderSpawnCountdown = false;
     private static SpawnCountdown spawnCountdown;
@@ -51,10 +52,20 @@ public class WanderingTraderSpawnLogger {
             if (wanderingTraderSpawnCountdown && spawnCountdown != null) {
                 // 计算流浪商人生成概率的百分比
                 double chance = spawnCountdown.spawnChance / 10.0;
-                Text time = spawnCountdown.countdown <= 60
-                        ? TextUtils.getTranslate("carpet.logger.wanderingTrader.time.second", spawnCountdown.countdown)
-                        : TextUtils.getTranslate("carpet.logger.wanderingTrader.time.minutes_and_seconds",
-                        spawnCountdown.countdown / 60, spawnCountdown.countdown % 60);
+                MutableText time;
+                // 流浪商人生成倒计时（单位：秒）
+                int spawnCountdown = WanderingTraderSpawnLogger.spawnCountdown.countdown + 1;
+                if (spawnCountdown <= 60) {
+                    // 小于60秒
+                    time = TextUtils.getTranslate("carpet.logger.wanderingTrader.time.second", spawnCountdown);
+                } else if (spawnCountdown % 60 == 0) {
+                    // 整分
+                    time = TextUtils.getTranslate("carpet.logger.wanderingTrader.time.minutes", spawnCountdown / 60);
+                } else {
+                    // %s分%s秒
+                    time = TextUtils.getTranslate("carpet.logger.wanderingTrader.time.minutes_and_seconds",
+                            spawnCountdown / 60, spawnCountdown % 60);
+                }
                 LoggerRegistry.getLogger(LOGGER_NAME).log((s, playerEntity) -> new Text[]{
                         TextUtils.getTranslate("carpet.logger.wanderingTrader.hud", time, (String.format("%.1f", chance) + "%"))
                 });
