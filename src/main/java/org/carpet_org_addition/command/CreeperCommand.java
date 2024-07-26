@@ -13,6 +13,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import org.carpet_org_addition.CarpetOrgAddition;
@@ -65,7 +66,10 @@ public class CreeperCommand {
             BlockPos playerPos = player.getBlockPos();
             BlockPos fromPos = new BlockPos(playerPos.getX() - 3, playerPos.getY() - 1, playerPos.getZ() - 3);
             BlockPos toPos = new BlockPos(playerPos.getX() + 3, playerPos.getY() + 1, playerPos.getZ() + 3);
-            SelectionArea selectionArea = new SelectionArea(new Box(fromPos, toPos));
+            Vec3d fromVec3d = new Vec3d(fromPos.getX(), fromPos.getY(), fromPos.getZ());
+            Vec3d toVec3d = new Vec3d(toPos.getX(), toPos.getY(), toPos.getZ());
+            Box box = new Box(fromVec3d, toVec3d);
+            SelectionArea selectionArea = new SelectionArea(box);
             ArrayList<BlockPos> list = new ArrayList<>();
             World world = this.player.getWorld();
             // 获取符合条件的坐标
