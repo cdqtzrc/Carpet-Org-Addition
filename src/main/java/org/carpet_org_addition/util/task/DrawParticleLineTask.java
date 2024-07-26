@@ -2,9 +2,11 @@ package org.carpet_org_addition.util.task;
 
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class DrawParticleLineTask extends ServerTask {
+    private static final double MAX_DRAW_DISTANCE = Math.pow(128, 2);
     private final ServerWorld world;
     private final ParticleEffect particleEffect;
     private final double distance;
@@ -26,6 +28,7 @@ public class DrawParticleLineTask extends ServerTask {
     public void tick() {
         // 每一个游戏刻内需要绘制的距离
         double tickDistance = Math.sqrt(distance) / 20;
+        tickDistance = tickDistance * MathHelper.clamp(1, tickDistance / 15, 6);
         double sum = 0;
         // 每次绘制0.5格，直到总距离达到每一个游戏刻内需要绘制的距离
         while (sum < tickDistance) {
@@ -45,7 +48,12 @@ public class DrawParticleLineTask extends ServerTask {
     }
 
     @Override
-    public boolean isEndOfExecution() {
-        return this.distance <= this.origin.lengthSquared();
+    public boolean stopped() {
+        return this.distance <= this.origin.lengthSquared() || this.origin.lengthSquared() >= MAX_DRAW_DISTANCE;
+    }
+
+    @Override
+    public String toString() {
+        return "绘制粒子线";
     }
 }

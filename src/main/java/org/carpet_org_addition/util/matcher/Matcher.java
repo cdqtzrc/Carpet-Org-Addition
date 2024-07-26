@@ -8,6 +8,14 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public interface Matcher extends SimpleMatcher {
+
+    /**
+     * 当前物品是否与空气物品匹配
+     *
+     * @return 匹配器的内容是否为空
+     */
+    boolean isEmpty();
+
     /**
      * 判断当前匹配器的内容物是否为物品
      *

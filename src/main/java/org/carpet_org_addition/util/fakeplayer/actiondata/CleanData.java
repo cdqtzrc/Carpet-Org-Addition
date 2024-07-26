@@ -11,7 +11,7 @@ import org.carpet_org_addition.util.matcher.Matcher;
 
 import java.util.ArrayList;
 
-public final class CleanData extends AbstractActionData {
+public class CleanData extends AbstractActionData {
     private static final String ITEM = "item";
     private static final String ALL_ITEM = "allItem";
     public static final CleanData CLEAN_ALL = new CleanData(null, true);

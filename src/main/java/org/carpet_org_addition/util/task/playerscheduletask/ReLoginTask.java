@@ -1,9 +1,10 @@
-package org.carpet_org_addition.util.task;
+package org.carpet_org_addition.util.task.playerscheduletask;
 
 import carpet.patches.EntityPlayerMPFake;
 import carpet.patches.FakeClientConnection;
 import carpet.utils.Messenger;
 import com.mojang.authlib.GameProfile;
+import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,7 +20,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextContent;
 import net.minecraft.text.TranslatableTextContent;
@@ -31,20 +31,25 @@ import org.carpet_org_addition.mixin.rule.EntityAccessor;
 import org.carpet_org_addition.mixin.rule.PlayerEntityAccessor;
 import org.carpet_org_addition.util.GameUtils;
 import org.carpet_org_addition.util.MessageUtils;
-import org.carpet_org_addition.util.TextUtils;
 
 import java.util.Objects;
 
 public class ReLoginTask extends PlayerScheduleTask {
-    private final String name;
+    // 假玩家名
+    private final String playerName;
+    // 重新上线的时间间隔
     private int interval;
+    // 距离下一次重新上线所需的时间
     private int remainingTick;
     private final MinecraftServer server;
     private final RegistryKey<World> dimensionId;
+    // 当前任务是否已经结束
     private boolean stop = false;
+    // 假玩家重新上线的倒计时
+    private int canSpawn = 2;
 
-    public ReLoginTask(String name, int interval, MinecraftServer server, RegistryKey<World> dimensionId) {
-        this.name = name;
+    public ReLoginTask(String playerName, int interval, MinecraftServer server, RegistryKey<World> dimensionId) {
+        this.playerName = playerName;
         this.interval = interval;
         this.remainingTick = this.interval;
         this.server = server;
@@ -53,12 +58,17 @@ public class ReLoginTask extends PlayerScheduleTask {
 
     @Override
     public void tick() {
-        if (this.remainingTick <= 0) {
+        ServerPlayerEntity player = this.server.getPlayerManager().getPlayer(this.playerName);
+        if (player == null) {
+            if (this.canSpawn == 0) {
+                homePositionSpawn(this.playerName, this.server, this.dimensionId);
+                this.canSpawn = 2;
+            } else {
+                this.canSpawn--;
+            }
+        } else if (this.remainingTick <= 0) {
             this.remainingTick = this.interval;
-            ServerPlayerEntity player = this.server.getPlayerManager().getPlayer(this.name);
-            if (player == null) {
-                homePositionSpawn(this.name, this.server, this.dimensionId);
-            } else if (player instanceof EntityPlayerMPFake fakePlayer) {
+            if (player instanceof EntityPlayerMPFake fakePlayer) {
                 // 如果假玩家坠入虚空，设置任务为停止
                 if (fakePlayer.getY() < fakePlayer.getServerWorld().getBottomY() - 64) {
                     this.stop();
@@ -114,23 +124,32 @@ public class ReLoginTask extends PlayerScheduleTask {
     }
 
     @Override
-    public boolean isEndOfExecution() {
+    public boolean stopped() {
         return this.stop;
     }
 
     @Override
-    public String getPlayerName() {
-        return name;
+    public String toString() {
+        return this.playerName + "周期性重新上线";
     }
 
     @Override
-    public MutableText getCancelMessage() {
-        return TextUtils.getTranslate("carpet.commands.playerManager.schedule.relogin.cancel", this.name);
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    @Override
+    public void onCancel(CommandContext<ServerCommandSource> context) {
+        MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.relogin.cancel", this.playerName);
+        ServerPlayerEntity player = this.server.getPlayerManager().getPlayer(this.playerName);
+        if (player == null) {
+            homePositionSpawn(this.playerName, this.server, this.dimensionId);
+        }
     }
 
     @Override
     public void sendEachMessage(ServerCommandSource source) {
-        MessageUtils.sendCommandFeedback(source, "carpet.commands.playerManager.schedule.relogin", this.name, this.interval);
+        MessageUtils.sendCommandFeedback(source, "carpet.commands.playerManager.schedule.relogin", this.playerName, this.interval);
     }
 
     public void setInterval(int interval) {
@@ -172,6 +191,10 @@ public class ReLoginTask extends PlayerScheduleTask {
         try {
             CarpetOrgAddition.hiddenLoginMessages = true;
             server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), fakePlayer, new ConnectedClientData(gameprofile, 0, fakePlayer.getClientOptions(), false));
+        } catch (NullPointerException e) {
+            CarpetOrgAddition.LOGGER.warn("{}在服务器关闭时尝试上线", this.playerName, e);
+            this.stop();
+            return;
         } finally {
             // 假玩家加入游戏后，这个变量必须重写设置为false，防止影响其它广播消息的方法
             CarpetOrgAddition.hiddenLoginMessages = false;

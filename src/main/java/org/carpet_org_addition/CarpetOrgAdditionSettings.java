@@ -3,9 +3,7 @@ package org.carpet_org_addition;
 import carpet.api.settings.Rule;
 import carpet.api.settings.RuleCategory;
 import org.carpet_org_addition.rulevalidator.*;
-import org.carpet_org_addition.rulevalue.MobWhetherOrNotCanPickItem;
-import org.carpet_org_addition.rulevalue.QuickSettingFakePlayerCraft;
-import org.carpet_org_addition.rulevalue.WetSpongeImmediatelyDry;
+import org.carpet_org_addition.rulevalue.*;
 
 @SuppressWarnings("CanBeFinal")
 public class CarpetOrgAdditionSettings {
@@ -353,7 +351,7 @@ public class CarpetOrgAdditionSettings {
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
-    public static boolean reusableSmithingTemplate = false;
+    public static ReusableSmithingTemplate reusableSmithingTemplate = ReusableSmithingTemplate.FALSE;
 
     // 开放/tp命令权限
     @Rule(
@@ -383,7 +381,7 @@ public class CarpetOrgAdditionSettings {
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
-    public static boolean betterTotemOfUndying = false;
+    public static BetterTotemOfUndying betterTotemOfUndying = BetterTotemOfUndying.FALSE;
 
     // 假玩家动作命令
     @Rule(

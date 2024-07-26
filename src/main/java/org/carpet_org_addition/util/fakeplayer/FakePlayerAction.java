@@ -1,44 +1,52 @@
 package org.carpet_org_addition.util.fakeplayer;
 
+import net.minecraft.text.MutableText;
+import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.fakeplayer.actiondata.*;
 
 public enum FakePlayerAction {
     /**
      * 停止操作
      */
-    STOP,
+    STOP("carpet.commands.playerAction.action.stop"),
     /**
      * 物品分拣
      */
-    SORTING,
+    SORTING("carpet.commands.playerAction.action.sorting"),
     /**
      * 清空潜影盒
      */
-    CLEAN,
+    CLEAN("carpet.commands.playerAction.action.clean"),
     /**
      * 填充潜影盒
      */
-    FILL,
+    FILL("carpet.commands.playerAction.action.fill"),
     /**
      * 在工作台合成物品
      */
-    CRAFTING_TABLE_CRAFT,
+    CRAFTING_TABLE_CRAFT("carpet.commands.playerAction.action.crafting_table_craft"),
     /**
      * 在生存模式物品栏合成物品
      */
-    INVENTORY_CRAFT,
+    INVENTORY_CRAFT("carpet.commands.playerAction.action.inventory_craft"),
     /**
      * 自动重命名物品
      */
-    RENAME,
+    RENAME("carpet.commands.playerAction.action.rename"),
     /**
      * 自动使用切石机
      */
-    STONECUTTING,
+    STONECUTTING("carpet.commands.playerAction.action.stonecutting"),
     /**
      * 自动交易
      */
-    TRADE;
+    TRADE("carpet.commands.playerAction.action.trade");
+
+    private final MutableText displayName;
+
+    FakePlayerAction(String key) {
+        this.displayName = TextUtils.getTranslate(key);
+    }
 
     // 检查当前动作是否与指定动作数据匹配
     public void checkActionData(Class<? extends AbstractActionData> clazz) {
@@ -55,6 +63,13 @@ public enum FakePlayerAction {
         }) {
             throw new IllegalArgumentException();
         }
+    }
+
+    /**
+     * @return 当前动作类型的显示名称
+     */
+    public MutableText getDisplayName() {
+        return this.displayName;
     }
 
     @Override

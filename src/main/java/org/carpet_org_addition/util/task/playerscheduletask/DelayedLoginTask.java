@@ -1,6 +1,7 @@
-package org.carpet_org_addition.util.task;
+package org.carpet_org_addition.util.task.playerscheduletask;
 
 import com.google.gson.JsonObject;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
@@ -48,10 +49,10 @@ public class DelayedLoginTask extends PlayerScheduleTask {
     }
 
     @Override
-    public MutableText getCancelMessage() {
+    public void onCancel(CommandContext<ServerCommandSource> context) {
         MutableText time = getDisplayTime();
         MutableText displayName = getDisplayName();
-        return TextUtils.getTranslate("carpet.commands.playerManager.schedule.login.cancel", displayName, time);
+        MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.login.cancel", displayName, time);
     }
 
     // 获取带有悬停提示的时间
@@ -80,7 +81,12 @@ public class DelayedLoginTask extends PlayerScheduleTask {
     }
 
     @Override
-    public boolean isEndOfExecution() {
+    public boolean stopped() {
         return this.delayed < 0L;
+    }
+
+    @Override
+    public String toString() {
+        return this.name + "延迟上线";
     }
 }

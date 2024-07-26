@@ -18,9 +18,12 @@ public class FakePlayerStonecutting {
             Item item = stonecuttingData.getItem();
             int buttonIndex = stonecuttingData.getButton();
             // 用于循环次数过多时抛出异常结束循环
-            InfiniteLoopException exception = new InfiniteLoopException();
+            int loopCount = 0;
             while (true) {
-                exception.checkLoopCount();
+                loopCount++;
+                if (loopCount > 1000) {
+                    throw new InfiniteLoopException();
+                }
                 // 定义变量记录是否需要遍历物品栏
                 boolean needToTraverseInventory = true;
                 // 获取切石机输入槽对象

@@ -7,7 +7,7 @@ import org.carpet_org_addition.util.TextUtils;
 
 import java.util.ArrayList;
 
-public class StopData extends AbstractActionData {
+public final class StopData extends AbstractActionData {
     public static final StopData STOP = new StopData();
 
     private StopData() {

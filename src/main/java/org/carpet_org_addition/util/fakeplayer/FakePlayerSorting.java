@@ -7,7 +7,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 import org.carpet_org_addition.exception.InfiniteLoopException;
-import org.carpet_org_addition.exception.NoNbtException;
 import org.carpet_org_addition.util.InventoryUtils;
 import org.carpet_org_addition.util.fakeplayer.actiondata.SortingData;
 
@@ -38,8 +37,7 @@ public class FakePlayerSorting {
                 //丢弃潜影盒内的物品
                 //判断当前物品是不是潜影盒
                 if (InventoryUtils.isShulkerBoxItem(itemStack)) {
-                    InfiniteLoopException exception = new InfiniteLoopException(100);
-                    itemStack = pickItemFromShulkerBox(fakePlayer, exception, inventory, index, otherVec, item, thisVec);
+                    itemStack = pickItemFromShulkerBox(fakePlayer, inventory, index, otherVec, item, thisVec);
                 } else {
                     //设置当前朝向为丢出非指定物品朝向
                     fakePlayer.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, otherVec);
@@ -51,11 +49,15 @@ public class FakePlayerSorting {
     }
 
     // 从潜影盒中拿取并分拣物品
-    private static ItemStack pickItemFromShulkerBox(EntityPlayerMPFake fakePlayer, InfiniteLoopException exception,
-                                                    PlayerInventory inventory, int index, Vec3d otherVec, Item item, Vec3d thisVec) {
+    private static ItemStack pickItemFromShulkerBox(EntityPlayerMPFake fakePlayer, PlayerInventory inventory,
+                                                    int index, Vec3d otherVec, Item item, Vec3d thisVec) {
         ItemStack itemStack;
+        int loopCount = 0;
         while (true) {
-            exception.checkLoopCount();
+            loopCount++;
+            if (loopCount > 100) {
+                throw new InfiniteLoopException();
+            }
             // 一轮循环结束后，再重新将当前物品设置为物品栏中的潜影盒
             itemStack = inventory.getStack(index);
             //判断潜影盒是否为空
@@ -67,19 +69,15 @@ public class FakePlayerSorting {
             } else {
                 // 获取潜影盒内第一个非空气物品，获取后，该物品会在潜影盒内删除
                 // 设置当前物品为潜影盒内容物的第一个非空物品
-                try {
-                    itemStack = InventoryUtils.getShulkerBoxItem(itemStack);
-                } catch (NoNbtException e) {
-                    // 空潜影盒异常，潜影盒可能没有NBT，如直接从创造模式物品栏中拿取出的潜影盒
-                    // 丢出这个异常的潜影盒
+                itemStack = InventoryUtils.pickItemFromShulkerBox(itemStack, stack -> !stack.isEmpty());
+                if (itemStack.isEmpty()) {
                     itemStack = inventory.getStack(index);
-                    //设置当前朝向为丢出非指定物品朝向
+                    // 设置当前朝向为丢出非指定物品朝向，然后丢弃这个潜影盒
                     fakePlayer.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, otherVec);
                     break;
                 }
                 // 根据当前物品设置朝向
-                fakePlayer.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES,
-                        itemStack.getItem() == item ? thisVec : otherVec);
+                fakePlayer.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, itemStack.isOf(item) ? thisVec : otherVec);
             }
             // 丢弃潜影盒内物品堆栈
             FakePlayerUtils.dropItem(fakePlayer, itemStack);

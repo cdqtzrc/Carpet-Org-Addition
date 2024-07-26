@@ -1,6 +1,8 @@
 package org.carpet_org_addition.mixin.command;
 
 import carpet.patches.EntityPlayerMPFake;
+import net.minecraft.text.MutableText;
+import net.minecraft.util.Formatting;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
@@ -40,11 +42,13 @@ public class EntityPlayerMPFakeMixin implements FakePlayerActionInterface {
             // 将错误信息写入日志
             CarpetOrgAddition.LOGGER.error("{}在执行操作“{}”时遇到意外错误:", thisPlayer.getName().getString(),
                     this.getActionManager().getAction().toString(), e);
+            // 向聊天栏发送错误消息的反馈
+            MutableText message = TextUtils.getTranslate("carpet.commands.playerAction.exception.runtime",
+                    thisPlayer.getDisplayName(), this.getActionManager().getAction().getDisplayName());
+            MessageUtils.broadcastTextMessage(thisPlayer, TextUtils.setColor(message, Formatting.RED));
             // 让假玩家停止当前操作
             this.getActionManager().stop();
-            // 向聊天栏发送错误消息的反馈
-            MessageUtils.broadcastTextMessage(thisPlayer, TextUtils.getTranslate("carpet.commands.playerAction.exception.runtime",
-                    thisPlayer.getDisplayName()));
+
         }
     }
 }
