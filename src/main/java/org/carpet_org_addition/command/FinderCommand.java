@@ -8,7 +8,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.*;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.CommandManager;
@@ -22,19 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
-import org.carpet_org_addition.util.EnchantmentUtils;
-import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.findtask.feedback.*;
-import org.carpet_org_addition.util.findtask.finder.BlockFinder;
-import org.carpet_org_addition.util.findtask.finder.EnchantedBookTradeFinder;
-import org.carpet_org_addition.util.findtask.finder.ItemFinder;
-import org.carpet_org_addition.util.findtask.finder.TradeItemFinder;
-import org.carpet_org_addition.util.findtask.result.BlockFindResult;
-import org.carpet_org_addition.util.findtask.result.ItemFindResult;
-import org.carpet_org_addition.util.findtask.result.TradeEnchantedBookResult;
-import org.carpet_org_addition.util.findtask.result.TradeItemFindResult;
-import org.carpet_org_addition.util.matcher.ItemMatcher;
 import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
 import org.carpet_org_addition.util.matcher.ItemStackMatcher;
 import org.carpet_org_addition.util.matcher.Matcher;
@@ -45,7 +32,6 @@ import org.carpet_org_addition.util.task.findtask.TradeFindTask;
 import org.carpet_org_addition.util.wheel.SelectionArea;
 
 import java.util.function.Predicate;
-import java.util.ArrayList;
 
 public class FinderCommand {
     /**
@@ -93,7 +79,7 @@ public class FinderCommand {
                                         .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 256))
                                                 .executes(context -> findTradeItem(context, -1)))))
                         .then(CommandManager.literal("enchanted_book")
-                                .then(CommandManager.argument("enchantment", RegistryEntryArgumentType.registryEntry(commandBuildContext, RegistryKeys.ENCHANTMENT))
+                                .then(CommandManager.argument("enchantment", RegistryEntryReferenceArgumentType.registryEntry(commandBuildContext, RegistryKeys.ENCHANTMENT))
                                         .executes(context -> findEnchantedBookTrade(context, 32))
                                         .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 256))
                                                 .executes(context -> findEnchantedBookTrade(context, -1)))))));
@@ -104,7 +90,7 @@ public class FinderCommand {
         // 获取执行命令的玩家并非空判断
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         // 获取要查找的物品堆栈
-        Item item = ItemStackArgumentType.getItemStackArgument(context, "itemStack").getItem();
+        Predicate<ItemStack> predicate = ItemPredicateArgumentType.getItemStackPredicate(context, "itemStack");
         if (range == -1) {
             // 获取要查找方块的范围
             range = IntegerArgumentType.getInteger(context, "range");
@@ -172,7 +158,7 @@ public class FinderCommand {
         BlockPos sourcePos = player.getBlockPos();
         World world = player.getWorld();
         ServerTaskManagerInterface taskManager = ServerTaskManagerInterface.getInstance(context.getSource().getServer());
-        TradeFindTask.TradePredicate predicate = new TradeFindTask.TradePredicate(enchantment);
+        TradeFindTask.TradePredicate predicate = new TradeFindTask.TradePredicate(enchantment, world);
         SelectionArea selectionArea = new SelectionArea(world, sourcePos, range);
         taskManager.addTask(new TradeFindTask(world, selectionArea, sourcePos, context, predicate));
         return 1;

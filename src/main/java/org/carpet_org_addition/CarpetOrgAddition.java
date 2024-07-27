@@ -57,7 +57,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
             // 清除摔落高度
             player.fallDistance = 0;
             // 清除负面效果
-            player.getStatusEffects().removeIf(effect -> effect.getEffectType().getCategory() == StatusEffectCategory.HARMFUL);
+            player.getStatusEffects().removeIf(effect -> effect.getEffectType().value().getCategory() == StatusEffectCategory.HARMFUL);
         }
     }
 

@@ -1,29 +1,18 @@
 package org.carpet_org_addition.util;
 
-import net.minecraft.component.ComponentMap;
+import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ContainerComponent;
-import net.minecraft.block.ShulkerBoxBlock;
-import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.Registries;
-import org.carpet_org_addition.exception.NoNbtException;
-import org.carpet_org_addition.util.helpers.ContainerDeepCopy;
-import org.carpet_org_addition.util.matcher.Matcher;
-import org.carpet_org_addition.util.wheel.ImmutableInventory;
-import net.minecraft.util.collection.DefaultedList;
 import org.carpet_org_addition.util.matcher.SimpleMatcher;
+import org.carpet_org_addition.util.wheel.ContainerDeepCopy;
 import org.carpet_org_addition.util.wheel.ImmutableInventory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public class InventoryUtils {
@@ -43,19 +32,18 @@ public class InventoryUtils {
     public static ItemStack pickItemFromShulkerBox(ItemStack shulkerBox, SimpleMatcher matcher) {
         // 判断潜影盒是否为空，空潜影盒直接返回空物品
         if (isEmptyShulkerBox(shulkerBox)) {
-            // 因为这个判断，可以保证下方的shulkerBox.getNbt()不会返回null
             return ItemStack.EMPTY;
         }
-        @SuppressWarnings("DataFlowIssue")
-        NbtList list = shulkerBox.getNbt().getCompound(BLOCK_ENTITY_TAG).getList(ITEMS, NbtElement.COMPOUND_TYPE);
-        for (int index = 0; index < list.size(); index++) {
-            ItemStack itemStack = ItemStack.fromNbt(list.getCompound(index));
-            // 依次检查潜影盒内每个物品是否为指定物品，如果是，从NBT中删除该物品，并将该物品的副本返回
+        // 将潜影盒内的物品栏组件替换为该组件的深拷贝副本
+        InventoryUtils.deepCopyContainer(shulkerBox);
+        ContainerComponent component = shulkerBox.get(DataComponentTypes.CONTAINER);
+        //noinspection DataFlowIssue
+        for (ItemStack itemStack : component.iterateNonEmpty()) {
             if (matcher.test(itemStack)) {
-                list.remove(index);
-                // 如果潜影盒最后一个物品被取出，就删除潜影盒的“BlockEntityTag”标签以保证潜影盒堆叠的正常运行
-                ifItIsEmptyRemoveIt(shulkerBox);
-                return itemStack;
+                ItemStack copy = itemStack.copy();
+                itemStack.setCount(0);
+                ifItIsEmptyRemoveIt(itemStack);
+                return copy;
             }
         }
         return ItemStack.EMPTY;
@@ -70,24 +58,15 @@ public class InventoryUtils {
      */
     public static ItemStack shulkerBoxConsumer(ItemStack shulkerBox, SimpleMatcher matcher, Consumer<ItemStack> consumer) {
         if (isEmptyShulkerBox(shulkerBox)) {
-            // 因为这个判断，可以保证下方的shulkerBox.getNbt()不会返回null
+            // 因为这个判断，可以保证下方的shulkerBox.get(DataComponentTypes.CONTAINER)不会返回null
             return ItemStack.EMPTY;
         }
-        @SuppressWarnings("DataFlowIssue")
-        NbtList list = shulkerBox.getNbt().getCompound(BLOCK_ENTITY_TAG).getList(ITEMS, NbtElement.COMPOUND_TYPE);
-        for (int index = 0; index < list.size(); index++) {
-            ItemStack itemStack = ItemStack.fromNbt(list.getCompound(index));
-            ItemStack copyStack = itemStack.copy();
-            if (matcher.test(itemStack)) {
-                consumer.accept(itemStack);
-                // 当前槽位的物品被清除，删除对应NBT
-                if (itemStack.isEmpty()) {
-                    list.remove(index);
-                    ifItIsEmptyRemoveIt(shulkerBox);
-                } else {
-                    // 将修改过的物品写回NBT
-                    list.setElement(index, itemStack.writeNbt(new NbtCompound()));
-                }
+        ContainerComponent component = shulkerBox.get(DataComponentTypes.CONTAINER);
+        // noinspection DataFlowIssue
+        for (ItemStack stack : component.iterateNonEmpty()) {
+            if (matcher.test(stack)) {
+                ItemStack copyStack = stack.copy();
+                consumer.accept(stack);
                 return copyStack;
             }
         }
@@ -97,7 +76,8 @@ public class InventoryUtils {
     // 如果潜影盒为空，删除对应的NBT
     private static void ifItIsEmptyRemoveIt(ItemStack shulkerBox) {
         if (isEmptyShulkerBox(shulkerBox)) {
-            shulkerBox.removeSubNbt(BLOCK_ENTITY_TAG);
+            // 如果潜影盒最后一个物品被取出，就删除潜影盒的物品栏数据堆叠组件以保证潜影盒堆叠的正常运行
+            shulkerBox.set(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT);
         }
     }
 
@@ -106,27 +86,18 @@ public class InventoryUtils {
      *
      * @param shulkerBox 当前要检查是否为空的潜影盒物品
      * @return 潜影盒内没有物品返回true，有物品返回false
-     * @apiNote 此方法可以保证返回值为false时，shulkerBox.getNbt()永远不会返回null
+     * @apiNote 此方法可以保证返回值为false时，shulkerBox.get(DataComponentTypes.CONTAINER)永远不会返回null
      */
     public static boolean isEmptyShulkerBox(ItemStack shulkerBox) {
         // 正常情况下有物品的潜影盒无法堆叠
         if (shulkerBox.getCount() != 1) {
             return true;
         }
-        NbtCompound nbt = shulkerBox.getNbt();
-        // 潜影盒没有NBT，所以一定是空潜影盒
-        if (nbt == null) {
+        ContainerComponent component = shulkerBox.get(DataComponentTypes.CONTAINER);
+        if (component == null) {
             return true;
         }
-        NbtList list = Objects.requireNonNull(nbt).getCompound(BLOCK_ENTITY_TAG).getList(ITEMS, NbtElement.COMPOUND_TYPE);
-        for (int index = 0; index < list.size(); index++) {
-            ItemStack itemStack = ItemStack.fromNbt(list.getCompound(index));
-            if (itemStack.isEmpty()) {
-                continue;
-            }
-            return false;
-        }
-        return true;
+        return !component.iterateNonEmpty().iterator().hasNext();
     }
 
     /**
@@ -140,16 +111,10 @@ public class InventoryUtils {
             return ImmutableInventory.EMPTY;
         }
         // 获取潜影盒NBT
-        // 因为有空潜影盒的判断，shulkerBox.getNbt()不会返回null
-        // noinspection DataFlowIssue
-        NbtCompound nbt = shulkerBox.getNbt().getCompound(BLOCK_ENTITY_TAG);
-        if (nbt != null && nbt.contains(ITEMS, NbtElement.LIST_TYPE)) {
-            DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
-            // 读取潜影盒NBT
-            Inventories.readNbt(nbt, defaultedList);
-            return new ImmutableInventory(defaultedList);
-        }
-        return ImmutableInventory.EMPTY;
+        ContainerComponent component = shulkerBox.get(DataComponentTypes.CONTAINER);
+        // 因为有空潜影盒的判断，shulkerBox.get(DataComponentTypes.CONTAINER)不会返回null
+        //noinspection DataFlowIssue
+        return new ImmutableInventory(component.streamNonEmpty().toList());
     }
 
 
@@ -157,7 +122,7 @@ public class InventoryUtils {
      * 在创造模式下使用鼠标中键复制的物品时，物品组件只是被浅拷贝了，这些被复制的物品还是共享同一个组件地址，当直接对其中一个组件进行操作时，所有被复制的物品都会受到影响，换句话说，当其中一个潜影盒中的物品被本类中的方法取出来后，所有被复制的潜影盒中这个物品都会消失，假玩家也就不能正确的从潜影盒中拿取物品。所以本方法的作用是将物品组件替换为它的深克隆对象。
      *
      * @param shulkerBox 要替换组件的潜影盒
-     * @see <a href="https://bugs.mojang.com/projects/MC/issues/MC-271123">MC-271123</a>
+     * @see <a href="https://bugs.mojang.com/browse/MC-271123">MC-271123</a>
      */
     public static void deepCopyContainer(ItemStack shulkerBox) {
         ContainerComponent component = shulkerBox.get(DataComponentTypes.CONTAINER);
@@ -166,23 +131,6 @@ public class InventoryUtils {
         }
         ContainerComponent copy = ((ContainerDeepCopy) (Object) component).copy();
         shulkerBox.set(DataComponentTypes.CONTAINER, copy);
-    }
-
-
-    /**
-     * 从NBT中获取一个物品栏对象
-     *
-     * @param nbt 从这个NBT中获取物品栏
-     */
-    @SuppressWarnings("unused")
-    public static ImmutableInventory getInventoryFromNbt(NbtCompound nbt) {
-        NbtList inventory = nbt.getList(INVENTORY, NbtElement.COMPOUND_TYPE);
-        int size = inventory.size();
-        DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(size, ItemStack.EMPTY);
-        for (int index = 0; index < size; index++) {
-            defaultedList.set(index, ItemStack.fromNbt(inventory.getCompound(index)));
-        }
-        return new ImmutableInventory(defaultedList);
     }
 
     /**

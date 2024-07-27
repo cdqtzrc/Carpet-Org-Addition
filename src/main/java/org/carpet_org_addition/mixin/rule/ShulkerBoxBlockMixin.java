@@ -5,7 +5,6 @@ import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -54,7 +53,7 @@ public class ShulkerBoxBlockMixin {
     }
 
     @Inject(method = "onUse", at = @At("HEAD"), cancellable = true)
-    private void onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
+    private void onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
         // 提示玩家不能打开用于更新抑制的潜影盒
         if (canUpdateSuppression(world, pos)) {
             MessageUtils.sendTextMessageToHud(player, TextUtils.getTranslate("carpet.rule.message.CCEUpdateSuppression"));

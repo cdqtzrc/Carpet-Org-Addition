@@ -71,7 +71,6 @@ public class CraftingSetRecipeScreenHandler extends CraftingScreenHandler {
 
     // 设置假玩家合成动作
     private void setCraftAction(Item[] items, FakePlayerActionManager actionManager) {
-        // TODO 使用循环优化
         // 如果能在2x2合成格中合成，优先使用2x2
         if (canInventoryCraft(items, 0, 1, 2, 5, 8)) {
             actionManager.setAction(FakePlayerAction.INVENTORY_CRAFT, createData(items, 3, 4, 6, 7));
