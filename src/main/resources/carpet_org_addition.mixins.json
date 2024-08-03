@@ -7,6 +7,8 @@
     "command.EntityPlayerMPFakeMixin",
     "command.MinecraftServerMixin",
     "command.ServerPlayerEntityMixin",
+    "compat.fabricapi.AbstractChanneledNetworkAddonInvoker",
+    "compat.fabricapi.AbstractNetworkAddonMixin",
     "logger.HUDControllerMixin",
     "logger.LoggerAccessor",
     "logger.WanderingTraderManagerMixin",
@@ -78,6 +80,7 @@
     "util.ItemPredicateArgumentTypeMixin",
     "util.RegisterCarpetCommandsMixin",
     "util.PlayerManagerMixin",
+    "util.RegisterCarpetCommandsMixin",
     "util.TranslatableTextContentMixin"
   ],
   "client": [
