@@ -29,7 +29,8 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     // 不使用Fabric API
-    // modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    // 为了和Fabric API之间的一些兼容性，实际使用中使用conditional mixin，所以可以不使用Fabric API
+     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     // fabric-carpet
     modImplementation("curse.maven:carpet-349239:${project.carpet_core_version}")
     // MixinExtras
