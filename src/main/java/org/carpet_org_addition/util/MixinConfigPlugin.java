@@ -5,7 +5,7 @@ import me.fallenbreath.conditionalmixin.api.mixin.RestrictiveMixinConfigPlugin;
 import java.util.List;
 import java.util.Set;
 
-public class CarpetOrgAdditionMixinConfigPlugin extends RestrictiveMixinConfigPlugin {
+public class MixinConfigPlugin extends RestrictiveMixinConfigPlugin {
 
     @Override
     public String getRefMapperConfig() {

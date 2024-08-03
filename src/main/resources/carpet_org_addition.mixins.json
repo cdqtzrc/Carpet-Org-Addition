@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "org.carpet_org_addition.mixin",
   "compatibilityLevel": "JAVA_17",
-  "plugin": "org.carpet_org_addition.util.CarpetOrgAdditionMixinConfigPlugin",
+  "plugin": "org.carpet_org_addition.util.MixinConfigPlugin",
   "mixins": [
     "command.EntityPlayerMPFakeMixin",
     "command.ServerPlayerEntityMixin",
