@@ -34,6 +34,7 @@ dependencies {
     modImplementation("curse.maven:carpet-349239:${project.carpet_core_version}")
     // MixinExtras
     include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${project.mixinextras_version}")))
+    testImplementation(group: 'junit', name: 'junit', version: junit_version)
 }
 processResources {
     inputs.property "version", project.version
@@ -47,6 +48,9 @@ processResources {
                 "loader_version": project.loader_version
     }
 }
+
+// 构建模组前自动单元测试
+remapJar.dependsOn test
 
 def targetJavaVersion = 17
 tasks.withType(JavaCompile).configureEach {
