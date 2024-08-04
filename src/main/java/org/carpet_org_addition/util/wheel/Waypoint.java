@@ -228,4 +228,9 @@ public class Waypoint {
     public String getName() {
         return name;
     }
+
+    // 是否可以添加对向坐标
+    public boolean canAddAnother() {
+        return this.dimension.equals(WorldUtils.OVERWORLD) || this.dimension.equals(WorldUtils.THE_NETHER);
+    }
 }
