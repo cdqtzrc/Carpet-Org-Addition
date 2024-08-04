@@ -1,6 +1,7 @@
 package org.carpet_org_addition.translate;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.carpet_org_addition.util.wheel.Counter;
 import org.junit.Assert;
@@ -12,10 +13,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TranslateTest {
     private final List<String> zh;
     private final List<String> en;
+    private final List<String> zhValue;
+    private final List<String> enValue;
     private final ArrayList<String> notRuleKey = new ArrayList<>();
 
     public TranslateTest() throws FileNotFoundException {
@@ -24,9 +29,14 @@ public class TranslateTest {
         Gson gson = new Gson();
         JsonObject jsonEn = gson.fromJson(enReader, JsonObject.class);
         JsonObject jsonZh = gson.fromJson(zhReader, JsonObject.class);
-        Predicate<String> predicate = s -> !s.matches("carpet\\.rule\\..+\\.name");
-        this.zh = jsonZh.entrySet().stream().map(Map.Entry::getKey).filter(predicate).toList();
-        this.en = jsonEn.entrySet().stream().map(Map.Entry::getKey).filter(predicate).toList();
+        // 排除所有规则相关的翻译键
+        Predicate<String> excludeRuleName = s -> !s.matches("carpet\\.rule\\..+\\.name");
+        this.zh = jsonZh.entrySet().stream().map(Map.Entry::getKey).filter(excludeRuleName).toList();
+        this.en = jsonEn.entrySet().stream().map(Map.Entry::getKey).filter(excludeRuleName).toList();
+        // 排除所有规则相关的翻译值
+        Predicate<Map.Entry<String, JsonElement>> excludeRule = s -> !s.getKey().matches("carpet\\.rule\\..+\\.name") && !s.getKey().startsWith("carpet.rule.");
+        this.zhValue = jsonZh.entrySet().stream().filter(excludeRule).map(Map.Entry::getValue).map(JsonElement::getAsString).toList();
+        this.enValue = jsonEn.entrySet().stream().filter(excludeRule).map(Map.Entry::getValue).map(JsonElement::getAsString).toList();
         for (String key : zh) {
             if (key.startsWith("carpet.rule.")) {
                 continue;
@@ -43,24 +53,25 @@ public class TranslateTest {
     @Test
     public void compareTranslationKey() {
         // 中英文翻译的差异
-        ArrayList<String> difference = new ArrayList<>();
+        boolean identical = true;
+        StringJoiner error = new StringJoiner("\n", "中英文翻译键不匹配：\n", "");
         // 包含在中文翻译中，但在英文翻译中没有
         for (String key : zh) {
             if (en.contains(key)) {
                 continue;
             }
-            difference.add("en_us缺失：" + key);
+            error.add("en_us缺失：" + key);
+            identical = false;
         }
         // 包含在英文翻译中，但在中文翻译中没有
         for (String key : en) {
             if (zh.contains(key)) {
                 continue;
             }
-            difference.add("zh_cn缺失：" + key);
+            error.add("zh_cn缺失：" + key);
+            identical = false;
         }
-        StringJoiner errorReport = new StringJoiner("\n", "中英文翻译键不匹配：\n", "");
-        difference.forEach(errorReport::add);
-        Assert.assertTrue(errorReport.toString(), difference.isEmpty());
+        Assert.assertTrue(error.toString(), identical);
     }
 
     /**
@@ -74,7 +85,7 @@ public class TranslateTest {
         translationUsedBy(rootPath, counter);
         // 所有未被使用的翻译键
         List<String> list = counter.stream().filter(s -> counter.getCount(s) == 0).toList();
-        StringJoiner errorReport = new StringJoiner("\n", "包含未使用的翻译键", "");
+        StringJoiner errorReport = new StringJoiner("\n", "包含未使用的翻译键：\n", "");
         for (String key : list) {
             errorReport.add(key);
         }
@@ -113,5 +124,34 @@ public class TranslateTest {
                 }
             }
         }
+    }
+
+    /**
+     * 检查中英文翻译值占位符的个数是否一致
+     */
+    @Test
+    public void compareTranslationValue() {
+        int size = zhValue.size();
+        boolean perfectMatch = true;
+        StringJoiner error = new StringJoiner("\n", "中英文翻译值不匹配：\n", "");
+        for (int index = 0; index < size; index++) {
+            String zhTranslate = zhValue.get(index);
+            String enTranslate = enValue.get(index);
+            if (count(zhTranslate) == count(enValue.get(index))) {
+                continue;
+            }
+            error.add(zhTranslate + " --- " + enTranslate);
+            perfectMatch = false;
+        }
+        Assert.assertTrue(error.toString(), perfectMatch);
+    }
+
+    private int count(String key) {
+        Matcher matcher = Pattern.compile("%(?:(\\d+)\\$)?([A-Za-z%]|$)").matcher(key);
+        int count = 0;
+        while (matcher.find()) {
+            count++;
+        }
+        return count;
     }
 }
