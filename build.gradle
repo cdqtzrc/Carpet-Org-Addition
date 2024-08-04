@@ -6,7 +6,9 @@ plugins {
     id 'maven-publish'
 }
 
-version = project.mod_version
+// 时间戳
+def timeStamp = DateTimeFormatter.ofPattern("yyMMddHHmm").format(LocalDateTime.now())
+version = "v${project.mod_version}-${timeStamp}"
 
 repositories {
     // Add repositories to retrieve artifacts from in here.
@@ -37,13 +39,13 @@ dependencies {
     testImplementation(group: 'junit', name: 'junit', version: junit_version)
 }
 processResources {
-    inputs.property "version", project.version
+    inputs.property "version", mod_version
     inputs.property "minecraft_version", project.minecraft_version
     inputs.property "loader_version", project.loader_version
     filteringCharset "UTF-8"
 
     filesMatching("fabric.mod.json") {
-        expand "version": project.version,
+        expand "version": mod_version,
                 "minecraft_version": project.minecraft_version,
                 "loader_version": project.loader_version
     }
@@ -71,14 +73,10 @@ java {
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
     }
     archivesBaseName = "${project.archives_base_name}-mc${project.minecraft_version}"
-    // 时间戳
-    def timeStamp = DateTimeFormatter.ofPattern("yyMMddHHmm").format(LocalDateTime.now())
-    version = "v${project.mod_version}-${timeStamp}"
     // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
     // if it is present.
     // If you remove this line, sources will not be generated.
     withSourcesJar()
-    version = project.version
 }
 
 jar {
