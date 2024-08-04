@@ -6,7 +6,9 @@ plugins {
     id 'maven-publish'
 }
 
-version = project.mod_version
+// 时间戳
+def timeStamp = DateTimeFormatter.ofPattern("yyMMddHHmm").format(LocalDateTime.now())
+version = "v${project.mod_version}-${timeStamp}"
 
 repositories {
     // Add repositories to retrieve artifacts from in here.
@@ -40,19 +42,23 @@ dependencies {
     // include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${project.mixinextras_version}")))
     // Conditional Mixin, for conditional compatability with other mods
     modImplementation 'com.github.Fallen-Breath.conditional-mixin:conditional-mixin-fabric:0.6.2'
+    testImplementation(group: 'junit', name: 'junit', version: junit_version)
 }
 processResources {
-    inputs.property "version", project.version
+    inputs.property "version", mod_version
     inputs.property "minecraft_version", project.minecraft_version
     inputs.property "loader_version", project.loader_version
     filteringCharset "UTF-8"
 
     filesMatching("fabric.mod.json") {
-        expand "version": project.version,
+        expand "version": mod_version,
                 "minecraft_version": project.minecraft_version,
                 "loader_version": project.loader_version
     }
 }
+
+// 构建模组前自动单元测试
+remapJar.dependsOn test
 
 def targetJavaVersion = 17
 tasks.withType(JavaCompile).configureEach {
@@ -73,14 +79,10 @@ java {
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
     }
     archivesBaseName = "${project.archives_base_name}-mc${project.minecraft_version}"
-    // 时间戳
-    def timeStamp = DateTimeFormatter.ofPattern("yyMMddHHmm").format(LocalDateTime.now())
-    version = "v${project.mod_version}-${timeStamp}"
     // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
     // if it is present.
     // If you remove this line, sources will not be generated.
     withSourcesJar()
-    version = project.version
 }
 
 jar {

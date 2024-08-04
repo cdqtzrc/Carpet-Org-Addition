@@ -6,8 +6,8 @@
 
 - `... clean [<item>]`
 - `... craft ...`
-    - `... 2x2 <item1> <item2> <item3> <item4>`
-    - `... 3x3 <item1> <item2> <item3> <item4> <item5> <item6> <item7> <item8> <item9>`
+    - `... inventory <item1> <item2> <item3> <item4>`
+    - `... crafting_table <item1> <item2> <item3> <item4> <item5> <item6> <item7> <item8> <item9>`
     - `... four <item>`
     - `... gui`
     - `... nine <item>`
@@ -60,9 +60,9 @@
     - 让假玩家自动合成一些物品，需要给予该假玩家一些合成材料物品
     - 为了快速合成物品，应同时启用Ctrl+Q合成修复
     - 如果在工作台合成，则需要打开一个工作台，并且不能使用副手槽和盔甲槽中的物品，在生存模式物品栏合成的，副手槽和盔甲槽的物品也会被使用
-        - `2x2 <item1> <item2> <item3> <item4>`
+        - `inventory <item1> <item2> <item3> <item4>`
             - 让假玩家在生存模式物品栏合成指定配方的物品
-        - `3x3 <item1> <item2> <item3> <item4> <item5> <item6> <item7> <item8> <item9>`
+        - `crafting_table <item1> <item2> <item3> <item4> <item5> <item6> <item7> <item8> <item9>`
             - 让假玩家在工作台合成指定配方的物品
         - `four`
             - 让假玩家在生存模式物品栏合成指定配方为四个相同材料的物品

@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
+    // TODO 贡献者名单
     static {
         CarpetServer.manageExtension(new CarpetOrgAddition());
     }

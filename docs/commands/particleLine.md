@@ -4,6 +4,8 @@
 
 `particleLine <from> <to>`
 
+`particleLine <from> <uuid>`
+
 ## 参数
 
 `from`
@@ -14,6 +16,10 @@
 
 线的结束端点
 
+`uuid`
+
+目标实体的UUID
+
 ## 效果
 
 <table>
@@ -23,13 +29,16 @@
       <th>结果</th>
     </tr>
     <tr>
-      <td rowspan="3">任意</td>
+      <td rowspan="4">任意</td>
       <td>参数不正确</td>
       <td>无法解析</td>
     </tr>
     <tr>
       <td>命令执行者不是玩家</td>
-      <td>执行失败</td>
+      <td rowspan="2">执行失败</td>
+    </tr>
+    <tr>
+      <td>无法解析UUID或指定UUID的实体不存在</td>
     </tr>
     <tr>
       <td>执行成功</td>
@@ -58,6 +67,6 @@
         <td>执行成功</td>
         <td>1</td>
         <td>1</td>
-        <td>粒子线的长度</td>
+        <td>1</td>
     </tr>
 </table>
