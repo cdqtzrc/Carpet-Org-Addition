@@ -121,6 +121,7 @@ public class LocationsCommand {
                 optional = Waypoint.load(server, name);
             } catch (IOException | NullPointerException e) {
                 //无法解析坐标
+                // TODO 不在聊天栏显示
                 MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.locations.list.parse", WorldFormat.removeExtension(name));
                 continue;
             }
@@ -185,7 +186,12 @@ public class LocationsCommand {
             Optional<Waypoint> optional = Waypoint.load(server, name);
             if (optional.isPresent()) {
                 Waypoint waypoint = optional.get();
-                waypoint.setAnotherBlockPos(blockPos);
+                if (waypoint.canAddAnother()) {
+                    waypoint.setAnotherBlockPos(blockPos);
+                } else {
+                    // 不能为末地添加对向坐标
+                    throw CommandUtils.createException("carpet.commands.locations.another.add.fail");
+                }
                 // 将修改后的路径点重新写入本地文件
                 waypoint.save(server);
                 //添加对向坐标
