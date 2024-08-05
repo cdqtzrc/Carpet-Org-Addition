@@ -18,6 +18,8 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
+import net.minecraft.util.Formatting;
+import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.GameUtils;
@@ -227,6 +229,17 @@ public class PlayerManagerCommand {
 
     // 设置不断重新上线下线
     private static int setReLogin(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        if (fixShouldBeEnabled()) {
+            // 文本内容：[这里]
+            MutableText here = TextUtils.getTranslate("carpet.command.text.click.here");
+            // 单击后输入的命令
+            String command = "/carpet fakePlayerSpawnMemoryLeakFix true";
+            // [这里]的悬停提示
+            MutableText input = TextUtils.getTranslate("carpet.command.text.click.input", command);
+            here = TextUtils.suggest(here, command, input, Formatting.AQUA);
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.relogin.condition", here);
+            return 0;
+        }
         // 获取目标假玩家名
         String name = StringArgumentType.getString(context, "name");
         int interval = IntegerArgumentType.getInteger(context, "interval");
@@ -244,13 +257,19 @@ public class PlayerManagerCommand {
                 // 目标玩家不是假玩家
                 CommandUtils.checkFakePlayer(player);
             }
-            instance.addTask(new ReLoginTask(name, interval, server, player.getServerWorld().getRegistryKey()));
+            instance.addTask(new ReLoginTask(name, interval, server, player.getServerWorld().getRegistryKey(), context));
         } else {
             // 修改周期时间
             task.setInterval(interval);
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.relogin.set_interval", name, interval);
         }
         return interval;
+    }
+
+    // 是否应该启用内存泄漏修复
+    public static boolean fixShouldBeEnabled() {
+        // 是否同时安装了fabric-api，并且没有启用内存泄漏修复
+        return CarpetOrgAddition.FABRIC_API && !CarpetOrgAdditionSettings.fakePlayerSpawnMemoryLeakFix;
     }
 
     // 获取假玩家周期上下线任务

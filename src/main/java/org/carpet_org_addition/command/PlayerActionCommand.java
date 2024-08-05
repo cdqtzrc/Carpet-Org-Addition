@@ -283,9 +283,11 @@ public class PlayerActionCommand {
         if (CarpetSettings.ctrlQCraftingFix) {
             return;
         }
-        MutableText suggest = TextUtils.suggest(TextUtils.getTranslate("carpet.commands.playerAction.set.here").getString(),
-                "/carpet ctrlQCraftingFix true",
-                TextUtils.getTranslate("carpet.commands.playerAction.set.has_permission"), Formatting.AQUA);
+        String command = "/carpet ctrlQCraftingFix true";
+        MutableText here = TextUtils.getTranslate("carpet.command.text.click.here");
+        // [这里]的悬停提示
+        MutableText hoverText = TextUtils.getTranslate("carpet.command.text.click.input", command);
+        MutableText suggest = TextUtils.suggest(here, command, hoverText, Formatting.AQUA);
         MessageUtils.sendCommandFeedback(source, "carpet.commands.playerAction.set", suggest);
     }
 
