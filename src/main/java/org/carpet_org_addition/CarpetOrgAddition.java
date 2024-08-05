@@ -4,6 +4,7 @@ import carpet.CarpetExtension;
 import carpet.CarpetServer;
 import carpet.patches.EntityPlayerMPFake;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -26,6 +27,10 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
      * 控制玩家登录登出的消息是否显示
      */
     public static boolean hiddenLoginMessages = false;
+    /**
+     * 是否同时安装了fabric-api
+     */
+    public static final boolean FABRIC_API = FabricLoader.getInstance().isModLoaded("fabric-api");
     // 日志
     public static final Logger LOGGER = LoggerFactory.getLogger("CarpetOrgAddition");
     public static final String MOD_NAME_LOWER_CASE = "carpetorgaddition";

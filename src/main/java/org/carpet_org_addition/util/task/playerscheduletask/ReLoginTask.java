@@ -25,6 +25,8 @@ import net.minecraft.util.UserCache;
 import net.minecraft.util.Uuids;
 import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAddition;
+import org.carpet_org_addition.command.PlayerManagerCommand;
+import org.carpet_org_addition.exception.TaskExecutionException;
 import org.carpet_org_addition.mixin.rule.EntityAccessor;
 import org.carpet_org_addition.mixin.rule.PlayerEntityAccessor;
 import org.carpet_org_addition.util.GameUtils;
@@ -39,21 +41,34 @@ public class ReLoginTask extends PlayerScheduleTask {
     private int remainingTick;
     private final MinecraftServer server;
     private final RegistryKey<World> dimensionId;
+    private final CommandContext<ServerCommandSource> context;
     // 当前任务是否已经结束
     private boolean stop = false;
     // 假玩家重新上线的倒计时
     private int canSpawn = 2;
 
-    public ReLoginTask(String playerName, int interval, MinecraftServer server, RegistryKey<World> dimensionId) {
+    public ReLoginTask(String playerName, int interval, MinecraftServer server, RegistryKey<World> dimensionId, CommandContext<ServerCommandSource> context) {
         this.playerName = playerName;
         this.interval = interval;
         this.remainingTick = this.interval;
         this.server = server;
         this.dimensionId = dimensionId;
+        this.context = context;
     }
 
     @Override
     public void tick() {
+        if (PlayerManagerCommand.fixShouldBeEnabled()) {
+            Runnable function = () -> {
+                MessageUtils.sendCommandErrorFeedback(context, "carpet.commands.playerManager.schedule.relogin.rule.disable");
+                // 如果假玩家已经下线，重新生成假玩家
+                ServerPlayerEntity player = this.server.getPlayerManager().getPlayer(this.playerName);
+                if (player == null) {
+                    homePositionSpawn(this.playerName, this.server, this.dimensionId);
+                }
+            };
+            throw new TaskExecutionException(function);
+        }
         ServerPlayerEntity player = this.server.getPlayerManager().getPlayer(this.playerName);
         if (player == null) {
             if (this.canSpawn == 0) {
