@@ -1,6 +1,7 @@
 package org.carpet_org_addition.util.task;
 
 import org.carpet_org_addition.CarpetOrgAddition;
+import org.carpet_org_addition.exception.TaskExecutionException;
 
 public abstract class ServerTask {
     /**
@@ -22,10 +23,12 @@ public abstract class ServerTask {
         try {
             this.tick();
             return this.stopped();
+        } catch (TaskExecutionException e) {
+            e.disposal();
         } catch (RuntimeException e) {
             CarpetOrgAddition.LOGGER.error("{}任务执行时遇到意外错误", this, e);
-            return true;
         }
+        return true;
     }
 
     /**
