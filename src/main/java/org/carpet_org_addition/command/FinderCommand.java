@@ -22,7 +22,6 @@ import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
 import org.carpet_org_addition.util.matcher.ItemStackMatcher;
 import org.carpet_org_addition.util.matcher.Matcher;
 import org.carpet_org_addition.util.task.ServerTaskManagerInterface;
@@ -30,8 +29,6 @@ import org.carpet_org_addition.util.task.findtask.BlockFindTask;
 import org.carpet_org_addition.util.task.findtask.ItemFindTask;
 import org.carpet_org_addition.util.task.findtask.TradeFindTask;
 import org.carpet_org_addition.util.wheel.SelectionArea;
-
-import java.util.function.Predicate;
 
 public class FinderCommand {
     /**
@@ -68,7 +65,7 @@ public class FinderCommand {
                                 .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 256))
                                         .executes(context -> blockFinder(context, -1)))))
                 .then(CommandManager.literal("item")
-                        .then(CommandManager.argument("itemStack", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                        .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(commandBuildContext))
                                 .executes(context -> findItem(context, 32))
                                 .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 256))
                                         .executes(context -> findItem(context, -1)))))
@@ -90,7 +87,7 @@ public class FinderCommand {
         // 获取执行命令的玩家并非空判断
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         // 获取要查找的物品堆栈
-        Predicate<ItemStack> predicate = ItemPredicateArgumentType.getItemStackPredicate(context, "itemStack");
+        ItemStack itemStack = ItemStackArgumentType.getItemStackArgument(context, "itemStack").createStack(1, false);
         if (range == -1) {
             // 获取要查找方块的范围
             range = IntegerArgumentType.getInteger(context, "range");
@@ -98,7 +95,7 @@ public class FinderCommand {
         // 获取玩家所在的位置，这是命令开始执行的坐标
         BlockPos sourceBlockPos = player.getBlockPos();
         // 查找周围容器中的物品
-        Matcher matcher = new ItemPredicateMatcher(predicate);
+        Matcher matcher = new ItemStackMatcher(itemStack);
         ServerTaskManagerInterface taskManager = ServerTaskManagerInterface.getInstance(context.getSource().getServer());
         World world = player.getWorld();
         taskManager.addTask(new ItemFindTask(world, matcher, new SelectionArea(world, sourceBlockPos, range), context));
