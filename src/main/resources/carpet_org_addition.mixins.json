@@ -79,7 +79,6 @@
     "rule.respawnblocksexplode.RespawnAnchorBlockMixin",
     "util.CraftingScreenHandlerMixin",
     "util.ItemPredicateArgumentTypeMixin",
-    "util.RegisterCarpetCommandsMixin",
     "util.PlayerManagerMixin",
     "util.RegisterCarpetCommandsMixin",
     "util.TranslatableTextContentMixin"

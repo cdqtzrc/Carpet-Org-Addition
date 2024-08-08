@@ -18,11 +18,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
-    // TODO 贡献者名单
-    static {
-        CarpetServer.manageExtension(new CarpetOrgAddition());
-    }
-
     /**
      * 控制玩家登录登出的消息是否显示
      */
@@ -36,11 +31,11 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     public static final String MOD_NAME_LOWER_CASE = "carpetorgaddition";
 
     /**
-     * Runs the mod initializer.
+     * 模组初始化
      */
-    // 模组初始化
     @Override
     public void onInitialize() {
+        CarpetServer.manageExtension(new CarpetOrgAddition());
     }
 
     // 在游戏开始时
