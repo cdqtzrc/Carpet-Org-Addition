@@ -6,7 +6,6 @@
   "plugin": "org.carpet_org_addition.util.MixinConfigPlugin",
   "mixins": [
     "command.EntityPlayerMPFakeMixin",
-    "command.ServerPlayerEntityMixin",
     "command.MinecraftServerMixin",
     "command.ServerPlayerEntityMixin",
     "compat.fabricapi.AbstractChanneledNetworkAddonInvoker",
