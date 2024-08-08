@@ -53,7 +53,6 @@
   "carpet.rule.canMineSpawner.desc": "Make spawner mineable with silk touch tools",
   "carpet.rule.fakePlayerSpawnNoKnockback.desc": "Remove the knockback, burning time and falling distance when fake players respawning",
   "carpet.rule.canActivatesObserver.desc": "Enable flint and steel used to directly activate observers",
-  "carpet.rule.disableOutOfOrderChatCheck.desc": "Disable the checking for order of chat packages",
   "carpet.rule.disableWaterFreezes.desc": "Disable water freezing in cold biomes",
   "carpet.rule.fakePlayerCraftKeepItem.desc": "Keep at least one item in inventory for each from recipes when fake players crafting items, unless it is an unstackable item",
   "carpet.rule.fakePlayerCraftKeepItem.extra.0": "Also works for fake players trading",
