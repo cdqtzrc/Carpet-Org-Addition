@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-// TODO 贡献者名单
 public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     /**
      * 控制玩家登录登出的消息是否显示

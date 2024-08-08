@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ServerPlayNetworkHandler.class)
 public class ServerPlayNetworkHandlerMixin {
-    // TODO 编译器警告
     @WrapWithCondition(method = "onDisconnected", remap = false, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;info(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"))
     private boolean hide(Logger instance, String s, Object o1, Object o2) {
         return !CarpetOrgAddition.hiddenLoginMessages;
