@@ -75,8 +75,9 @@
     "rule.respawnblocksexplode.RespawnAnchorBlockMixin",
     "util.CraftingScreenHandlerMixin",
     "util.ItemPredicateArgumentTypeMixin",
-    "util.RegisterCarpetCommandsMixin",
     "util.PlayerManagerMixin",
+    "util.RegisterCarpetCommandsMixin",
+    "util.ServerPlayNetworkHandlerMixin",
     "util.TranslatableTextContentMixin"
   ],
   "client": [
