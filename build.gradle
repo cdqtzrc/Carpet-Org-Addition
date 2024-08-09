@@ -41,7 +41,7 @@ dependencies {
     // MixinExtras
     // include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${project.mixinextras_version}")))
     // Conditional Mixin, for conditional compatability with other mods
-    modImplementation 'com.github.Fallen-Breath.conditional-mixin:conditional-mixin-fabric:0.6.2'
+    include(modImplementation 'com.github.Fallen-Breath.conditional-mixin:conditional-mixin-fabric:0.6.2')
     testImplementation(group: 'junit', name: 'junit', version: junit_version)
 }
 processResources {
