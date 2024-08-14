@@ -24,6 +24,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     // 日志
     public static final Logger LOGGER = LoggerFactory.getLogger("CarpetOrgAddition");
     public static final String MOD_NAME_LOWER_CASE = "carpetorgaddition";
+    // TODO 玩家反馈：保存船上的假玩家，然后让假玩家登录后假玩家会下移
 
     /**
      * 模组初始化

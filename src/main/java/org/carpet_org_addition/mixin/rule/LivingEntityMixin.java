@@ -80,6 +80,7 @@ public abstract class LivingEntityMixin {
                     break;
                 } else if (CarpetOrgAdditionSettings.betterTotemOfUndying == BetterTotemOfUndying.SHULKER_BOX
                         && InventoryUtils.isShulkerBoxItem(totemOfUndying)) {
+                    // TODO 潜影盒内没有不死图腾时也会触发
                     // 从潜影盒中拿取不死图腾
                     ItemStack itemInTheBox = InventoryUtils.shulkerBoxConsumer(totemOfUndying,
                             stack -> stack.isOf(Items.TOTEM_OF_UNDYING),

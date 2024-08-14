@@ -18,6 +18,7 @@ import org.carpet_org_addition.util.TextUtils;
 import java.util.List;
 
 public class RuleSearchCommand {
+    // TODO 支持正则表达式
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("ruleSearch")
                 .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandRuleSearch))

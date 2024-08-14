@@ -26,7 +26,9 @@ public class DrawParticleLineTask extends ServerTask {
 
     @Override
     public void tick() {
+        // TODO 粒子改为非线性绘制
         // 每一个游戏刻内需要绘制的距离
+        // TODO 这里的tickDistance似乎可以移动到成员位置
         double tickDistance = Math.sqrt(distance) / 20;
         tickDistance = tickDistance * MathHelper.clamp(1, tickDistance / 15, 6);
         double sum = 0;
