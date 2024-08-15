@@ -97,7 +97,6 @@ public abstract class LivingEntityMixin {
     // 从物品栏获取不死图腾
     private static ItemStack pickTotem(PlayerEntity playerEntity) {
         DefaultedList<ItemStack> mainInventory = playerEntity.getInventory().main;
-
         // 从物品栏获取物品，在Inject方法的一开始就判断了规则值是否为false，所以在这里不需要再次判断
         // 无论规则值是true还是shulker_box，都需要从物品栏获取物品
         for (ItemStack totemOfUndying : mainInventory) {
