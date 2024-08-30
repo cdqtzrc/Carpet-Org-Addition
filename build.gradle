@@ -38,6 +38,7 @@ dependencies {
     include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${project.mixinextras_version}")))
     testImplementation(group: 'junit', name: 'junit', version: junit_version)
 }
+
 processResources {
     inputs.property "version", mod_version
     inputs.property "minecraft_version", project.minecraft_version

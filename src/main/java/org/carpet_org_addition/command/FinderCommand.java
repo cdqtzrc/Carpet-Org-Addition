@@ -125,6 +125,8 @@ public class FinderCommand {
         return 1;
     }
 
+    // TODO 结果分组：位于%s的村民的第1,2,3,4项交易出售该物品
+    // TODO 鼠标悬停显示价格
     // 准备根据物品查找交易项
     private static int findTradeItem(CommandContext<ServerCommandSource> context, int range) throws CommandSyntaxException {
         // 获取执行命令的玩家对象

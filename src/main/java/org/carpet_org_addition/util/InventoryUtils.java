@@ -170,6 +170,7 @@ public class InventoryUtils {
      * @param shulkerBox 要判断是否为潜影盒的物品
      * @return 指定物品是否是潜影盒
      */
+    // TODO 普通潜影盒直接返回true
     public static boolean isShulkerBoxItem(ItemStack shulkerBox) {
         if (shulkerBox.getItem() instanceof BlockItem blockItem) {
             return blockItem.getBlock() instanceof ShulkerBoxBlock;

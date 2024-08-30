@@ -250,6 +250,7 @@ public class TradeFindTask extends ServerTask {
 
         public TradePredicate(Enchantment enchantment) {
             this.taskType = TaskType.ENCHANTED_BOOK;
+            // TODO 注释有误导性
             // 当前物品不是附魔书或当前附魔书没有指定附魔时，不应该获取它的名称
             MutableText text = TextUtils.getTranslate(enchantment.getTranslationKey());
             // 设置附魔名称的颜色

@@ -47,6 +47,7 @@ public class WanderingTraderSpawnLogger {
     }
 
     // 更新HUD
+    // TODO 文本改为“流浪商人将于%s后尝试生成，成功率%s”
     public static void updateHud(MinecraftServer server) {
         if (server.getGameRules().getBoolean(GameRules.DO_TRADER_SPAWNING)) {
             if (wanderingTraderSpawnCountdown && spawnCountdown != null) {

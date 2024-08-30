@@ -84,6 +84,7 @@ public class ReLoginTask extends PlayerScheduleTask {
      */
     @SuppressWarnings("JavadocReference")
     private void logoutPlayer(EntityPlayerMPFake fakePlayer) {
+        // TODO 日志输出： <玩家名> lost connection: Killed
         Text reason = Messenger.s("Killed");
         // 停止骑行
         if (fakePlayer.getVehicle() instanceof PlayerEntity) {

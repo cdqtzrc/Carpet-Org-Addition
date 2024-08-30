@@ -204,6 +204,7 @@ public class MathUtils {
      * @param target 玩家看向的位置
      * @see net.minecraft.client.gui.hud.SubtitlesHud#render(DrawContext)
      */
+    // TODO 某些情况下方向指示不准确
     public static int forwardAngle(PlayerEntity player, Vec3d target) {
         // 获取玩家眼睛的位置
         Vec3d eyePos = player.getEyePos();

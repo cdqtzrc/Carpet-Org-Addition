@@ -153,6 +153,7 @@ public class SendMessageCommand {
         } else {
             itemStack = ItemStackArgumentType.getItemStackArgument(context, "itemStack").createStack(1, false);
         }
+        // TODO 消息包含玩家名
         MessageUtils.broadcastTextMessage(context.getSource(), itemStack.toHoverableText());
         return 1;
     }

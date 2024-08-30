@@ -22,6 +22,7 @@ import org.carpet_org_addition.util.matcher.Matcher;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
+// TODO 清理未使用的类
 @SuppressWarnings("unused")
 public class CraftPresets {
     private final String[] itemOrTag = new String[9];

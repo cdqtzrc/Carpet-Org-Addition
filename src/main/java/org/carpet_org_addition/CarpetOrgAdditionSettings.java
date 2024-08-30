@@ -463,6 +463,7 @@ public class CarpetOrgAdditionSettings {
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
+    // TODO 没有闪电击中时也会掉落头颅
     public static boolean superChargedCreeper = false;
 
     // 玩家掉落头颅

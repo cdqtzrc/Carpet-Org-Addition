@@ -78,6 +78,7 @@ public class PlayerToolsCommand {
 
     //假玩家传送
     private static int fakePlayerTp(CommandContext<ServerCommandSource> context, ServerPlayerEntity fakePlayer) throws CommandSyntaxException {
+        // TODO bug：可以传送真玩家
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         //获取假玩家名和命令执行玩家名
         Text fakePlayerName = fakePlayer.getDisplayName();
