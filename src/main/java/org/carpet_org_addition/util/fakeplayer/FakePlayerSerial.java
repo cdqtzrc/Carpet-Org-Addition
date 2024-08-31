@@ -61,8 +61,10 @@ public class FakePlayerSerial {
     public boolean save(MinecraftServer server, boolean resave) throws IOException, CommandSyntaxException {
         WorldFormat worldFormat = new WorldFormat(server, PLAYER_DATA);
         File file = worldFormat.file(fakePlayer.getName().getString());
+        // 玩家数据是否已存在
         boolean exists = file.exists();
         if (exists && !resave) {
+            // TODO 反馈改为：“玩家数据已存在”，并提示是否重新保存
             throw CommandSyntaxExceptionConstants.JSON_FILE_ALREADY_EXIST_EXCEPTION;
         }
         WorldFormat.saveJson(file, WorldFormat.GSON, this.toJson());

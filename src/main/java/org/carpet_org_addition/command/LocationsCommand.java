@@ -122,8 +122,7 @@ public class LocationsCommand {
                 optional = Waypoint.load(server, name);
             } catch (IOException | NullPointerException e) {
                 //无法解析坐标
-                // TODO 不在聊天栏显示
-                MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.locations.list.parse", WorldFormat.removeExtension(name));
+                CarpetOrgAddition.LOGGER.warn("无法解析路径点[{}]", WorldFormat.removeExtension(name), e);
                 continue;
             }
             // 显示路径点
