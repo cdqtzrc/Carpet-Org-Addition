@@ -74,16 +74,14 @@ public class CommandUtils {
      * 判断指定玩家是否为假玩家，如果不是会直接抛出异常。<br/>
      *
      * @param fakePlayer 要检查是否为假玩家的玩家对象
-     * @return 要么抛出异常，要么返回true，永远不会返回false
      * @throws CommandSyntaxException 如果指定玩家不是假玩家抛出异常
      */
-    public static boolean checkFakePlayer(PlayerEntity fakePlayer) throws CommandSyntaxException {
+    public static void checkFakePlayer(PlayerEntity fakePlayer) throws CommandSyntaxException {
         if (fakePlayer instanceof EntityPlayerMPFake) {
-            return true;
-        } else {
-            //不是假玩家的反馈消息
-            throw createException("carpet.command.not_fake_player", fakePlayer.getDisplayName());
+            return;
         }
+        // 不是假玩家时抛出异常
+        throw createException("carpet.command.not_fake_player", fakePlayer.getDisplayName());
     }
 
     /**
