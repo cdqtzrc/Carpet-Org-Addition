@@ -29,7 +29,6 @@ import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.screen.CraftingSetRecipeScreenHandler;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerAction;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionInterface;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionManager;
@@ -37,6 +36,7 @@ import org.carpet_org_addition.util.fakeplayer.actiondata.*;
 import org.carpet_org_addition.util.matcher.ItemMatcher;
 import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
 import org.carpet_org_addition.util.matcher.Matcher;
+import org.carpet_org_addition.util.screen.CraftingSetRecipeScreenHandler;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
@@ -162,7 +162,7 @@ public class PlayerActionCommand {
 
     // 单个物品合成
     private static int setOneCraft(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        FakePlayerActionManager actionManager = getActionManager(context);
+        FakePlayerActionManager actionManager = prepareTheCrafting(context);
         Predicate<ItemStack> item = ItemPredicateArgumentType.getItemStackPredicate(context, "item");
         actionManager.setAction(FakePlayerAction.INVENTORY_CRAFT, new InventoryCraftData(fillArray(new ItemPredicateMatcher(item), new Matcher[4], false)));
         return 2;
@@ -170,7 +170,7 @@ public class PlayerActionCommand {
 
     // 四个物品合成
     private static int setFourCraft(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        FakePlayerActionManager actionManager = getActionManager(context);
+        FakePlayerActionManager actionManager = prepareTheCrafting(context);
         Predicate<ItemStack> item = ItemPredicateArgumentType.getItemStackPredicate(context, "item");
         actionManager.setAction(FakePlayerAction.INVENTORY_CRAFT, new InventoryCraftData(fillArray(new ItemPredicateMatcher(item), new Matcher[4], true)));
         return 2;
@@ -178,7 +178,7 @@ public class PlayerActionCommand {
 
     // 设置物品栏合成
     private static int setInventoryCraft(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        FakePlayerActionManager actionManager = getActionManager(context);
+        FakePlayerActionManager actionManager = prepareTheCrafting(context);
         ItemPredicateMatcher[] items = new ItemPredicateMatcher[4];
         for (int i = 1; i <= 4; i++) {
             // 获取每一个合成材料
@@ -190,7 +190,7 @@ public class PlayerActionCommand {
 
     // 九个物品合成
     private static int setNineCraft(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        FakePlayerActionManager actionManager = getActionManager(context);
+        FakePlayerActionManager actionManager = prepareTheCrafting(context);
         Predicate<ItemStack> item = ItemPredicateArgumentType.getItemStackPredicate(context, "item");
         actionManager.setAction(FakePlayerAction.CRAFTING_TABLE_CRAFT, new CraftingTableCraftData(fillArray(new ItemPredicateMatcher(item), new Matcher[9], true)));
         return 3;
@@ -198,7 +198,7 @@ public class PlayerActionCommand {
 
     // 设置工作台合成
     private static int setCraftingTableCraft(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        FakePlayerActionManager actionManager = getActionManager(context);
+        FakePlayerActionManager actionManager = prepareTheCrafting(context);
         ItemPredicateMatcher[] items = new ItemPredicateMatcher[9];
         for (int i = 1; i <= 9; i++) {
             items[i - 1] = new ItemPredicateMatcher(ItemPredicateArgumentType.getItemStackPredicate(context, "item" + i));
@@ -292,12 +292,10 @@ public class PlayerActionCommand {
     }
 
     // 在设置假玩家合成时获取动作管理器并提示启用合成修复
-    private static FakePlayerActionManager getActionManager(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private static FakePlayerActionManager prepareTheCrafting(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
-        FakePlayerActionManager actionManager = FakePlayerActionInterface.getManager(fakePlayer);
-        // TODO 这行功能与方法名称不匹配
+        // 提示启用合成修复
         promptToEnableCtrlQCraftingFix(context.getSource());
-        return actionManager;
+        return FakePlayerActionInterface.getManager(fakePlayer);
     }
-
 }
