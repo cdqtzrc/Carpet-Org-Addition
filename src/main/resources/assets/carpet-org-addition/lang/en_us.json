@@ -175,6 +175,7 @@
   "carpet.commands.locations.add.fail.already_exists": "Failed to add location: [%s] already exists",
   "carpet.commands.locations.add.success": "Location [%s] is added (%s)",
   "carpet.commands.locations.list.parse": "Failed to parse position [%s]",
+  "carpet.commands.locations.list.no_waypoint": "No waypoint being saved",
   "carpet.commands.locations.illustrate.remove": "Removed description of location [%s]",
   "carpet.commands.locations.illustrate.add": "Added description \"%s\" for location [%s]",
   "carpet.commands.locations.illustrate.io": "Failed to add description for location [%s]",

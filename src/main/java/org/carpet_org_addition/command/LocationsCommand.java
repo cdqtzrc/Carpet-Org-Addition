@@ -105,7 +105,10 @@ public class LocationsCommand {
         MinecraftServer server = context.getSource().getServer();
         WorldFormat worldFormat = new WorldFormat(server, Waypoint.WAYPOINT);
         List<File> list = worldFormat.toImmutableFileList();
-        // TODO 无路径点时不显示分割线
+        if (list.isEmpty()) {
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.locations.list.no_waypoint");
+            return 0;
+        }
         MutableText dividerLine = TextUtils.createText("------------------------------");
         // 显示分隔线
         MessageUtils.sendTextMessage(context.getSource(), dividerLine);
