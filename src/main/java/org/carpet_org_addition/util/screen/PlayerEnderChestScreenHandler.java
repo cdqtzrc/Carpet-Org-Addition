@@ -1,4 +1,4 @@
-package org.carpet_org_addition.util.fakeplayer;
+package org.carpet_org_addition.util.screen;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

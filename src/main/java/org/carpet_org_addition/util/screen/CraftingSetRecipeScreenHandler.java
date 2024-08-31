@@ -1,4 +1,4 @@
-package org.carpet_org_addition.util.fakeplayer;
+package org.carpet_org_addition.util.screen;
 
 import carpet.patches.EntityPlayerMPFake;
 import com.mojang.brigadier.context.CommandContext;
@@ -12,6 +12,10 @@ import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.command.PlayerActionCommand;
+import org.carpet_org_addition.util.fakeplayer.FakePlayerAction;
+import org.carpet_org_addition.util.fakeplayer.FakePlayerActionInterface;
+import org.carpet_org_addition.util.fakeplayer.FakePlayerActionManager;
+import org.carpet_org_addition.util.fakeplayer.FakePlayerCraftRecipeInterface;
 import org.carpet_org_addition.util.fakeplayer.actiondata.CraftingTableCraftData;
 import org.carpet_org_addition.util.fakeplayer.actiondata.InventoryCraftData;
 import org.carpet_org_addition.util.matcher.ItemMatcher;

@@ -29,7 +29,7 @@ import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.fakeplayer.CraftingSetRecipeScreenHandler;
+import org.carpet_org_addition.util.screen.CraftingSetRecipeScreenHandler;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerAction;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionInterface;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionManager;

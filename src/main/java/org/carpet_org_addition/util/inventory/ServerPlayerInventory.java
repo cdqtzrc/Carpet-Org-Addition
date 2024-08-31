@@ -1,10 +1,9 @@
-package org.carpet_org_addition.util.fakeplayer;
+package org.carpet_org_addition.util.inventory;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.server.network.ServerPlayerEntity;
-import org.carpet_org_addition.util.wheel.AbstractCustomSizeInventory;
 
 public class ServerPlayerInventory extends AbstractCustomSizeInventory {
     private final ServerPlayerEntity fakePlayer;

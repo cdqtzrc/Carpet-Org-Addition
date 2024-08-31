@@ -23,8 +23,8 @@ import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.fakeplayer.PlayerEnderChestScreenHandler;
-import org.carpet_org_addition.util.fakeplayer.PlayerInventoryScreenHandler;
+import org.carpet_org_addition.util.screen.PlayerEnderChestScreenHandler;
+import org.carpet_org_addition.util.screen.PlayerInventoryScreenHandler;
 
 @SuppressWarnings("SameReturnValue")
 public class PlayerToolsCommand {

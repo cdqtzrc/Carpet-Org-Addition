@@ -10,7 +10,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.util.collection.DefaultedList;
 import org.carpet_org_addition.util.matcher.SimpleMatcher;
-import org.carpet_org_addition.util.wheel.ImmutableInventory;
+import org.carpet_org_addition.util.inventory.ImmutableInventory;
 
 import java.util.Objects;
 import java.util.function.Consumer;
