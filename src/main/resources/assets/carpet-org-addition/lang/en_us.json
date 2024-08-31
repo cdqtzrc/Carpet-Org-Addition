@@ -297,7 +297,7 @@
   "carpet.logger.wanderingTrader.time.second": "%ss",
   "carpet.logger.wanderingTrader.time.minutes": "%smin",
   "carpet.logger.wanderingTrader.time.minutes_and_seconds": "%smin %ss",
-  "carpet.logger.wanderingTrader.hud": "Till next spawning: %s, success rate: %s",
+  "carpet.logger.wanderingTrader.hud": "The Wandering Trader will spawn in %s with a %s probability",
   "carpet.logger.wanderingTrader.message": "Wandering Trader spawns at %s",
   "carpet.logger.wanderingTrader.message.click": "Wandering Trader spawns at %s, click to %s",
   "carpet.logger.wanderingTrader.message.navigate": "[navigate]",
