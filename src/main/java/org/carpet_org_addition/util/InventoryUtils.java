@@ -21,7 +21,7 @@ public class InventoryUtils {
     public static final String INVENTORY = "Inventory";
 
     /**
-     * 潜影盒工具类，私有化构造方法
+     * 物品栏工具类，私有化构造方法
      */
     private InventoryUtils() {
     }
