@@ -8,6 +8,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkSectionPos;
 import org.carpet_org_addition.command.FinderCommand;
 import org.carpet_org_addition.exception.TaskExecutionException;
 import org.carpet_org_addition.util.MathUtils;
@@ -88,15 +89,21 @@ public class BlockFindTask extends ServerTask {
                 return;
             }
             BlockPos blockPos = this.iterator.next();
-            if (this.argument.test(world, blockPos)) {
-                this.results.add(new Result(this.sourctePos, blockPos));
-            }
-            if (this.results.size() > FinderCommand.MAXIMUM_STATISTICAL_COUNT) {
-                // 方块过多，无法统计
-                Runnable function = () -> MessageUtils.sendCommandErrorFeedback(this.context,
-                        "carpet.commands.finder.block.too_much_blocks",
-                        TextUtils.getBlockName(this.argument.getBlockState().getBlock()));
-                throw new TaskExecutionException(function);
+            // 获取区块XZ坐标
+            int chunkX = ChunkSectionPos.getSectionCoord(blockPos.getX());
+            int chunkZ = ChunkSectionPos.getSectionCoord(blockPos.getZ());
+            // 判断区块是否已加载
+            if (this.world.isChunkLoaded(chunkX, chunkZ)) {
+                if (this.argument.test(world, blockPos)) {
+                    this.results.add(new Result(this.sourctePos, blockPos));
+                }
+                if (this.results.size() > FinderCommand.MAXIMUM_STATISTICAL_COUNT) {
+                    // 方块过多，无法统计
+                    Runnable function = () -> MessageUtils.sendCommandErrorFeedback(this.context,
+                            "carpet.commands.finder.block.too_much_blocks",
+                            TextUtils.getBlockName(this.argument.getBlockState().getBlock()));
+                    throw new TaskExecutionException(function);
+                }
             }
         }
         this.findState = FindState.SORT;
