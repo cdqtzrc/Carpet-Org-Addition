@@ -12,7 +12,6 @@ import java.util.stream.Stream;
  *
  * @param <E> 计数器要统计数量的类
  */
-@SuppressWarnings("unused")
 public class Counter<E> implements Iterable<E> {
     private final HashMap<E, Integer> COUNTER;
 
@@ -34,6 +33,7 @@ public class Counter<E> implements Iterable<E> {
      *
      * @param element 要数量递减的元素
      */
+    @SuppressWarnings("unused")
     public void decrement(E element) {
         add(element, -1);
     }
@@ -86,6 +86,7 @@ public class Counter<E> implements Iterable<E> {
      * @param element 要判断是否存在的元素
      * @return 指定元素是否在集合内的数量大于0
      */
+    @SuppressWarnings("unused")
     public boolean hasElement(E element) {
         return this.getCount(element) > 0;
     }

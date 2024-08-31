@@ -15,14 +15,13 @@ import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.util.*;
 import org.carpet_org_addition.util.constant.CommandSyntaxExceptionConstants;
 import org.carpet_org_addition.util.constant.TextConstants;
-import org.carpet_org_addition.util.wheel.JsonSerial;
 import org.carpet_org_addition.util.wheel.WorldFormat;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class FakePlayerSerial implements JsonSerial {
+public class FakePlayerSerial {
     public static final String PLAYER_DATA = "player_data";
     private final EntityPlayerMPFake fakePlayer;
     private String annotation;
@@ -180,7 +179,6 @@ public class FakePlayerSerial implements JsonSerial {
         return info;
     }
 
-    @Override
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         // 玩家位置
