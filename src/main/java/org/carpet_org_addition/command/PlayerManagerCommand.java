@@ -43,6 +43,7 @@ import java.util.Objects;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class PlayerManagerCommand {
+    // TODO 假玩家安全挂机
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         // 延迟登录节点
         RequiredArgumentBuilder<ServerCommandSource, Integer> loginNode = CommandManager.argument("delayed", IntegerArgumentType.integer(1));
