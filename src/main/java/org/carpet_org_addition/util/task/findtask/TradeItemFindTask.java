@@ -12,16 +12,18 @@ import org.carpet_org_addition.command.FinderCommand;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
 import org.carpet_org_addition.util.matcher.ItemStackMatcher;
+import org.carpet_org_addition.util.matcher.Matcher;
 import org.carpet_org_addition.util.wheel.SelectionArea;
 
 import java.util.ArrayList;
 
 public class TradeItemFindTask extends AbstractTradeFindTask {
-    private final ItemStackMatcher matcher;
+    private final Matcher matcher;
     private final MutableText treadName;
 
-    public TradeItemFindTask(World world, SelectionArea selectionArea, BlockPos sourcePos, CommandContext<ServerCommandSource> context, ItemStackMatcher matcher) {
+    public TradeItemFindTask(World world, SelectionArea selectionArea, BlockPos sourcePos, CommandContext<ServerCommandSource> context, Matcher matcher) {
         super(world, selectionArea, sourcePos, context);
         this.matcher = matcher;
         this.treadName = matcher.getName().copy();

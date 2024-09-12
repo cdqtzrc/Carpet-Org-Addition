@@ -22,8 +22,8 @@ import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.matcher.ItemMatcher;
 import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
-import org.carpet_org_addition.util.matcher.ItemStackMatcher;
 import org.carpet_org_addition.util.matcher.Matcher;
 import org.carpet_org_addition.util.task.ServerTaskManagerInterface;
 import org.carpet_org_addition.util.task.findtask.BlockFindTask;
@@ -134,12 +134,10 @@ public class FinderCommand {
             range = IntegerArgumentType.getInteger(context, "range");
         }
         // 获取要匹配的物品
-        ItemStackArgument itemStackArgument = ItemStackArgumentType.getItemStackArgument(context, "itemStack");
+        ItemMatcher matcher = new ItemMatcher(ItemStackArgumentType.getItemStackArgument(context, "itemStack").getItem());
         // 获取玩家所在的坐标
         BlockPos sourcePos = player.getBlockPos();
         World world = player.getWorld();
-        // 查找谓词
-        ItemStackMatcher matcher = new ItemStackMatcher(itemStackArgument.createStack(1, false));
         // 查找范围
         SelectionArea area = new SelectionArea(world, sourcePos, range);
         TradeItemFindTask task = new TradeItemFindTask(world, area, sourcePos, context, matcher);
