@@ -47,6 +47,7 @@ public class TradeEnchantedBookFindTask extends AbstractTradeFindTask {
         HashMap<Integer, ArrayList<Integer>> hashMap = new HashMap<>();
         for (int index = 0; index < offers.size(); index++) {
             ItemStack enchantedBook = offers.get(index).getSellItem();
+            // 获取每个交易结果槽上的附魔书附魔等级
             int level = getBookEnchantment(enchantedBook);
             if (level == -1) {
                 continue;
@@ -61,6 +62,7 @@ public class TradeEnchantedBookFindTask extends AbstractTradeFindTask {
                 // 同一只村民出售了多本相同附魔书，将结果组装起来
                 result.add(index + 1);
             }
+            this.tradeCount++;
         }
         if (hashMap.isEmpty()) {
             return;
@@ -69,6 +71,7 @@ public class TradeEnchantedBookFindTask extends AbstractTradeFindTask {
         for (Map.Entry<Integer, ArrayList<Integer>> entry : hashMap.entrySet()) {
             this.results.add(new EnchantedBookFindResult(merchant, entry.getValue(), entry.getKey()));
         }
+        this.villagerCount++;
     }
 
     private int getBookEnchantment(ItemStack enchantedBook) {

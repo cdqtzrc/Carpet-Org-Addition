@@ -32,14 +32,17 @@ public class TradeItemFindTask extends AbstractTradeFindTask {
         TradeOfferList offers = merchant.getOffers();
         ArrayList<Integer> list = new ArrayList<>();
         for (int index = 0; index < offers.size(); index++) {
+            // 检查每个出售的物品是否与匹配器匹配
             if (this.matcher.test(offers.get(index).getSellItem())) {
                 list.add(index + 1);
+                this.tradeCount++;
             }
         }
         if (list.isEmpty()) {
             return;
         }
         this.results.add(getResult(merchant, list));
+        this.villagerCount++;
     }
 
     /**

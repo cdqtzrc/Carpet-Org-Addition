@@ -33,6 +33,14 @@ public abstract class AbstractTradeFindTask extends ServerTask {
      */
     private int tickCount;
     protected final ArrayList<Result> results = new ArrayList<>();
+    /**
+     * 周围村民的数量，一般情况下等于this.results.size()，只在个别情况下例外，例如一个村民出售了至少3本相同附魔的附魔书，并且其中两本附魔书等级也相同
+     */
+    protected int villagerCount;
+    /**
+     * 交易选择的总数量
+     */
+    protected int tradeCount;
 
     public AbstractTradeFindTask(World world, SelectionArea selectionArea, BlockPos sourcePos, CommandContext<ServerCommandSource> context) {
         this.world = world;
@@ -86,6 +94,11 @@ public abstract class AbstractTradeFindTask extends ServerTask {
             // 检查每一只村民交易
             this.searchVillager(merchant);
         }
+        // 没有找到交易物品，跳过排序直接结束任务
+        if (this.results.isEmpty()) {
+            this.finish();
+            return;
+        }
         this.findState = FindState.SORT;
     }
 
@@ -99,29 +112,22 @@ public abstract class AbstractTradeFindTask extends ServerTask {
 
     // 对结果进行排序
     private void sort() {
-        if (this.results.isEmpty()) {
-            // TODO 移动到发送反馈中
-            this.notFound();
-            this.findState = FindState.END;
-            return;
-        }
         this.results.sort((o1, o2) -> o1.compare(o1, o2));
         this.findState = FindState.FEEDBACK;
     }
 
     private void feedback() {
-        // limit表示是否结果过多只显示前10条
-        boolean limit = this.results.size() > FinderCommand.MAX_FEEDBACK_COUNT;
         ArrayList<Object> list = new ArrayList<>();
         // 村民数量
-        list.add(this.results.size());
+        list.add(this.villagerCount);
         list.add(this.getTradeName());
         list.add(FinderCommand.VILLAGER);
-        // TODO 不再需要，交易项目数量
-        list.add(this.results.size());
+        // 总交易选项数量
+        list.add(this.tradeCount);
         // 消息的翻译键
         String key;
-        if (limit) {
+        if (this.results.size() > FinderCommand.MAX_FEEDBACK_COUNT) {
+            // 结果太多，限制只显示前10条
             key = getResultLimitKey();
             // 需要限制数量的消息中多一个占位符
             list.add(FinderCommand.MAX_FEEDBACK_COUNT);
@@ -140,6 +146,14 @@ public abstract class AbstractTradeFindTask extends ServerTask {
     @Override
     public boolean stopped() {
         return this.findState == FindState.END;
+    }
+
+    /**
+     * 因没找到交易物品而停止查找
+     */
+    private void finish() {
+        this.notFound();
+        this.findState = FindState.END;
     }
 
     // 当前任务是否超时
