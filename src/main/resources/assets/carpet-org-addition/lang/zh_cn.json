@@ -333,6 +333,7 @@
   "carpet.commands.playerAction.action.stonecutting": "切石",
   "carpet.commands.playerAction.action.trade": "交易",
   "carpet.commands.playerManager.save.success": "将%s的玩家数据保存到本地文件",
+  "carpet.commands.playerManager.save.file_already_exist": "玩家数据已存在，点击%s重新保存",
   "carpet.commands.playerManager.save.resave": "将%s的玩家数据重新保存到本地文件",
   "carpet.commands.playerManager.save.fail": "尝试保存%s的玩家数据时出现意外问题",
   "carpet.commands.playerManager.spawn.fail": "尝试生成假玩家时出现意外问题",

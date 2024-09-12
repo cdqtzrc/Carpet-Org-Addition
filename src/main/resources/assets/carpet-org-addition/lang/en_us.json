@@ -249,6 +249,7 @@
   "carpet.commands.playerAction.action.stonecutting": "Stonecutting",
   "carpet.commands.playerAction.action.trade": "Trading",
   "carpet.commands.playerManager.save.success": "%s's player data to local file saved successfully",
+  "carpet.commands.playerManager.save.file_already_exist": "Player data already exists,click %s to save again",
   "carpet.commands.playerManager.save.resave": "%s's player data to local file saved again",
   "carpet.commands.playerManager.save.fail": "Failed to save %s's player data to local file",
   "carpet.commands.playerManager.spawn.fail": "Failed to spawn fake player",

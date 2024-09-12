@@ -168,24 +168,26 @@ public class PlayerManagerCommand {
         EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
         String annotation = StringArgumentType.getString(context, "annotation");
         FakePlayerSerial fakePlayerSerial = new FakePlayerSerial(fakePlayer, annotation);
-        savePlayer(context, fakePlayerSerial, fakePlayer, resave);
-        return 1;
+        return savePlayer(context, fakePlayerSerial, fakePlayer, resave);
     }
 
     // 保存玩家
-    private static void savePlayer(CommandContext<ServerCommandSource> context, FakePlayerSerial fakePlayerSerial, EntityPlayerMPFake fakePlayer, boolean resave) throws CommandSyntaxException {
+    private static int savePlayer(CommandContext<ServerCommandSource> context, FakePlayerSerial fakePlayerSerial, EntityPlayerMPFake fakePlayer, boolean resave) throws CommandSyntaxException {
         try {
-            if (fakePlayerSerial.save(context.getSource().getServer(), resave)) {
-                // 重新保存
-                MessageUtils.sendCommandFeedback(context.getSource(),
-                        "carpet.commands.playerManager.save.resave",
-                        fakePlayer.getDisplayName());
-            } else {
+            int result = fakePlayerSerial.save(context, resave);
+            if (result == 0) {
                 // 首次保存
                 MessageUtils.sendCommandFeedback(context.getSource(),
                         "carpet.commands.playerManager.save.success",
                         fakePlayer.getDisplayName());
+            } else if (result == 1) {
+                // 重新保存
+                MessageUtils.sendCommandFeedback(context.getSource(),
+                        "carpet.commands.playerManager.save.resave",
+                        fakePlayer.getDisplayName());
             }
+            // 成功保存玩家时，命令返回1，未能保存玩家时，命令返回0
+            return result < 0 ? 0 : 1;
         } catch (IOException e) {
             throw CommandUtils.createException("carpet.commands.playerManager.save.fail", fakePlayer.getDisplayName());
         }

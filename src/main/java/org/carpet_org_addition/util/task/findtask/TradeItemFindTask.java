@@ -12,8 +12,6 @@ import org.carpet_org_addition.command.FinderCommand;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
-import org.carpet_org_addition.util.matcher.ItemStackMatcher;
 import org.carpet_org_addition.util.matcher.Matcher;
 import org.carpet_org_addition.util.wheel.SelectionArea;
 

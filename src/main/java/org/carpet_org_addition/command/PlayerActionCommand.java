@@ -29,6 +29,7 @@ import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerAction;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionInterface;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionManager;
@@ -284,10 +285,9 @@ public class PlayerActionCommand {
             return;
         }
         String command = "/carpet ctrlQCraftingFix true";
-        MutableText here = TextUtils.getTranslate("carpet.command.text.click.here");
         // [这里]的悬停提示
-        MutableText hoverText = TextUtils.getTranslate("carpet.command.text.click.input", command);
-        MutableText suggest = TextUtils.suggest(here, command, hoverText, Formatting.AQUA);
+        MutableText hoverText = TextConstants.clickInput(command);
+        MutableText suggest = TextUtils.suggest(TextConstants.CLICK_HERE, command, hoverText, Formatting.AQUA);
         MessageUtils.sendCommandFeedback(source, "carpet.commands.playerAction.set", suggest);
     }
 
