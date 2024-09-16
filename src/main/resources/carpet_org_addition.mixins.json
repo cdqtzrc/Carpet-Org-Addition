@@ -80,7 +80,8 @@
     "util.TranslatableTextContentMixin"
   ],
   "client": [
-    "rule.client.carpet.SettingsManagerMixin"
+    "rule.client.carpet.SettingsManagerMixin",
+    "util.client.InGameHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1
