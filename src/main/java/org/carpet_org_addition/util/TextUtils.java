@@ -51,7 +51,7 @@ public class TextUtils {
     /**
      * 获取一个可以单击并在聊天框输入文本的可变文本组件
      *
-     * @param text  原始文本，直接显示在聊天页面上
+     * @param text      原始文本，直接显示在聊天页面上
      * @param input     点击后输入在聊天框里的文本
      * @param hoverText 光标放在原始文本上显示的内容，如果为null，不显示悬停文本
      * @param color     文本的颜色，如果为null，默认为白色
@@ -243,6 +243,13 @@ public class TextUtils {
      */
     public static MutableText setColor(MutableText mutableText, Formatting formatting) {
         return mutableText.styled(style -> style.withColor(formatting));
+    }
+
+    /**
+     * 将一个文本对象设置为灰色斜体
+     */
+    public static MutableText toGrayItalic(MutableText mutableText) {
+        return toItalic(setColor(mutableText, Formatting.GRAY));
     }
 
     /**

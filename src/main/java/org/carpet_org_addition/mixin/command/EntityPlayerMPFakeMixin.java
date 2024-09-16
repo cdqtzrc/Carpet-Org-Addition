@@ -68,8 +68,8 @@ public abstract class EntityPlayerMPFakeMixin implements FakePlayerActionInterfa
             // 假玩家剩余血量
             String health = MathUtils.keepTwoDecimalPlaces(thisPlayer.getHealth());
             MutableText message = TextUtils.getTranslate("carpet.commands.playerManager.safeafk.trigger", thisPlayer.getDisplayName(), health);
-            // 广播触发消息
-            MessageUtils.broadcastTextMessage(thisPlayer, message);
+            // 广播触发消息，斜体淡灰色
+            MessageUtils.broadcastTextMessage(thisPlayer, TextUtils.toGrayItalic(message));
             // 结束方法，不再执行剩余的tick方法
             ci.cancel();
         }
