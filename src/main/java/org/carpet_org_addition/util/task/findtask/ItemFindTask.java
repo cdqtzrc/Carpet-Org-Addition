@@ -257,7 +257,7 @@ public class ItemFindTask extends ServerTask {
     }
 
     @Override
-    public String toString() {
+    public String getLogName() {
         return "物品查找";
     }
 }

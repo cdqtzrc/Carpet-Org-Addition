@@ -164,7 +164,7 @@ public class BlockFindTask extends ServerTask {
     }
 
     @Override
-    public String toString() {
+    public String getLogName() {
         return "方块查找";
     }
 }

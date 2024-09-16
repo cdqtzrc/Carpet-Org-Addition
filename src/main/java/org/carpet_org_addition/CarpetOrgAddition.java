@@ -32,6 +32,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
      * TODO：
      *  Tab栏分割线分割真假玩家
      *  显示试炼刷怪笼倒计时
+     *  快递命令
      *  bug：https://github.com/cdqtzrc/Carpet-Org-Addition/issues/27
      */
 

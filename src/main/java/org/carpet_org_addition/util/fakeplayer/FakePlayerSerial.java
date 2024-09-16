@@ -57,7 +57,7 @@ public class FakePlayerSerial {
      *
      * @return 如果是首次保存，返回0，如果是重新保存，返回1，如果未能保存，返回-1
      */
-    public int save(CommandContext<ServerCommandSource> context, boolean resave) throws IOException, CommandSyntaxException {
+    public int save(CommandContext<ServerCommandSource> context, boolean resave) throws IOException {
         MinecraftServer server = context.getSource().getServer();
         WorldFormat worldFormat = new WorldFormat(server, PLAYER_DATA);
         String name = fakePlayer.getName().getString();

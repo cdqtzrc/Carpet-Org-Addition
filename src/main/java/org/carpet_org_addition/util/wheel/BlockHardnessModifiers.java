@@ -46,6 +46,7 @@ public class BlockHardnessModifiers {
 
     // 获取方块硬度
     public static Optional<Float> getHardness(Block block) {
+        // TODO 与AMS兼容性问题，深板岩矿石硬度问题
         // 设置基岩硬度
         if (block == Blocks.BEDROCK) {
             float bedrockHardness = CarpetOrgAdditionSettings.setBedrockHardness;
