@@ -287,7 +287,7 @@ public class PlayerActionCommand {
         String command = "/carpet ctrlQCraftingFix true";
         // [这里]的悬停提示
         MutableText hoverText = TextConstants.clickInput(command);
-        MutableText suggest = TextUtils.suggest(TextConstants.CLICK_HERE, command, hoverText, Formatting.AQUA);
+        MutableText suggest = TextUtils.suggest(TextConstants.CLICK_HERE.copy(), command, hoverText, Formatting.AQUA);
         MessageUtils.sendCommandFeedback(source, "carpet.commands.playerAction.set", suggest);
     }
 

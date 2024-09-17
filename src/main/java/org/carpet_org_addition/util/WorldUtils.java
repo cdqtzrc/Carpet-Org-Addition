@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -158,5 +159,9 @@ public class WorldUtils {
      */
     public static void playSound(World world, BlockPos blockPos, SoundEvent soundEvent, SoundCategory soundCategory) {
         world.playSound(null, blockPos, soundEvent, soundCategory, 1F, 1F);
+    }
+
+    public static void playSound(ServerPlayerEntity player, SoundEvent soundEvent, SoundCategory soundCategory) {
+        playSound(player.getWorld(), player.getBlockPos(), soundEvent, soundCategory);
     }
 }

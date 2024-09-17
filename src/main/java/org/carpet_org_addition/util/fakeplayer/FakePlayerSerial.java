@@ -69,7 +69,7 @@ public class FakePlayerSerial {
             if (this.annotation != null) {
                 command = command + " \"" + this.annotation + "\"";
             }
-            MutableText clickResave = TextUtils.command(TextConstants.CLICK_HERE, command,
+            MutableText clickResave = TextUtils.command(TextConstants.CLICK_HERE.copy(), command,
                     TextConstants.clickInput(command), Formatting.AQUA, false);
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.save.file_already_exist", clickResave);
             return -1;
