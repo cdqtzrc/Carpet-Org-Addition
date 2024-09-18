@@ -206,7 +206,7 @@ public class Express implements Comparable<Express> {
      * 将快递信息保存到本地文件
      */
     public void save() throws IOException {
-        NbtIo.write(this.writeNbt(), this.worldFormat.file(this.getId() + ".nbt"));
+        NbtIo.write(this.writeNbt(), this.worldFormat.file(this.getId() + ".nbt").toPath());
     }
 
     /**
