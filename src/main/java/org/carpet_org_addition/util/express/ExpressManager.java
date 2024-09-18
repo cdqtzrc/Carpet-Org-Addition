@@ -25,14 +25,16 @@ import java.util.stream.Stream;
 public class ExpressManager {
     private final TreeSet<Express> expresses = new TreeSet<>();
     private final WorldFormat worldFormat;
+    private final MinecraftServer server;
 
     public ExpressManager(MinecraftServer server) {
+        this.server = server;
         this.worldFormat = new WorldFormat(server, "express");
         // 从文件读取快递信息
         for (File file : this.worldFormat.toImmutableFileList()) {
             NbtCompound nbt;
             try {
-                nbt = NbtIo.read(file);
+                nbt = NbtIo.read(file.toPath());
             } catch (IOException e) {
                 CarpetOrgAddition.LOGGER.warn("从文件{}读取快递信息失败", file, e);
                 continue;
@@ -85,7 +87,7 @@ public class ExpressManager {
         this.expresses.add(express);
         express.sending();
         // 将快递信息写入本地文件
-        NbtIo.write(express.writeNbt(), this.worldFormat.file(express.getId() + ".nbt"));
+        NbtIo.write(express.writeNbt(this.server), this.worldFormat.file(express.getId() + ".nbt").toPath());
     }
 
     public Stream<Express> stream() {

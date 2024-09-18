@@ -6,9 +6,9 @@ import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import org.carpet_org_addition.util.inventory.ImmutableInventory;
 import org.carpet_org_addition.util.matcher.SimpleMatcher;
 import org.carpet_org_addition.util.wheel.ContainerDeepCopy;
-import org.carpet_org_addition.util.wheel.ImmutableInventory;
 
 import java.util.function.Consumer;
 

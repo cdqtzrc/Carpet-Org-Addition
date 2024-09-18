@@ -2,21 +2,17 @@ package org.carpet_org_addition.util.task.findtask;
 
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.TradeOfferList;
 import net.minecraft.world.World;
 import org.carpet_org_addition.command.FinderCommand;
+import org.carpet_org_addition.util.EnchantmentUtils;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
@@ -33,9 +29,7 @@ public class TradeEnchantedBookFindTask extends AbstractTradeFindTask {
     public TradeEnchantedBookFindTask(World world, SelectionArea selectionArea, BlockPos sourcePos, CommandContext<ServerCommandSource> context, Enchantment enchantment) {
         super(world, selectionArea, sourcePos, context);
         // 获取附魔名称，不带等级
-        MutableText text = TextUtils.getTranslate(enchantment.getTranslationKey());
-        // 设置附魔名称的颜色
-        TextUtils.setColor(text, enchantment.isCursed() ? Formatting.RED : Formatting.GRAY);
+        MutableText text = EnchantmentUtils.getName(enchantment);
         this.treadName = TextUtils.appendAll(text, Items.ENCHANTED_BOOK.getName());
         this.enchantment = enchantment;
     }
@@ -76,22 +70,9 @@ public class TradeEnchantedBookFindTask extends AbstractTradeFindTask {
 
     private int getBookEnchantment(ItemStack enchantedBook) {
         if (enchantedBook.isOf(Items.ENCHANTED_BOOK)) {
-            // 获取附魔的注册id
-            Identifier registryId = EnchantmentHelper.getEnchantmentId(this.enchantment);
-            // 获取附魔书所有的附魔
-            NbtList nbtList = EnchantedBookItem.getEnchantmentNbt(enchantedBook);
-            for (int i = 0; i < nbtList.size(); i++) {
-                // 获取每一个附魔的复合NBT标签
-                NbtCompound nbt = nbtList.getCompound(i);
-                // 获取这本附魔书上附魔的id
-                Identifier enchantmentId = EnchantmentHelper.getIdFromNbt(nbt);
-                if (enchantmentId != null && enchantmentId.equals(registryId)) {
-                    // 如果附魔书上附魔的id与指定id相同，获取等级
-                    final int level = EnchantmentHelper.getLevelFromNbt(nbt);
-                    if (level > 0) {
-                        return level;
-                    }
-                }
+            int level = EnchantmentUtils.getLevel(world, enchantment, enchantedBook);
+            if (level > 0) {
+                return level;
             }
         }
         return -1;
@@ -125,7 +106,7 @@ public class TradeEnchantedBookFindTask extends AbstractTradeFindTask {
             MutableText villagerName = TextUtils.command(merchant.getName().copy(),
                     "/particleLine ~ ~1 ~ " + merchant.getUuid(), null, null, true);
             // 获取交易名称
-            MutableText enchantmentName = TradeEnchantedBookFindTask.this.enchantment.getName(level).copy();
+            MutableText enchantmentName = EnchantmentUtils.getName(enchantment, level);
             return TextUtils.getTranslate("carpet.commands.finder.trade.enchanted_book.each",
                     TextUtils.blockPos(this.villagerPos(), Formatting.GREEN), villagerName, getIndexArray(this.list), enchantmentName);
         }
