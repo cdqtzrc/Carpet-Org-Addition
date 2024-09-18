@@ -1,6 +1,7 @@
 package org.carpet_org_addition.command;
 
 import carpet.patches.EntityPlayerMPFake;
+import carpet.utils.CommandHelper;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -16,6 +17,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
+import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.exception.CommandExecuteIOException;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
@@ -34,7 +36,7 @@ import java.util.Optional;
 public class MailCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("mail")
-                .requires(source -> true)
+                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandMail))
                 .then(CommandManager.literal("ship")
                         .then(CommandManager.argument(CommandUtils.PLAYER, EntityArgumentType.player())
                                 .executes(MailCommand::ship)))

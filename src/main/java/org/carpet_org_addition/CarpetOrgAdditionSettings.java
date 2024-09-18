@@ -536,4 +536,11 @@ public class CarpetOrgAdditionSettings {
             validators = FakePlayerMaxCraftCountValidator.class
     )
     public static int fakePlayerMaxCraftCount = 3;
+
+    // 快递命令
+    @Rule(
+            categories = {ORG, RuleCategory.COMMAND},
+            options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
+    )
+    public static String commandMail = "ops";
 }

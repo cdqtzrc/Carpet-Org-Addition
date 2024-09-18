@@ -190,6 +190,8 @@
   "carpet.rule.fakePlayerMaxCraftCount.name": "假玩家最大合成次数",
   "carpet.rule.fakePlayerMaxCraftCount.desc": "控制假玩家在一个游戏刻内最多合成多少次物品",
   "carpet.rule.fakePlayerMaxCraftCount.extra.0": "-1表示无限制",
+  "carpet.rule.commandMail.name": "快递命令",
+  "carpet.rule.commandMail.desc": "启用/mail命令用来向其他玩家发送物品",
   "carpet.rule.message.disableRespawnBlocksExplode": "已禁用重生方块爆炸",
   "carpet.rule.message.CCEUpdateSuppression": "你不能打开用于更新抑制的潜影盒",
   "carpet.rule.validate.less_than_or_equal": "值必须小于等于%s",

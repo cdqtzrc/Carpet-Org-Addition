@@ -106,6 +106,7 @@
   "carpet.rule.playerDropsNotDespawning.desc": "Set the Age of player drops to -32768 to prevent them from despawning",
   "carpet.rule.fakePlayerMaxCraftCount.desc": "Customize the maximizing crafting count of fake players in one game tick",
   "carpet.rule.fakePlayerMaxCraftCount.extra.0": "-1 represents no limit",
+  "carpet.rule.commandMail.desc": "Enable the /mail command to ship items to other players",
   "carpet.rule.message.disableRespawnBlocksExplode": "Respawn blocks explosion is disabled",
   "carpet.rule.message.CCEUpdateSuppression": "You cannot open the shulkerbox for update surpression",
   "carpet.rule.validate.less_than_or_equal": "Value should be less than or equal to %s",
