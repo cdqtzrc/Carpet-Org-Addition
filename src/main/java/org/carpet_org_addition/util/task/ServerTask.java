@@ -26,13 +26,13 @@ public abstract class ServerTask {
         } catch (TaskExecutionException e) {
             e.disposal();
         } catch (RuntimeException e) {
-            CarpetOrgAddition.LOGGER.error("{}任务执行时遇到意外错误", this, e);
+            CarpetOrgAddition.LOGGER.error("{}任务执行时遇到意外错误", this.getLogName(), e);
         }
         return true;
     }
 
     /**
-     * @return 当前任务的名称
+     * @return 当前任务的名称，不在游戏中使用，只在日志中使用
      */
-    public abstract String toString();
+    public abstract String getLogName();
 }

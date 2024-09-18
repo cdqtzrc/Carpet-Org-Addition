@@ -4,9 +4,8 @@ import carpet.patches.EntityPlayerMPFake;
 import com.google.gson.JsonObject;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.util.fakeplayer.actiondata.*;
-import org.carpet_org_addition.util.wheel.JsonSerial;
 
-public class FakePlayerActionManager implements JsonSerial {
+public class FakePlayerActionManager {
     private final EntityPlayerMPFake fakePlayer;
     private final ActionFunction function = new ActionFunction();
 
@@ -98,7 +97,6 @@ public class FakePlayerActionManager implements JsonSerial {
         }
     }
 
-    @Override
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         String action = switch (this.getAction()) {

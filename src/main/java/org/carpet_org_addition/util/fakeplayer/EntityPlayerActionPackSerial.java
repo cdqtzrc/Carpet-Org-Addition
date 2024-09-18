@@ -8,11 +8,10 @@ import carpet.patches.EntityPlayerMPFake;
 import com.google.gson.JsonObject;
 import org.carpet_org_addition.mixin.rule.entityplayeractionpack.ActionAccessor;
 import org.carpet_org_addition.mixin.rule.entityplayeractionpack.EntityPlayerActionPackAccessor;
-import org.carpet_org_addition.util.wheel.JsonSerial;
 
 import java.util.Map;
 
-public class EntityPlayerActionPackSerial implements JsonSerial {
+public class EntityPlayerActionPackSerial {
     private final Map<ActionType, EntityPlayerActionPack.Action> actionMap;
 
     public EntityPlayerActionPackSerial(EntityPlayerActionPack actionPack) {
@@ -47,7 +46,6 @@ public class EntityPlayerActionPackSerial implements JsonSerial {
         }
     }
 
-    @Override
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         // 左键动作

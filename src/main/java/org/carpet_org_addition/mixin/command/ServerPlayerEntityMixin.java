@@ -33,7 +33,7 @@ public class ServerPlayerEntityMixin implements NavigatorInterface {
         try {
             this.navigator.tick();
         } catch (RuntimeException e) {
-            MessageUtils.sendCommandErrorFeedback(thisPlayer.getCommandSource(), "carpet.commands.navigate.exception");
+            MessageUtils.sendCommandErrorFeedback(thisPlayer.getCommandSource(), e, "carpet.commands.navigate.exception");
             CarpetOrgAddition.LOGGER.error("导航器没有按照预期工作", e);
             // 清除导航器
             this.clearNavigator();

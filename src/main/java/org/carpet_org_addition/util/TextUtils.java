@@ -10,6 +10,7 @@ import org.carpet_org_addition.translate.Translate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Objects;
 
 public class TextUtils {
@@ -51,7 +52,7 @@ public class TextUtils {
     /**
      * 获取一个可以单击并在聊天框输入文本的可变文本组件
      *
-     * @param text  原始文本，直接显示在聊天页面上
+     * @param text      原始文本，直接显示在聊天页面上
      * @param input     点击后输入在聊天框里的文本
      * @param hoverText 光标放在原始文本上显示的内容，如果为null，不显示悬停文本
      * @param color     文本的颜色，如果为null，默认为白色
@@ -246,6 +247,13 @@ public class TextUtils {
     }
 
     /**
+     * 将一个文本对象设置为灰色斜体
+     */
+    public static MutableText toGrayItalic(MutableText mutableText) {
+        return toItalic(setColor(mutableText, Formatting.GRAY));
+    }
+
+    /**
      * 获取一个物品名称的可变文本形式
      *
      * @param item 要获取名称的物品
@@ -273,6 +281,22 @@ public class TextUtils {
             }
         }
         return mutableText;
+    }
+
+    /**
+     * 将一个集合的文本对象拼接起来，每个元素之间换行符分割
+     *
+     * @return 拼接后的文本对象
+     */
+    public static MutableText appendList(List<MutableText> list) {
+        MutableText result = createEmpty();
+        for (int i = 0; i < list.size(); i++) {
+            result.append(list.get(i));
+            if (i < list.size() - 1) {
+                result.append("\n");
+            }
+        }
+        return result;
     }
 
     /**

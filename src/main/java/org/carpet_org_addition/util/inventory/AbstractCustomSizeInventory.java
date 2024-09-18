@@ -1,4 +1,4 @@
-package org.carpet_org_addition.util.wheel;
+package org.carpet_org_addition.util.inventory;
 
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;

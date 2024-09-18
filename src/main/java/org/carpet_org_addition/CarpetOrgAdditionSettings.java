@@ -518,4 +518,11 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.BUGFIX}
     )
     public static boolean fakePlayerSpawnMemoryLeakFix = false;
+
+    // 快递命令
+    @Rule(
+            categories = {ORG, RuleCategory.COMMAND},
+            options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
+    )
+    public static String commandMail = "ops";
 }

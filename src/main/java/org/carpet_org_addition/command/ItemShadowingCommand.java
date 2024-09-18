@@ -12,7 +12,7 @@ import net.minecraft.util.Hand;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.*;
-import org.carpet_org_addition.util.wheel.ImmutableInventory;
+import org.carpet_org_addition.util.inventory.ImmutableInventory;
 
 public class ItemShadowingCommand {
     //注册用于制作物品分身的/itemshadowing命令

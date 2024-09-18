@@ -24,8 +24,8 @@ import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.WorldUtils;
-import org.carpet_org_addition.util.wheel.Waypoint;
 import org.carpet_org_addition.util.navigator.NavigatorInterface;
+import org.carpet_org_addition.util.wheel.Waypoint;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -74,8 +74,7 @@ public class NavigatorCommand {
         ((NavigatorInterface) player).setNavigator(entity, isContinue);
         if (shouldBeBroadcasted(entity, player)) {
             // 设置为斜体淡灰色
-            text = TextUtils.toItalic(TextUtils.setColor(text, Formatting.GRAY));
-            MessageUtils.broadcastTextMessage(context.getSource(), text);
+            MessageUtils.broadcastTextMessage(context.getSource(), TextUtils.toGrayItalic(text));
         } else {
             MessageUtils.sendCommandFeedback(context.getSource(), text);
         }
