@@ -183,7 +183,7 @@
   "carpet.rule.fakePlayerMaxCraftCount.desc": "控制假玩家在一个游戏刻内最多合成多少次物品",
   "carpet.rule.fakePlayerMaxCraftCount.extra.0": "-1表示无限制",
   "carpet.rule.fakePlayerSpawnMemoryLeakFix.name": "假玩家生成内存泄漏修复",
-  "carpet.rule.fakePlayerSpawnMemoryLeakFix.desc": "修复在同时安装fabric api时生成假玩家生成导致的内存泄漏问题",
+  "carpet.rule.fakePlayerSpawnMemoryLeakFix.desc": "修复在同时安装fabric api时生成假玩家导致的内存泄漏问题",
   "carpet.rule.commandMail.name": "快递命令",
   "carpet.rule.commandMail.desc": "启用/mail命令用来向其他玩家发送物品",
   "carpet.rule.message.disableRespawnBlocksExplode": "已禁用重生方块爆炸",
