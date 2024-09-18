@@ -10,6 +10,7 @@ import org.carpet_org_addition.translate.Translate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Objects;
 
 public class TextUtils {
@@ -280,6 +281,22 @@ public class TextUtils {
             }
         }
         return mutableText;
+    }
+
+    /**
+     * 将一个集合的文本对象拼接起来，每个元素之间换行符分割
+     *
+     * @return 拼接后的文本对象
+     */
+    public static MutableText appendList(List<MutableText> list) {
+        MutableText result = createEmpty();
+        for (int i = 0; i < list.size(); i++) {
+            result.append(list.get(i));
+            if (i < list.size() - 1) {
+                result.append("\n");
+            }
+        }
+        return result;
     }
 
     /**

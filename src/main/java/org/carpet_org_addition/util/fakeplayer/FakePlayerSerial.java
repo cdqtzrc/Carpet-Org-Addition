@@ -178,14 +178,7 @@ public class FakePlayerSerial {
             // 添加注释
             list.add(TextUtils.getTranslate("carpet.commands.playerManager.info.annotation", json.get("annotation").getAsString()));
         }
-        MutableText info = TextUtils.createText("");
-        for (int i = 0; i < list.size(); i++) {
-            info.append(list.get(i));
-            if (i < list.size() - 1) {
-                info.append("\n");
-            }
-        }
-        return info;
+        return TextUtils.appendList(list);
     }
 
     public JsonObject toJson() {

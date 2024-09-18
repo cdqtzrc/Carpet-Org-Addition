@@ -50,6 +50,6 @@ public class RegisterCarpetCommands {
         NavigatorCommand.register(dispatcher);
 
         // 快递命令
-        ExpressCommand.register(dispatcher);
+        MailCommand.register(dispatcher);
     }
 }

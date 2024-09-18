@@ -109,6 +109,21 @@ public class MessageUtils {
     }
 
     /**
+     * <br>发送一条红色的可以被翻译的消息做为命令的执行反馈，消息内容仅消息发送者可见<br/>
+     * 鼠标悬停时可以显示异常信息
+     *
+     * @param source 消息的发送者
+     * @param e      引发错误的异常对象
+     * @param key    消息的翻译键
+     * @param obj    消息中替代占位符的内容
+     */
+    public static void sendCommandErrorFeedback(ServerCommandSource source, Throwable e, String key, Object... obj) {
+        String error = e.getMessage();
+        MutableText message = TextUtils.setColor(TextUtils.getTranslate(key, obj), Formatting.RED);
+        MessageUtils.sendTextMessage(source, TextUtils.hoverText(message, TextUtils.createText(error)));
+    }
+
+    /**
      * 发送多条带有特殊样式的消息，每一条消息单独占一行，消息内容仅发送者可见
      *
      * @param source 消息的发送者，消息内容仅发送者可见

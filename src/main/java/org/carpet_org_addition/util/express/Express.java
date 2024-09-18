@@ -62,7 +62,7 @@ public class Express implements Comparable<Express> {
         if (mainHandStack.isEmpty()) {
             ItemStack offHandStack = sender.getOffHandStack();
             if (offHandStack.isEmpty()) {
-                throw CommandUtils.createException("carpet.commands.express.structure");
+                throw CommandUtils.createException("carpet.commands.mail.structure");
             }
             this.express = offHandStack.copyAndEmpty();
         } else {
@@ -70,7 +70,17 @@ public class Express implements Comparable<Express> {
         }
         this.id = id;
         this.time = LocalDateTime.now();
-        worldFormat = new WorldFormat(server, EXPRESS);
+        this.worldFormat = new WorldFormat(server, EXPRESS);
+    }
+
+    public Express(MinecraftServer server, ServerPlayerEntity sender, ServerPlayerEntity recipient, ItemStack itemStack, int id) {
+        this.server = server;
+        this.sender = sender.getName().getString();
+        this.recipient = recipient.getName().getString();
+        this.express = itemStack;
+        this.id = id;
+        this.time = LocalDateTime.now();
+        this.worldFormat = new WorldFormat(server, EXPRESS);
     }
 
     private Express(MinecraftServer server, String sender, String recipient, ItemStack express, int id, LocalDateTime time) {
@@ -99,13 +109,13 @@ public class Express implements Comparable<Express> {
             return;
         }
         // 向快递发送者发送发出快递的消息
-        MutableText cancelText = TextConstants.clickRun("/express cancel " + this.getId());
+        MutableText cancelText = TextConstants.clickRun("/mail cancel " + this.getId());
         Object[] senderArray = {recipientPlayer.getDisplayName(), this.express.getCount(), this.express.toHoverableText(), cancelText};
-        MessageUtils.sendTextMessage(senderPlayer, TextUtils.getTranslate("carpet.commands.express.sending.sender", senderArray));
+        MessageUtils.sendTextMessage(senderPlayer, TextUtils.getTranslate("carpet.commands.mail.sending.sender", senderArray));
         // 向快递接受者发送发出快递的消息
-        MutableText receiveText = TextConstants.clickRun("/express receive " + this.getId());
+        MutableText receiveText = TextConstants.clickRun("/mail receive " + this.getId());
         Object[] recipientArray = {senderPlayer.getDisplayName(), this.express.getCount(), this.express.toHoverableText(), receiveText};
-        MessageUtils.sendTextMessage(recipientPlayer, TextUtils.getTranslate("carpet.commands.express.sending.recipient", recipientArray));
+        MessageUtils.sendTextMessage(recipientPlayer, TextUtils.getTranslate("carpet.commands.mail.sending.recipient", recipientArray));
         // 在接受者位置播放音效
         WorldUtils.playSound(recipientPlayer.getWorld(), recipientPlayer.getBlockPos(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS);
     }
@@ -121,7 +131,7 @@ public class Express implements Comparable<Express> {
         }
         if (this.cancel) {
             // 快递已被撤回
-            MessageUtils.sendTextMessage(player, TextUtils.getTranslate("carpet.commands.express.receive.cancel"));
+            MessageUtils.sendTextMessage(player, TextUtils.getTranslate("carpet.commands.mail.receive.cancel"));
             return;
         }
         int count = this.express.getCount();
@@ -130,18 +140,18 @@ public class Express implements Comparable<Express> {
         // 将快递内容放入物品栏
         if (this.express.getCount() == count) {
             // 物品未能成功放入物品栏
-            MessageUtils.sendTextMessage(player, TextUtils.getTranslate("carpet.commands.express.receive.insufficient_capacity"));
+            MessageUtils.sendTextMessage(player, TextUtils.getTranslate("carpet.commands.mail.receive.insufficient_capacity"));
         } else {
             if (this.express.isEmpty()) {
                 // 物品完全放入物品栏
-                MessageUtils.sendTextMessage(player, TextUtils.getTranslate("carpet.commands.express.receive.success", count, text));
+                MessageUtils.sendTextMessage(player, TextUtils.getTranslate("carpet.commands.mail.receive.success", count, text));
                 // 删除文件
                 this.delete();
             } else {
                 // 剩余的物品数量
                 int surplusCount = this.express.getCount();
                 // 物品部分放入物品栏
-                MessageUtils.sendTextMessage(player, TextUtils.getTranslate("carpet.commands.express.receive.partial_reception",
+                MessageUtils.sendTextMessage(player, TextUtils.getTranslate("carpet.commands.mail.receive.partial_reception",
                         count - surplusCount, surplusCount));
                 // 重新保存文件
                 this.save();
@@ -167,17 +177,17 @@ public class Express implements Comparable<Express> {
         // 将快递内容放入物品栏
         if (this.express.getCount() == count) {
             // 物品未能成功放入物品栏
-            MessageUtils.sendTextMessage(player, TextUtils.getTranslate("carpet.commands.express.cancel.insufficient_capacity"));
+            MessageUtils.sendTextMessage(player, TextUtils.getTranslate("carpet.commands.mail.cancel.insufficient_capacity"));
         } else {
             // 物品完全放入物品栏
             if (this.express.isEmpty()) {
-                MessageUtils.sendTextMessage(player, TextUtils.getTranslate("carpet.commands.express.cancel.success", count, text));
+                MessageUtils.sendTextMessage(player, TextUtils.getTranslate("carpet.commands.mail.cancel.success", count, text));
                 this.delete();
             } else {
                 // 剩余的物品数量
                 int surplusCount = this.express.getCount();
                 // 物品部分放入物品栏
-                MessageUtils.sendTextMessage(player, TextUtils.getTranslate("carpet.commands.express.cancel.partial_reception",
+                MessageUtils.sendTextMessage(player, TextUtils.getTranslate("carpet.commands.mail.cancel.partial_reception",
                         count - surplusCount, surplusCount));
                 this.save();
             }
@@ -187,7 +197,7 @@ public class Express implements Comparable<Express> {
         ServerPlayerEntity recipientPlayer = playerManager.getPlayer(this.recipient);
         if (recipientPlayer != null) {
             // 如果接收者在线，通知接收者快递已经撤回
-            MessageUtils.sendTextMessage(recipientPlayer, TextUtils.getTranslate("carpet.commands.express.cancel.notice", player.getDisplayName()));
+            MessageUtils.sendTextMessage(recipientPlayer, TextUtils.getTranslate("carpet.commands.mail.cancel.notice", player.getDisplayName()));
         }
         this.cancel = true;
     }

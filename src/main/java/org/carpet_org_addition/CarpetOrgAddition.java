@@ -14,6 +14,8 @@ import net.minecraft.util.math.Vec3d;
 import org.carpet_org_addition.command.RegisterCarpetCommands;
 import org.carpet_org_addition.logger.WanderingTraderSpawnLogger;
 import org.carpet_org_addition.translate.Translate;
+import org.carpet_org_addition.util.express.ExpressManager;
+import org.carpet_org_addition.util.express.ExpressManagerInterface;
 import org.carpet_org_addition.util.wheel.Waypoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +68,9 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
             // 清除负面效果
             player.getStatusEffects().removeIf(effect -> effect.getEffectType().getCategory() == StatusEffectCategory.HARMFUL);
         }
+        // 提示玩家接收快递
+        ExpressManager expressManager = ((ExpressManagerInterface) player.server).getExpressManager();
+        expressManager.promptToReceive(player);
     }
 
     // 服务器启动时调用

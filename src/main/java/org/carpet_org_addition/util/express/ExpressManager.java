@@ -1,9 +1,15 @@
 package org.carpet_org_addition.util.express;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.MutableText;
 import org.carpet_org_addition.CarpetOrgAddition;
+import org.carpet_org_addition.util.MessageUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.wheel.WorldFormat;
 
 import java.io.File;
@@ -22,6 +28,7 @@ public class ExpressManager {
 
     public ExpressManager(MinecraftServer server) {
         this.worldFormat = new WorldFormat(server, "express");
+        // 从文件读取快递信息
         for (File file : this.worldFormat.toImmutableFileList()) {
             NbtCompound nbt;
             try {
@@ -33,7 +40,30 @@ public class ExpressManager {
             if (nbt == null) {
                 continue;
             }
-            this.expresses.add(Express.readNbt(server, nbt));
+            Express express = Express.readNbt(server, nbt);
+            // 快递对象物品为空，删除对应的文件
+            if (express.complete()) {
+                express.delete();
+                continue;
+            }
+            this.expresses.add(express);
+        }
+    }
+
+    /**
+     * 提示玩家接收快递
+     */
+    public void promptToReceive(ServerPlayerEntity player) {
+        List<Express> list = this.expresses.stream().filter(express -> express.isRecipient(player)).toList();
+        if (list.isEmpty()) {
+            return;
+        }
+        ServerCommandSource source = player.getCommandSource();
+        for (Express express : list) {
+            MutableText clickRun = TextConstants.clickRun("/mail receive " + express.getId());
+            ItemStack stack = express.getExpress();
+            MessageUtils.sendCommandFeedback(source, "carpet.commands.mail.prompt_receive",
+                    stack.getCount(), stack.toHoverableText(), clickRun);
         }
     }
 
@@ -48,6 +78,10 @@ public class ExpressManager {
      * 添加新快递
      */
     public void put(Express express) throws IOException {
+        if (express.getExpress().isEmpty()) {
+            CarpetOrgAddition.LOGGER.info("尝试发送一个空气物品，已忽略");
+            return;
+        }
         this.expresses.add(express);
         express.sending();
         // 将快递信息写入本地文件
