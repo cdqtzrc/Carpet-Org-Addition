@@ -13,16 +13,14 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.util.*;
-import org.carpet_org_addition.util.constant.CommandSyntaxExceptionConstants;
 import org.carpet_org_addition.util.constant.TextConstants;
-import org.carpet_org_addition.util.wheel.JsonSerial;
 import org.carpet_org_addition.util.wheel.WorldFormat;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class FakePlayerSerial implements JsonSerial {
+public class FakePlayerSerial {
     public static final String PLAYER_DATA = "player_data";
     private final EntityPlayerMPFake fakePlayer;
     private String annotation;
@@ -57,17 +55,27 @@ public class FakePlayerSerial implements JsonSerial {
     /**
      * 将当前对象保存到本地文件
      *
-     * @return 是否为重新保存
+     * @return 如果是首次保存，返回0，如果是重新保存，返回1，如果未能保存，返回-1
      */
-    public boolean save(MinecraftServer server, boolean resave) throws IOException, CommandSyntaxException {
+    public int save(CommandContext<ServerCommandSource> context, boolean resave) throws IOException {
+        MinecraftServer server = context.getSource().getServer();
         WorldFormat worldFormat = new WorldFormat(server, PLAYER_DATA);
-        File file = worldFormat.file(fakePlayer.getName().getString());
+        String name = fakePlayer.getName().getString();
+        File file = worldFormat.file(name);
+        // 玩家数据是否已存在
         boolean exists = file.exists();
         if (exists && !resave) {
-            throw CommandSyntaxExceptionConstants.JSON_FILE_ALREADY_EXIST_EXCEPTION;
+            String command = "/playerManager resave " + name;
+            if (this.annotation != null) {
+                command = command + " \"" + this.annotation + "\"";
+            }
+            MutableText clickResave = TextUtils.command(TextConstants.CLICK_HERE.copy(), command,
+                    TextConstants.clickInput(command), Formatting.AQUA, false);
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.save.file_already_exist", clickResave);
+            return -1;
         }
         WorldFormat.saveJson(file, WorldFormat.GSON, this.toJson());
-        return exists;
+        return exists ? 1 : 0;
     }
 
     // 从json加载并生成假玩家
@@ -170,17 +178,9 @@ public class FakePlayerSerial implements JsonSerial {
             // 添加注释
             list.add(TextUtils.getTranslate("carpet.commands.playerManager.info.annotation", json.get("annotation").getAsString()));
         }
-        MutableText info = TextUtils.createText("");
-        for (int i = 0; i < list.size(); i++) {
-            info.append(list.get(i));
-            if (i < list.size() - 1) {
-                info.append("\n");
-            }
-        }
-        return info;
+        return TextUtils.appendList(list);
     }
 
-    @Override
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         // 玩家位置

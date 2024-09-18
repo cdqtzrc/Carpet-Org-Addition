@@ -114,7 +114,7 @@ public class CreeperCommand {
         }
 
         @Override
-        public String toString() {
+        public String getLogName() {
             return "苦力怕爆炸";
         }
     }

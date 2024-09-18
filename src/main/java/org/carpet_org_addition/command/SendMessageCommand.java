@@ -140,8 +140,8 @@ public class SendMessageCommand {
     // 发送手上的物品的悬停文本
     private static int sendItemHoverableText(CommandContext<ServerCommandSource> context, boolean requiredPlayer) throws CommandSyntaxException {
         ItemStack itemStack;
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         if (requiredPlayer) {
-            ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
             // 获取玩家主手上的物品
             ItemStack mainHandStack = player.getMainHandStack();
             // 如果玩家主手上的物品为空，就获取玩家副手的物品
@@ -153,7 +153,9 @@ public class SendMessageCommand {
         } else {
             itemStack = ItemStackArgumentType.getItemStackArgument(context, "itemStack").createStack(1, false);
         }
-        MessageUtils.broadcastTextMessage(context.getSource(), itemStack.toHoverableText());
+        // 发送物品带有悬停文本的消息
+        MutableText message = TextUtils.appendAll(player.getDisplayName(), "：", itemStack.toHoverableText());
+        MessageUtils.broadcastTextMessage(context.getSource(), message);
         return 1;
     }
 }

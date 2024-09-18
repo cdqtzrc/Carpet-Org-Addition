@@ -1,4 +1,4 @@
-package org.carpet_org_addition.util.wheel;
+package org.carpet_org_addition.util.inventory;
 
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;

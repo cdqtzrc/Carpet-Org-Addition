@@ -86,7 +86,7 @@ public class DelayedLoginTask extends PlayerScheduleTask {
     }
 
     @Override
-    public String toString() {
+    public String getLogName() {
         return this.name + "延迟上线";
     }
 }

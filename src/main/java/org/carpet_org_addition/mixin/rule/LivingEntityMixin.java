@@ -19,8 +19,10 @@ import net.minecraft.util.collection.DefaultedList;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.rulevalue.BetterTotemOfUndying;
 import org.carpet_org_addition.util.InventoryUtils;
+import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -63,6 +65,7 @@ public abstract class LivingEntityMixin {
             return;
         }
         ItemStack itemStack = null;
+        // 原版：从手上获取物品
         for (Hand hand : Hand.values()) {
             ItemStack itemStack2 = thisLivingEntity.getStackInHand(hand);
             if (!itemStack2.isOf(Items.TOTEM_OF_UNDYING)) continue;
@@ -72,24 +75,7 @@ public abstract class LivingEntityMixin {
         }
         // 从玩家物品栏寻找不死图腾
         if (itemStack == null && thisLivingEntity instanceof PlayerEntity playerEntity) {
-            DefaultedList<ItemStack> mainInventory = playerEntity.getInventory().main;
-            for (ItemStack totemOfUndying : mainInventory) {
-                if (totemOfUndying.isOf(Items.TOTEM_OF_UNDYING)) {
-                    itemStack = totemOfUndying.copy();
-                    totemOfUndying.decrement(1);
-                    break;
-                } else if (CarpetOrgAdditionSettings.betterTotemOfUndying == BetterTotemOfUndying.SHULKER_BOX
-                        && InventoryUtils.isShulkerBoxItem(totemOfUndying)) {
-                    // 从潜影盒中拿取不死图腾
-                    ItemStack itemInTheBox = InventoryUtils.shulkerBoxConsumer(totemOfUndying,
-                            stack -> stack.isOf(Items.TOTEM_OF_UNDYING),
-                            stack -> stack.decrement(1));
-                    itemStack = itemInTheBox.copy();
-                    // 潜影盒中的不死图腾可能是堆叠的
-                    itemStack.setCount(1);
-                    break;
-                }
-            }
+            itemStack = pickTotem(playerEntity);
         }
         if (itemStack != null) {
             if (thisLivingEntity instanceof ServerPlayerEntity serverPlayerEntity) {
@@ -104,5 +90,40 @@ public abstract class LivingEntityMixin {
             thisLivingEntity.getWorld().sendEntityStatus(thisLivingEntity, EntityStatuses.USE_TOTEM_OF_UNDYING);
         }
         cir.setReturnValue(itemStack != null);
+    }
+
+    @Unique
+    @Nullable
+    // 从物品栏获取不死图腾
+    private static ItemStack pickTotem(PlayerEntity playerEntity) {
+        DefaultedList<ItemStack> mainInventory = playerEntity.getInventory().main;
+        // 从物品栏获取物品，在Inject方法的一开始就判断了规则值是否为false，所以在这里不需要再次判断
+        // 无论规则值是true还是shulker_box，都需要从物品栏获取物品
+        for (ItemStack totemOfUndying : mainInventory) {
+            if (totemOfUndying.isOf(Items.TOTEM_OF_UNDYING)) {
+                ItemStack itemStack = totemOfUndying.copy();
+                totemOfUndying.decrement(1);
+                return itemStack;
+            }
+        }
+        // 如果这里规则值为true，或者说规则值不是shulker_box，那就没有必要继续向下执行
+        if (CarpetOrgAdditionSettings.betterTotemOfUndying == BetterTotemOfUndying.TRUE) {
+            return null;
+        }
+        // 如果执行到这里，那么规则值一定是shulker_box，因为如果是true会在上面的if语句中直接返回，如果为false，这个方法都不会被执行
+        for (ItemStack shulkerBox : mainInventory) {
+            if (InventoryUtils.isShulkerBoxItem(shulkerBox)) {
+                // 从潜影盒中拿取不死图腾
+                ItemStack itemInTheBox = InventoryUtils.shulkerBoxConsumer(shulkerBox,
+                        stack -> stack.isOf(Items.TOTEM_OF_UNDYING),
+                        stack -> stack.decrement(1));
+                // 潜影盒中可能没有不死图腾
+                if (itemInTheBox.isEmpty()) {
+                    continue;
+                }
+                return itemInTheBox.copy();
+            }
+        }
+        return null;
     }
 }

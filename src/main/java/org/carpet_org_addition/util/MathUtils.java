@@ -1,11 +1,8 @@
 package org.carpet_org_addition.util;
 
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.rulevalidator.MaxBlockPlaceDistanceValidator;
 
@@ -198,59 +195,5 @@ public class MathUtils {
             sj.add(String.format("%.2f", arg));
         }
         return sj.toString();
-    }
-
-    /**
-     * @param target 玩家看向的位置
-     * @see net.minecraft.client.gui.hud.SubtitlesHud#render(DrawContext)
-     */
-    public static int forwardAngle(PlayerEntity player, Vec3d target) {
-        // 获取玩家眼睛的位置
-        Vec3d eyePos = player.getEyePos();
-        Vec3d vec3d2 = new Vec3d(0.0, 0.0, -1.0).rotateX(-player.getPitch() * ((float) Math.PI / 180)).rotateY(-player.getYaw() * ((float) Math.PI / 180));
-        Vec3d vec3d3 = new Vec3d(0.0, 1.0, 0.0).rotateX(-player.getPitch() * ((float) Math.PI / 180)).rotateY(-player.getYaw() * ((float) Math.PI / 180));
-        Vec3d vec3d4 = vec3d2.crossProduct(vec3d3);
-        Vec3d vec3d5 = target.subtract(eyePos).normalize();
-        // 视线与垂直方向的夹角
-        double verticalAngle = -vec3d4.dotProduct(vec3d5);
-        double forwardAngle = -vec3d2.dotProduct(vec3d5);
-        if (forwardAngle <= -0.7) {
-            if (verticalAngle > 0.0) {
-                return 3;
-            } else if (verticalAngle < 0.0) {
-                return -3;
-            }
-        }
-        if (forwardAngle <= -0.0) {
-            if (verticalAngle > 0.0) {
-                return 2;
-            } else if (verticalAngle < 0.0) {
-                return -2;
-            }
-        }
-        if (forwardAngle <= 0.95) {
-            if (verticalAngle > 0.0) {
-                return 1;
-            } else if (verticalAngle < 0.0) {
-                return -1;
-            }
-        }
-        return 0;
-    }
-
-    /**
-     * @return 玩家是否看向某个位置，只考虑高度
-     */
-    public static int verticalAngle(PlayerEntity player, Vec3d target) {
-        double x = Math.sqrt(Math.pow(player.getX() - target.getX(), 2) + Math.pow(player.getZ() - target.getZ(), 2));
-        double y = target.getY() - player.getEyeY();
-        double result = player.getPitch() + Math.toDegrees(Math.atan2(y, x));
-        if (result >= 10) {
-            return 1;
-        } else if (result <= -10) {
-            return -1;
-        } else {
-            return 0;
-        }
     }
 }

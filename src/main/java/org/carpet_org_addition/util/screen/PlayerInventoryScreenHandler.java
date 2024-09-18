@@ -1,4 +1,4 @@
-package org.carpet_org_addition.util.fakeplayer;
+package org.carpet_org_addition.util.screen;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -8,7 +8,8 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.carpet_org_addition.util.MathUtils;
-import org.carpet_org_addition.util.wheel.AbstractCustomSizeInventory;
+import org.carpet_org_addition.util.inventory.AbstractCustomSizeInventory;
+import org.carpet_org_addition.util.inventory.ServerPlayerInventory;
 
 public class PlayerInventoryScreenHandler extends ScreenHandler {
     private static final int SIZE = 41;

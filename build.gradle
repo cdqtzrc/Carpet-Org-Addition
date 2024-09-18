@@ -44,6 +44,7 @@ dependencies {
     include(modImplementation 'com.github.Fallen-Breath.conditional-mixin:conditional-mixin-fabric:0.6.2')
     testImplementation(group: 'junit', name: 'junit', version: junit_version)
 }
+
 processResources {
     inputs.property "version", mod_version
     inputs.property "minecraft_version", project.minecraft_version

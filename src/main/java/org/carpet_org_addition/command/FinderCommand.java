@@ -22,13 +22,14 @@ import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.matcher.ItemMatcher;
 import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
-import org.carpet_org_addition.util.matcher.ItemStackMatcher;
 import org.carpet_org_addition.util.matcher.Matcher;
 import org.carpet_org_addition.util.task.ServerTaskManagerInterface;
 import org.carpet_org_addition.util.task.findtask.BlockFindTask;
 import org.carpet_org_addition.util.task.findtask.ItemFindTask;
-import org.carpet_org_addition.util.task.findtask.TradeFindTask;
+import org.carpet_org_addition.util.task.findtask.TradeEnchantedBookFindTask;
+import org.carpet_org_addition.util.task.findtask.TradeItemFindTask;
 import org.carpet_org_addition.util.wheel.SelectionArea;
 
 import java.util.function.Predicate;
@@ -133,14 +134,16 @@ public class FinderCommand {
             range = IntegerArgumentType.getInteger(context, "range");
         }
         // 获取要匹配的物品
-        ItemStackArgument itemStackArgument = ItemStackArgumentType.getItemStackArgument(context, "itemStack");
+        ItemMatcher matcher = new ItemMatcher(ItemStackArgumentType.getItemStackArgument(context, "itemStack").getItem());
         // 获取玩家所在的坐标
         BlockPos sourcePos = player.getBlockPos();
-        ServerTaskManagerInterface taskManager = ServerTaskManagerInterface.getInstance(context.getSource().getServer());
         World world = player.getWorld();
-        ItemStackMatcher matcher = new ItemStackMatcher(itemStackArgument.createStack(1, false));
-        TradeFindTask.TradePredicate predicate = new TradeFindTask.TradePredicate(matcher);
-        taskManager.addTask(new TradeFindTask(world, new SelectionArea(world, sourcePos, range), sourcePos, context, predicate));
+        // 查找范围
+        SelectionArea area = new SelectionArea(world, sourcePos, range);
+        TradeItemFindTask task = new TradeItemFindTask(world, area, sourcePos, context, matcher);
+        // 向任务管理器添加任务
+        ServerTaskManagerInterface taskManager = ServerTaskManagerInterface.getInstance(context.getSource().getServer());
+        taskManager.addTask(task);
         return 1;
     }
 
@@ -157,10 +160,12 @@ public class FinderCommand {
         // 获取玩家所在的位置
         BlockPos sourcePos = player.getBlockPos();
         World world = player.getWorld();
+        // 查找范围
+        SelectionArea area = new SelectionArea(world, sourcePos, range);
+        TradeEnchantedBookFindTask task = new TradeEnchantedBookFindTask(world, area, sourcePos, context, enchantment);
+        // 向任务管理器添加任务
         ServerTaskManagerInterface taskManager = ServerTaskManagerInterface.getInstance(context.getSource().getServer());
-        TradeFindTask.TradePredicate predicate = new TradeFindTask.TradePredicate(enchantment);
-        SelectionArea selectionArea = new SelectionArea(world, sourcePos, range);
-        taskManager.addTask(new TradeFindTask(world, selectionArea, sourcePos, context, predicate));
+        taskManager.addTask(task);
         return 1;
     }
 

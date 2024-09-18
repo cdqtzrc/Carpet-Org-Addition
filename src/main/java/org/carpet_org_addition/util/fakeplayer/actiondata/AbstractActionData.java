@@ -1,6 +1,7 @@
 package org.carpet_org_addition.util.fakeplayer.actiondata;
 
 import carpet.patches.EntityPlayerMPFake;
+import com.google.gson.JsonObject;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
@@ -16,13 +17,12 @@ import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.matcher.Matcher;
-import org.carpet_org_addition.util.wheel.JsonSerial;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
-public abstract class AbstractActionData implements JsonSerial {
+public abstract class AbstractActionData {
     public abstract ArrayList<MutableText> info(EntityPlayerMPFake fakePlayer);
 
     // 获取物品的可变文本形式
@@ -100,4 +100,9 @@ public abstract class AbstractActionData implements JsonSerial {
             }
         }, widthHeight, widthHeight);
     }
+
+    /**
+     * 序列化假玩家动作数据
+     */
+    public abstract JsonObject toJson();
 }
