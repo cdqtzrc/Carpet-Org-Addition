@@ -25,7 +25,7 @@ import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.matcher.Matcher;
 import org.carpet_org_addition.util.task.ServerTask;
 import org.carpet_org_addition.util.wheel.Counter;
-import org.carpet_org_addition.util.wheel.ImmutableInventory;
+import org.carpet_org_addition.util.inventory.ImmutableInventory;
 import org.carpet_org_addition.util.wheel.SelectionArea;
 import org.jetbrains.annotations.Nullable;
 
@@ -257,7 +257,7 @@ public class ItemFindTask extends ServerTask {
     }
 
     @Override
-    public String toString() {
+    public String getLogName() {
         return "物品查找";
     }
 }

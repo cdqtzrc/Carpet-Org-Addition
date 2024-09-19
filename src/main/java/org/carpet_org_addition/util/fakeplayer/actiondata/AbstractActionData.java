@@ -1,6 +1,7 @@
 package org.carpet_org_addition.util.fakeplayer.actiondata;
 
 import carpet.patches.EntityPlayerMPFake;
+import com.google.gson.JsonObject;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -13,8 +14,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.matcher.ItemStackMatcher;
 import org.carpet_org_addition.util.matcher.Matcher;
-import org.carpet_org_addition.util.wheel.JsonSerial;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -22,10 +23,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class AbstractActionData implements JsonSerial {
+public abstract class AbstractActionData {
     public abstract ArrayList<MutableText> info(EntityPlayerMPFake fakePlayer);
 
     // 获取物品的可变文本形式
+    @SuppressWarnings("unused")
     protected static MutableText getHoverText(Item item) {
         if (item == Items.AIR || item == null) {
             return TextUtils.hoverText(Text.literal("[A]"), Items.AIR.getName(), Formatting.DARK_GRAY);
@@ -36,6 +38,7 @@ public abstract class AbstractActionData implements JsonSerial {
     }
 
     // 获取物品的可变文本形式
+    @SuppressWarnings("unused")
     protected static MutableText getHoverText(Matcher matcher) {
         if (matcher.isEmpty()) {
             return TextUtils.hoverText(Text.literal("[A]"), Items.AIR.getName(), Formatting.DARK_GRAY);
@@ -63,7 +66,7 @@ public abstract class AbstractActionData implements JsonSerial {
             return TextUtils.hoverText(Text.literal("[A]"), TextUtils.appendAll(Items.AIR.getName()), Formatting.DARK_GRAY);
         }
         // 获取物品堆栈对应的物品ID的首字母，然后转为大写，再放进中括号里
-        String capitalizeFirstLetter = "[" + String.valueOf(itemStack.getItem().toString().charAt(0)).toUpperCase() + "]";
+        String capitalizeFirstLetter = getInitial(new ItemStackMatcher(itemStack));
         return TextUtils.hoverText(Text.literal(capitalizeFirstLetter),
                 TextUtils.appendAll(itemStack.getItem().getName(), "x", String.valueOf(itemStack.getCount())), null);
     }
@@ -78,4 +81,9 @@ public abstract class AbstractActionData implements JsonSerial {
         Optional<RecipeEntry<CraftingRecipe>> optional = fakePlayer.getCommandSource().getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingRecipeInput, world);
         return optional.map(craftingRecipe -> craftingRecipe.value().craft(craftingRecipeInput, world.getRegistryManager()).getItem()).orElse(Items.AIR);
     }
+
+    /**
+     * 序列化假玩家动作数据
+     */
+    public abstract JsonObject toJson();
 }

@@ -53,7 +53,7 @@ public class DrawParticleLineTask extends ServerTask {
     }
 
     @Override
-    public String toString() {
+    public String getLogName() {
         return "绘制粒子线";
     }
 }

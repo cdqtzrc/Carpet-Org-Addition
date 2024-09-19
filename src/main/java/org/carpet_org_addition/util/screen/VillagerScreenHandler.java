@@ -1,4 +1,4 @@
-package org.carpet_org_addition.util.villagerinventory;
+package org.carpet_org_addition.util.screen;
 
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -8,7 +8,8 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
-import org.carpet_org_addition.util.wheel.AbstractCustomSizeInventory;
+import org.carpet_org_addition.util.inventory.AbstractCustomSizeInventory;
+import org.carpet_org_addition.util.inventory.VillagerInventory;
 import org.carpet_org_addition.util.wheel.DisabledSlot;
 
 public class VillagerScreenHandler extends ScreenHandler {

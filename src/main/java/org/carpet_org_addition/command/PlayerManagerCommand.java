@@ -5,6 +5,7 @@ import carpet.utils.CommandHelper;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
@@ -26,6 +27,7 @@ import org.carpet_org_addition.util.GameUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.constant.CommandSyntaxExceptionConstants;
+import org.carpet_org_addition.util.fakeplayer.FakePlayerSafeAfkInterface;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerSerial;
 import org.carpet_org_addition.util.task.ServerTask;
 import org.carpet_org_addition.util.task.ServerTaskManagerInterface;
@@ -101,7 +103,31 @@ public class PlayerManagerCommand {
                                         .suggests(cancelSuggests())
                                         .executes(PlayerManagerCommand::cancelScheduleTask)))
                         .then(CommandManager.literal("list")
-                                .executes(PlayerManagerCommand::listScheduleTask))));
+                                .executes(PlayerManagerCommand::listScheduleTask)))
+                .then(CommandManager.literal("safeafk")
+                        .then(CommandManager.argument(CommandUtils.PLAYER, EntityArgumentType.player())
+                                .executes(context -> safeAfk(context, 5F))
+                                .then(CommandManager.argument("threshold", FloatArgumentType.floatArg())
+                                        .executes(context -> safeAfk(context, FloatArgumentType.getFloat(context, "threshold")))))));
+    }
+
+    // 安全挂机
+    private static int safeAfk(CommandContext<ServerCommandSource> context, float threshold) throws CommandSyntaxException {
+        EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
+        // 假玩家安全挂机阈值必须小于玩家最大生命值
+        if (threshold >= fakePlayer.getMaxHealth()) {
+            throw CommandUtils.createException("carpet.commands.playerManager.safeafk.threshold_too_high");
+        }
+        // 低于或等于0的值没有实际意义，统一设置为-1
+        if (threshold <= 0F) {
+            threshold = -1F;
+        }
+        // 设置安全挂机阈值
+        FakePlayerSafeAfkInterface safeAfk = (FakePlayerSafeAfkInterface) fakePlayer;
+        safeAfk.setHealthThreshold(threshold);
+        // 发送命令反馈
+        MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.safeafk.successfully_set_up", fakePlayer.getDisplayName(), threshold);
+        return (int) threshold;
     }
 
     // cancel子命令自动补全
@@ -169,24 +195,26 @@ public class PlayerManagerCommand {
         EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
         String annotation = StringArgumentType.getString(context, "annotation");
         FakePlayerSerial fakePlayerSerial = new FakePlayerSerial(fakePlayer, annotation);
-        savePlayer(context, fakePlayerSerial, fakePlayer, resave);
-        return 1;
+        return savePlayer(context, fakePlayerSerial, fakePlayer, resave);
     }
 
     // 保存玩家
-    private static void savePlayer(CommandContext<ServerCommandSource> context, FakePlayerSerial fakePlayerSerial, EntityPlayerMPFake fakePlayer, boolean resave) throws CommandSyntaxException {
+    private static int savePlayer(CommandContext<ServerCommandSource> context, FakePlayerSerial fakePlayerSerial, EntityPlayerMPFake fakePlayer, boolean resave) throws CommandSyntaxException {
         try {
-            if (fakePlayerSerial.save(context.getSource().getServer(), resave)) {
-                // 重新保存
-                MessageUtils.sendCommandFeedback(context.getSource(),
-                        "carpet.commands.playerManager.save.resave",
-                        fakePlayer.getDisplayName());
-            } else {
+            int result = fakePlayerSerial.save(context, resave);
+            if (result == 0) {
                 // 首次保存
                 MessageUtils.sendCommandFeedback(context.getSource(),
                         "carpet.commands.playerManager.save.success",
                         fakePlayer.getDisplayName());
+            } else if (result == 1) {
+                // 重新保存
+                MessageUtils.sendCommandFeedback(context.getSource(),
+                        "carpet.commands.playerManager.save.resave",
+                        fakePlayer.getDisplayName());
             }
+            // 成功保存玩家时，命令返回1，未能保存玩家时，命令返回0
+            return result < 0 ? 0 : 1;
         } catch (IOException e) {
             throw CommandUtils.createException("carpet.commands.playerManager.save.fail", fakePlayer.getDisplayName());
         }

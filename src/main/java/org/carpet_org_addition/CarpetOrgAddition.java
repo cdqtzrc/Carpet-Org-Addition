@@ -3,14 +3,20 @@ package org.carpet_org_addition;
 import carpet.CarpetExtension;
 import carpet.CarpetServer;
 import carpet.patches.EntityPlayerMPFake;
+import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
+import org.carpet_org_addition.command.RegisterCarpetCommands;
 import org.carpet_org_addition.logger.WanderingTraderSpawnLogger;
 import org.carpet_org_addition.translate.Translate;
+import org.carpet_org_addition.util.express.ExpressManager;
+import org.carpet_org_addition.util.express.ExpressManagerInterface;
 import org.carpet_org_addition.util.wheel.Waypoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +35,11 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     // 日志
     public static final Logger LOGGER = LoggerFactory.getLogger("CarpetOrgAddition");
     public static final String MOD_NAME_LOWER_CASE = "carpetorgaddition";
+    /*
+     * TODO：
+     *  显示试炼刷怪笼倒计时
+     *  自定义试炼刷怪笼生成间隔
+     */
 
     /**
      * 模组初始化
@@ -60,6 +71,9 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
             // 清除负面效果
             player.getStatusEffects().removeIf(effect -> effect.getEffectType().value().getCategory() == StatusEffectCategory.HARMFUL);
         }
+        // 提示玩家接收快递
+        ExpressManager expressManager = ((ExpressManagerInterface) player.server).getExpressManager();
+        expressManager.promptToReceive(player);
     }
 
     // 服务器启动时调用
@@ -81,5 +95,11 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     public void registerLoggers() {
         CarpetExtension.super.registerLoggers();
         WanderingTraderSpawnLogger.registerLoggers();
+    }
+
+    // 注册命令
+    @Override
+    public void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
+        RegisterCarpetCommands.registerCarpetCommands(dispatcher, commandBuildContext);
     }
 }

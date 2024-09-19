@@ -105,6 +105,10 @@ public class LocationsCommand {
         MinecraftServer server = context.getSource().getServer();
         WorldFormat worldFormat = new WorldFormat(server, Waypoint.WAYPOINT);
         List<File> list = worldFormat.toImmutableFileList();
+        if (list.isEmpty()) {
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.locations.list.no_waypoint");
+            return 0;
+        }
         MutableText dividerLine = TextUtils.createText("------------------------------");
         // 显示分隔线
         MessageUtils.sendTextMessage(context.getSource(), dividerLine);
@@ -121,8 +125,7 @@ public class LocationsCommand {
                 optional = Waypoint.load(server, name);
             } catch (IOException | NullPointerException e) {
                 //无法解析坐标
-                // TODO 不在聊天栏显示
-                MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.locations.list.parse", WorldFormat.removeExtension(name));
+                CarpetOrgAddition.LOGGER.warn("无法解析路径点[{}]", WorldFormat.removeExtension(name), e);
                 continue;
             }
             // 显示路径点

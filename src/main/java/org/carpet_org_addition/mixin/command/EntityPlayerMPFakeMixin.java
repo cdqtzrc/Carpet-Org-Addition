@@ -4,11 +4,14 @@ import carpet.patches.EntityPlayerMPFake;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import org.carpet_org_addition.CarpetOrgAddition;
+import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionInterface;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionManager;
+import org.carpet_org_addition.util.fakeplayer.FakePlayerSafeAfkInterface;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,12 +19,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @SuppressWarnings("AddedMixinMembersNamePattern")
 @Mixin(EntityPlayerMPFake.class)
-public class EntityPlayerMPFakeMixin implements FakePlayerActionInterface {
+public abstract class EntityPlayerMPFakeMixin implements FakePlayerActionInterface, FakePlayerSafeAfkInterface {
+    @Shadow
+    public abstract void kill();
+
     @Unique
     private final EntityPlayerMPFake thisPlayer = (EntityPlayerMPFake) (Object) this;
 
     @Unique
     private final FakePlayerActionManager actionManager = new FakePlayerActionManager(thisPlayer);
+
+    @Unique
+    private float safeAfkThreshold = -1F;
 
     @Override
     public FakePlayerActionManager getActionManager() {
@@ -48,7 +57,26 @@ public class EntityPlayerMPFakeMixin implements FakePlayerActionInterface {
             MessageUtils.broadcastTextMessage(thisPlayer, TextUtils.setColor(message, Formatting.RED));
             // 让假玩家停止当前操作
             this.getActionManager().stop();
-
         }
+    }
+
+    @Inject(method = "tick", at = @At("TAIL"), cancellable = true)
+    private void safeAfk(CallbackInfo ci) {
+        if (this.safeAfkThreshold > 0 && thisPlayer.getHealth() <= this.safeAfkThreshold) {
+            // 退出假人
+            this.kill();
+            // 假玩家剩余血量
+            String health = MathUtils.keepTwoDecimalPlaces(thisPlayer.getHealth());
+            MutableText message = TextUtils.getTranslate("carpet.commands.playerManager.safeafk.trigger", thisPlayer.getDisplayName(), health);
+            // 广播触发消息，斜体淡灰色
+            MessageUtils.broadcastTextMessage(thisPlayer, TextUtils.toGrayItalic(message));
+            // 结束方法，不再执行剩余的tick方法
+            ci.cancel();
+        }
+    }
+
+    @Override
+    public void setHealthThreshold(float threshold) {
+        this.safeAfkThreshold = threshold;
     }
 }

@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(CreeperEntity.class)
 public class CreeperEntityMixin {
@@ -21,10 +20,10 @@ public class CreeperEntityMixin {
     }
 
     // 闪电苦力怕同时炸死多个生物时每个都掉落头颅
-    @Inject(method = "shouldDropHead", at = @At("HEAD"), cancellable = true)
-    private void shouldDropHead(CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "onHeadDropped", at = @At("HEAD"), cancellable = true)
+    private void onHeadDropped(CallbackInfo ci) {
         if (CarpetOrgAdditionSettings.superChargedCreeper) {
-            cir.setReturnValue(true);
+            ci.cancel();
         }
     }
 }

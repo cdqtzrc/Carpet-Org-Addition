@@ -144,7 +144,7 @@ public class ReLoginTask extends PlayerScheduleTask {
     }
 
     @Override
-    public String toString() {
+    public String getLogName() {
         return this.playerName + "周期性重新上线";
     }
 
