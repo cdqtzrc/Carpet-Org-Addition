@@ -27,7 +27,7 @@ public abstract class AbstractBlockStateMixin {
      */
     @Inject(method = "getHardness", at = @At("HEAD"), cancellable = true)
     public void getBlockHardness(BlockView world, BlockPos pos, CallbackInfoReturnable<Float> cir) {
-        Optional<Float> optional = BlockHardnessModifiers.getHardness(this.getBlock());
+        Optional<Float> optional = BlockHardnessModifiers.getHardness(this.getBlock(), world, pos);
         optional.ifPresent(cir::setReturnValue);
     }
 
