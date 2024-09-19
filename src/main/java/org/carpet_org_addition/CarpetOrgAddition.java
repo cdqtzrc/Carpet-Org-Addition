@@ -35,12 +35,6 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     // 日志
     public static final Logger LOGGER = LoggerFactory.getLogger("CarpetOrgAddition");
     public static final String MOD_NAME_LOWER_CASE = "carpetorgaddition";
-    /*
-     * TODO：
-     *  Tab栏分割线分割真假玩家
-     *  显示试炼刷怪笼倒计时
-     *  bug：https://github.com/cdqtzrc/Carpet-Org-Addition/issues/27
-     */
 
     /**
      * 模组初始化

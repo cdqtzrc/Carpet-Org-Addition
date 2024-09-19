@@ -2,6 +2,8 @@ package org.carpet_org_addition.util.wheel;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 
 import java.util.List;
@@ -45,8 +47,7 @@ public class BlockHardnessModifiers {
     private static final List<Block> NETHER_ORE = Stream.of(Blocks.NETHER_QUARTZ_ORE, Blocks.NETHER_GOLD_ORE).toList();
 
     // 获取方块硬度
-    public static Optional<Float> getHardness(Block block) {
-        // TODO 与AMS兼容性问题，深板岩矿石硬度问题
+    public static Optional<Float> getHardness(Block block, BlockView world, BlockPos pos) {
         // 设置基岩硬度
         if (block == Blocks.BEDROCK) {
             float bedrockHardness = CarpetOrgAdditionSettings.setBedrockHardness;
@@ -64,7 +65,7 @@ public class BlockHardnessModifiers {
             }
         }
         // 易碎黑曜石
-        if (CarpetOrgAdditionSettings.softObsidian && block == Blocks.OBSIDIAN) {
+        if (CarpetOrgAdditionSettings.softObsidian && (block == Blocks.OBSIDIAN || block == Blocks.CRYING_OBSIDIAN)) {
             return Optional.of(Blocks.END_STONE.getHardness());
         }
         // 易碎矿石
@@ -75,7 +76,8 @@ public class BlockHardnessModifiers {
             }
             // 深层矿石
             if (DEEPSLATE_ORE.contains(block)) {
-                return Optional.of(Blocks.DEEPSLATE.getHardness());
+                // 让深板岩矿石硬度随着深板岩硬度的改变而改变，其他方块硬度不需要做此处理
+                return Optional.of(Blocks.DEEPSLATE.getDefaultState().getHardness(world, pos));
             }
             // 下界矿石
             if (NETHER_ORE.contains(block)) {
