@@ -32,8 +32,8 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     public static final String MOD_NAME_LOWER_CASE = "carpetorgaddition";
     /*
      * TODO：
-     *  Tab栏分割线分割真假玩家
      *  显示试炼刷怪笼倒计时
+     *  自定义试炼刷怪笼生成间隔
      *  bug：https://github.com/cdqtzrc/Carpet-Org-Addition/issues/27
      */
 
