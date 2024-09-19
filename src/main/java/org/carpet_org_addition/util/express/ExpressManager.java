@@ -78,6 +78,7 @@ public class ExpressManager {
      * 添加新快递
      */
     public void put(Express express) throws IOException {
+        // TODO 提示对方是否有足够的命令权限
         if (express.getExpress().isEmpty()) {
             CarpetOrgAddition.LOGGER.info("尝试发送一个空气物品，已忽略");
             return;
