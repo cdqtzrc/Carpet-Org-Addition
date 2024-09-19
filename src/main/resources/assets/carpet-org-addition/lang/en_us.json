@@ -300,6 +300,7 @@
   "carpet.commands.mail.structure": "Please hold the item you send before sending",
   "carpet.commands.mail.sending.sender": "Send %2$s %3$s to %1$s，click %4$s to cancel",
   "carpet.commands.mail.sending.recipient": "%1$s send %2$s %3$s to you,click %4$s to receive",
+  "carpet.commands.mail.sending.permission": "The other party may not have the permission to execute the command of receiving items",
   "carpet.commands.mail.receive.success": "Succeed in receiving %1$s %2$s",
   "carpet.commands.mail.receive.insufficient_capacity": "Ail to receive package,please check it the inventory has sufficient capacity",
   "carpet.commands.mail.receive.partial_reception": "Received  %s item,but %s item still had not been received,please check it the inventory has sufficient capacity",

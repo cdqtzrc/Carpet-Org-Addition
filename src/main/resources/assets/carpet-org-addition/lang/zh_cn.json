@@ -385,6 +385,7 @@
   "carpet.commands.mail.structure": "发送快递前请将要发送的物品放在手上",
   "carpet.commands.mail.sending.sender": "向%s发送了%s个%s，点击%s撤回",
   "carpet.commands.mail.sending.recipient": "%s向你发送了%s个%s，点击%s接收",
+  "carpet.commands.mail.sending.permission": "对方可能没有执行接收物品命令的权限",
   "carpet.commands.mail.receive.success": "成功接收了%s个%s",
   "carpet.commands.mail.receive.insufficient_capacity": "快递未能成功接收，请检查物品栏是否有充足容量",
   "carpet.commands.mail.receive.partial_reception": "接收了%s个物品，但仍有%s个物品未能接收，请检查物品栏是否有充足容量",

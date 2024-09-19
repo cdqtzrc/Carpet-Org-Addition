@@ -1,5 +1,6 @@
 package org.carpet_org_addition.util.express;
 
+import carpet.utils.CommandHelper;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -12,6 +13,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.carpet_org_addition.CarpetOrgAddition;
+import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
@@ -200,6 +202,27 @@ public class Express implements Comparable<Express> {
             MessageUtils.sendTextMessage(recipientPlayer, TextUtils.getTranslate("carpet.commands.mail.cancel.notice", player.getDisplayName()));
         }
         this.cancel = true;
+    }
+
+    public void checkRecipientPermission() {
+        PlayerManager playerManager = this.server.getPlayerManager();
+        // 物品接收者玩家
+        ServerPlayerEntity recipientPlayer = playerManager.getPlayer(this.recipient);
+        if (recipientPlayer == null) {
+            return;
+        }
+        // 检查接收者是否有接收物品的权限
+        if (CommandHelper.canUseCommand(recipientPlayer.getCommandSource(), CarpetOrgAdditionSettings.commandMail)) {
+            return;
+        }
+        // 对方没有结束物品的权限，提示发送者
+        ServerPlayerEntity senderPlayer = playerManager.getPlayer(this.sender);
+        if (senderPlayer == null) {
+            return;
+        }
+        // 将消息设置为灰色斜体
+        MutableText message = TextUtils.toGrayItalic(TextUtils.getTranslate("carpet.commands.mail.sending.permission"));
+        MessageUtils.sendCommandFeedback(senderPlayer.getCommandSource(), message);
     }
 
     /**

@@ -85,6 +85,7 @@ public class ExpressManager {
         }
         this.expresses.add(express);
         express.sending();
+        express.checkRecipientPermission();
         // 将快递信息写入本地文件
         NbtIo.write(express.writeNbt(), this.worldFormat.file(express.getId() + ".nbt"));
     }
