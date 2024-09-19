@@ -34,7 +34,6 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
      * TODO：
      *  显示试炼刷怪笼倒计时
      *  自定义试炼刷怪笼生成间隔
-     *  bug：https://github.com/cdqtzrc/Carpet-Org-Addition/issues/27
      */
 
     /**

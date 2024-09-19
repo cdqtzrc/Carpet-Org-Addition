@@ -68,7 +68,6 @@
     "rule.entityplayeractionpack.EntityPlayerActionPackAccessor",
     "rule.fakeplayerkeepinventory.PlayerEntityMixin",
     "rule.fakeplayerkeepinventory.ServerPlayerEntityMixin",
-    "rule.playerinteraction.GameRendererMixin",
     "rule.playerinteraction.ServerPlayerInteractionManagerMixin",
     "rule.playerinteraction.ServerPlayNetworkHandlerMixin",
     "rule.respawnblocksexplode.BedBlockMixin",
@@ -81,6 +80,7 @@
   ],
   "client": [
     "rule.client.carpet.SettingsManagerMixin",
+    "rule.playerinteraction.GameRendererMixin",
     "util.client.InGameHudMixin"
   ],
   "injectors": {
