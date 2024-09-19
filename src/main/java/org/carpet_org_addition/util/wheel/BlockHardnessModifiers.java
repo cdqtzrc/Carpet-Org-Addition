@@ -65,7 +65,7 @@ public class BlockHardnessModifiers {
             }
         }
         // 易碎黑曜石
-        if (CarpetOrgAdditionSettings.softObsidian && block == Blocks.OBSIDIAN) {
+        if (CarpetOrgAdditionSettings.softObsidian && (block == Blocks.OBSIDIAN || block == Blocks.CRYING_OBSIDIAN)) {
             return Optional.of(Blocks.END_STONE.getHardness());
         }
         // 易碎矿石
