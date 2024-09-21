@@ -41,6 +41,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
      *  自定义试炼刷怪笼生成间隔
      */
 
+    // TODO 更新日志类加载警告问题版本归属
     /**
      * 模组初始化
      */

@@ -93,8 +93,8 @@ public class MessageUtils {
         MessageUtils.sendTextMessage(source, TextUtils.getTranslate(key, obj));
     }
 
-    public static void sendCommandFeedback(ServerCommandSource source, Text text) {
-        MessageUtils.sendTextMessage(source, text);
+    public static void sendCommandFeedback(ServerCommandSource source, Text message) {
+        MessageUtils.sendTextMessage(source, message);
     }
 
     /**

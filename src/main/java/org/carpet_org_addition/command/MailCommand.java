@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+// TODO 需要测试
 public class MailCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("mail")
@@ -41,16 +42,19 @@ public class MailCommand {
                         .then(CommandManager.argument(CommandUtils.PLAYER, EntityArgumentType.player())
                                 .executes(MailCommand::ship)))
                 .then(CommandManager.literal("receive")
+                        .executes(MailCommand::receiveAll)
                         .then(CommandManager.argument("id", IntegerArgumentType.integer(1))
                                 .suggests(receiveSuggests(true))
                                 .executes(MailCommand::receive)))
                 .then(CommandManager.literal("cancel")
+                        .executes(MailCommand::cancelAll)
                         .then(CommandManager.argument("id", IntegerArgumentType.integer(1))
                                 .suggests(receiveSuggests(false))
                                 .executes(MailCommand::cancel)))
                 .then(CommandManager.literal("list")
                         .executes(MailCommand::list))
                 .then(CommandManager.literal("multiple")
+                        // TODO 对于多个物品的发送，可以一键全部接收
                         .then(CommandManager.argument(CommandUtils.PLAYER, EntityArgumentType.player())
                                 .executes(MailCommand::shipMultipleExpress))));
     }
@@ -119,6 +123,17 @@ public class MailCommand {
         throw CommandUtils.createException("carpet.commands.mail.receive.recipient");
     }
 
+    // 接收所有快递
+    private static int receiveAll(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
+        ExpressManager expressManager = ((ExpressManagerInterface) context.getSource().getServer()).getExpressManager();
+        try {
+            return expressManager.receiveAll(player);
+        } catch (IOException e) {
+            throw new CommandExecuteIOException(e);
+        }
+    }
+
     // 撤回快递
     private static int cancel(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
@@ -132,6 +147,17 @@ public class MailCommand {
             return 1;
         }
         throw CommandUtils.createException("carpet.commands.mail.cancel.recipient");
+    }
+
+    // 撤回所有快递
+    private static int cancelAll(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
+        ExpressManager expressManager = ((ExpressManagerInterface) context.getSource().getServer()).getExpressManager();
+        try {
+            return expressManager.cancelAll(player);
+        } catch (IOException e) {
+            throw new CommandExecuteIOException(e);
+        }
     }
 
     // 列出快递
