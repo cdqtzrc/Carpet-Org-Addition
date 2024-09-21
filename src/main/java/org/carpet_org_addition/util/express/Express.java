@@ -139,12 +139,13 @@ public class Express implements Comparable<Express> {
             return;
         }
         int count = this.express.getCount();
+        ItemStack copy = this.express.copy();
         switch (insertStack(player)) {
             case COMPLETE -> {
                 // 物品完全接收
                 MessageUtils.sendTextMessage(player,
                         TextUtils.getTranslate("carpet.commands.mail.receive.success",
-                                count, this.express.toHoverableText()));
+                                count, copy.toHoverableText()));
                 // 通知发送者物品以接收
                 Supplier<Text> message = () -> TextUtils.toGrayItalic(TextUtils.getTranslate(
                         "carpet.commands.mail.sending.notice",
@@ -155,7 +156,7 @@ public class Express implements Comparable<Express> {
             }
             case PART -> {
                 // 剩余的物品数量
-                int surplusCount = this.express.getCount();
+                int surplusCount = copy.getCount();
                 // 物品部分放入物品栏
                 MessageUtils.sendTextMessage(player,
                         TextUtils.getTranslate("carpet.commands.mail.receive.partial_reception",
@@ -193,18 +194,18 @@ public class Express implements Comparable<Express> {
             return;
         }
         int count = this.express.getCount();
-        player.getInventory().insertStack(this.express);
+        ItemStack copy = this.express.copy();
         // 将快递内容放入物品栏
         switch (insertStack(player)) {
             case COMPLETE -> {
                 MessageUtils.sendTextMessage(player, TextUtils.getTranslate("carpet.commands.mail.cancel.success",
-                        count, this.express.toHoverableText()));
+                        count, copy.toHoverableText()));
                 // 播放物品拾取音效
                 playItemPickupSound(player);
             }
             case PART -> {
                 // 剩余的物品数量
-                int surplusCount = this.express.getCount();
+                int surplusCount = copy.getCount();
                 // 物品部分放入物品栏
                 MessageUtils.sendTextMessage(player, TextUtils.getTranslate("carpet.commands.mail.cancel.partial_reception",
                         count - surplusCount, surplusCount));

@@ -7,6 +7,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.inventory.SimpleInventory;
@@ -220,6 +221,9 @@ public class MailCommand {
 
     // 检查玩家是否是自己或假玩家
     private static void checkPlayer(ServerPlayerEntity sourcePlayer, ServerPlayerEntity targetPlayer) throws CommandSyntaxException {
+        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+            return;
+        }
         if (sourcePlayer == targetPlayer || targetPlayer instanceof EntityPlayerMPFake) {
             throw CommandUtils.createException("carpet.commands.mail.check_player");
         }
