@@ -31,6 +31,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     public static final Logger LOGGER = LoggerFactory.getLogger("CarpetOrgAddition");
     public static final String MOD_NAME_LOWER_CASE = "carpetorgaddition";
 
+    // TODO 更新日志类加载警告问题版本归属
     /**
      * 模组初始化
      */

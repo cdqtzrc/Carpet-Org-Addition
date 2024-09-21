@@ -175,6 +175,10 @@ public class TextUtils {
         }
     }
 
+    public static MutableText hoverText(Text text, Text hover) {
+        return hoverText((text instanceof MutableText ? (MutableText) text : text.copy()), hover, null);
+    }
+
     /**
      * @param original      原始的字符串
      * @param color         字符串的颜色
@@ -288,7 +292,7 @@ public class TextUtils {
      *
      * @return 拼接后的文本对象
      */
-    public static MutableText appendList(List<MutableText> list) {
+    public static MutableText appendList(List<? extends Text> list) {
         MutableText result = createEmpty();
         for (int i = 0; i < list.size(); i++) {
             result.append(list.get(i));

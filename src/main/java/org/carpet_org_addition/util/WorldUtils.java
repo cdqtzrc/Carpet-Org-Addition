@@ -161,7 +161,14 @@ public class WorldUtils {
         world.playSound(null, blockPos, soundEvent, soundCategory, 1F, 1F);
     }
 
+    /**
+     * 在指定玩家位置播放一个音效
+     *
+     * @param soundEvent    声音时间
+     * @param soundCategory 声音类别
+     */
     public static void playSound(ServerPlayerEntity player, SoundEvent soundEvent, SoundCategory soundCategory) {
-        playSound(player.getWorld(), player.getBlockPos(), soundEvent, soundCategory);
+        World world = player.getWorld();
+        world.playSound(null, player.getX(), player.getY(), player.getZ(), soundEvent, soundCategory, 1F, 1F);
     }
 }

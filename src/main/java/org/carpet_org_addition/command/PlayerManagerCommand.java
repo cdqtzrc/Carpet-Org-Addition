@@ -120,6 +120,7 @@ public class PlayerManagerCommand {
         if (threshold <= 0F) {
             threshold = -1F;
         }
+        // TODO 检测是否可以触发图腾，可以触发不触发安全挂机
         // 设置安全挂机阈值
         FakePlayerSafeAfkInterface safeAfk = (FakePlayerSafeAfkInterface) fakePlayer;
         safeAfk.setHealthThreshold(threshold);

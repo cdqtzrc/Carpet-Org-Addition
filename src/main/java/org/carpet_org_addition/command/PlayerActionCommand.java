@@ -57,6 +57,7 @@ public class PlayerActionCommand {
                                         .executes(context -> setClean(context, false))))
                         .then(CommandManager.literal("fill")
                                 .executes(context -> setFIll(context, true))
+                                // TODO 更改命令参数为filter
                                 .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
                                         .executes(context -> setFIll(context, false))))
                         .then(CommandManager.literal("stop")
