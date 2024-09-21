@@ -132,5 +132,6 @@ public class ShipExpressScreenHandler extends GenericContainerScreenHandler {
         MessageUtils.sendCommandFeedback(this.targetPlayer.getCommandSource(), "carpet.commands.mail.receive.multiple",
                 this.sourcePlayer.getDisplayName(), args[1], args[2], TextConstants.clickRun("/mail receive"));
         Express.playXpOrbPickupSound(this.targetPlayer);
+        Express.checkRecipientPermission(this.sourcePlayer, this.targetPlayer);
     }
 }
