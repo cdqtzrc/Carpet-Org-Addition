@@ -21,6 +21,7 @@ import org.carpet_org_addition.util.WorldUtils;
 import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.wheel.WorldFormat;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -293,12 +294,16 @@ public class Express implements Comparable<Express> {
         if (recipientPlayer == null) {
             return;
         }
+        // 对方没有结束物品的权限，提示发送者
+        ServerPlayerEntity senderPlayer = playerManager.getPlayer(this.sender);
+        checkRecipientPermission(senderPlayer, recipientPlayer);
+    }
+
+    public static void checkRecipientPermission(@Nullable ServerPlayerEntity senderPlayer, ServerPlayerEntity recipientPlayer) {
         // 检查接收者是否有接收物品的权限
         if (CommandHelper.canUseCommand(recipientPlayer.getCommandSource(), CarpetOrgAdditionSettings.commandMail)) {
             return;
         }
-        // 对方没有结束物品的权限，提示发送者
-        ServerPlayerEntity senderPlayer = playerManager.getPlayer(this.sender);
         if (senderPlayer == null) {
             return;
         }
