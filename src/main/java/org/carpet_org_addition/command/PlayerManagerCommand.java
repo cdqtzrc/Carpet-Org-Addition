@@ -25,6 +25,7 @@ import org.carpet_org_addition.util.GameUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.constant.CommandSyntaxExceptionConstants;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerSafeAfkInterface;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerSerial;
 import org.carpet_org_addition.util.task.ServerTask;
@@ -120,14 +121,13 @@ public class PlayerManagerCommand {
         if (threshold <= 0F) {
             threshold = -1F;
         }
-        // TODO 检测是否可以触发图腾，可以触发不触发安全挂机
-        //      保存安全挂机阈值，每次生成玩家自动设置安全挂机
-        //      触发时恢复饥饿值
+        // TODO 保存安全挂机阈值，每次生成玩家自动设置安全挂机
         // 设置安全挂机阈值
         FakePlayerSafeAfkInterface safeAfk = (FakePlayerSafeAfkInterface) fakePlayer;
         safeAfk.setHealthThreshold(threshold);
         // 发送命令反馈
-        MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.safeafk.successfully_set_up", fakePlayer.getDisplayName(), threshold);
+        MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.safeafk.successfully_set_up",
+                fakePlayer.getDisplayName(), threshold, TextConstants.clickRun("TODO"));
         return (int) threshold;
     }
 

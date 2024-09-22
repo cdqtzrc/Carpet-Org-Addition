@@ -7,4 +7,9 @@ public interface FakePlayerSafeAfkInterface {
      * 如果玩家血量小于0，则假玩家不会主动退出游戏
      */
     void setHealthThreshold(float threshold);
+
+    /**
+     * 安全挂机是否触发失败，这一般发生在最后一次受到的伤害超过了为假玩家设置的阈值
+     */
+    boolean afkTriggerFail();
 }

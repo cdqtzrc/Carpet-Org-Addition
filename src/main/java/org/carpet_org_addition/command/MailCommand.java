@@ -55,7 +55,6 @@ public class MailCommand {
                 .then(CommandManager.literal("list")
                         .executes(MailCommand::list))
                 .then(CommandManager.literal("multiple")
-                        // TODO 对于多个物品的发送，可以一键全部接收
                         .then(CommandManager.argument(CommandUtils.PLAYER, EntityArgumentType.player())
                                 .executes(MailCommand::shipMultipleExpress))));
     }
