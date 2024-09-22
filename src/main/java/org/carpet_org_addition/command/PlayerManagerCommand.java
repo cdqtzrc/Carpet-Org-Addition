@@ -121,6 +121,8 @@ public class PlayerManagerCommand {
             threshold = -1F;
         }
         // TODO 检测是否可以触发图腾，可以触发不触发安全挂机
+        //      保存安全挂机阈值，每次生成玩家自动设置安全挂机
+        //      触发时恢复饥饿值
         // 设置安全挂机阈值
         FakePlayerSafeAfkInterface safeAfk = (FakePlayerSafeAfkInterface) fakePlayer;
         safeAfk.setHealthThreshold(threshold);

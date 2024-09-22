@@ -32,6 +32,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     public static final String MOD_NAME_LOWER_CASE = "carpetorgaddition";
 
     // TODO 更新日志类加载警告问题版本归属
+
     /**
      * 模组初始化
      */
@@ -63,7 +64,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
             player.getStatusEffects().removeIf(effect -> effect.getEffectType().getCategory() == StatusEffectCategory.HARMFUL);
         }
         // 提示玩家接收快递
-        ExpressManager expressManager = ((ExpressManagerInterface) player.server).getExpressManager();
+        ExpressManager expressManager = ExpressManagerInterface.getInstance(player.server);
         expressManager.promptToReceive(player);
     }
 

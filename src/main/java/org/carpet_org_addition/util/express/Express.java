@@ -171,20 +171,6 @@ public class Express implements Comparable<Express> {
     }
 
     /**
-     * 播放物品拾取音效
-     */
-    public static void playItemPickupSound(ServerPlayerEntity player) {
-        WorldUtils.playSound(player, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS);
-    }
-
-    /**
-     * 播放经验球拾取音效
-     */
-    public static void playXpOrbPickupSound(ServerPlayerEntity recipientPlayer) {
-        WorldUtils.playSound(recipientPlayer, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS);
-    }
-
-    /**
      * 撤回快递
      */
     public void cancel() throws IOException {
@@ -222,6 +208,20 @@ public class Express implements Comparable<Express> {
         Supplier<Text> message = () -> TextUtils.toGrayItalic(TextUtils.getTranslate("carpet.commands.mail.cancel.notice", player.getDisplayName()));
         this.ifItExistsSendIt(this.recipient, message);
         this.cancel = true;
+    }
+
+    /**
+     * 播放物品拾取音效
+     */
+    public static void playItemPickupSound(ServerPlayerEntity player) {
+        WorldUtils.playSound(player, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS);
+    }
+
+    /**
+     * 播放经验球拾取音效
+     */
+    public static void playXpOrbPickupSound(ServerPlayerEntity recipientPlayer) {
+        WorldUtils.playSound(recipientPlayer, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS);
     }
 
     /**

@@ -77,6 +77,7 @@ public class PlayerToolsCommand {
         return 1;
     }
 
+    // TODO 传送PlayerManager中的玩家二次确认
     // 假玩家传送
     private static int fakePlayerTp(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);

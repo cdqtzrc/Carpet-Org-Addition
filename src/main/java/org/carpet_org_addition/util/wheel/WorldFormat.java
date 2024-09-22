@@ -159,6 +159,7 @@ public class WorldFormat {
      * @apiNote Java貌似没有对中文的拼音排序做很好的支持，因此，中文的排序依然是无序的
      */
     public List<File> toImmutableFileList() {
+        // TODO 排序问题
         File[] files = this.modFileDirectory.listFiles();
         if (files == null) {
             return List.of();
