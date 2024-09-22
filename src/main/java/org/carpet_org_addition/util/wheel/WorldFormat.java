@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.WorldSavePath;
 import org.carpet_org_addition.CarpetOrgAddition;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -33,10 +34,12 @@ public class WorldFormat {
      * @param directories 一个字符串数组，数组中第一个元素表示第三级子目录，第二个元素表示第四级子目录，以此类推
      * @apiNote 第一级目录是carpetorgaddition文件夹
      */
-    public WorldFormat(MinecraftServer server, String directory, String... directories) {
+    public WorldFormat(MinecraftServer server, @Nullable String directory, String... directories) {
         // 获取服务器存档保存文件的路径
         Path path = server.getSavePath(WorldSavePath.ROOT).resolve(CarpetOrgAddition.MOD_NAME_LOWER_CASE);
-        path = path.resolve(directory);
+        if (directory != null) {
+            path = path.resolve(directory);
+        }
         // 拼接路径
         for (String name : directories) {
             path = path.resolve(name);

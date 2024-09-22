@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
+import org.carpet_org_addition.command.PlayerManagerCommand;
 import org.carpet_org_addition.command.RegisterCarpetCommands;
 import org.carpet_org_addition.logger.WanderingTraderSpawnLogger;
 import org.carpet_org_addition.translate.Translate;
@@ -66,6 +67,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
         // 提示玩家接收快递
         ExpressManager expressManager = ExpressManagerInterface.getInstance(player.server);
         expressManager.promptToReceive(player);
+        PlayerManagerCommand.loadSeafAfk(player);
     }
 
     // 服务器启动时调用

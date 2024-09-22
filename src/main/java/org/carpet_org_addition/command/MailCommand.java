@@ -88,7 +88,7 @@ public class MailCommand {
             // 将快递信息添加到快递管理器
             expressManager.put(new Express(server, sourcePlayer, targetPlayer, expressManager.generateNumber()));
         } catch (IOException e) {
-            throw new CommandExecuteIOException(e);
+            throw CommandExecuteIOException.of(e);
         }
         return 1;
     }
@@ -116,7 +116,7 @@ public class MailCommand {
             try {
                 express.receive();
             } catch (IOException e) {
-                throw new CommandExecuteIOException(e);
+                throw CommandExecuteIOException.of(e);
             }
             return 1;
         }
@@ -130,7 +130,7 @@ public class MailCommand {
         try {
             return expressManager.receiveAll(player);
         } catch (IOException e) {
-            throw new CommandExecuteIOException(e);
+            throw CommandExecuteIOException.of(e);
         }
     }
 
@@ -142,7 +142,7 @@ public class MailCommand {
             try {
                 express.cancel();
             } catch (IOException e) {
-                throw new CommandExecuteIOException(e);
+                throw CommandExecuteIOException.of(e);
             }
             return 1;
         }
@@ -156,7 +156,7 @@ public class MailCommand {
         try {
             return expressManager.cancelAll(player);
         } catch (IOException e) {
-            throw new CommandExecuteIOException(e);
+            throw CommandExecuteIOException.of(e);
         }
     }
 

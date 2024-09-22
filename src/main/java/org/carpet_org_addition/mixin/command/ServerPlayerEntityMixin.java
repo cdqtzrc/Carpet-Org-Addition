@@ -76,7 +76,7 @@ public abstract class ServerPlayerEntityMixin implements NavigatorInterface, Fak
 
     @Inject(method = "damage", at = @At(value = "RETURN"))
     private void damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (thisPlayer instanceof EntityPlayerMPFake) {
+        if (this.safeAfkThreshold > 0 && thisPlayer instanceof EntityPlayerMPFake) {
             safeAfk(source, amount);
         }
     }
@@ -101,7 +101,7 @@ public abstract class ServerPlayerEntityMixin implements NavigatorInterface, Fak
             return;
         }
         // 玩家安全挂机触发成功
-        if (this.safeAfkThreshold > 0 && thisPlayer.getHealth() <= this.safeAfkThreshold) {
+        if (thisPlayer.getHealth() <= this.safeAfkThreshold) {
             // 假玩家剩余血量
             String health = MathUtils.keepTwoDecimalPlaces(thisPlayer.getHealth());
             MutableText message = TextUtils.getTranslate("carpet.commands.playerManager.safeafk.trigger.success",
@@ -182,6 +182,11 @@ public abstract class ServerPlayerEntityMixin implements NavigatorInterface, Fak
     @Override
     public void setHealthThreshold(float threshold) {
         this.safeAfkThreshold = threshold;
+    }
+
+    @Override
+    public float getHealthThreshold() {
+        return this.safeAfkThreshold;
     }
 
     @Override
