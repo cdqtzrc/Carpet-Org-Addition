@@ -11,8 +11,10 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @see <a href="https://zh.minecraft.wiki/w/Java%E7%89%88%E4%B8%96%E7%95%8C%E6%A0%BC%E5%BC%8F">世界格式</a>
@@ -159,12 +161,13 @@ public class WorldFormat {
      * @apiNote Java貌似没有对中文的拼音排序做很好的支持，因此，中文的排序依然是无序的
      */
     public List<File> toImmutableFileList() {
-        // TODO 排序问题
+        // TODO 测试后更改日志
         File[] files = this.modFileDirectory.listFiles();
         if (files == null) {
             return List.of();
         }
-        return List.of(files);
+        // 一些操作系统下文件排序可能不是按字母排序
+        return Stream.of(files).sorted(Comparator.comparing(file -> file.getName().toLowerCase())).toList();
     }
 
     // 检查该目录下的文件是否存在
