@@ -12,6 +12,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
+import org.carpet_org_addition.command.PlayerManagerCommand;
 import org.carpet_org_addition.command.RegisterCarpetCommands;
 import org.carpet_org_addition.logger.WanderingTraderSpawnLogger;
 import org.carpet_org_addition.translate.Translate;
@@ -42,6 +43,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
      */
 
     // TODO 更新日志类加载警告问题版本归属
+
     /**
      * 模组初始化
      */
@@ -73,8 +75,9 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
             player.getStatusEffects().removeIf(effect -> effect.getEffectType().value().getCategory() == StatusEffectCategory.HARMFUL);
         }
         // 提示玩家接收快递
-        ExpressManager expressManager = ((ExpressManagerInterface) player.server).getExpressManager();
+        ExpressManager expressManager = ExpressManagerInterface.getInstance(player.server);
         expressManager.promptToReceive(player);
+        PlayerManagerCommand.loadSeafAfk(player);
     }
 
     // 服务器启动时调用

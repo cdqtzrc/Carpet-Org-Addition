@@ -55,7 +55,6 @@ public class MailCommand {
                 .then(CommandManager.literal("list")
                         .executes(MailCommand::list))
                 .then(CommandManager.literal("multiple")
-                        // TODO 对于多个物品的发送，可以一键全部接收
                         .then(CommandManager.argument(CommandUtils.PLAYER, EntityArgumentType.player())
                                 .executes(MailCommand::shipMultipleExpress))));
     }
@@ -68,7 +67,7 @@ public class MailCommand {
                 return CommandSource.suggestMatching(List.of(), builder);
             }
             MinecraftServer server = context.getSource().getServer();
-            ExpressManager expressManager = ((ExpressManagerInterface) server).getExpressManager();
+            ExpressManager expressManager = ExpressManagerInterface.getInstance(server);
             // 获取所有发送给自己的快递（或所有自己发送的快递）
             List<String> list = expressManager.stream()
                     .filter(express -> recipient ? express.isRecipient(player) : express.isSender(player))
@@ -84,12 +83,12 @@ public class MailCommand {
         // 限制只允许发送给其他真玩家
         checkPlayer(sourcePlayer, targetPlayer);
         MinecraftServer server = context.getSource().getServer();
-        ExpressManager expressManager = ((ExpressManagerInterface) server).getExpressManager();
+        ExpressManager expressManager = ExpressManagerInterface.getInstance(server);
         try {
             // 将快递信息添加到快递管理器
             expressManager.put(new Express(server, sourcePlayer, targetPlayer, expressManager.generateNumber()));
         } catch (IOException e) {
-            throw new CommandExecuteIOException(e);
+            throw CommandExecuteIOException.of(e);
         }
         return 1;
     }
@@ -117,7 +116,7 @@ public class MailCommand {
             try {
                 express.receive();
             } catch (IOException e) {
-                throw new CommandExecuteIOException(e);
+                throw CommandExecuteIOException.of(e);
             }
             return 1;
         }
@@ -127,11 +126,11 @@ public class MailCommand {
     // 接收所有快递
     private static int receiveAll(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
-        ExpressManager expressManager = ((ExpressManagerInterface) context.getSource().getServer()).getExpressManager();
+        ExpressManager expressManager = ExpressManagerInterface.getInstance(context);
         try {
             return expressManager.receiveAll(player);
         } catch (IOException e) {
-            throw new CommandExecuteIOException(e);
+            throw CommandExecuteIOException.of(e);
         }
     }
 
@@ -143,7 +142,7 @@ public class MailCommand {
             try {
                 express.cancel();
             } catch (IOException e) {
-                throw new CommandExecuteIOException(e);
+                throw CommandExecuteIOException.of(e);
             }
             return 1;
         }
@@ -153,11 +152,11 @@ public class MailCommand {
     // 撤回所有快递
     private static int cancelAll(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
-        ExpressManager expressManager = ((ExpressManagerInterface) context.getSource().getServer()).getExpressManager();
+        ExpressManager expressManager = ExpressManagerInterface.getInstance(context);
         try {
             return expressManager.cancelAll(player);
         } catch (IOException e) {
-            throw new CommandExecuteIOException(e);
+            throw CommandExecuteIOException.of(e);
         }
     }
 
@@ -165,7 +164,7 @@ public class MailCommand {
     private static int list(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         final ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         MinecraftServer server = context.getSource().getServer();
-        ExpressManager expressManager = ((ExpressManagerInterface) server).getExpressManager();
+        ExpressManager expressManager = ExpressManagerInterface.getInstance(server);
         List<Express> list = expressManager.stream().toList();
         if (list.isEmpty()) {
             // 没有快递被列出
@@ -208,7 +207,7 @@ public class MailCommand {
     // 获取快递
     private static @NotNull Express getExpress(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         MinecraftServer server = context.getSource().getServer();
-        ExpressManager expressManager = ((ExpressManagerInterface) server).getExpressManager();
+        ExpressManager expressManager = ExpressManagerInterface.getInstance(server);
         // 获取快递单号
         int id = IntegerArgumentType.getInteger(context, "id");
         // 查找指定单号的快递

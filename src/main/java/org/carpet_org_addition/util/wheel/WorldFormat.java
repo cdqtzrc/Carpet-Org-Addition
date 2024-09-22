@@ -6,13 +6,16 @@ import com.google.gson.JsonObject;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.WorldSavePath;
 import org.carpet_org_addition.CarpetOrgAddition;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @see <a href="https://zh.minecraft.wiki/w/Java%E7%89%88%E4%B8%96%E7%95%8C%E6%A0%BC%E5%BC%8F">世界格式</a>
@@ -31,10 +34,12 @@ public class WorldFormat {
      * @param directories 一个字符串数组，数组中第一个元素表示第三级子目录，第二个元素表示第四级子目录，以此类推
      * @apiNote 第一级目录是carpetorgaddition文件夹
      */
-    public WorldFormat(MinecraftServer server, String directory, String... directories) {
+    public WorldFormat(MinecraftServer server, @Nullable String directory, String... directories) {
         // 获取服务器存档保存文件的路径
         Path path = server.getSavePath(WorldSavePath.ROOT).resolve(CarpetOrgAddition.MOD_NAME_LOWER_CASE);
-        path = path.resolve(directory);
+        if (directory != null) {
+            path = path.resolve(directory);
+        }
         // 拼接路径
         for (String name : directories) {
             path = path.resolve(name);
@@ -159,11 +164,13 @@ public class WorldFormat {
      * @apiNote Java貌似没有对中文的拼音排序做很好的支持，因此，中文的排序依然是无序的
      */
     public List<File> toImmutableFileList() {
+        // TODO 测试后更改日志
         File[] files = this.modFileDirectory.listFiles();
         if (files == null) {
             return List.of();
         }
-        return List.of(files);
+        // 一些操作系统下文件排序可能不是按字母排序
+        return Stream.of(files).sorted(Comparator.comparing(file -> file.getName().toLowerCase())).toList();
     }
 
     // 检查该目录下的文件是否存在
