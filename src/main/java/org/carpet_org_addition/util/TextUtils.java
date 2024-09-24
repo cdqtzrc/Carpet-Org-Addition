@@ -1,6 +1,5 @@
 package org.carpet_org_addition.util;
 
-import net.minecraft.block.Block;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
@@ -192,18 +191,6 @@ public class TextUtils {
     }
 
     /**
-     * @param original 原始的字符串
-     * @param color    字符串的颜色
-     * @return 只带有一些普通样式的可变文本对象
-     */
-    @Deprecated(forRemoval = true)
-    public static MutableText regularStyle(String original, Formatting color) {
-        MutableText text = Text.literal(original);
-        text.styled(style -> style.withColor(color));
-        return text;
-    }
-
-    /**
      * 根据字符串创建一个新的可变文本对象
      *
      * @param text 可变文本对象的内容
@@ -218,16 +205,6 @@ public class TextUtils {
      */
     public static MutableText createEmpty() {
         return Text.literal("");
-    }
-
-    /**
-     * 获取一个方块名称的可变文本形式
-     *
-     * @param block 要获取名称的方块
-     */
-    @Deprecated(forRemoval = true)
-    public static MutableText getBlockName(Block block) {
-        return Text.translatable(block.getTranslationKey());
     }
 
     /**

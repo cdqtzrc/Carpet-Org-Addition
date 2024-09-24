@@ -113,8 +113,8 @@ public class BlockFindTask extends ServerTask {
     private void sort() {
         if (this.results.isEmpty()) {
             // 从周围没有找到指定方块
-            MutableText blockName = TextUtils.getBlockName(this.argument.getBlockState().getBlock());
-            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.not_found_block", blockName);
+            MutableText name = this.argument.getBlockState().getBlock().getName();
+            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.not_found_block", name);
             this.findState = FindState.END;
             return;
         }
@@ -129,11 +129,11 @@ public class BlockFindTask extends ServerTask {
         if (count <= FinderCommand.MAX_FEEDBACK_COUNT) {
             MessageUtils.sendCommandFeedback(context.getSource(),
                     "carpet.commands.finder.block.find", count,
-                    TextUtils.getBlockName(block));
+                    block.getName());
         } else {
             // 数量过多，只输出距离最近的前十个
             MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.find.limit",
-                    count, TextUtils.getBlockName(block), FinderCommand.MAX_FEEDBACK_COUNT);
+                    count, block.getName(), FinderCommand.MAX_FEEDBACK_COUNT);
         }
         for (int i = 0; i < this.results.size() && i < FinderCommand.MAX_FEEDBACK_COUNT; i++) {
             MessageUtils.sendTextMessage(context.getSource(), this.results.get(i).toText());

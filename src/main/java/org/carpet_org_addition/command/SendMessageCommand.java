@@ -103,7 +103,7 @@ public class SendMessageCommand {
         // 获取要发送的文本内容
         String text = StringArgumentType.getString(context, "text");
         // 发送消息
-        MessageUtils.broadcastTextMessage(source, appendPlayerName(source, TextUtils.regularStyle(text, color)));
+        MessageUtils.broadcastTextMessage(source, appendPlayerName(source, TextUtils.setColor(TextUtils.createText(text), color)));
         return 1;
     }
 
