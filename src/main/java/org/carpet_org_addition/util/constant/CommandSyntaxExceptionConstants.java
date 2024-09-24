@@ -4,6 +4,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import org.carpet_org_addition.util.TextUtils;
 
+@Deprecated(forRemoval = true)
 public class CommandSyntaxExceptionConstants {
 
     /**

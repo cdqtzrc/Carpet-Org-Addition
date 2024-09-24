@@ -129,9 +129,9 @@ public class MessageUtils {
      * @param source 消息的发送者，消息内容仅发送者可见
      * @param list   存储所有要发送的消息的集合
      */
-    public static void sendListMessage(ServerCommandSource source, ArrayList<MutableText> list) {
-        for (MutableText mutableText : list) {
-            sendTextMessage(source, mutableText);
+    public static void sendListMessage(ServerCommandSource source, ArrayList<? extends Text> list) {
+        for (Text message : list) {
+            sendTextMessage(source, message);
         }
     }
 }

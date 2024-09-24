@@ -220,6 +220,7 @@ public class MailCommand {
 
     // 检查玩家是否是自己或假玩家
     private static void checkPlayer(ServerPlayerEntity sourcePlayer, ServerPlayerEntity targetPlayer) throws CommandSyntaxException {
+        // TODO 通过测试后删除这条判断
         if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
             return;
         }

@@ -160,6 +160,7 @@ public class PlayerManagerCommand {
     private static int listSafeAfk(CommandContext<ServerCommandSource> context) {
         List<ServerPlayerEntity> list = context.getSource().getServer().getPlayerManager().getPlayerList()
                 .stream().filter(player -> player instanceof EntityPlayerMPFake).toList();
+        // TODO 这里不会正常触发
         if (list.isEmpty()) {
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.safeafk.list.empty");
             return 0;
@@ -192,7 +193,7 @@ public class PlayerManagerCommand {
             }
         } else {
             String key = "carpet.commands.playerManager.safeafk.successfully_set_up.cancel";
-            MutableText command = TextConstants.clickRun("/playerManager safeafk " + fakePlayer.getName().getString() + " true");
+            MutableText command = TextConstants.clickRun("/playerManager safeafk set " + fakePlayer.getName().getString() + " true");
             MessageUtils.sendCommandFeedback(context, key, fakePlayer.getDisplayName(), command);
         }
         return 1;

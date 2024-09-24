@@ -121,7 +121,9 @@ public abstract class ServerPlayerEntityMixin implements NavigatorInterface, Fak
     @Unique
     private Text report(DamageSource damageSource, float amount) {
         ArrayList<Text> list = new ArrayList<>();
+        // 获取攻击者
         Object attacker = Optional.ofNullable(damageSource.getAttacker()).map(entity -> (Object) entity.getDisplayName()).orElse("null");
+        // 获取伤害来源
         Object source = Optional.ofNullable(damageSource.getSource()).map(entity -> (Object) entity.getDisplayName()).orElse("null");
         list.add(TextUtils.getTranslate("carpet.commands.playerManager.safeafk.info.attacker", attacker));
         list.add(TextUtils.getTranslate("carpet.commands.playerManager.safeafk.info.source", source));
