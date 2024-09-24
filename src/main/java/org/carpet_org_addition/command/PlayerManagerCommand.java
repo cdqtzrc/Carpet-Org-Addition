@@ -160,11 +160,6 @@ public class PlayerManagerCommand {
     private static int listSafeAfk(CommandContext<ServerCommandSource> context) {
         List<ServerPlayerEntity> list = context.getSource().getServer().getPlayerManager().getPlayerList()
                 .stream().filter(player -> player instanceof EntityPlayerMPFake).toList();
-        // TODO 这里不会正常触发
-        if (list.isEmpty()) {
-            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.safeafk.list.empty");
-            return 0;
-        }
         int count = 0;
         // 遍历所有在线并且设置了安全挂机的假玩家
         for (ServerPlayerEntity player : list) {
@@ -175,6 +170,10 @@ public class PlayerManagerCommand {
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.safeafk.list.each",
                     player.getDisplayName(), threshold);
             count++;
+        }
+        // 没有玩家被列出
+        if (count == 0) {
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.safeafk.list.empty");
         }
         return count;
     }
