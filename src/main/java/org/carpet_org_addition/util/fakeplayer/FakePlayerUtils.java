@@ -85,7 +85,7 @@ public class FakePlayerUtils {
     public static void stopAction(ServerCommandSource source, EntityPlayerMPFake playerMPFake, String key, Object... obj) {
         ((FakePlayerActionInterface) playerMPFake).getActionManager().setAction(FakePlayerAction.STOP, StopData.STOP);
         MessageUtils.broadcastTextMessage(source, TextUtils.appendAll(playerMPFake.getDisplayName(), ": ",
-                TextUtils.getTranslate(key, obj)));
+                TextUtils.translate(key, obj)));
     }
 
     /**

@@ -78,12 +78,12 @@ public class StonecuttingData extends AbstractActionData {
             itemName = outputItemStack.toHoverableText();
         }
         ArrayList<MutableText> list = new ArrayList<>();
-        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.stonecutting.item",
+        list.add(TextUtils.translate("carpet.commands.playerAction.info.stonecutting.item",
                 fakePlayer.getDisplayName(), Items.STONECUTTER.getName(),
                 this.item.getDefaultStack().toHoverableText(), itemName));
         if (fakePlayer.currentScreenHandler instanceof StonecutterScreenHandler stonecutterScreenHandler) {
             // 将按钮索引的信息添加到集合，按钮在之前减去了1，这里再加回来
-            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.stonecutting.button",
+            list.add(TextUtils.translate("carpet.commands.playerAction.info.stonecutting.button",
                     (button + 1)));
             // 将切石机当前的状态的信息添加到集合
             list.add(TextUtils.appendAll("    ",
@@ -91,7 +91,7 @@ public class StonecuttingData extends AbstractActionData {
                     getWithCountHoverText(stonecutterScreenHandler.getSlot(1).getStack())));
         } else {
             // 将假玩家没有打开切石机的消息添加到集合
-            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.stonecutting.no_stonecutting",
+            list.add(TextUtils.translate("carpet.commands.playerAction.info.stonecutting.no_stonecutting",
                     fakePlayer.getDisplayName(), Items.STONECUTTER.getName()));
         }
         return list;

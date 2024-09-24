@@ -53,7 +53,7 @@ public class FinderCommand {
     /**
      * 村民的游戏内名称
      */
-    public static final MutableText VILLAGER = TextUtils.getTranslate("entity.minecraft.villager");
+    public static final MutableText VILLAGER = TextUtils.translate("entity.minecraft.villager");
     /**
      * 查找超时时抛出异常的反馈消息
      */

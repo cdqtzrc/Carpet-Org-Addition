@@ -13,25 +13,25 @@ public class TextConstants {
     /**
      * 主世界
      */
-    public static final Text OVERWORLD = TextUtils.getTranslate("carpet.command.dimension.overworld");
+    public static final Text OVERWORLD = TextUtils.translate("carpet.command.dimension.overworld");
     /**
      * 下界
      */
-    public static final Text THE_NETHER = TextUtils.getTranslate("carpet.command.dimension.the_nether");
+    public static final Text THE_NETHER = TextUtils.translate("carpet.command.dimension.the_nether");
     /**
      * 末地
      */
-    public static final Text THE_END = TextUtils.getTranslate("carpet.command.dimension.the_end");
-    public static final Text TRUE = TextUtils.getTranslate("carpet.command.boolean.true");
-    public static final Text FALSE = TextUtils.getTranslate("carpet.command.boolean.false");
+    public static final Text THE_END = TextUtils.translate("carpet.command.dimension.the_end");
+    public static final Text TRUE = TextUtils.translate("carpet.command.boolean.true");
+    public static final Text FALSE = TextUtils.translate("carpet.command.boolean.false");
     /**
      * [这里]
      */
-    public static final Text CLICK_HERE = TextUtils.getTranslate("carpet.command.text.click.here");
+    public static final Text CLICK_HERE = TextUtils.translate("carpet.command.text.click.here");
     /**
      * 物品
      */
-    public static final Text ITEM = TextUtils.getTranslate("carpet.command.item.item");
+    public static final Text ITEM = TextUtils.translate("carpet.command.item.item");
 
     public static Text getBoolean(boolean value) {
         return value ? TRUE : FALSE;
@@ -41,7 +41,7 @@ public class TextConstants {
      * 单击输入"%s"
      */
     public static MutableText clickInput(Object... args) {
-        return TextUtils.getTranslate("carpet.command.text.click.input", args);
+        return TextUtils.translate("carpet.command.text.click.input", args);
     }
 
     /**
@@ -52,7 +52,7 @@ public class TextConstants {
     public static MutableText clickRun(String command) {
         MutableText run = CLICK_HERE.copy();
         // 文本的悬停提示
-        MutableText hoverText = TextUtils.getTranslate("carpet.command.text.click.run", command);
+        MutableText hoverText = TextUtils.translate("carpet.command.text.click.run", command);
         return TextUtils.command(run, command, hoverText, Formatting.AQUA, false);
     }
 
@@ -69,11 +69,11 @@ public class TextConstants {
         MutableText text = TextUtils.createText(String.valueOf(count));
         // 为文本添加悬停提示
         if (group == 0) {
-            return TextUtils.hoverText(text, TextUtils.getTranslate("carpet.command.item.remainder", remainder), null);
+            return TextUtils.hoverText(text, TextUtils.translate("carpet.command.item.remainder", remainder));
         } else if (remainder == 0) {
-            return TextUtils.hoverText(text, TextUtils.getTranslate("carpet.command.item.group", group), null);
+            return TextUtils.hoverText(text, TextUtils.translate("carpet.command.item.group", group));
         } else {
-            return TextUtils.hoverText(text, TextUtils.getTranslate("carpet.command.item.count", group, remainder), null);
+            return TextUtils.hoverText(text, TextUtils.translate("carpet.command.item.count", group, remainder));
         }
     }
 

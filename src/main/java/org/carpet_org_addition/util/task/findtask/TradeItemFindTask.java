@@ -62,7 +62,7 @@ public class TradeItemFindTask extends AbstractTradeFindTask {
                 // 村民或流浪商人的名称
                 MutableText villagerName = TextUtils.command(merchant.getName().copy(),
                         "/particleLine ~ ~1 ~ " + merchant.getUuid(), null, null, true);
-                return TextUtils.getTranslate("carpet.commands.finder.trade.item.each",
+                return TextUtils.translate("carpet.commands.finder.trade.item.each",
                         TextUtils.blockPos(blockPos, Formatting.GREEN), villagerName, getIndexArray(list));
             }
 

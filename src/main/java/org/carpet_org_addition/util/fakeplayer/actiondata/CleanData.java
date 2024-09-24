@@ -58,12 +58,12 @@ public class CleanData extends AbstractActionData {
         ArrayList<MutableText> list = new ArrayList<>();
         if (this.allItem) {
             // 将玩家清空潜影盒的信息添加到集合
-            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.clean.item",
+            list.add(TextUtils.translate("carpet.commands.playerAction.info.clean.item",
                     fakePlayer.getDisplayName(),
                     Items.SHULKER_BOX.getName()));
         } else {
             // 将玩家清空潜影盒的信息添加到集合
-            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.clean.designated_item",
+            list.add(TextUtils.translate("carpet.commands.playerAction.info.clean.designated_item",
                     fakePlayer.getDisplayName(),
                     Items.SHULKER_BOX.getName(),
                     this.item.getName()));

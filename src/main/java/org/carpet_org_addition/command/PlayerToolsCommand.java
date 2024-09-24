@@ -128,13 +128,13 @@ public class PlayerToolsCommand {
     private static Text getDimensionText(World world) {
         Identifier value = world.getDimensionKey().getValue();
         if (value.equals(DimensionTypes.OVERWORLD_ID)) {
-            return TextUtils.getTranslate("carpet.commands.playerTools.pos.overworld");
+            return TextUtils.translate("carpet.commands.playerTools.pos.overworld");
         } else if (value.equals(DimensionTypes.THE_NETHER_ID)) {
-            return TextUtils.getTranslate("carpet.commands.playerTools.pos.the_nether");
+            return TextUtils.translate("carpet.commands.playerTools.pos.the_nether");
         } else if (value.equals(DimensionTypes.THE_END_ID)) {
-            return TextUtils.getTranslate("carpet.commands.playerTools.pos.the_end");
+            return TextUtils.translate("carpet.commands.playerTools.pos.the_end");
         }
-        return TextUtils.getTranslate("carpet.commands.playerTools.pos.default");
+        return TextUtils.translate("carpet.commands.playerTools.pos.default");
     }
 
 

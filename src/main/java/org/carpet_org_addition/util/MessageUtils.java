@@ -90,7 +90,7 @@ public class MessageUtils {
     }
 
     public static void sendCommandFeedback(ServerCommandSource source, String key, Object... obj) {
-        MessageUtils.sendTextMessage(source, TextUtils.getTranslate(key, obj));
+        MessageUtils.sendTextMessage(source, TextUtils.translate(key, obj));
     }
 
     public static void sendCommandFeedback(ServerCommandSource source, Text message) {
@@ -105,7 +105,7 @@ public class MessageUtils {
     }
 
     public static void sendCommandErrorFeedback(ServerCommandSource source, String key, Object... obj) {
-        MessageUtils.sendTextMessage(source, TextUtils.setColor(TextUtils.getTranslate(key, obj), Formatting.RED));
+        MessageUtils.sendTextMessage(source, TextUtils.setColor(TextUtils.translate(key, obj), Formatting.RED));
     }
 
     /**
@@ -119,7 +119,7 @@ public class MessageUtils {
      */
     public static void sendCommandErrorFeedback(ServerCommandSource source, Throwable e, String key, Object... obj) {
         String error = e.getMessage();
-        MutableText message = TextUtils.setColor(TextUtils.getTranslate(key, obj), Formatting.RED);
+        MutableText message = TextUtils.setColor(TextUtils.translate(key, obj), Formatting.RED);
         MessageUtils.sendTextMessage(source, TextUtils.hoverText(message, TextUtils.createText(error)));
     }
 

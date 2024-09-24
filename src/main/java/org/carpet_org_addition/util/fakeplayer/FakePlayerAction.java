@@ -45,7 +45,7 @@ public enum FakePlayerAction {
     private final MutableText displayName;
 
     FakePlayerAction(String key) {
-        this.displayName = TextUtils.getTranslate(key);
+        this.displayName = TextUtils.translate(key);
     }
 
     // 检查当前动作是否与指定动作数据匹配

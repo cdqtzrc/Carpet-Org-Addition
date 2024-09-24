@@ -121,7 +121,7 @@ public class ShipExpressScreenHandler extends GenericContainerScreenHandler {
             }
             case 2 -> {
                 // 不显示物品堆叠组数，但鼠标悬停可以显示物品栏
-                MutableText itemText = TextUtils.getTranslate("carpet.command.item.item");
+                MutableText itemText = TextUtils.translate("carpet.command.item.item");
                 yield new Object[]{playerName, count, TextConstants.inventory(itemText, simpleInventory), command};
             }
             default -> throw new IllegalStateException();

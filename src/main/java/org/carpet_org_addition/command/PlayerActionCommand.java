@@ -275,7 +275,7 @@ public class PlayerActionCommand {
         SimpleNamedScreenHandlerFactory screen = new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity)
                 -> new CraftingSetRecipeScreenHandler(i, playerInventory, fakePlayer,
                 ScreenHandlerContext.create(player.getWorld(), player.getBlockPos()), context),
-                TextUtils.getTranslate("carpet.commands.playerAction.info.craft.gui"));
+                TextUtils.translate("carpet.commands.playerAction.info.craft.gui"));
         player.openHandledScreen(screen);
         return 4;
     }

@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -23,6 +24,10 @@ import java.util.stream.Stream;
 public class WorldFormat {
     public static final String JSON_EXTENSION = ".json";
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    /**
+     * 文件是否为{@code json}扩展名
+     */
+    public static final Predicate<File> JSON_EXTENSIONS = file -> file.getName().endsWith(".json");
 
     private final File modFileDirectory;
 
@@ -170,6 +175,15 @@ public class WorldFormat {
         }
         // 一些操作系统下文件排序可能不是按字母排序
         return Stream.of(files).sorted(Comparator.comparing(file -> file.getName().toLowerCase())).toList();
+    }
+
+    public List<File> toImmutableFileList(Predicate<File> filter) {
+        File[] files = this.modFileDirectory.listFiles();
+        if (files == null) {
+            return List.of();
+        }
+        // 一些操作系统下文件排序可能不是按字母排序
+        return Stream.of(files).filter(filter).sorted(Comparator.comparing(file -> file.getName().toLowerCase())).toList();
     }
 
     // 检查该目录下的文件是否存在

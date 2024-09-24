@@ -50,10 +50,10 @@ public class RenameData extends AbstractActionData {
         // 获取假玩家的显示名称
         Text playerName = fakePlayer.getDisplayName();
         // 将假玩家要重命名的物品和物品新名称的信息添加到集合
-        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.rename.item",
+        list.add(TextUtils.translate("carpet.commands.playerAction.info.rename.item",
                 playerName, this.item.getDefaultStack().toHoverableText(), newName));
         // 将假玩家剩余经验的信息添加到集合
-        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.rename.xp",
+        list.add(TextUtils.translate("carpet.commands.playerAction.info.rename.xp",
                 fakePlayer.experienceLevel));
         if (fakePlayer.currentScreenHandler instanceof AnvilScreenHandler anvilScreenHandler) {
             // 将铁砧GUI上的物品信息添加到集合
@@ -63,7 +63,7 @@ public class RenameData extends AbstractActionData {
                     getWithCountHoverText(anvilScreenHandler.getSlot(2).getStack())));
         } else {
             // 将假玩家没有打开铁砧的信息添加到集合
-            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.rename.no_anvil",
+            list.add(TextUtils.translate("carpet.commands.playerAction.info.rename.no_anvil",
                     playerName, Items.ANVIL.getName()));
         }
         return list;

@@ -149,7 +149,7 @@ public class ExpressManager {
             // 播放物品拾取音效
             Express.playItemPickupSound(player);
             // 通知发送者物品以接收
-            Text message = TextUtils.toGrayItalic(TextUtils.getTranslate("carpet.commands.mail.sending.notice", player.getDisplayName()));
+            Text message = TextUtils.toGrayItalic(TextUtils.translate("carpet.commands.mail.sending.notice", player.getDisplayName()));
             PlayerManager playerManager = source.getServer().getPlayerManager();
             for (String name : players) {
                 ServerPlayerEntity senderPlayer = playerManager.getPlayer(name);
@@ -198,7 +198,7 @@ public class ExpressManager {
             }
             // 播放物品拾取音效
             Express.playItemPickupSound(player);
-            Text message = TextUtils.toGrayItalic(TextUtils.getTranslate("carpet.commands.mail.cancel.notice", player.getDisplayName()));
+            Text message = TextUtils.toGrayItalic(TextUtils.translate("carpet.commands.mail.cancel.notice", player.getDisplayName()));
             for (String name : players) {
                 PlayerManager playerManager = source.getServer().getPlayerManager();
                 ServerPlayerEntity receivePlayer = playerManager.getPlayer(name);

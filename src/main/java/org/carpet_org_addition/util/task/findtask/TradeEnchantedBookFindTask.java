@@ -33,7 +33,7 @@ public class TradeEnchantedBookFindTask extends AbstractTradeFindTask {
     public TradeEnchantedBookFindTask(World world, SelectionArea selectionArea, BlockPos sourcePos, CommandContext<ServerCommandSource> context, Enchantment enchantment) {
         super(world, selectionArea, sourcePos, context);
         // 获取附魔名称，不带等级
-        MutableText text = TextUtils.getTranslate(enchantment.getTranslationKey());
+        MutableText text = TextUtils.translate(enchantment.getTranslationKey());
         // 设置附魔名称的颜色
         TextUtils.setColor(text, enchantment.isCursed() ? Formatting.RED : Formatting.GRAY);
         this.treadName = TextUtils.appendAll(text, Items.ENCHANTED_BOOK.getName());
@@ -126,7 +126,7 @@ public class TradeEnchantedBookFindTask extends AbstractTradeFindTask {
                     "/particleLine ~ ~1 ~ " + merchant.getUuid(), null, null, true);
             // 获取交易名称
             MutableText enchantmentName = TradeEnchantedBookFindTask.this.enchantment.getName(level).copy();
-            return TextUtils.getTranslate("carpet.commands.finder.trade.enchanted_book.each",
+            return TextUtils.translate("carpet.commands.finder.trade.enchanted_book.each",
                     TextUtils.blockPos(this.villagerPos(), Formatting.GREEN), villagerName, getIndexArray(this.list), enchantmentName);
         }
 

@@ -101,7 +101,7 @@ public class BlockFindTask extends ServerTask {
                     // 方块过多，无法统计
                     Runnable function = () -> MessageUtils.sendCommandErrorFeedback(this.context,
                             "carpet.commands.finder.block.too_much_blocks",
-                            TextUtils.getBlockName(this.argument.getBlockState().getBlock()));
+                            this.argument.getBlockState().getBlock().getName());
                     throw new TaskExecutionException(function);
                 }
             }
@@ -153,7 +153,7 @@ public class BlockFindTask extends ServerTask {
 
     private record Result(BlockPos sourcteBlockPos, BlockPos blockPos) {
         public MutableText toText() {
-            return TextUtils.getTranslate("carpet.commands.finder.block.feedback",
+            return TextUtils.translate("carpet.commands.finder.block.feedback",
                     MathUtils.getBlockIntegerDistance(sourcteBlockPos, blockPos),
                     TextUtils.blockPos(blockPos, Formatting.GREEN));
         }

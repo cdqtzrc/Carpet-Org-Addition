@@ -141,19 +141,19 @@ public class Location {
     public MutableText getText(String name) {
         MutableText mutableText = null;
         switch (locType) {
-            case OVERWORLD -> mutableText = TextUtils.getTranslate("carpet.commands.locations.text.overworld",
+            case OVERWORLD -> mutableText = TextUtils.translate("carpet.commands.locations.text.overworld",
                     TextUtils.blockPos(getOverworldPos(), Formatting.GREEN));
             case OVERWORLD_AND_THE_NETHER ->
-                    mutableText = TextUtils.getTranslate("carpet.commands.locations.text.overworld_and_the_nether",
+                    mutableText = TextUtils.translate("carpet.commands.locations.text.overworld_and_the_nether",
                             TextUtils.blockPos(getOverworldPos(), Formatting.GREEN),
                             TextUtils.blockPos(getTheNetherPos(), Formatting.RED));
-            case THE_NETHER -> mutableText = TextUtils.getTranslate("carpet.commands.locations.text.the_nether",
+            case THE_NETHER -> mutableText = TextUtils.translate("carpet.commands.locations.text.the_nether",
                     TextUtils.blockPos(getTheNetherPos(), Formatting.RED));
             case THE_NETHER_AND_OVERWORLD ->
-                    mutableText = TextUtils.getTranslate("carpet.commands.locations.text.the_nether_and_overworld",
+                    mutableText = TextUtils.translate("carpet.commands.locations.text.the_nether_and_overworld",
                             TextUtils.blockPos(getTheNetherPos(), Formatting.RED),
                             TextUtils.blockPos(getOverworldPos(), Formatting.GREEN));
-            case THE_END -> mutableText = TextUtils.getTranslate("carpet.commands.locations.text.the_end",
+            case THE_END -> mutableText = TextUtils.translate("carpet.commands.locations.text.the_end",
                     TextUtils.blockPos(getTheEndPos(), Formatting.DARK_PURPLE));
         }
         if (illustrate != null) {

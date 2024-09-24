@@ -49,13 +49,13 @@ public class InventoryCraftData extends AbstractActionData {
         // 获取假玩家的显示名称
         Text PlayerName = fakePlayer.getDisplayName();
         // 将可变文本“<玩家>正在合成物品，配方:”添加到集合
-        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.craft.recipe", PlayerName));
+        list.add(TextUtils.translate("carpet.commands.playerAction.info.craft.recipe", PlayerName));
         // 将每一个合成材料以及配方的输出组装成一个大的可变文本对象并添加到集合中
         list.add(TextUtils.appendAll("    ", getHoverText(matchers[0]), " ", getHoverText(matchers[1])));
         list.add(TextUtils.appendAll("    ", getHoverText(matchers[2]), " ", getHoverText(matchers[3]),
                 " -> ", getHoverText(getCraftOutPut(fakePlayer, matchers))));
         // 将可变文本“<玩家>当前合成物品的状态:”添加到集合中
-        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.craft.state", PlayerName));
+        list.add(TextUtils.translate("carpet.commands.playerAction.info.craft.state", PlayerName));
         // 获取玩家的生存模式物品栏对象
         PlayerScreenHandler playerScreenHandler = fakePlayer.playerScreenHandler;
         // 将每一个合成槽位（包括输出槽位）中的物品的名称和堆叠数组装成一个可变文本对象并添加到集合

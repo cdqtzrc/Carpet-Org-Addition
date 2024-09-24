@@ -17,7 +17,7 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
 
     static {
         ItemStack itemStack = new ItemStack(Items.RED_STAINED_GLASS_PANE);
-        itemStack.setCustomName(TextUtils.setColor(TextUtils.getTranslate("carpet.inventory.item.placeholder"), Formatting.RED));
+        itemStack.setCustomName(TextUtils.setColor(TextUtils.translate("carpet.inventory.item.placeholder"), Formatting.RED));
         PLACEHOLDER = itemStack;
     }
 

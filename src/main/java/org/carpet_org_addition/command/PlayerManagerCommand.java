@@ -3,7 +3,6 @@ package org.carpet_org_addition.command;
 import carpet.patches.EntityPlayerMPFake;
 import carpet.utils.CommandHelper;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
@@ -27,7 +26,6 @@ import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.GameUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.constant.CommandSyntaxExceptionConstants;
 import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerSafeAfkInterface;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerSerial;
@@ -266,7 +264,7 @@ public class PlayerManagerCommand {
                     safeAfk.setHealthThreshold(threshold);
                     // 广播阈值设置的消息
                     String key = "carpet.commands.playerManager.safeafk.successfully_set_up.auto";
-                    MutableText message = TextUtils.getTranslate(key, player.getDisplayName(), threshold);
+                    MutableText message = TextUtils.translate(key, player.getDisplayName(), threshold);
                     MessageUtils.broadcastTextMessage(player, TextUtils.toGrayItalic(message));
                 } catch (NumberFormatException e) {
                     CarpetOrgAddition.LOGGER.error("{}安全挂机阈值设置失败", player.getName().getString(), e);
@@ -373,15 +371,9 @@ public class PlayerManagerCommand {
             JsonObject json = WorldFormat.loadJson(worldFormat.getFile(name));
             // 生成假玩家
             FakePlayerSerial.spawn(name, context.getSource().getServer(), json);
-        } catch (JsonParseException e) {
-            // 无法解析json文件
-            throw CommandSyntaxExceptionConstants.JSON_PARSE_EXCEPTION;
-        } catch (RuntimeException e) {
+        } catch (RuntimeException | IOException e) {
             // 尝试生成假玩家时出现意外问题
-            throw CommandUtils.createException("carpet.commands.playerManager.spawn.fail");
-        } catch (IOException e) {
-            // 从文件读取“%s”玩家数据失败
-            throw CommandUtils.createException("carpet.commands.playerManager.spawn.io", name);
+            throw CommandUtils.createException(e, "carpet.commands.playerManager.spawn.fail");
         }
         return 1;
     }

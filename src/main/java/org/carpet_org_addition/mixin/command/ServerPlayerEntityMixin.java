@@ -90,7 +90,7 @@ public abstract class ServerPlayerEntityMixin implements NavigatorInterface, Fak
         }
         // 安全挂机触发失败，玩家已死亡
         if (this.afkTriggerFail()) {
-            MutableText message = TextUtils.getTranslate("carpet.commands.playerManager.safeafk.trigger.fail", thisPlayer.getDisplayName());
+            MutableText message = TextUtils.translate("carpet.commands.playerManager.safeafk.trigger.fail", thisPlayer.getDisplayName());
             // 设置为斜体
             message = TextUtils.toItalic(message);
             // 设置为红色
@@ -104,7 +104,7 @@ public abstract class ServerPlayerEntityMixin implements NavigatorInterface, Fak
         if (thisPlayer.getHealth() <= this.safeAfkThreshold) {
             // 假玩家剩余血量
             String health = MathUtils.keepTwoDecimalPlaces(thisPlayer.getHealth());
-            MutableText message = TextUtils.getTranslate("carpet.commands.playerManager.safeafk.trigger.success",
+            MutableText message = TextUtils.translate("carpet.commands.playerManager.safeafk.trigger.success",
                     thisPlayer.getDisplayName(), health);
             // 添加悬停提示
             message = TextUtils.hoverText(message, report(source, amount));
@@ -125,10 +125,10 @@ public abstract class ServerPlayerEntityMixin implements NavigatorInterface, Fak
         Object attacker = Optional.ofNullable(damageSource.getAttacker()).map(entity -> (Object) entity.getDisplayName()).orElse("null");
         // 获取伤害来源
         Object source = Optional.ofNullable(damageSource.getSource()).map(entity -> (Object) entity.getDisplayName()).orElse("null");
-        list.add(TextUtils.getTranslate("carpet.commands.playerManager.safeafk.info.attacker", attacker));
-        list.add(TextUtils.getTranslate("carpet.commands.playerManager.safeafk.info.source", source));
-        list.add(TextUtils.getTranslate("carpet.commands.playerManager.safeafk.info.type", damageSource.getName()));
-        list.add(TextUtils.getTranslate("carpet.commands.playerManager.safeafk.info.amount", String.valueOf(amount)));
+        list.add(TextUtils.translate("carpet.commands.playerManager.safeafk.info.attacker", attacker));
+        list.add(TextUtils.translate("carpet.commands.playerManager.safeafk.info.source", source));
+        list.add(TextUtils.translate("carpet.commands.playerManager.safeafk.info.type", damageSource.getName()));
+        list.add(TextUtils.translate("carpet.commands.playerManager.safeafk.info.amount", String.valueOf(amount)));
         return TextUtils.appendList(list);
     }
 

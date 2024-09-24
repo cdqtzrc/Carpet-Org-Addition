@@ -19,6 +19,7 @@ import org.carpet_org_addition.util.wheel.WorldFormat;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class FakePlayerSerial {
     public static final String PLAYER_DATA = "player_data";
@@ -111,11 +112,13 @@ public class FakePlayerSerial {
 
     // 列出每一条玩家信息
     public static int list(CommandContext<ServerCommandSource> context, WorldFormat worldFormat) {
-        MutableText online = TextUtils.getTranslate("carpet.commands.playerManager.click.online");
-        MutableText offline = TextUtils.getTranslate("carpet.commands.playerManager.click.offline");
+        MutableText online = TextUtils.translate("carpet.commands.playerManager.click.online");
+        MutableText offline = TextUtils.translate("carpet.commands.playerManager.click.offline");
         // 使用变量记录列出的数量，而不是直接使用集合的长度，因为集合中可能存在一些非json的文件，或者被损坏的json文件
         int count = 0;
-        for (File file : worldFormat.toImmutableFileList()) {
+        // 所有json文件
+        List<File> jsonFileList = worldFormat.toImmutableFileList(WorldFormat.JSON_EXTENSIONS);
+        for (File file : jsonFileList) {
             try {
                 JsonObject json = WorldFormat.loadJson(file);
                 // 添加悬停文本
@@ -135,8 +138,8 @@ public class FakePlayerSerial {
                 // 发送消息
                 MessageUtils.sendCommandFeedback(context.getSource(), mutableText);
                 count++;
-            } catch (IOException | NullPointerException e) {
-                CarpetOrgAddition.LOGGER.warn("无法从文件{}加载玩家信息", file.getName());
+            } catch (IOException | RuntimeException e) {
+                CarpetOrgAddition.LOGGER.warn("无法从文件{}加载玩家信息", file.getName(), e);
             }
         }
         return count;
@@ -147,18 +150,18 @@ public class FakePlayerSerial {
         ArrayList<MutableText> list = new ArrayList<>();
         // 玩家位置
         JsonObject pos = json.get("pos").getAsJsonObject();
-        list.add(TextUtils.getTranslate("carpet.commands.playerManager.info.pos",
+        list.add(TextUtils.translate("carpet.commands.playerManager.info.pos",
                 MathUtils.keepTwoDecimalPlaces(pos.get("x").getAsDouble(),
                         pos.get("y").getAsDouble(), pos.get("z").getAsDouble())));
         // 获取朝向
         JsonObject direction = json.get("direction").getAsJsonObject();
         float yaw = direction.get("yaw").getAsFloat();
         float pitch = direction.get("pitch").getAsFloat();
-        list.add(TextUtils.getTranslate("carpet.commands.playerManager.info.direction",
+        list.add(TextUtils.translate("carpet.commands.playerManager.info.direction",
                 MathUtils.keepTwoDecimalPlaces(yaw), MathUtils.keepTwoDecimalPlaces(pitch)));
         // 维度
         String dimension = json.get("dimension").getAsString();
-        list.add(TextUtils.getTranslate("carpet.commands.playerManager.info.dimension", switch (dimension) {
+        list.add(TextUtils.translate("carpet.commands.playerManager.info.dimension", switch (dimension) {
             case "minecraft:overworld", "overworld" -> TextConstants.OVERWORLD;
             case "minecraft:the_nether", "the_nether" -> TextConstants.THE_NETHER;
             case "minecraft:the_end", "the_end" -> TextConstants.THE_END;
@@ -166,17 +169,17 @@ public class FakePlayerSerial {
         }));
         // 游戏模式
         GameMode gamemode = GameMode.byName(json.get("gamemode").getAsString());
-        list.add(TextUtils.getTranslate("carpet.commands.playerManager.info.gamemode", gamemode.getTranslatableName()));
+        list.add(TextUtils.translate("carpet.commands.playerManager.info.gamemode", gamemode.getTranslatableName()));
         // 是否飞行
         boolean flying = json.get("flying").getAsBoolean();
-        list.add(TextUtils.getTranslate("carpet.commands.playerManager.info.flying", TextConstants.getBoolean(flying)));
+        list.add(TextUtils.translate("carpet.commands.playerManager.info.flying", TextConstants.getBoolean(flying)));
         // 是否潜行
         boolean sneaking = json.get("sneaking").getAsBoolean();
-        list.add(TextUtils.getTranslate("carpet.commands.playerManager.info.sneaking", TextConstants.getBoolean(sneaking)));
+        list.add(TextUtils.translate("carpet.commands.playerManager.info.sneaking", TextConstants.getBoolean(sneaking)));
         boolean hasAnnotation = json.has("annotation");
         if (hasAnnotation) {
             // 添加注释
-            list.add(TextUtils.getTranslate("carpet.commands.playerManager.info.annotation", json.get("annotation").getAsString()));
+            list.add(TextUtils.translate("carpet.commands.playerManager.info.annotation", json.get("annotation").getAsString()));
         }
         return TextUtils.appendList(list);
     }

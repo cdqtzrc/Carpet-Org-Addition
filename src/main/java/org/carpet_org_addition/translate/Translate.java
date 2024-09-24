@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.io.IOUtils;
 import org.carpet_org_addition.exception.UnableToTranslateException;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,9 +16,14 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Translate {
+    /**
+     * {@code Carpet Org Addition}的所有翻译，键表示语言，值是嵌套的一个Map集合，分别表示翻译的键和值
+     */
     private static final HashMap<String, Map<String, String>> TRANSLATE = new HashMap<>();
 
-    // 获取翻译
+    /**
+     * 获取{@code Carpet Org Addition}的翻译
+     */
     public static Map<String, String> getTranslate() {
         // 每种语言只从文件读取一次
         if (TRANSLATE.containsKey(CarpetSettings.language)) {
@@ -49,5 +55,17 @@ public class Translate {
         }.getType());
         TRANSLATE.put(CarpetSettings.language, translate);
         return translate;
+    }
+
+    /**
+     * 根据键获取{@code Carpet Org Addition}的翻译，原版和其他模组的翻译不会从这里获取到
+     *
+     * @param key 翻译键
+     * @return 如果翻译来着本模组，返回对应的翻译，如果翻译键本身错误，或着翻译键来自原版或其他模组，返回null
+     */
+    @Nullable
+    public static String getTranslateValue(String key) {
+        Map<String, String> translate = Translate.getTranslate();
+        return translate.get(key);
     }
 }
