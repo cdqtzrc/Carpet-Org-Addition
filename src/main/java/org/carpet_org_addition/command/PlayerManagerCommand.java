@@ -193,7 +193,7 @@ public class PlayerManagerCommand {
             }
         } else {
             String key = "carpet.commands.playerManager.safeafk.successfully_set_up.cancel";
-            MutableText command = TextConstants.clickRun("/playerManager safeafk set " + fakePlayer.getName().getString() + " true");
+            MutableText command = TextConstants.clickRun("/playerManager safeafk set " + fakePlayer.getName().getString() + " -1 true");
             MessageUtils.sendCommandFeedback(context, key, fakePlayer.getDisplayName(), command);
         }
         return 1;
