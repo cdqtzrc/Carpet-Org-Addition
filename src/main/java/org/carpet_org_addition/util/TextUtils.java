@@ -2,8 +2,6 @@ package org.carpet_org_addition.util;
 
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.translate.Translate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,38 +10,6 @@ import java.util.List;
 
 public class TextUtils {
     private TextUtils() {
-    }
-
-    /**
-     * 获取一个方块坐标的可变文本对象，并带有点击复制、悬停文本，颜色效果
-     *
-     * @param color 文本的颜色，如果为null，不修改颜色
-     */
-    @SuppressWarnings("ExtractMethodRecommender")
-    public static MutableText blockPos(BlockPos blockPos, @Nullable Formatting color) {
-        MutableText pos = Texts.bracketed(Text.translatable("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
-        //添加单击事件，复制方块坐标
-        pos.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, WorldUtils.toPosString(blockPos))));
-        //添加光标悬停事件：单击复制到剪贴板
-        pos.styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextUtils.translate("chat.copy.click"))));
-        if (color != null) {
-            //修改文本颜色
-            pos.styled(style -> style.withColor(color));
-        }
-        if (CarpetOrgAdditionSettings.canHighlightBlockPos) {
-            MutableText highlight = createText(" [H]");
-            TextUtils.command(highlight, "/highlightWaypoint " + WorldUtils.toPosString(blockPos),
-                    TextUtils.translate("ommc.highlight_waypoint.tooltip"), color, false);
-            return TextUtils.appendAll(pos, highlight);
-        }
-        return pos;
-    }
-
-    /**
-     * 返回一个简单的没有任何样式的方块坐标可变文本对象
-     */
-    public static MutableText simpleBlockPos(BlockPos blockPos) {
-        return Texts.bracketed(Text.translatable("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
     }
 
     /**

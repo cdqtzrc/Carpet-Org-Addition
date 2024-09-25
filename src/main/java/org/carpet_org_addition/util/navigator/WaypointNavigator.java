@@ -8,6 +8,7 @@ import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.WorldUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.wheel.Waypoint;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +50,7 @@ public class WaypointNavigator extends AbstractNavigator {
             // 玩家和路径点在不同的维度，但是维度可以互相转换
             // 将坐标设置为斜体
             Text in = TextUtils.translate(IN, waypoint.getName(),
-                    TextUtils.toItalic(TextUtils.simpleBlockPos(blockPos)));
+                    TextUtils.toItalic(TextConstants.simpleBlockPos(blockPos)));
             Text text = this.getHUDText(this.waypoint.getAnotherBlockPos().toCenterPos(), in,
                     getDistance(playerBlockPos, this.waypoint.getAnotherBlockPos()));
             MessageUtils.sendTextMessageToHud(this.player, text);
@@ -58,7 +59,7 @@ public class WaypointNavigator extends AbstractNavigator {
             Text dimensionName = WorldUtils.getDimensionName(WorldUtils.getWorld(this.player.getServer(),
                     this.waypoint.getDimension()));
             MutableText in = TextUtils.translate(IN, waypoint.getName(),
-                    TextUtils.appendAll(dimensionName, TextUtils.simpleBlockPos(blockPos)));
+                    TextUtils.appendAll(dimensionName, TextConstants.simpleBlockPos(blockPos)));
             MessageUtils.sendTextMessageToHud(this.player, in);
         }
     }
@@ -85,7 +86,7 @@ public class WaypointNavigator extends AbstractNavigator {
 
     @NotNull
     private MutableText getIn(BlockPos blockPos) {
-        return TextUtils.translate(IN, waypoint.getName(), TextUtils.simpleBlockPos(blockPos));
+        return TextUtils.translate(IN, waypoint.getName(), TextConstants.simpleBlockPos(blockPos));
     }
 
     @NotNull

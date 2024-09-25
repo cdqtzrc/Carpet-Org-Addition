@@ -19,6 +19,7 @@ import org.carpet_org_addition.logger.WanderingTraderSpawnLogger.SpawnCountdown;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.WorldUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -63,14 +64,14 @@ public class WanderingTraderManagerMixin {
             Set<Map.Entry<String, String>> entries = ((LoggerAccessor) logger).getSubscribedOnlinePlayers().entrySet();
             // 普通消息
             MutableText message = TextUtils.translate("carpet.logger.wanderingTrader.message",
-                    TextUtils.blockPos(trader.getBlockPos(), Formatting.GREEN));
+                    TextConstants.blockPos(trader.getBlockPos(), Formatting.GREEN));
             // 带点击导航的消息
             MutableText command = TextUtils.command(TextUtils.translate("carpet.logger.wanderingTrader.message.navigate"),
                     "/navigate uuid \"" + trader.getUuid().toString() + "\"",
                     TextUtils.translate("carpet.logger.wanderingTrader.message.navigate.hover", trader.getName()),
                     Formatting.AQUA, false);
             MutableText canClickMessage = TextUtils.translate("carpet.logger.wanderingTrader.message.click",
-                    TextUtils.blockPos(trader.getBlockPos(), Formatting.GREEN), command);
+                    TextConstants.blockPos(trader.getBlockPos(), Formatting.GREEN), command);
             for (Map.Entry<String, String> entry : entries) {
                 ServerPlayerEntity player = server.getPlayerManager().getPlayer(entry.getKey());
                 if (player == null) {

@@ -12,6 +12,7 @@ import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.WorldUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -47,7 +48,7 @@ public class EntityNavigator extends AbstractNavigator {
         Text text;
         if (player.getWorld().equals(world)) {
             // 获取翻译后的文本信息
-            Text in = TextUtils.translate(IN, entity.getName(), TextUtils.simpleBlockPos(entity.getBlockPos()));
+            Text in = TextUtils.translate(IN, entity.getName(), TextConstants.simpleBlockPos(entity.getBlockPos()));
             Text distance = TextUtils.translate(DISTANCE,
                     MathUtils.getBlockIntegerDistance(player.getBlockPos(), entity.getBlockPos()));
             // 添加上下箭头
@@ -56,7 +57,7 @@ public class EntityNavigator extends AbstractNavigator {
         } else {
             text = TextUtils.translate(IN, entity.getName(),
                     TextUtils.appendAll(WorldUtils.getDimensionName(entity.getWorld()),
-                            TextUtils.simpleBlockPos(entity.getBlockPos())));
+                            TextConstants.simpleBlockPos(entity.getBlockPos())));
         }
         MessageUtils.sendTextMessageToHud(this.player, text);
     }

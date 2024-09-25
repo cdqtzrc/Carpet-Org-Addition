@@ -22,6 +22,7 @@ import org.carpet_org_addition.exception.TaskExecutionException;
 import org.carpet_org_addition.util.InventoryUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.matcher.Matcher;
 import org.carpet_org_addition.util.task.ServerTask;
 import org.carpet_org_addition.util.wheel.Counter;
@@ -246,7 +247,7 @@ public class ItemFindTask extends ServerTask {
             } else {
                 command = "/particleLine ~ ~1 ~ " + uuid;
             }
-            return TextUtils.translate("carpet.commands.finder.item.each", TextUtils.blockPos(blockPos, Formatting.GREEN),
+            return TextUtils.translate("carpet.commands.finder.item.each", TextConstants.blockPos(blockPos, Formatting.GREEN),
                     TextUtils.command(containerName, command, null, null, true),
                     FinderCommand.showCount(item.getDefaultStack(), count, shulkerBox));
         }

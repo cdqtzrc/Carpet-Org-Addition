@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-// TODO 需要测试
 public class MailCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("mail")
@@ -220,10 +219,6 @@ public class MailCommand {
 
     // 检查玩家是否是自己或假玩家
     private static void checkPlayer(ServerPlayerEntity sourcePlayer, ServerPlayerEntity targetPlayer) throws CommandSyntaxException {
-        // TODO 通过测试后删除这条判断
-        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-            return;
-        }
         if (sourcePlayer == targetPlayer || targetPlayer instanceof EntityPlayerMPFake) {
             throw CommandUtils.createException("carpet.commands.mail.check_player");
         }

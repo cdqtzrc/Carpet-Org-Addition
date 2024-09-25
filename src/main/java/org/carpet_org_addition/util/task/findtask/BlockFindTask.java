@@ -14,6 +14,7 @@ import org.carpet_org_addition.exception.TaskExecutionException;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.task.ServerTask;
 import org.carpet_org_addition.util.wheel.SelectionArea;
 
@@ -155,7 +156,7 @@ public class BlockFindTask extends ServerTask {
         public MutableText toText() {
             return TextUtils.translate("carpet.commands.finder.block.feedback",
                     MathUtils.getBlockIntegerDistance(sourcteBlockPos, blockPos),
-                    TextUtils.blockPos(blockPos, Formatting.GREEN));
+                    TextConstants.blockPos(blockPos, Formatting.GREEN));
         }
     }
 

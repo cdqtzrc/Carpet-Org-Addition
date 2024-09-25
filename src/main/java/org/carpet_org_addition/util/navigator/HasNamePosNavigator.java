@@ -9,6 +9,7 @@ import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.WorldUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.jetbrains.annotations.NotNull;
 
 public class HasNamePosNavigator extends BlockPosNavigator {
@@ -25,7 +26,7 @@ public class HasNamePosNavigator extends BlockPosNavigator {
             return;
         }
         MutableText text;
-        MutableText posText = TextUtils.simpleBlockPos(this.blockPos);
+        MutableText posText = TextConstants.simpleBlockPos(this.blockPos);
         // 玩家与目的地是否在同一维度
         if (this.player.getWorld().equals(this.world)) {
             MutableText distance = TextUtils.translate(DISTANCE, MathUtils.getBlockIntegerDistance(this.player.getBlockPos(), this.blockPos));

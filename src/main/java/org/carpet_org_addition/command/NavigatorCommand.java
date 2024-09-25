@@ -24,6 +24,7 @@ import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.WorldUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.navigator.NavigatorInterface;
 import org.carpet_org_addition.util.wheel.Waypoint;
 
@@ -158,7 +159,7 @@ public class NavigatorCommand {
         instance.setNavigator(blockPos, world);
         // 发送命令反馈
         MessageUtils.sendCommandFeedback(context, START_NAVIGATION, player.getDisplayName(),
-                TextUtils.blockPos(blockPos, WorldUtils.getColor(world)));
+                TextConstants.blockPos(blockPos, WorldUtils.getColor(world)));
         return 1;
     }
 

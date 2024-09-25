@@ -12,6 +12,7 @@ import org.carpet_org_addition.command.FinderCommand;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.matcher.Matcher;
 import org.carpet_org_addition.util.wheel.SelectionArea;
 
@@ -63,7 +64,7 @@ public class TradeItemFindTask extends AbstractTradeFindTask {
                 MutableText villagerName = TextUtils.command(merchant.getName().copy(),
                         "/particleLine ~ ~1 ~ " + merchant.getUuid(), null, null, true);
                 return TextUtils.translate("carpet.commands.finder.trade.item.each",
-                        TextUtils.blockPos(blockPos, Formatting.GREEN), villagerName, getIndexArray(list));
+                        TextConstants.blockPos(blockPos, Formatting.GREEN), villagerName, getIndexArray(list));
             }
 
             @Override

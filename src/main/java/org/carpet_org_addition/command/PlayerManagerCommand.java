@@ -363,6 +363,7 @@ public class PlayerManagerCommand {
         }
     }
 
+    // TODO 设置玩家自动上线
     // 生成假玩家
     private static int spawnPlayer(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         String name = StringArgumentType.getString(context, "name");
