@@ -141,7 +141,6 @@ public class WorldFormat {
      *
      * @apiNote 不要在本类中使用此方法
      */
-    //删除扩展名
     public static String removeExtension(String fileName) {
         if (fileName.endsWith(JSON_EXTENSION)) {
             return fileName.substring(0, fileName.lastIndexOf("."));

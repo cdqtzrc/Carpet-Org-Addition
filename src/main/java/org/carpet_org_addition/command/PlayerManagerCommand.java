@@ -2,7 +2,6 @@ package org.carpet_org_addition.command;
 
 import carpet.patches.EntityPlayerMPFake;
 import carpet.utils.CommandHelper;
-import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
@@ -369,9 +368,9 @@ public class PlayerManagerCommand {
         String name = StringArgumentType.getString(context, "name");
         WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), FakePlayerSerial.PLAYER_DATA);
         try {
-            JsonObject json = WorldFormat.loadJson(worldFormat.getFile(name));
+            FakePlayerSerial serial = new FakePlayerSerial(worldFormat, name);
             // 生成假玩家
-            FakePlayerSerial.spawn(name, context.getSource().getServer(), json);
+            serial.spawn(name, context.getSource().getServer());
         } catch (RuntimeException | IOException e) {
             // 尝试生成假玩家时出现意外问题
             throw CommandUtils.createException(e, "carpet.commands.playerManager.spawn.fail");
@@ -462,27 +461,27 @@ public class PlayerManagerCommand {
         if (list.isEmpty()) {
             // 添加上线任务
             WorldFormat worldFormat = new WorldFormat(server, FakePlayerSerial.PLAYER_DATA);
-            JsonObject jsonObject;
+            FakePlayerSerial serial;
             try {
-                jsonObject = WorldFormat.loadJson(worldFormat.getFile(name));
+                serial = new FakePlayerSerial(worldFormat, name);
             } catch (IOException e) {
                 throw CommandUtils.createException("carpet.commands.playerManager.schedule.read_file");
             }
-            instance.addTask(new DelayedLoginTask(server, name, jsonObject, tick));
+            instance.addTask(new DelayedLoginTask(server, name, serial, tick));
             String key = server.getPlayerManager().getPlayer(name) == null
                     // <玩家>将于<时间>后上线
                     ? "carpet.commands.playerManager.schedule.login"
                     // <玩家>将于<时间>后再次尝试上线
                     : "carpet.commands.playerManager.schedule.login.try";
             // 玩家名上的悬停提示
-            MutableText info = FakePlayerSerial.info(jsonObject);
+            MutableText info = serial.info();
             // 发送命令反馈
             MessageUtils.sendCommandFeedback(context, key, TextUtils.hoverText(name, info), time);
         } else {
             // 修改上线时间
             DelayedLoginTask task = list.get(0);
             // 为名称添加悬停文本
-            MutableText info = TextUtils.hoverText(name, FakePlayerSerial.info(task.getJsonObject()));
+            MutableText info = TextUtils.hoverText(name, task.getInfo());
             task.setDelayed(tick);
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.login.modify", info, time);
         }
