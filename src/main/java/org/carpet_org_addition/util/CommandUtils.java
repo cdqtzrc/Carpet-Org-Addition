@@ -38,12 +38,7 @@ public class CommandUtils {
      * @throws CommandSyntaxException 如果命令执行者不是玩家，则抛出该异常
      */
     public static ServerPlayerEntity getSourcePlayer(ServerCommandSource source) throws CommandSyntaxException {
-        // TODO 改为getPlayerOrThrow()
-        ServerPlayerEntity player = source.getPlayer();
-        if (player == null) {
-            throw new SimpleCommandExceptionType(TextUtils.translate("carpet.command.source.not_player")).create();
-        }
-        return player;
+        return source.getPlayerOrThrow();
     }
 
     /**
