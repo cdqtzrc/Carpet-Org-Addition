@@ -1,52 +1,15 @@
 package org.carpet_org_addition.util;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.translate.Translate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 
 public class TextUtils {
     private TextUtils() {
-    }
-
-    /**
-     * 获取一个方块坐标的可变文本对象，并带有点击复制、悬停文本，颜色效果
-     *
-     * @param color 文本的颜色，如果为null，不修改颜色
-     */
-    @SuppressWarnings("ExtractMethodRecommender")
-    public static MutableText blockPos(BlockPos blockPos, @Nullable Formatting color) {
-        MutableText pos = Texts.bracketed(Text.translatable("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
-        //添加单击事件，复制方块坐标
-        pos.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, WorldUtils.toPosString(blockPos))));
-        //添加光标悬停事件：单击复制到剪贴板
-        pos.styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextUtils.getTranslate("chat.copy.click"))));
-        if (color != null) {
-            //修改文本颜色
-            pos.styled(style -> style.withColor(color));
-        }
-        if (CarpetOrgAdditionSettings.canHighlightBlockPos) {
-            MutableText highlight = createText(" [H]");
-            TextUtils.command(highlight, "/highlightWaypoint " + WorldUtils.toPosString(blockPos),
-                    TextUtils.getTranslate("ommc.highlight_waypoint.tooltip"), color, false);
-            return TextUtils.appendAll(pos, highlight);
-        }
-        return pos;
-    }
-
-    /**
-     * 返回一个简单的没有任何样式的方块坐标可变文本对象
-     */
-    public static MutableText simpleBlockPos(BlockPos blockPos) {
-        return Texts.bracketed(Text.translatable("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
     }
 
     /**
@@ -151,32 +114,27 @@ public class TextUtils {
      * @param hover 显示在文本上的悬浮文字
      */
     public static MutableText hoverText(String text, String hover) {
-        return Text.literal(text).styled(style
-                -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal(hover))));
+        return Text.literal(text).styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal(hover))));
     }
 
-    public static MutableText hoverText(MutableText initialText, Text hover, @Nullable Formatting color) {
-        initialText.styled(style
-                -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover)));
-        if (color != null) {
-            initialText.styled(style -> style.withColor(color));
-        }
-        return initialText;
+    public static MutableText hoverText(MutableText text, String hover) {
+        return hoverText(text, TextUtils.createText(hover), null);
     }
 
-    public static MutableText hoverText(Object obj, Text hover) {
-        if (obj instanceof Text text) {
-            return hoverText((text instanceof MutableText ? (MutableText) text : text.copy()), hover, null);
-        } else {
-            MutableText mutableText = createEmpty();
-            mutableText.append(obj.toString())
-                    .styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover)));
-            return mutableText;
-        }
+    public static MutableText hoverText(String str, Text hover) {
+        return createText(str).styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover)));
     }
 
     public static MutableText hoverText(Text text, Text hover) {
         return hoverText((text instanceof MutableText ? (MutableText) text : text.copy()), hover, null);
+    }
+
+    public static MutableText hoverText(MutableText initialText, Text hover, @Nullable Formatting color) {
+        initialText.styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover)));
+        if (color != null) {
+            initialText.styled(style -> style.withColor(color));
+        }
+        return initialText;
     }
 
     /**
@@ -199,18 +157,6 @@ public class TextUtils {
     }
 
     /**
-     * @param original 原始的字符串
-     * @param color    字符串的颜色
-     * @return 只带有一些普通样式的可变文本对象
-     */
-    @SuppressWarnings("unused")
-    public static MutableText regularStyle(String original, Formatting color) {
-        MutableText text = Text.literal(original);
-        text.styled(style -> style.withColor(color));
-        return text;
-    }
-
-    /**
      * 根据字符串创建一个新的可变文本对象
      *
      * @param text 可变文本对象的内容
@@ -225,15 +171,6 @@ public class TextUtils {
      */
     public static MutableText createEmpty() {
         return Text.literal("");
-    }
-
-    /**
-     * 获取一个方块名称的可变文本形式
-     *
-     * @param block 要获取名称的方块
-     */
-    public static MutableText getBlockName(Block block) {
-        return Text.translatable(block.getTranslationKey());
     }
 
     /**
@@ -255,16 +192,6 @@ public class TextUtils {
      */
     public static MutableText toGrayItalic(MutableText mutableText) {
         return toItalic(setColor(mutableText, Formatting.GRAY));
-    }
-
-    /**
-     * 获取一个物品名称的可变文本形式
-     *
-     * @param item 要获取名称的物品
-     */
-    @SuppressWarnings("unused")
-    public static MutableText getItemName(Item item) {
-        return Text.translatable(item.getTranslationKey());
     }
 
     /**
@@ -309,13 +236,8 @@ public class TextUtils {
      * @param key 翻译键
      * @return 可翻译文本
      */
-    public static MutableText getTranslate(String key, Object... obj) {
-        String value;
-        try {
-            value = Objects.requireNonNull(Translate.getTranslate()).get(key);
-        } catch (NullPointerException e) {
-            value = null;
-        }
+    public static MutableText translate(String key, Object... obj) {
+        String value = Translate.getTranslateValue(key);
         return Text.translatableWithFallback(key, value, obj);
     }
 }

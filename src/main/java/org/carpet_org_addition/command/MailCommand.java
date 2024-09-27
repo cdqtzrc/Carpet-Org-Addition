@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-// TODO 需要测试
 public class MailCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("mail")
@@ -101,7 +100,7 @@ public class MailCommand {
         SimpleInventory inventory = new SimpleInventory(27);
         SimpleNamedScreenHandlerFactory screen = new SimpleNamedScreenHandlerFactory((i, inv, player)
                 -> new ShipExpressScreenHandler(i, inv, sourcePlayer, targetPlayer, inventory),
-                TextUtils.getTranslate("carpet.commands.multiple.gui"));
+                TextUtils.translate("carpet.commands.multiple.gui"));
         sourcePlayer.openHandledScreen(screen);
         return 1;
     }
@@ -181,23 +180,23 @@ public class MailCommand {
             text = TextUtils.createText("[R]");
             // 点击接收
             TextUtils.command(text, "/mail receive " + express.getId(), null, Formatting.AQUA, false);
-            list.add(TextUtils.getTranslate("carpet.commands.mail.list.receive"));
+            list.add(TextUtils.translate("carpet.commands.mail.list.receive"));
             list.add(TextUtils.createEmpty());
         } else if (express.isSender(player)) {
             text = TextUtils.createText("[C]");
             // 点击撤回
             TextUtils.command(text, "/mail cancel " + express.getId(), null, Formatting.AQUA, false);
-            list.add(TextUtils.getTranslate("carpet.commands.mail.list.sending"));
+            list.add(TextUtils.translate("carpet.commands.mail.list.sending"));
             list.add(TextUtils.createEmpty());
         } else {
             text = TextUtils.createText("[?]");
         }
-        list.add(TextUtils.getTranslate("carpet.commands.mail.list.id", express.getId()));
-        list.add(TextUtils.getTranslate("carpet.commands.mail.list.sender", express.getSender()));
-        list.add(TextUtils.getTranslate("carpet.commands.mail.list.recipient", express.getRecipient()));
-        list.add(TextUtils.getTranslate("carpet.commands.mail.list.item",
-                TextUtils.getTranslate(express.getExpress().getTranslationKey()), express.getExpress().getCount()));
-        list.add(TextUtils.getTranslate("carpet.commands.mail.list.time", express.getTime()));
+        list.add(TextUtils.translate("carpet.commands.mail.list.id", express.getId()));
+        list.add(TextUtils.translate("carpet.commands.mail.list.sender", express.getSender()));
+        list.add(TextUtils.translate("carpet.commands.mail.list.recipient", express.getRecipient()));
+        list.add(TextUtils.translate("carpet.commands.mail.list.item",
+                TextUtils.translate(express.getExpress().getTranslationKey()), express.getExpress().getCount()));
+        list.add(TextUtils.translate("carpet.commands.mail.list.time", express.getTime()));
         // 拼接字符串
         text = TextUtils.hoverText(text, TextUtils.appendList(list));
         MessageUtils.sendCommandFeedback(player.getCommandSource(), "carpet.commands.mail.list.each",
@@ -220,9 +219,6 @@ public class MailCommand {
 
     // 检查玩家是否是自己或假玩家
     private static void checkPlayer(ServerPlayerEntity sourcePlayer, ServerPlayerEntity targetPlayer) throws CommandSyntaxException {
-        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-            return;
-        }
         if (sourcePlayer == targetPlayer || targetPlayer instanceof EntityPlayerMPFake) {
             throw CommandUtils.createException("carpet.commands.mail.check_player");
         }

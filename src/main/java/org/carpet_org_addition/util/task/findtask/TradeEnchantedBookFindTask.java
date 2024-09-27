@@ -16,6 +16,7 @@ import org.carpet_org_addition.util.EnchantmentUtils;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.wheel.SelectionArea;
 
 import java.util.ArrayList;
@@ -107,7 +108,7 @@ public class TradeEnchantedBookFindTask extends AbstractTradeFindTask {
                     "/particleLine ~ ~1 ~ " + merchant.getUuid(), null, null, true);
             // 获取交易名称
             MutableText enchantmentName = EnchantmentUtils.getName(enchantment, level);
-            return TextUtils.getTranslate("carpet.commands.finder.trade.enchanted_book.each",
+            return TextUtils.translate("carpet.commands.finder.trade.enchanted_book.each",
                     TextUtils.blockPos(this.villagerPos(), Formatting.GREEN), villagerName, getIndexArray(this.list), enchantmentName);
         }
 

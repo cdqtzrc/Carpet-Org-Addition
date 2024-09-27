@@ -58,7 +58,7 @@ public class ItemPredicateMatcher implements Matcher {
             }
             return Matcher.asItem(nameOrTag).getName();
         }
-        return TextUtils.getTranslate("carpet.commands.playerAction.info.craft.item_tag");
+        return TextUtils.translate("carpet.commands.playerAction.info.craft.item_tag");
     }
 
     @Override
@@ -82,7 +82,7 @@ public class ItemPredicateMatcher implements Matcher {
                 return Matcher.asItem(itemOrTag).getDefaultStack().toHoverableText().copy();
             }
         }
-        return TextUtils.getTranslate("carpet.commands.playerAction.info.craft.item_tag");
+        return TextUtils.translate("carpet.commands.playerAction.info.craft.item_tag");
     }
 
     @Override

@@ -105,6 +105,7 @@ public class ShipExpressScreenHandler extends GenericContainerScreenHandler {
             }
             onlyOneKind = 2;
         }
+        // TODO "向%s发送了%s个%s，点击%s全部撤回"第一个参数不正确
         Text playerName = this.sourcePlayer.getDisplayName();
         MutableText command = TextConstants.clickRun("/mail cancel");
         Object[] args = switch (onlyOneKind) {
@@ -121,7 +122,7 @@ public class ShipExpressScreenHandler extends GenericContainerScreenHandler {
             }
             case 2 -> {
                 // 不显示物品堆叠组数，但鼠标悬停可以显示物品栏
-                MutableText itemText = TextUtils.getTranslate("carpet.command.item.item");
+                MutableText itemText = TextUtils.translate("carpet.command.item.item");
                 yield new Object[]{playerName, count, TextConstants.inventory(itemText, simpleInventory), command};
             }
             default -> throw new IllegalStateException();

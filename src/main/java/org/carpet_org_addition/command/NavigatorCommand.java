@@ -24,6 +24,7 @@ import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.WorldUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.navigator.NavigatorInterface;
 import org.carpet_org_addition.util.wheel.Waypoint;
 
@@ -70,7 +71,7 @@ public class NavigatorCommand {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         Entity entity = EntityArgumentType.getEntity(context, "entity");
         // 如果目标是玩家，广播消息
-        MutableText text = TextUtils.getTranslate(START_NAVIGATION, player.getDisplayName(), entity.getDisplayName());
+        MutableText text = TextUtils.translate(START_NAVIGATION, player.getDisplayName(), entity.getDisplayName());
         ((NavigatorInterface) player).setNavigator(entity, isContinue);
         if (shouldBeBroadcasted(entity, player)) {
             // 设置为斜体淡灰色
@@ -118,7 +119,7 @@ public class NavigatorCommand {
                 continue;
             }
             ((NavigatorInterface) player).setNavigator(entity, false);
-            MutableText text = TextUtils.getTranslate(START_NAVIGATION, player.getDisplayName(), entity.getDisplayName());
+            MutableText text = TextUtils.translate(START_NAVIGATION, player.getDisplayName(), entity.getDisplayName());
             if (shouldBeBroadcasted(entity, player)) {
                 // 将字体设置为灰色斜体
                 text = TextUtils.toItalic(TextUtils.setColor(text, Formatting.GRAY));
@@ -144,7 +145,7 @@ public class NavigatorCommand {
     private static int stopNavigate(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         ((NavigatorInterface) player).clearNavigator();
-        MessageUtils.sendTextMessageToHud(player, TextUtils.getTranslate("carpet.commands.navigate.hud.stop"));
+        MessageUtils.sendTextMessageToHud(player, TextUtils.translate("carpet.commands.navigate.hud.stop"));
         return 1;
     }
 
@@ -158,14 +159,14 @@ public class NavigatorCommand {
         instance.setNavigator(blockPos, world);
         // 发送命令反馈
         MessageUtils.sendCommandFeedback(context, START_NAVIGATION, player.getDisplayName(),
-                TextUtils.blockPos(blockPos, WorldUtils.getColor(world)));
+                TextConstants.blockPos(blockPos, WorldUtils.getColor(world)));
         return 1;
     }
 
     // 导航到重生点
     private static int navigateToSpawnPoint(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
-        MutableText spawnPoint = TextUtils.getTranslate("carpet.commands.navigate.name.spawnpoint");
+        MutableText spawnPoint = TextUtils.translate("carpet.commands.navigate.name.spawnpoint");
         try {
             NavigatorInterface.getInstance(player).setNavigator(Objects.requireNonNull(player.getSpawnPointPosition()),
                     player.server.getWorld(Objects.requireNonNull(player.getSpawnPointDimension())), spawnPoint);
@@ -182,18 +183,18 @@ public class NavigatorCommand {
         ServerPlayerEntity target = self ? player : CommandUtils.getArgumentPlayer(context);
         Optional<GlobalPos> lastDeathPos = target.getLastDeathPos();
         // 导航器目标的名称
-        MutableText lastDeathLocation = TextUtils.getTranslate("carpet.commands.navigate.name.last_death_location");
+        MutableText lastDeathLocation = TextUtils.translate("carpet.commands.navigate.name.last_death_location");
         // 非空判断
         if (lastDeathPos.isEmpty()) {
             throw CommandUtils.createException("carpet.commands.navigate.unable_to_find", target.getDisplayName(), lastDeathLocation);
         }
         MutableText name = self ? lastDeathLocation
-                : TextUtils.getTranslate("carpet.commands.navigate.hud.of", target.getDisplayName(), lastDeathLocation);
+                : TextUtils.translate("carpet.commands.navigate.hud.of", target.getDisplayName(), lastDeathLocation);
         // 获取死亡坐标和死亡维度
         GlobalPos globalPos = lastDeathPos.get();
         NavigatorInterface.getInstance(player).setNavigator(globalPos.pos(),
                 context.getSource().getServer().getWorld(globalPos.dimension()), name);
-        MutableText message = TextUtils.getTranslate(START_NAVIGATION, player.getDisplayName(), name);
+        MutableText message = TextUtils.translate(START_NAVIGATION, player.getDisplayName(), name);
         if (self || player == target) {
             MessageUtils.sendTextMessage(player, message);
         } else {

@@ -12,6 +12,7 @@ import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.WorldUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 
 import java.io.File;
 import java.io.IOException;
@@ -169,21 +170,21 @@ public class Waypoint {
     public void show(ServerCommandSource source) {
         MutableText text = switch (this.dimension) {
             case WorldUtils.OVERWORLD -> this.anotherBlockPos == null
-                    ? TextUtils.getTranslate("carpet.commands.locations.show.overworld",
-                    this.formatName(), TextUtils.blockPos(this.blockPos, Formatting.GREEN))
-                    : TextUtils.getTranslate("carpet.commands.locations.show.overworld_and_the_nether",
-                    this.formatName(), TextUtils.blockPos(this.blockPos, Formatting.GREEN),
-                    TextUtils.blockPos(this.anotherBlockPos, Formatting.RED));
+                    ? TextUtils.translate("carpet.commands.locations.show.overworld",
+                    this.formatName(), TextConstants.blockPos(this.blockPos, Formatting.GREEN))
+                    : TextUtils.translate("carpet.commands.locations.show.overworld_and_the_nether",
+                    this.formatName(), TextConstants.blockPos(this.blockPos, Formatting.GREEN),
+                    TextConstants.blockPos(this.anotherBlockPos, Formatting.RED));
             case WorldUtils.THE_NETHER -> this.anotherBlockPos == null
-                    ? TextUtils.getTranslate("carpet.commands.locations.show.the_nether",
-                    this.formatName(), TextUtils.blockPos(this.blockPos, Formatting.RED))
-                    : TextUtils.getTranslate("carpet.commands.locations.show.the_nether_and_overworld",
-                    this.formatName(), TextUtils.blockPos(this.blockPos, Formatting.RED),
-                    TextUtils.blockPos(this.anotherBlockPos, Formatting.GREEN));
-            case WorldUtils.THE_END -> TextUtils.getTranslate("carpet.commands.locations.show.the_end",
-                    this.formatName(), TextUtils.blockPos(this.blockPos, Formatting.DARK_PURPLE));
-            default -> TextUtils.getTranslate("carpet.commands.locations.show.custom_dimension",
-                    this.formatName(), this.dimension, TextUtils.blockPos(this.blockPos, Formatting.GREEN));
+                    ? TextUtils.translate("carpet.commands.locations.show.the_nether",
+                    this.formatName(), TextConstants.blockPos(this.blockPos, Formatting.RED))
+                    : TextUtils.translate("carpet.commands.locations.show.the_nether_and_overworld",
+                    this.formatName(), TextConstants.blockPos(this.blockPos, Formatting.RED),
+                    TextConstants.blockPos(this.anotherBlockPos, Formatting.GREEN));
+            case WorldUtils.THE_END -> TextUtils.translate("carpet.commands.locations.show.the_end",
+                    this.formatName(), TextConstants.blockPos(this.blockPos, Formatting.DARK_PURPLE));
+            default -> TextUtils.translate("carpet.commands.locations.show.custom_dimension",
+                    this.formatName(), this.dimension, TextConstants.blockPos(this.blockPos, Formatting.GREEN));
         };
         MessageUtils.sendCommandFeedback(source, text);
     }

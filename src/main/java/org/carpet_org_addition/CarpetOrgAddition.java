@@ -18,6 +18,7 @@ import org.carpet_org_addition.logger.WanderingTraderSpawnLogger;
 import org.carpet_org_addition.translate.Translate;
 import org.carpet_org_addition.util.express.ExpressManager;
 import org.carpet_org_addition.util.express.ExpressManagerInterface;
+import org.carpet_org_addition.util.fakeplayer.FakePlayerSerial;
 import org.carpet_org_addition.util.wheel.Waypoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,8 +42,6 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
      *  显示试炼刷怪笼倒计时
      *  自定义试炼刷怪笼生成间隔
      */
-
-    // TODO 更新日志类加载警告问题版本归属
 
     /**
      * 模组初始化
@@ -77,7 +76,8 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
         // 提示玩家接收快递
         ExpressManager expressManager = ExpressManagerInterface.getInstance(player.server);
         expressManager.promptToReceive(player);
-        PlayerManagerCommand.loadSeafAfk(player);
+        // 加载假玩家安全挂机
+        PlayerManagerCommand.loadSafeAfk(player);
     }
 
     // 服务器启动时调用
@@ -86,6 +86,12 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
         CarpetExtension.super.onServerLoaded(server);
         // 服务器启动时自动将旧的路径点替换成新的
         Waypoint.replaceWaypoint(server);
+    }
+
+    @Override
+    public void onServerLoadedWorlds(MinecraftServer server) {
+        // 玩家自动登录
+        FakePlayerSerial.autoLogin(server);
     }
 
     // 设置模组翻译

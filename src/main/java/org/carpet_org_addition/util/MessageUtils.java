@@ -90,7 +90,7 @@ public class MessageUtils {
     }
 
     public static void sendCommandFeedback(ServerCommandSource source, String key, Object... obj) {
-        MessageUtils.sendTextMessage(source, TextUtils.getTranslate(key, obj));
+        MessageUtils.sendTextMessage(source, TextUtils.translate(key, obj));
     }
 
     public static void sendCommandFeedback(ServerCommandSource source, Text message) {
@@ -105,7 +105,7 @@ public class MessageUtils {
     }
 
     public static void sendCommandErrorFeedback(ServerCommandSource source, String key, Object... obj) {
-        MessageUtils.sendTextMessage(source, TextUtils.setColor(TextUtils.getTranslate(key, obj), Formatting.RED));
+        MessageUtils.sendTextMessage(source, TextUtils.setColor(TextUtils.translate(key, obj), Formatting.RED));
     }
 
     /**
@@ -119,7 +119,7 @@ public class MessageUtils {
      */
     public static void sendCommandErrorFeedback(ServerCommandSource source, Throwable e, String key, Object... obj) {
         String error = e.getMessage();
-        MutableText message = TextUtils.setColor(TextUtils.getTranslate(key, obj), Formatting.RED);
+        MutableText message = TextUtils.setColor(TextUtils.translate(key, obj), Formatting.RED);
         MessageUtils.sendTextMessage(source, TextUtils.hoverText(message, TextUtils.createText(error)));
     }
 
@@ -129,9 +129,9 @@ public class MessageUtils {
      * @param source 消息的发送者，消息内容仅发送者可见
      * @param list   存储所有要发送的消息的集合
      */
-    public static void sendListMessage(ServerCommandSource source, ArrayList<MutableText> list) {
-        for (MutableText mutableText : list) {
-            sendTextMessage(source, mutableText);
+    public static void sendListMessage(ServerCommandSource source, ArrayList<? extends Text> list) {
+        for (Text message : list) {
+            sendTextMessage(source, message);
         }
     }
 }

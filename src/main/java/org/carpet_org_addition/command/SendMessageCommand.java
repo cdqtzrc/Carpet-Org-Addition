@@ -17,6 +17,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.*;
+import org.carpet_org_addition.util.constant.TextConstants;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class SendMessageCommand {
@@ -54,7 +55,7 @@ public class SendMessageCommand {
         //在输入命令时输入的消息
         String text = StringArgumentType.getString(context, "text");
         //给文本添加颜色，单击事件，鼠标悬停事件
-        MutableText copy = TextUtils.copy(text, text, TextUtils.getTranslate("chat.copy.click"), Formatting.GREEN);
+        MutableText copy = TextUtils.copy(text, text, TextUtils.translate("chat.copy.click"), Formatting.GREEN);
         MessageUtils.broadcastTextMessage(source, appendPlayerName(source, copy));
         return 1;
     }
@@ -65,7 +66,7 @@ public class SendMessageCommand {
         ServerCommandSource source = context.getSource();
         //创建可变文本对象
         String text = StringArgumentType.getString(context, "url");
-        MutableText url = TextUtils.url(text, text, TextUtils.getTranslate("carpet.commands.sendMessage.url.click_open_url").getString(), null);
+        MutableText url = TextUtils.url(text, text, TextUtils.translate("carpet.commands.sendMessage.url.click_open_url").getString(), null);
         MessageUtils.broadcastTextMessage(source, appendPlayerName(source, url));
         return 1;
     }
@@ -75,21 +76,17 @@ public class SendMessageCommand {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         BlockPos blockPos = player.getBlockPos();
         MutableText mutableText = switch (WorldUtils.getDimensionId(player.getWorld())) {
-            case "minecraft:overworld" -> TextUtils.getTranslate("carpet.commands.sendMessage.location.overworld",
-                    player.getDisplayName(),
-                    TextUtils.blockPos(blockPos, Formatting.GREEN),
-                    TextUtils.blockPos(MathUtils.getTheNetherPos(player), Formatting.RED));
-            case "minecraft:the_nether" -> TextUtils.getTranslate("carpet.commands.sendMessage.location.the_nether",
-                    player.getDisplayName(),
-                    TextUtils.blockPos(blockPos, Formatting.RED),
-                    TextUtils.blockPos(MathUtils.getOverworldPos(player), Formatting.GREEN));
-            case "minecraft:the_end" -> TextUtils.getTranslate("carpet.commands.sendMessage.location.the_end",
-                    player.getDisplayName(),
-                    TextUtils.blockPos(blockPos, Formatting.DARK_PURPLE));
-            default -> TextUtils.getTranslate("carpet.commands.sendMessage.location.default",
-                    player.getDisplayName(),
-                    WorldUtils.getDimensionId(player.getWorld()),
-                    TextUtils.blockPos(blockPos, null));
+            case "minecraft:overworld" -> TextUtils.translate("carpet.commands.sendMessage.location.overworld",
+                    player.getDisplayName(), TextConstants.blockPos(blockPos, Formatting.GREEN),
+                    TextConstants.blockPos(MathUtils.getTheNetherPos(player), Formatting.RED));
+            case "minecraft:the_nether" -> TextUtils.translate("carpet.commands.sendMessage.location.the_nether",
+                    player.getDisplayName(), TextConstants.blockPos(blockPos, Formatting.RED),
+                    TextConstants.blockPos(MathUtils.getOverworldPos(player), Formatting.GREEN));
+            case "minecraft:the_end" -> TextUtils.translate("carpet.commands.sendMessage.location.the_end",
+                    player.getDisplayName(), TextConstants.blockPos(blockPos, Formatting.DARK_PURPLE));
+            default -> TextUtils.translate("carpet.commands.sendMessage.location.default",
+                    player.getDisplayName(), WorldUtils.getDimensionId(player.getWorld()),
+                    TextConstants.blockPos(blockPos, null));
         };
         MessageUtils.broadcastTextMessage(context.getSource(), mutableText);
         return 1;
@@ -103,7 +100,7 @@ public class SendMessageCommand {
         // 获取要发送的文本内容
         String text = StringArgumentType.getString(context, "text");
         // 发送消息
-        MessageUtils.broadcastTextMessage(source, appendPlayerName(source, TextUtils.regularStyle(text, color)));
+        MessageUtils.broadcastTextMessage(source, appendPlayerName(source, TextUtils.setColor(TextUtils.createText(text), color)));
         return 1;
     }
 

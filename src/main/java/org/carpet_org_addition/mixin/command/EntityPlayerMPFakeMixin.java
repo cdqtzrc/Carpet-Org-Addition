@@ -48,7 +48,7 @@ public abstract class EntityPlayerMPFakeMixin implements FakePlayerActionInterfa
             CarpetOrgAddition.LOGGER.error("{}在执行操作“{}”时遇到意外错误:", thisPlayer.getName().getString(),
                     this.getActionManager().getAction().toString(), e);
             // 向聊天栏发送错误消息的反馈
-            MutableText message = TextUtils.getTranslate("carpet.commands.playerAction.exception.runtime",
+            MutableText message = TextUtils.translate("carpet.commands.playerAction.exception.runtime",
                     thisPlayer.getDisplayName(), this.getActionManager().getAction().getDisplayName());
             MessageUtils.broadcastTextMessage(thisPlayer, TextUtils.setColor(message, Formatting.RED));
             // 让假玩家停止当前操作
