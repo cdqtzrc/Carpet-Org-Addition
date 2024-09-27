@@ -109,7 +109,7 @@ public class TradeEnchantedBookFindTask extends AbstractTradeFindTask {
             // 获取交易名称
             MutableText enchantmentName = EnchantmentUtils.getName(enchantment, level);
             return TextUtils.translate("carpet.commands.finder.trade.enchanted_book.each",
-                    TextUtils.blockPos(this.villagerPos(), Formatting.GREEN), villagerName, getIndexArray(this.list), enchantmentName);
+                    TextConstants.blockPos(this.villagerPos(), Formatting.GREEN), villagerName, getIndexArray(this.list), enchantmentName);
         }
 
         @Override

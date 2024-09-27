@@ -59,7 +59,7 @@ public class EnchantmentUtils {
     public static MutableText getName(Enchantment enchantment, int level) {
         MutableText mutableText = getName(enchantment);
         if (level != 1 || enchantment.getMaxLevel() != 1) {
-            mutableText = TextUtils.appendAll(mutableText, ScreenTexts.SPACE, TextUtils.getTranslate("enchantment.level." + level));
+            mutableText = TextUtils.appendAll(mutableText, ScreenTexts.SPACE, TextUtils.translate("enchantment.level." + level));
         }
         return mutableText;
     }

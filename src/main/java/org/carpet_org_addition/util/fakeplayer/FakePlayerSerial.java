@@ -162,7 +162,7 @@ public class FakePlayerSerial {
             throw CommandUtils.createException("carpet.commands.playerManager.spawn.player_exist");
         }
         // 生成假玩家
-        EntityPlayerMPFake fakePlayer = EntityPlayerMPFake.createFake(this.fakePlayerName, server, this.playerPos, yaw, pitch,
+        EntityPlayerMPFake fakePlayer = GameUtils.createFakePlayer(this.fakePlayerName, server, this.playerPos, yaw, pitch,
                 WorldUtils.getWorld(dimension), this.gameMode, flying);
         fakePlayer.setSneaking(sneaking);
         // 设置玩家动作
