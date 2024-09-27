@@ -27,7 +27,7 @@ public class WorldFormat {
     /**
      * 文件是否为{@code json}扩展名
      */
-    public static final Predicate<File> JSON_EXTENSIONS = file -> file.getName().endsWith(".json");
+    public static final Predicate<File> JSON_EXTENSIONS = file -> file.getName().endsWith(JSON_EXTENSION);
 
     private final File modFileDirectory;
 
@@ -78,6 +78,62 @@ public class WorldFormat {
         return new File(this.modFileDirectory, fileName);
     }
 
+    // 补全文件扩展名
+    private static String suppFileName(String fileName) {
+        if (fileName.split("\\.").length == 1) {
+            return fileName + JSON_EXTENSION;
+        }
+        return fileName;
+    }
+
+    /**
+     * @return 包含目录下所有文件的Set集合
+     * @deprecated 因为是Set集合，所以集合内的元素是无序的，并且，该集合可变，可以任意添加或修改元素
+     */
+    @Deprecated
+    public HashSet<File> listFiles() {
+        File[] files = this.modFileDirectory.listFiles();
+        if (files == null) {
+            // 返回空集合
+            return new HashSet<>();
+        }
+        return new HashSet<>(Arrays.asList(files));
+    }
+
+    /**
+     * @return 包含该目录所有文件的不可变的List集合
+     * @apiNote Java貌似没有对中文的拼音排序做很好的支持，因此，中文的排序依然是无序的
+     */
+    public List<File> toImmutableFileList() {
+        File[] files = this.modFileDirectory.listFiles();
+        if (files == null) {
+            return List.of();
+        }
+        // 一些操作系统下文件排序可能不是按字母排序
+        return Stream.of(files).sorted(Comparator.comparing(file -> file.getName().toLowerCase())).toList();
+    }
+
+    public List<File> toImmutableFileList(Predicate<File> filter) {
+        File[] files = this.modFileDirectory.listFiles();
+        if (files == null) {
+            return List.of();
+        }
+        // 一些操作系统下文件排序可能不是按字母排序
+        return Stream.of(files).filter(filter).sorted(Comparator.comparing(file -> file.getName().toLowerCase())).toList();
+    }
+
+    // 检查该目录下的文件是否存在
+    public boolean fileExists(String fileName) {
+        fileName = suppFileName(fileName);
+        File file = this.file(fileName);
+        return file.exists();
+    }
+
+    @Override
+    public String toString() {
+        return this.modFileDirectory.toString();
+    }
+
     /**
      * 创建一个UTF-8编码的字符输入流对象
      */
@@ -123,19 +179,6 @@ public class WorldFormat {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return this.modFileDirectory.toString();
-    }
-
-    // 补全文件扩展名
-    private static String suppFileName(String fileName) {
-        if (fileName.split("\\.").length == 1) {
-            return fileName + JSON_EXTENSION;
-        }
-        return fileName;
-    }
-
     /**
      * 删除文件扩展名
      *
@@ -146,81 +189,5 @@ public class WorldFormat {
             return fileName.substring(0, fileName.lastIndexOf("."));
         }
         return fileName;
-    }
-
-
-    /**
-     * @return 包含目录下所有文件的Set集合
-     * @deprecated 因为是Set集合，所以集合内的元素是无序的，并且，该集合可变，可以任意添加或修改元素
-     */
-    @Deprecated
-    public HashSet<File> listFiles() {
-        File[] files = this.modFileDirectory.listFiles();
-        if (files == null) {
-            // 返回空集合
-            return new HashSet<>();
-        }
-        return new HashSet<>(Arrays.asList(files));
-    }
-
-    /**
-     * @return 包含该目录所有文件的不可变的List集合
-     * @apiNote Java貌似没有对中文的拼音排序做很好的支持，因此，中文的排序依然是无序的
-     */
-    public List<File> toImmutableFileList() {
-        File[] files = this.modFileDirectory.listFiles();
-        if (files == null) {
-            return List.of();
-        }
-        // 一些操作系统下文件排序可能不是按字母排序
-        return Stream.of(files).sorted(Comparator.comparing(file -> file.getName().toLowerCase())).toList();
-    }
-
-    public List<File> toImmutableFileList(Predicate<File> filter) {
-        File[] files = this.modFileDirectory.listFiles();
-        if (files == null) {
-            return List.of();
-        }
-        // 一些操作系统下文件排序可能不是按字母排序
-        return Stream.of(files).filter(filter).sorted(Comparator.comparing(file -> file.getName().toLowerCase())).toList();
-    }
-
-    // 检查该目录下的文件是否存在
-    public boolean fileExists(String fileName) {
-        fileName = suppFileName(fileName);
-        File file = this.file(fileName);
-        return file.exists();
-    }
-
-
-    /**
-     * 复制一个文件夹
-     *
-     * @param from 复制哪个文件夹
-     * @param to   把文件夹复制到哪里
-     */
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "unused"})
-    public static void copyFolder(File from, File to) throws IOException {
-        to.mkdirs();
-        // 列出文件夹下的所有文件
-        File[] files = from.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                // 如果是文件，复制文件
-                if (file.isFile()) {
-                    FileInputStream input = new FileInputStream(file);
-                    FileOutputStream output = new FileOutputStream(new File(to, file.getName()));
-                    try (input; output) {
-                        byte[] bytes = new byte[1024];
-                        int len;
-                        while ((len = input.read(bytes)) != -1)
-                            output.write(bytes, 0, len);
-                    }
-                } else {
-                    // 如果是文件夹，递归复制文件
-                    copyFolder(file, new File(to, file.getName()));
-                }
-            }
-        }
     }
 }

@@ -28,51 +28,35 @@ public class FakePlayerActionSerial {
         if (json.has("stop")) {
             this.action = FakePlayerAction.STOP;
             this.actionData = StopData.STOP;
-            return;
-        }
-        if (json.has("sorting")) {
+        } else if (json.has("sorting")) {
             this.action = FakePlayerAction.SORTING;
             this.actionData = SortingData.load(json.get("sorting").getAsJsonObject());
-            return;
-        }
-        if (json.has("clean")) {
+        } else if (json.has("clean")) {
             this.action = FakePlayerAction.CLEAN;
             this.actionData = CleanData.load(json.get("clean").getAsJsonObject());
-            return;
-        }
-        if (json.has("fill")) {
+        } else if (json.has("fill")) {
             this.action = FakePlayerAction.FILL;
             this.actionData = FillData.load(json.get("fill").getAsJsonObject());
-            return;
-        }
-        if (json.has("inventory_crafting")) {
+        } else if (json.has("inventory_crafting")) {
             this.action = FakePlayerAction.INVENTORY_CRAFT;
             this.actionData = InventoryCraftData.load(json.get("inventory_crafting").getAsJsonObject());
-            return;
-        }
-        if (json.has("crafting_table_craft")) {
+        } else if (json.has("crafting_table_craft")) {
             this.action = FakePlayerAction.CRAFTING_TABLE_CRAFT;
             this.actionData = CraftingTableCraftData.load(json.get("crafting_table_craft").getAsJsonObject());
-            return;
-        }
-        if (json.has("rename")) {
+        } else if (json.has("rename")) {
             this.action = FakePlayerAction.RENAME;
             this.actionData = RenameData.load(json.get("rename").getAsJsonObject());
-            return;
-        }
-        if (json.has("stonecutting")) {
+        } else if (json.has("stonecutting")) {
             this.action = FakePlayerAction.STONECUTTING;
             this.actionData = StonecuttingData.load(json.get("stonecutting").getAsJsonObject());
-            return;
-        }
-        if (json.has("trade")) {
+        } else if (json.has("trade")) {
             this.action = FakePlayerAction.TRADE;
             this.actionData = TradeData.load(json.get("trade").getAsJsonObject());
-            return;
+        } else {
+            CarpetOrgAddition.LOGGER.warn("从json中反序列化玩家动作失败");
+            this.action = FakePlayerAction.STOP;
+            this.actionData = StopData.STOP;
         }
-        CarpetOrgAddition.LOGGER.warn("从json中反序列化玩家动作失败");
-        this.action = FakePlayerAction.STOP;
-        this.actionData = StopData.STOP;
     }
 
     /**

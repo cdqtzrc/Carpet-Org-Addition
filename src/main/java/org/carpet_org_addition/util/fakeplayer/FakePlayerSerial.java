@@ -17,7 +17,6 @@ import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.fakeplayer.actiondata.FakePlayerActionSerial;
 import org.carpet_org_addition.util.wheel.Annotation;
 import org.carpet_org_addition.util.wheel.WorldFormat;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +32,6 @@ public class FakePlayerSerial {
     /**
      * 注释
      */
-    @NotNull
     private final Annotation annotation = new Annotation();
     /**
      * 位置
@@ -106,6 +104,8 @@ public class FakePlayerSerial {
         this.flying = json.get("flying").getAsBoolean();
         // 是否潜行
         this.sneaking = json.get("sneaking").getAsBoolean();
+        // 注释
+        this.annotation.setAnnotation(json);
         // 假玩家左右手动作
         if (json.has("hand_action")) {
             this.actionPack = new EntityPlayerActionPackSerial(json.get("hand_action").getAsJsonObject());
@@ -212,9 +212,7 @@ public class FakePlayerSerial {
         // 是否潜行
         json.addProperty("sneaking", this.sneaking);
         // 注释
-        if (this.annotation.hasContent()) {
-            json.addProperty("annotation", this.annotation.getAnnotation());
-        }
+        json.addProperty("annotation", this.annotation.getAnnotation());
         // 添加左键右键动作
         json.add("hand_action", actionPack.toJson());
         // 添加玩家动作

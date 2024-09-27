@@ -57,6 +57,7 @@ public class XpTransferCommand {
             outputPlayer.setExperiencePoints(0);
             //把经验给输入玩家
             inputPlayer.addExperience(totalExperience);
+            // TODO 可能非玩家源执行命令无法接收反馈
             if (serverCommandSourcePlayer != null) {
                 MessageUtils.sendCommandFeedback(source, "carpet.commands.xpTransfer.all",
                         outputPlayer.getDisplayName(),

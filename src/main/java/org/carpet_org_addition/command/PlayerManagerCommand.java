@@ -43,11 +43,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-@SuppressWarnings("SpellCheckingInspection")
 public class PlayerManagerCommand {
 
     private static final String SAFEAFK_PROPERTIES = "safeafk.properties";
 
+    // TODO 设置玩家自动上线，设置注释可修改，玩家信息显示动作
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         // 延迟登录节点
         RequiredArgumentBuilder<ServerCommandSource, Integer> loginNode = CommandManager.argument("delayed", IntegerArgumentType.integer(1));
@@ -236,7 +236,7 @@ public class PlayerManagerCommand {
     /**
      * 加载安全挂机阈值
      */
-    public static void loadSeafAfk(ServerPlayerEntity player) {
+    public static void loadSafeAfk(ServerPlayerEntity player) {
         if (player instanceof EntityPlayerMPFake) {
             WorldFormat worldFormat = new WorldFormat(player.server, null);
             File file = worldFormat.file(SAFEAFK_PROPERTIES);
@@ -362,7 +362,6 @@ public class PlayerManagerCommand {
         }
     }
 
-    // TODO 设置玩家自动上线
     // 生成假玩家
     private static int spawnPlayer(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         String name = StringArgumentType.getString(context, "name");
