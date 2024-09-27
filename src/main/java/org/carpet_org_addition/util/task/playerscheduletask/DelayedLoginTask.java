@@ -1,6 +1,5 @@
 package org.carpet_org_addition.util.task.playerscheduletask;
 
-import com.google.gson.JsonObject;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.MinecraftServer;
@@ -16,13 +15,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class DelayedLoginTask extends PlayerScheduleTask {
     private final MinecraftServer server;
-    private final String name;
     FakePlayerSerial serial;
     private long delayed;
 
-    public DelayedLoginTask(MinecraftServer server, String name, FakePlayerSerial serial, long delayed) {
+    public DelayedLoginTask(MinecraftServer server, FakePlayerSerial serial, long delayed) {
         this.server = server;
-        this.name = name;
         this.serial = serial;
         this.delayed = delayed;
     }
@@ -32,9 +29,11 @@ public class DelayedLoginTask extends PlayerScheduleTask {
         if (this.delayed == 0L) {
             try {
                 // 生成假玩家
-                serial.spawn(this.name, this.server);
-            } catch (CommandSyntaxException | NullPointerException e) {
-                CarpetOrgAddition.LOGGER.error("玩家{}未能在指定时间上线", this.name, e);
+                serial.spawn(this.server);
+            } catch (CommandSyntaxException e) {
+                CarpetOrgAddition.LOGGER.error("玩家{}已存在", this.serial.getFakePlayerName(), e);
+            } catch (RuntimeException e) {
+                CarpetOrgAddition.LOGGER.error("玩家{}未能在指定时间上线", this.serial.getFakePlayerName(), e);
             } finally {
                 // 将此任务设为已执行结束
                 this.delayed = -1L;
@@ -46,7 +45,7 @@ public class DelayedLoginTask extends PlayerScheduleTask {
 
     @Override
     public String getPlayerName() {
-        return name;
+        return serial.getFakePlayerName();
     }
 
     @Override
@@ -64,7 +63,7 @@ public class DelayedLoginTask extends PlayerScheduleTask {
     // 获取带有悬停提示的显示名称
     public MutableText getDisplayName() {
         MutableText info = this.serial.info();
-        return TextUtils.hoverText(this.name, info);
+        return TextUtils.hoverText(this.serial.getFakePlayerName(), info);
     }
 
     @Override
@@ -88,6 +87,6 @@ public class DelayedLoginTask extends PlayerScheduleTask {
 
     @Override
     public String getLogName() {
-        return this.name + "延迟上线";
+        return this.serial.getFakePlayerName() + "延迟上线";
     }
 }

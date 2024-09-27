@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.text.Text;
 import org.carpet_org_addition.util.TextUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * 用来给一些功能添加注释
@@ -34,7 +35,7 @@ public class Annotation {
         return this.annotation;
     }
 
-    public void setAnnotation(String annotation) {
+    public void setAnnotation(@Nullable String annotation) {
         this.annotation = annotation == null ? "" : annotation;
     }
 

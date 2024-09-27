@@ -1,11 +1,10 @@
 package org.carpet_org_addition.util.wheel;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.WorldSavePath;
 import org.carpet_org_addition.CarpetOrgAddition;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
@@ -177,6 +176,41 @@ public class WorldFormat {
             return false;
         }
         return true;
+    }
+
+    /**
+     * 根据键获取json中对应的值，如果不存在，返回默认值
+     *
+     * @param defaultValue 如果为获取到值，返回默认值
+     * @param type         返回值的类型
+     */
+    @NotNull
+    public static <T> T getJsonElement(JsonObject json, String key, T defaultValue, Class<T> type) {
+        JsonElement element = json.get(key);
+        if (element == null) {
+            return defaultValue;
+        }
+        // 布尔值
+        if (type == boolean.class || type == Boolean.class) {
+            return type.cast(element.getAsBoolean());
+        }
+        // 数值
+        if (Number.class.isAssignableFrom(type)) {
+            return type.cast(element.getAsNumber());
+        }
+        // 字符串
+        if (type == String.class) {
+            return type.cast(element.getAsString());
+        }
+        // jsonObject
+        if (JsonObject.class.isAssignableFrom(type)) {
+            return type.cast(element.getAsJsonObject());
+        }
+        // JsonArray
+        if (JsonArray.class.isAssignableFrom(type)) {
+            return type.cast(element.getAsJsonArray());
+        }
+        throw new IllegalArgumentException();
     }
 
     /**

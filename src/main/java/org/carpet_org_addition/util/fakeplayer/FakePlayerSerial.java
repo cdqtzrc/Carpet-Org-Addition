@@ -15,8 +15,11 @@ import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.util.*;
 import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.fakeplayer.actiondata.FakePlayerActionSerial;
+import org.carpet_org_addition.util.task.ServerTaskManagerInterface;
+import org.carpet_org_addition.util.task.playerscheduletask.DelayedLoginTask;
 import org.carpet_org_addition.util.wheel.Annotation;
 import org.carpet_org_addition.util.wheel.WorldFormat;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,6 +61,10 @@ public class FakePlayerSerial {
      * 是否潜行
      */
     private final boolean sneaking;
+    /**
+     * 是否自动登录
+     */
+    private boolean autologin = false;
     /**
      * 假玩家手部动作
      */
@@ -104,6 +111,8 @@ public class FakePlayerSerial {
         this.flying = json.get("flying").getAsBoolean();
         // 是否潜行
         this.sneaking = json.get("sneaking").getAsBoolean();
+        // 是否自动登录
+        this.autologin = WorldFormat.getJsonElement(json, "autologin", false, Boolean.class);
         // 注释
         this.annotation.setAnnotation(json);
         // 假玩家左右手动作
@@ -147,12 +156,12 @@ public class FakePlayerSerial {
     }
 
     // 从json加载并生成假玩家
-    public void spawn(String playerName, MinecraftServer server) throws CommandSyntaxException {
-        if (server.getPlayerManager().getPlayer(playerName) != null) {
+    public void spawn(MinecraftServer server) throws CommandSyntaxException {
+        if (server.getPlayerManager().getPlayer(this.fakePlayerName) != null) {
             throw CommandUtils.createException("carpet.commands.playerManager.spawn.player_exist");
         }
         // 生成假玩家
-        EntityPlayerMPFake fakePlayer = EntityPlayerMPFake.createFake(playerName, server, this.playerPos, yaw, pitch,
+        EntityPlayerMPFake fakePlayer = EntityPlayerMPFake.createFake(this.fakePlayerName, server, this.playerPos, yaw, pitch,
                 WorldUtils.getWorld(dimension), this.gameMode, flying);
         fakePlayer.setSneaking(sneaking);
         // 设置玩家动作
@@ -183,6 +192,8 @@ public class FakePlayerSerial {
         list.add(TextUtils.translate("carpet.commands.playerManager.info.flying", TextConstants.getBoolean(this.flying)));
         // 是否潜行
         list.add(TextUtils.translate("carpet.commands.playerManager.info.sneaking", TextConstants.getBoolean(this.sneaking)));
+        // 是否自动登录
+        list.add(TextUtils.translate("carpet.commands.playerManager.info.autologin", TextConstants.getBoolean(this.autologin)));
         if (this.annotation.hasContent()) {
             // 添加注释
             list.add(TextUtils.translate("carpet.commands.playerManager.info.annotation", this.annotation.getText()));
@@ -211,6 +222,8 @@ public class FakePlayerSerial {
         json.addProperty("flying", this.flying);
         // 是否潜行
         json.addProperty("sneaking", this.sneaking);
+        // 自动登录
+        json.addProperty("autologin", this.autologin);
         // 注释
         json.addProperty("annotation", this.annotation.getAnnotation());
         // 添加左键右键动作
@@ -218,6 +231,21 @@ public class FakePlayerSerial {
         // 添加玩家动作
         json.add("script_action", this.actionSerial.toJson());
         return json;
+    }
+
+    // 修改注释
+    public void setAnnotation(@Nullable String annotation) {
+        this.annotation.setAnnotation(annotation);
+    }
+
+    // 设置自动登录
+    public void setAutologin(boolean autologin) {
+        this.autologin = autologin;
+    }
+
+    // 获取玩家名
+    public String getFakePlayerName() {
+        return this.fakePlayerName;
     }
 
     // 列出每一条玩家信息
@@ -251,5 +279,38 @@ public class FakePlayerSerial {
             }
         }
         return count;
+    }
+
+    /**
+     * 假玩家自动登录
+     */
+    public static void autoLogin(MinecraftServer server) {
+        ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
+        try {
+            tryAutoLogin(server, instance);
+        } catch (RuntimeException e) {
+            CarpetOrgAddition.LOGGER.error("玩家自动登录出现意外错误", e);
+        }
+    }
+
+    private static void tryAutoLogin(MinecraftServer server, ServerTaskManagerInterface instance) {
+        WorldFormat worldFormat = new WorldFormat(server, FakePlayerSerial.PLAYER_DATA);
+        List<File> files = worldFormat.toImmutableFileList(WorldFormat.JSON_EXTENSIONS);
+        for (File file : files) {
+            FakePlayerSerial fakePlayerSerial;
+            try {
+                fakePlayerSerial = new FakePlayerSerial(worldFormat, file.getName());
+            } catch (IOException e) {
+                CarpetOrgAddition.LOGGER.error("无法读取{}玩家数据", WorldFormat.removeExtension(file.getName()), e);
+                continue;
+            }
+            if (fakePlayerSerial.autologin) {
+                try {
+                    instance.addTask(new DelayedLoginTask(server, fakePlayerSerial, 1));
+                } catch (RuntimeException e) {
+                    CarpetOrgAddition.LOGGER.warn("玩家{}已存在", fakePlayerSerial.fakePlayerName, e);
+                }
+            }
+        }
     }
 }

@@ -37,17 +37,14 @@ import org.carpet_org_addition.util.task.playerscheduletask.ReLoginTask;
 import org.carpet_org_addition.util.wheel.WorldFormat;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class PlayerManagerCommand {
 
     private static final String SAFEAFK_PROPERTIES = "safeafk.properties";
 
-    // TODO 设置玩家自动上线，设置注释可修改，玩家信息显示动作
+    // TODO 设置玩家自动上线，玩家信息显示动作，list支持筛选
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         // 延迟登录节点
         RequiredArgumentBuilder<ServerCommandSource, Integer> loginNode = CommandManager.argument("delayed", IntegerArgumentType.integer(1));
@@ -73,6 +70,17 @@ public class PlayerManagerCommand {
                         .then(CommandManager.argument("name", StringArgumentType.string())
                                 .suggests(defaultSuggests())
                                 .executes(PlayerManagerCommand::spawnPlayer)))
+                .then(CommandManager.literal("annotation")
+                        .then(CommandManager.argument("name", StringArgumentType.string())
+                                .suggests(defaultSuggests())
+                                .executes(context -> setAnnotation(context, true))
+                                .then(CommandManager.argument("annotation", StringArgumentType.string())
+                                        .executes(context -> setAnnotation(context, false)))))
+                .then(CommandManager.literal("autologin")
+                        .then(CommandManager.argument("name", StringArgumentType.string())
+                                .suggests(defaultSuggests())
+                                .then(CommandManager.argument("autologin", BoolArgumentType.bool())
+                                        .executes(PlayerManagerCommand::setAutoLogin))))
                 .then(CommandManager.literal("resave")
                         .then(CommandManager.argument(CommandUtils.PLAYER, EntityArgumentType.player())
                                 .executes(context -> savePlayer(context, true))
@@ -123,6 +131,46 @@ public class PlayerManagerCommand {
                         .then(CommandManager.literal("query")
                                 .then(CommandManager.argument(CommandUtils.PLAYER, EntityArgumentType.player())
                                         .executes(PlayerManagerCommand::querySafeAfk)))));
+    }
+
+    // cancel子命令自动补全
+    private static @NotNull SuggestionProvider<ServerCommandSource> cancelSuggests() {
+        return (context, builder) -> {
+            MinecraftServer server = context.getSource().getServer();
+            ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
+            ArrayList<String> list = new ArrayList<>();
+            // 将任务的玩家名添加到集合
+            instance.findTask(PlayerScheduleTask.class, task -> true).forEach(task -> list.add(task.getPlayerName()));
+            return CommandSource.suggestMatching(list, builder);
+        };
+    }
+
+    // 自动补全玩家名
+    private static SuggestionProvider<ServerCommandSource> defaultSuggests() {
+        return (context, builder) -> CommandSource.suggestMatching(new WorldFormat(context.getSource().getServer(),
+                FakePlayerSerial.PLAYER_DATA).toImmutableFileList().stream()
+                .filter(file -> file.getName().endsWith(WorldFormat.JSON_EXTENSION))
+                .map(file -> WorldFormat.removeExtension(file.getName()))
+                .map(StringArgumentType::escapeIfRequired), builder);
+    }
+
+    // relogin子命令自动补全
+    public static @NotNull SuggestionProvider<ServerCommandSource> reLoginTaskSuggests() {
+        return (context, builder) -> {
+            MinecraftServer server = context.getSource().getServer();
+            ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
+            // 所有正在周期性上下线的玩家
+            List<String> taskList = instance.getTaskList().stream()
+                    .filter(task -> task instanceof ReLoginTask)
+                    .map(task -> ((ReLoginTask) task).getPlayerName()).toList();
+            // 所有在线玩家
+            List<String> onlineList = server.getPlayerManager().getPlayerList().stream()
+                    .map(player -> player.getName().getString()).toList();
+            HashSet<String> players = new HashSet<>();
+            players.addAll(taskList);
+            players.addAll(onlineList);
+            return CommandSource.suggestMatching(players.stream(), builder);
+        };
     }
 
     // 安全挂机
@@ -272,46 +320,6 @@ public class PlayerManagerCommand {
         }
     }
 
-    // cancel子命令自动补全
-    private static @NotNull SuggestionProvider<ServerCommandSource> cancelSuggests() {
-        return (context, builder) -> {
-            MinecraftServer server = context.getSource().getServer();
-            ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
-            ArrayList<String> list = new ArrayList<>();
-            // 将任务的玩家名添加到集合
-            instance.findTask(PlayerScheduleTask.class, task -> true).forEach(task -> list.add(task.getPlayerName()));
-            return CommandSource.suggestMatching(list, builder);
-        };
-    }
-
-    // 自动补全玩家名
-    private static SuggestionProvider<ServerCommandSource> defaultSuggests() {
-        return (context, builder) -> CommandSource.suggestMatching(new WorldFormat(context.getSource().getServer(),
-                FakePlayerSerial.PLAYER_DATA).toImmutableFileList().stream()
-                .filter(file -> file.getName().endsWith(WorldFormat.JSON_EXTENSION))
-                .map(file -> WorldFormat.removeExtension(file.getName()))
-                .map(StringArgumentType::escapeIfRequired), builder);
-    }
-
-    // relogin子命令自动补全
-    public static @NotNull SuggestionProvider<ServerCommandSource> reLoginTaskSuggests() {
-        return (context, builder) -> {
-            MinecraftServer server = context.getSource().getServer();
-            ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
-            // 所有正在周期性上下线的玩家
-            List<String> taskList = instance.getTaskList().stream()
-                    .filter(task -> task instanceof ReLoginTask)
-                    .map(task -> ((ReLoginTask) task).getPlayerName()).toList();
-            // 所有在线玩家
-            List<String> onlineList = server.getPlayerManager().getPlayerList().stream()
-                    .map(player -> player.getName().getString()).toList();
-            HashSet<String> players = new HashSet<>();
-            players.addAll(taskList);
-            players.addAll(onlineList);
-            return CommandSource.suggestMatching(players.stream(), builder);
-        };
-    }
-
     // 列出每一个玩家
     private static int list(CommandContext<ServerCommandSource> context) {
         WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), FakePlayerSerial.PLAYER_DATA);
@@ -338,6 +346,59 @@ public class PlayerManagerCommand {
         String annotation = StringArgumentType.getString(context, "annotation");
         FakePlayerSerial fakePlayerSerial = new FakePlayerSerial(fakePlayer, annotation);
         return savePlayer(context, fakePlayerSerial, fakePlayer, resave);
+    }
+
+    // 设置注释
+    private static int setAnnotation(CommandContext<ServerCommandSource> context, boolean remove) throws CommandSyntaxException {
+        String name = StringArgumentType.getString(context, "name");
+        WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), FakePlayerSerial.PLAYER_DATA);
+        // 修改注释
+        String annotation = remove ? null : StringArgumentType.getString(context, "annotation");
+        FakePlayerSerial serial;
+        try {
+            serial = new FakePlayerSerial(worldFormat, name);
+            serial.setAnnotation(annotation);
+            // 将玩家信息重新保存的本地文件
+            serial.save(context, true);
+        } catch (FileNotFoundException e) {
+            throw CommandUtils.createException("carpet.commands.playerManager.cannot_find_file", name);
+        } catch (IOException e) {
+            throw CommandExecuteIOException.of(e);
+        }
+        // 发送命令反馈
+        if (remove) {
+            // 移除注释
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.annotation.remove", serial.info());
+        } else {
+            // 修改注释
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.annotation.modify", serial.info(), annotation);
+        }
+        return 1;
+    }
+
+    // 设置自动登录
+    private static int setAutoLogin(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), FakePlayerSerial.PLAYER_DATA);
+        String name = StringArgumentType.getString(context, "name");
+        boolean autologin = BoolArgumentType.getBool(context, "autologin");
+        FakePlayerSerial serial;
+        try {
+            serial = new FakePlayerSerial(worldFormat, name);
+            // 设置自动登录
+            serial.setAutologin(autologin);
+            serial.save(context, true);
+        } catch (FileNotFoundException e) {
+            throw CommandUtils.createException("carpet.commands.playerManager.cannot_find_file", name);
+        } catch (IOException e) {
+            throw CommandExecuteIOException.of(e);
+        }
+        // 发送命令反馈
+        if (autologin) {
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.autologin.setup", serial.info());
+        } else {
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.autologin.cancel", serial.info());
+        }
+        return 1;
     }
 
     // 保存玩家
@@ -369,7 +430,9 @@ public class PlayerManagerCommand {
         try {
             FakePlayerSerial serial = new FakePlayerSerial(worldFormat, name);
             // 生成假玩家
-            serial.spawn(name, context.getSource().getServer());
+            serial.spawn(context.getSource().getServer());
+        } catch (FileNotFoundException e) {
+            throw CommandUtils.createException("carpet.commands.playerManager.cannot_find_file", name);
         } catch (RuntimeException | IOException e) {
             // 尝试生成假玩家时出现意外问题
             throw CommandUtils.createException(e, "carpet.commands.playerManager.spawn.fail");
@@ -466,7 +529,7 @@ public class PlayerManagerCommand {
             } catch (IOException e) {
                 throw CommandUtils.createException("carpet.commands.playerManager.schedule.read_file");
             }
-            instance.addTask(new DelayedLoginTask(server, name, serial, tick));
+            instance.addTask(new DelayedLoginTask(server, serial, tick));
             String key = server.getPlayerManager().getPlayer(name) == null
                     // <玩家>将于<时间>后上线
                     ? "carpet.commands.playerManager.schedule.login"
