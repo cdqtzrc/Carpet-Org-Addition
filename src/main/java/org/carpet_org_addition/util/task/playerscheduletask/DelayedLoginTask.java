@@ -51,7 +51,7 @@ public class DelayedLoginTask extends PlayerScheduleTask {
     @Override
     public void onCancel(CommandContext<ServerCommandSource> context) {
         MutableText time = getDisplayTime();
-        MutableText displayName = getDisplayName();
+        MutableText displayName = this.serial.getDisplayName().copy();
         MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.login.cancel", displayName, time);
     }
 
@@ -60,16 +60,10 @@ public class DelayedLoginTask extends PlayerScheduleTask {
         return TextUtils.hoverText(GameUtils.tickToTime(this.delayed), GameUtils.tickToRealTime(this.delayed));
     }
 
-    // 获取带有悬停提示的显示名称
-    public MutableText getDisplayName() {
-        MutableText info = this.serial.info();
-        return TextUtils.hoverText(this.serial.getFakePlayerName(), info);
-    }
-
     @Override
     public void sendEachMessage(ServerCommandSource source) {
         MessageUtils.sendCommandFeedback(source, "carpet.commands.playerManager.schedule.login",
-                this.getDisplayName(), this.getDisplayTime());
+                this.serial.getDisplayName(), this.getDisplayTime());
     }
 
     public void setDelayed(long delayed) {

@@ -8,6 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
@@ -248,6 +249,11 @@ public class FakePlayerSerial {
         return this.fakePlayerName;
     }
 
+    // 获取显示名称
+    public Text getDisplayName() {
+        return TextUtils.hoverText(this.fakePlayerName, this.info());
+    }
+
     // 列出每一条玩家信息
     public static int list(CommandContext<ServerCommandSource> context, WorldFormat worldFormat) {
         MutableText online = TextUtils.translate("carpet.commands.playerManager.click.online");
@@ -259,8 +265,6 @@ public class FakePlayerSerial {
         for (File file : jsonFileList) {
             try {
                 FakePlayerSerial serial = new FakePlayerSerial(worldFormat, file.getName());
-                // 添加悬停文本
-                MutableText info = serial.info();
                 // 添加快捷命令
                 String playerName = WorldFormat.removeExtension(file.getName());
                 String onlineCommand = "/playerManager spawn " + playerName;
@@ -268,7 +272,7 @@ public class FakePlayerSerial {
                 MutableText mutableText = TextUtils.appendAll(
                         TextUtils.command(TextUtils.createText("[↑]"), onlineCommand, online, Formatting.GREEN, false), " ",
                         TextUtils.command(TextUtils.createText("[↓]"), offlineCommand, offline, Formatting.RED, false), " ",
-                        TextUtils.hoverText(TextUtils.createText("[?]"), info, Formatting.GRAY), " ",
+                        TextUtils.hoverText(TextUtils.createText("[?]"), serial.info(), Formatting.GRAY), " ",
                         // 如果有注释，在列出的玩家的名字上也添加注释
                         serial.annotation.hasContent() ? TextUtils.hoverText(playerName, serial.annotation.getText()) : playerName);
                 // 发送消息

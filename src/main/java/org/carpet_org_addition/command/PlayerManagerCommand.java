@@ -368,10 +368,10 @@ public class PlayerManagerCommand {
         // 发送命令反馈
         if (remove) {
             // 移除注释
-            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.annotation.remove", serial.info());
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.annotation.remove", serial.getDisplayName());
         } else {
             // 修改注释
-            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.annotation.modify", serial.info(), annotation);
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.annotation.modify", serial.getDisplayName(), annotation);
         }
         return 1;
     }
@@ -394,9 +394,9 @@ public class PlayerManagerCommand {
         }
         // 发送命令反馈
         if (autologin) {
-            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.autologin.setup", serial.info());
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.autologin.setup", serial.getDisplayName());
         } else {
-            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.autologin.cancel", serial.info());
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.autologin.cancel",  serial.getDisplayName());
         }
         return 1;
     }
@@ -535,10 +535,8 @@ public class PlayerManagerCommand {
                     ? "carpet.commands.playerManager.schedule.login"
                     // <玩家>将于<时间>后再次尝试上线
                     : "carpet.commands.playerManager.schedule.login.try";
-            // 玩家名上的悬停提示
-            MutableText info = serial.info();
             // 发送命令反馈
-            MessageUtils.sendCommandFeedback(context, key, TextUtils.hoverText(name, info), time);
+            MessageUtils.sendCommandFeedback(context, key, serial.getDisplayName(), time);
         } else {
             // 修改上线时间
             DelayedLoginTask task = list.get(0);
