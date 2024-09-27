@@ -111,7 +111,6 @@ public class GameUtils {
     }
 
     private static EntityPlayerMPFake trySpawn(MinecraftServer server, Vec3d pos, float yaw, float pitch, RegistryKey<World> dimensionId, GameMode gamemode, boolean flying, GameProfile gameprofile, ServerWorld worldIn) {
-        // 生成假玩家的逻辑似乎不在主线程
         EntityPlayerMPFake instance = EntityPlayerMPFake.respawnFake(server, worldIn, gameprofile, SyncedClientOptions.createDefault());
         instance.fixStartingPosition = () -> instance.refreshPositionAndAngles(pos.x, pos.y, pos.z, yaw, pitch);
         server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), instance, new ConnectedClientData(gameprofile, 0, instance.getClientOptions(), false));
