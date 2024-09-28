@@ -19,12 +19,12 @@ import org.carpet_org_addition.util.fakeplayer.actiondata.FakePlayerActionSerial
 import org.carpet_org_addition.util.task.ServerTaskManagerInterface;
 import org.carpet_org_addition.util.task.playerscheduletask.DelayedLoginTask;
 import org.carpet_org_addition.util.wheel.Annotation;
+import org.carpet_org_addition.util.wheel.TextBuilder;
 import org.carpet_org_addition.util.wheel.WorldFormat;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FakePlayerSerial {
@@ -69,11 +69,11 @@ public class FakePlayerSerial {
     /**
      * 假玩家手部动作
      */
-    private final EntityPlayerActionPackSerial actionPack;
+    private final EntityPlayerActionPackSerial interactiveAction;
     /**
      * 假玩家自动动作
      */
-    private final FakePlayerActionSerial actionSerial;
+    private final FakePlayerActionSerial autoAction;
 
     public FakePlayerSerial(EntityPlayerMPFake fakePlayer) {
         this.fakePlayerName = fakePlayer.getName().getString();
@@ -84,8 +84,8 @@ public class FakePlayerSerial {
         this.gameMode = fakePlayer.interactionManager.getGameMode();
         this.flying = fakePlayer.getAbilities().flying;
         this.sneaking = fakePlayer.isSneaking();
-        this.actionPack = new EntityPlayerActionPackSerial(((ServerPlayerInterface) fakePlayer).getActionPack());
-        this.actionSerial = new FakePlayerActionSerial(fakePlayer);
+        this.interactiveAction = new EntityPlayerActionPackSerial(((ServerPlayerInterface) fakePlayer).getActionPack());
+        this.autoAction = new FakePlayerActionSerial(fakePlayer);
     }
 
     public FakePlayerSerial(EntityPlayerMPFake fakePlayer, String annotation) {
@@ -118,15 +118,15 @@ public class FakePlayerSerial {
         this.annotation.setAnnotation(json);
         // 假玩家左右手动作
         if (json.has("hand_action")) {
-            this.actionPack = new EntityPlayerActionPackSerial(json.get("hand_action").getAsJsonObject());
+            this.interactiveAction = new EntityPlayerActionPackSerial(json.get("hand_action").getAsJsonObject());
         } else {
-            this.actionPack = EntityPlayerActionPackSerial.NO_ACTION;
+            this.interactiveAction = EntityPlayerActionPackSerial.NO_ACTION;
         }
         // 假玩家动作，自动合成自动交易等
         if (json.has("script_action")) {
-            this.actionSerial = new FakePlayerActionSerial(json.get("script_action").getAsJsonObject());
+            this.autoAction = new FakePlayerActionSerial(json.get("script_action").getAsJsonObject());
         } else {
-            this.actionSerial = FakePlayerActionSerial.NO_ACTION;
+            this.autoAction = FakePlayerActionSerial.NO_ACTION;
         }
     }
 
@@ -144,11 +144,12 @@ public class FakePlayerSerial {
         boolean exists = file.exists();
         if (exists && !resave) {
             String command = "/playerManager resave " + name;
+            // 在命令参数后面追加注释
             if (this.annotation.hasContent()) {
                 command = command + " \"" + this.annotation + "\"";
             }
-            MutableText clickResave = TextUtils.command(TextConstants.CLICK_HERE.copy(), command,
-                    TextConstants.clickInput(command), Formatting.AQUA, false);
+            // 单击执行命令
+            MutableText clickResave = TextConstants.clickRun(command);
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.save.file_already_exist", clickResave);
             return -1;
         }
@@ -166,40 +167,47 @@ public class FakePlayerSerial {
                 WorldUtils.getWorld(dimension), this.gameMode, flying);
         fakePlayer.setSneaking(sneaking);
         // 设置玩家动作
-        this.actionPack.startAction(fakePlayer);
-        this.actionSerial.startAction(fakePlayer);
+        this.interactiveAction.startAction(fakePlayer);
+        this.autoAction.startAction(fakePlayer);
     }
 
-    // 显示json信息
-    public MutableText info() {
-        ArrayList<MutableText> list = new ArrayList<>();
+    // 显示文本信息
+    public Text info() {
+        TextBuilder build = new TextBuilder();
         // 玩家位置
-        list.add(TextUtils.translate("carpet.commands.playerManager.info.pos",
+        build.appendLine("carpet.commands.playerManager.info.pos",
                 MathUtils.keepTwoDecimalPlaces(this.playerPos.getX(),
-                        this.playerPos.getY(), this.playerPos.getZ())));
+                        this.playerPos.getY(), this.playerPos.getZ()));
         // 获取朝向
-        list.add(TextUtils.translate("carpet.commands.playerManager.info.direction",
-                MathUtils.keepTwoDecimalPlaces(this.yaw), MathUtils.keepTwoDecimalPlaces(this.pitch)));
+        build.appendLine("carpet.commands.playerManager.info.direction",
+                MathUtils.keepTwoDecimalPlaces(this.yaw),
+                MathUtils.keepTwoDecimalPlaces(this.pitch));
         // 维度
-        list.add(TextUtils.translate("carpet.commands.playerManager.info.dimension", switch (this.dimension) {
+        build.appendLine("carpet.commands.playerManager.info.dimension", switch (this.dimension) {
             case "minecraft:overworld", "overworld" -> TextConstants.OVERWORLD;
             case "minecraft:the_nether", "the_nether" -> TextConstants.THE_NETHER;
             case "minecraft:the_end", "the_end" -> TextConstants.THE_END;
             default -> TextUtils.createText(dimension);
-        }));
+        });
         // 游戏模式
-        list.add(TextUtils.translate("carpet.commands.playerManager.info.gamemode", this.gameMode.getTranslatableName()));
+        build.appendLine("carpet.commands.playerManager.info.gamemode", this.gameMode.getTranslatableName());
         // 是否飞行
-        list.add(TextUtils.translate("carpet.commands.playerManager.info.flying", TextConstants.getBoolean(this.flying)));
+        build.appendLine("carpet.commands.playerManager.info.flying", TextConstants.getBoolean(this.flying));
         // 是否潜行
-        list.add(TextUtils.translate("carpet.commands.playerManager.info.sneaking", TextConstants.getBoolean(this.sneaking)));
+        build.appendLine("carpet.commands.playerManager.info.sneaking", TextConstants.getBoolean(this.sneaking));
         // 是否自动登录
-        list.add(TextUtils.translate("carpet.commands.playerManager.info.autologin", TextConstants.getBoolean(this.autologin)));
+        build.append("carpet.commands.playerManager.info.autologin", TextConstants.getBoolean(this.autologin));
+        if (this.interactiveAction.hasAction()) {
+            build.newLine().append(this.interactiveAction.toText());
+        }
+        if (autoAction.hasAction()) {
+            build.newLine().append(this.autoAction.toText());
+        }
         if (this.annotation.hasContent()) {
             // 添加注释
-            list.add(TextUtils.translate("carpet.commands.playerManager.info.annotation", this.annotation.getText()));
+            build.newLine().append("carpet.commands.playerManager.info.annotation", this.annotation.getText());
         }
-        return TextUtils.appendList(list);
+        return build.build();
     }
 
     public JsonObject toJson() {
@@ -228,9 +236,9 @@ public class FakePlayerSerial {
         // 注释
         json.addProperty("annotation", this.annotation.getAnnotation());
         // 添加左键右键动作
-        json.add("hand_action", actionPack.toJson());
+        json.add("hand_action", interactiveAction.toJson());
         // 添加玩家动作
-        json.add("script_action", this.actionSerial.toJson());
+        json.add("script_action", this.autoAction.toJson());
         return json;
     }
 

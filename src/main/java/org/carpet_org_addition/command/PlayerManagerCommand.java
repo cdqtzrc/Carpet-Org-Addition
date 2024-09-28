@@ -44,7 +44,7 @@ public class PlayerManagerCommand {
 
     private static final String SAFEAFK_PROPERTIES = "safeafk.properties";
 
-    // TODO 设置玩家自动上线，玩家信息显示动作，list支持筛选
+    // TODO 玩家信息显示动作，list支持筛选
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         // 延迟登录节点
         RequiredArgumentBuilder<ServerCommandSource, Integer> loginNode = CommandManager.argument("delayed", IntegerArgumentType.integer(1));
