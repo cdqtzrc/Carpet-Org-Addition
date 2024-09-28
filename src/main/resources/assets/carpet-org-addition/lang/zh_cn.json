@@ -357,7 +357,7 @@
   "carpet.commands.playerManager.info.continuous": "长按",
   "carpet.commands.playerManager.info.interval": "间隔%s游戏刻",
   "carpet.commands.playerManager.info.action": "动作：",
-  "carpet.commands.playerManager.list.no_player": "没有玩家被保存",
+  "carpet.commands.playerManager.list.no_player": "没有玩家被列出",
   "carpet.commands.playerManager.schedule.read_file": "无法从文件读取玩家数据",
   "carpet.commands.playerManager.schedule.login": "%s将于%s后上线",
   "carpet.commands.playerManager.schedule.login.try": "%s将于%s后再次尝试上线",

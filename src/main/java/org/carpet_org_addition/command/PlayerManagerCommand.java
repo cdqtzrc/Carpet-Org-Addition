@@ -39,12 +39,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class PlayerManagerCommand {
 
     private static final String SAFEAFK_PROPERTIES = "safeafk.properties";
 
-    // TODO 玩家信息显示动作，list支持筛选
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         // 延迟登录节点
         RequiredArgumentBuilder<ServerCommandSource, Integer> loginNode = CommandManager.argument("delayed", IntegerArgumentType.integer(1));
@@ -87,7 +87,9 @@ public class PlayerManagerCommand {
                                 .then(CommandManager.argument("annotation", StringArgumentType.string())
                                         .executes(context -> withAnnotationSavePlayer(context, true)))))
                 .then(CommandManager.literal("list")
-                        .executes(PlayerManagerCommand::list))
+                        .executes(context -> list(context, s -> true))
+                        .then(CommandManager.argument("filter", StringArgumentType.string())
+                                .executes(context -> list(context, s -> s.contains(StringArgumentType.getString(context, "filter"))))))
                 .then(CommandManager.literal("delete")
                         .then(CommandManager.argument("name", StringArgumentType.string())
                                 .suggests(defaultSuggests())
@@ -321,11 +323,11 @@ public class PlayerManagerCommand {
     }
 
     // 列出每一个玩家
-    private static int list(CommandContext<ServerCommandSource> context) {
+    private static int list(CommandContext<ServerCommandSource> context, Predicate<String> filter) {
         WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), FakePlayerSerial.PLAYER_DATA);
-        int count = FakePlayerSerial.list(context, worldFormat);
+        int count = FakePlayerSerial.list(context, worldFormat, filter);
         if (count == 0) {
-            // 没有玩家被保存
+            // 没有玩家被列出
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.list.no_player");
             return 0;
         }
@@ -396,7 +398,7 @@ public class PlayerManagerCommand {
         if (autologin) {
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.autologin.setup", serial.getDisplayName());
         } else {
-            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.autologin.cancel",  serial.getDisplayName());
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.autologin.cancel", serial.getDisplayName());
         }
         return 1;
     }
