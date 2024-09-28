@@ -74,7 +74,7 @@
   "carpet.rule.disableRespawnBlocksExplode.name": "禁止重生方块爆炸",
   "carpet.rule.disableRespawnBlocksExplode.desc": "玩家在非主世界维度使用床或在非下界维度使用重生锚时不会爆炸",
   "carpet.rule.CCEUpdateSuppression.name": "CCE更新抑制器",
-  "carpet.rule.CCEUpdateSuppression.desc": "通过将潜影盒命名为“更新抑制器”或“updateSuppression”来制作基于\"ClassCastException\"的更新抑制器",
+  "carpet.rule.CCEUpdateSuppression.desc": "通过将潜影盒命名为指定名称来制作基于“ClassCastException”的更新抑制器",
   "carpet.rule.openSeedPermissions.name": "开放/seed命令权限",
   "carpet.rule.openSeedPermissions.desc": "允许无权限玩家在服务器使用/seed命令",
   "carpet.rule.commandSendMessage.name": "发送可复制文本",
