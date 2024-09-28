@@ -10,10 +10,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionTypes;
-import org.carpet_org_addition.util.GameUtils;
-import org.carpet_org_addition.util.MathUtils;
-import org.carpet_org_addition.util.MessageUtils;
-import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.*;
 import org.carpet_org_addition.util.constant.TextConstants;
 import org.jetbrains.annotations.Nullable;
 
@@ -114,7 +111,7 @@ public class Location {
         Gson gson = new Gson();
         String json = gson.toJson(location, Location.class);
         file.mkdirs();
-        File newFile = new File(file, fileName.endsWith(WorldFormat.JSON_EXTENSION) ? fileName : fileName + WorldFormat.JSON_EXTENSION);
+        File newFile = new File(file, fileName.endsWith(IOUtils.JSON_EXTENSION) ? fileName : fileName + IOUtils.JSON_EXTENSION);
         newFile.createNewFile();
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(newFile, StandardCharsets.UTF_8))) {
             bw.write(json);
@@ -123,8 +120,8 @@ public class Location {
 
     //从本地文件中读取坐标
     public static Location loadLoc(File file, String fileName) throws IOException {
-        if (!fileName.endsWith(WorldFormat.JSON_EXTENSION)) {
-            fileName = fileName + WorldFormat.JSON_EXTENSION;
+        if (!fileName.endsWith(IOUtils.JSON_EXTENSION)) {
+            fileName = fileName + IOUtils.JSON_EXTENSION;
         }
         StringBuilder sb;
         try (BufferedReader br = new BufferedReader(new FileReader(new File(file, fileName), StandardCharsets.UTF_8))) {

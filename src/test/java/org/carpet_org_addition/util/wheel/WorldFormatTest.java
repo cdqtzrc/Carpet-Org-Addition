@@ -1,6 +1,7 @@
 package org.carpet_org_addition.util.wheel;
 
 import com.google.gson.JsonObject;
+import org.carpet_org_addition.util.IOUtils;
 import org.junit.Test;
 
 public class WorldFormatTest {
@@ -12,15 +13,15 @@ public class WorldFormatTest {
         json.addProperty("Number2", 100.0);
         json.addProperty("Number3", 100F);
         json.addProperty("Boolean", true);
-        System.out.println(WorldFormat.getJsonElement(json, "aaa", "BBB", String.class));
-        System.out.println(WorldFormat.getJsonElement(json, "Number1", 0, Number.class));
-        System.out.println(WorldFormat.getJsonElement(json, "Number2", 0, Number.class));
-        System.out.println(WorldFormat.getJsonElement(json, "Number3", 0, Number.class));
-        System.out.println(WorldFormat.getJsonElement(json, "Boolean", false, Boolean.class));
-        System.out.println(WorldFormat.getJsonElement(json, "_aaa", "BBB", String.class));
-        System.out.println(WorldFormat.getJsonElement(json, "_Number1", 0, Number.class));
-        System.out.println(WorldFormat.getJsonElement(json, "_Number2", 0, Number.class));
-        System.out.println(WorldFormat.getJsonElement(json, "_Number3", 0, Number.class));
-        System.out.println(WorldFormat.getJsonElement(json, "_Boolean", false, Boolean.class));
+        System.out.println(IOUtils.getJsonElement(json, "aaa", "BBB", String.class));
+        System.out.println(IOUtils.getJsonElement(json, "Number1", 0, Number.class));
+        System.out.println(IOUtils.getJsonElement(json, "Number2", 0, Number.class));
+        System.out.println(IOUtils.getJsonElement(json, "Number3", 0, Number.class));
+        System.out.println(IOUtils.getJsonElement(json, "Boolean", false, Boolean.class));
+        System.out.println(IOUtils.getJsonElement(json, "_aaa", "BBB", String.class));
+        System.out.println(IOUtils.getJsonElement(json, "_Number1", 0, Number.class));
+        System.out.println(IOUtils.getJsonElement(json, "_Number2", 0, Number.class));
+        System.out.println(IOUtils.getJsonElement(json, "_Number3", 0, Number.class));
+        System.out.println(IOUtils.getJsonElement(json, "_Boolean", false, Boolean.class));
     }
 }

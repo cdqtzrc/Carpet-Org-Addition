@@ -95,9 +95,9 @@ public class FakePlayerSerial {
     }
 
     public FakePlayerSerial(WorldFormat worldFormat, String name) throws IOException {
-        JsonObject json = WorldFormat.loadJson(worldFormat.getFile(name));
+        JsonObject json = IOUtils.loadJson(worldFormat.getFile(name));
         // 玩家名
-        this.fakePlayerName = WorldFormat.removeExtension(name);
+        this.fakePlayerName = IOUtils.removeExtension(name);
         // 玩家位置
         JsonObject pos = json.get("pos").getAsJsonObject();
         this.playerPos = new Vec3d(pos.get("x").getAsDouble(), pos.get("y").getAsDouble(), pos.get("z").getAsDouble());
@@ -114,7 +114,7 @@ public class FakePlayerSerial {
         // 是否潜行
         this.sneaking = json.get("sneaking").getAsBoolean();
         // 是否自动登录
-        this.autologin = WorldFormat.getJsonElement(json, "autologin", false, Boolean.class);
+        this.autologin = IOUtils.getJsonElement(json, "autologin", false, Boolean.class);
         // 注释
         this.annotation.setAnnotation(json);
         // 假玩家左右手动作
@@ -154,7 +154,7 @@ public class FakePlayerSerial {
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.save.file_already_exist", clickResave);
             return -1;
         }
-        WorldFormat.saveJson(file, WorldFormat.GSON, this.toJson());
+        IOUtils.saveJson(file, this.toJson());
         return exists ? 1 : 0;
     }
 
@@ -287,7 +287,7 @@ public class FakePlayerSerial {
 
     private static void eachPlayer(CommandContext<ServerCommandSource> context, File file, MutableText online, MutableText offline, FakePlayerSerial serial) {
         // 添加快捷命令
-        String playerName = WorldFormat.removeExtension(file.getName());
+        String playerName = IOUtils.removeExtension(file.getName());
         String onlineCommand = "/playerManager spawn " + playerName;
         String offlineCommand = "/player " + playerName + " kill";
         MutableText mutableText = TextUtils.appendAll(
@@ -320,7 +320,7 @@ public class FakePlayerSerial {
             try {
                 fakePlayerSerial = new FakePlayerSerial(worldFormat, file.getName());
             } catch (IOException e) {
-                CarpetOrgAddition.LOGGER.error("无法读取{}玩家数据", WorldFormat.removeExtension(file.getName()), e);
+                CarpetOrgAddition.LOGGER.error("无法读取{}玩家数据", IOUtils.removeExtension(file.getName()), e);
                 continue;
             }
             if (fakePlayerSerial.autologin) {

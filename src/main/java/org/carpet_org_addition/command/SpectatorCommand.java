@@ -149,9 +149,9 @@ public class SpectatorCommand {
         json.addProperty("dimension", WorldUtils.getDimensionId(player.getWorld()));
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonString = gson.toJson(json, JsonObject.class);
-        File file = worldFormat.file(player.getUuidAsString() + WorldFormat.JSON_EXTENSION);
+        File file = worldFormat.file(player.getUuidAsString() + IOUtils.JSON_EXTENSION);
         try {
-            try (BufferedWriter writer = WorldFormat.toWriter(file)) {
+            try (BufferedWriter writer = IOUtils.toWriter(file)) {
                 writer.write(jsonString);
             }
         } catch (IOException e) {
@@ -162,9 +162,9 @@ public class SpectatorCommand {
     // 从文件加载位置并传送玩家
     private static void loadPlayerPos(MinecraftServer server, ServerPlayerEntity player) {
         WorldFormat worldFormat = new WorldFormat(server, SPECTATOR);
-        File file = worldFormat.file(player.getUuidAsString() + WorldFormat.JSON_EXTENSION);
+        File file = worldFormat.file(player.getUuidAsString() + IOUtils.JSON_EXTENSION);
         try {
-            BufferedReader reader = WorldFormat.toReader(file);
+            BufferedReader reader = IOUtils.toReader(file);
             try (reader) {
                 Gson gson = new Gson();
                 JsonObject json = gson.fromJson(reader, JsonObject.class);
