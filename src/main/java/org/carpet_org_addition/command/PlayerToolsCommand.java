@@ -23,6 +23,7 @@ import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.screen.PlayerEnderChestScreenHandler;
 import org.carpet_org_addition.util.screen.PlayerInventoryScreenHandler;
 
@@ -115,7 +116,7 @@ public class PlayerToolsCommand {
         // 发送命令反馈
         MessageUtils.sendCommandFeedback(source, "carpet.commands.playerTools.pos", fakePlayer.getDisplayName(),
                 getDimensionText(fakePlayer.getWorld()).getString(),
-                TextUtils.blockPos(new BlockPos(fakePlayer.getBlockPos()), Formatting.GREEN));
+                TextConstants.blockPos(new BlockPos(fakePlayer.getBlockPos()), Formatting.GREEN));
         // 如果命令执行者是玩家，返回距离假玩家的位置
         ServerPlayerEntity player = source.getPlayer();
         if (player != null) {
@@ -128,13 +129,13 @@ public class PlayerToolsCommand {
     private static Text getDimensionText(World world) {
         Identifier value = world.getDimensionKey().getValue();
         if (value.equals(DimensionTypes.OVERWORLD_ID)) {
-            return TextUtils.getTranslate("carpet.commands.playerTools.pos.overworld");
+            return TextUtils.translate("carpet.commands.playerTools.pos.overworld");
         } else if (value.equals(DimensionTypes.THE_NETHER_ID)) {
-            return TextUtils.getTranslate("carpet.commands.playerTools.pos.the_nether");
+            return TextUtils.translate("carpet.commands.playerTools.pos.the_nether");
         } else if (value.equals(DimensionTypes.THE_END_ID)) {
-            return TextUtils.getTranslate("carpet.commands.playerTools.pos.the_end");
+            return TextUtils.translate("carpet.commands.playerTools.pos.the_end");
         }
-        return TextUtils.getTranslate("carpet.commands.playerTools.pos.default");
+        return TextUtils.translate("carpet.commands.playerTools.pos.default");
     }
 
 

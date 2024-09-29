@@ -57,23 +57,23 @@ public class WanderingTraderSpawnLogger {
                 int spawnCountdown = WanderingTraderSpawnLogger.spawnCountdown.countdown + 1;
                 if (spawnCountdown <= 60) {
                     // 小于60秒
-                    time = TextUtils.getTranslate("carpet.logger.wanderingTrader.time.second", spawnCountdown);
+                    time = TextUtils.translate("carpet.logger.wanderingTrader.time.second", spawnCountdown);
                 } else if (spawnCountdown % 60 == 0) {
                     // 整分
-                    time = TextUtils.getTranslate("carpet.logger.wanderingTrader.time.minutes", spawnCountdown / 60);
+                    time = TextUtils.translate("carpet.logger.wanderingTrader.time.minutes", spawnCountdown / 60);
                 } else {
                     // %s分%s秒
-                    time = TextUtils.getTranslate("carpet.logger.wanderingTrader.time.minutes_and_seconds",
+                    time = TextUtils.translate("carpet.logger.wanderingTrader.time.minutes_and_seconds",
                             spawnCountdown / 60, spawnCountdown % 60);
                 }
                 LoggerRegistry.getLogger(LOGGER_NAME).log((s, playerEntity) -> new Text[]{
-                        TextUtils.getTranslate("carpet.logger.wanderingTrader.hud", time, (String.format("%.1f", chance) + "%"))
+                        TextUtils.translate("carpet.logger.wanderingTrader.hud", time, (String.format("%.1f", chance) + "%"))
                 });
             }
         } else {
             LoggerRegistry.getLogger(LOGGER_NAME).log((s, playerEntity)
-                    -> new Text[]{TextUtils.getTranslate("carpet.logger.wanderingTrader.gamerule.not_enabled",
-                    TextUtils.getTranslate(GameRules.DO_TRADER_SPAWNING.getTranslationKey()))});
+                    -> new Text[]{TextUtils.translate("carpet.logger.wanderingTrader.gamerule.not_enabled",
+                    TextUtils.translate(GameRules.DO_TRADER_SPAWNING.getTranslationKey()))});
         }
     }
 

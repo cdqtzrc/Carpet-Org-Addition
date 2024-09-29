@@ -12,6 +12,7 @@ import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.WorldUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -39,7 +40,7 @@ public class EntityNavigator extends AbstractNavigator {
         }
         if (this.targetDeath()) {
             // 如果目标实体死亡，就清除玩家的追踪器
-            MessageUtils.sendTextMessageToHud(this.player, TextUtils.getTranslate("carpet.commands.navigate.hud.target_death"));
+            MessageUtils.sendTextMessageToHud(this.player, TextUtils.translate("carpet.commands.navigate.hud.target_death"));
             this.clear();
             return;
         }
@@ -47,16 +48,16 @@ public class EntityNavigator extends AbstractNavigator {
         Text text;
         if (player.getWorld().equals(world)) {
             // 获取翻译后的文本信息
-            Text in = TextUtils.getTranslate(IN, entity.getName(), TextUtils.simpleBlockPos(entity.getBlockPos()));
-            Text distance = TextUtils.getTranslate(DISTANCE,
+            Text in = TextUtils.translate(IN, entity.getName(), TextConstants.simpleBlockPos(entity.getBlockPos()));
+            Text distance = TextUtils.translate(DISTANCE,
                     MathUtils.getBlockIntegerDistance(player.getBlockPos(), entity.getBlockPos()));
             // 添加上下箭头
             Vec3d eyePos = this.entity.getEyePos();
             text = getHUDText(eyePos, in, distance);
         } else {
-            text = TextUtils.getTranslate(IN, entity.getName(),
+            text = TextUtils.translate(IN, entity.getName(),
                     TextUtils.appendAll(WorldUtils.getDimensionName(entity.getWorld()),
-                            TextUtils.simpleBlockPos(entity.getBlockPos())));
+                            TextConstants.simpleBlockPos(entity.getBlockPos())));
         }
         MessageUtils.sendTextMessageToHud(this.player, text);
     }
@@ -72,7 +73,7 @@ public class EntityNavigator extends AbstractNavigator {
         if (this.player.getServerWorld().equals(this.entity.getWorld())
                 && MathUtils.getBlockDistance(player.getBlockPos(), entity.getBlockPos()) <= 8) {
             // 停止追踪
-            MessageUtils.sendTextMessageToHud(this.player, TextUtils.getTranslate(REACH));
+            MessageUtils.sendTextMessageToHud(this.player, TextUtils.translate(REACH));
             this.clear();
             return true;
         }

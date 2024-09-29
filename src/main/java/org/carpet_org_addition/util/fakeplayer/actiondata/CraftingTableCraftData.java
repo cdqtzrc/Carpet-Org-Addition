@@ -47,7 +47,7 @@ public class CraftingTableCraftData extends AbstractActionData {
         // 创建一个集合用来存储可变文本对象，这个集合用来在聊天栏输出多行聊天信息，集合中的每个元素单独占一行
         ArrayList<MutableText> list = new ArrayList<>();
         // 将可变文本“<玩家>正在合成物品，配方:”添加到集合
-        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.craft.recipe", fakePlayer.getDisplayName()));
+        list.add(TextUtils.translate("carpet.commands.playerAction.info.craft.recipe", fakePlayer.getDisplayName()));
         // 将每一个合成材料以及配方的输出组装成一个大的可变文本对象并添加到集合中
         list.add(TextUtils.appendAll("    ", getHoverText(matchers[0]), " ", getHoverText(matchers[1]), " ", getHoverText(matchers[2])));
         list.add(TextUtils.appendAll("    ", getHoverText(matchers[3]), " ", getHoverText(matchers[4]), " ", getHoverText(matchers[5]),
@@ -56,7 +56,7 @@ public class CraftingTableCraftData extends AbstractActionData {
         // 判断假玩家是否打开了一个工作台
         if (fakePlayer.currentScreenHandler instanceof CraftingScreenHandler currentScreenHandler) {
             // 将可变文本“<玩家>当前合成物品的状态:”添加到集合中
-            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.craft.state", fakePlayer.getDisplayName()));
+            list.add(TextUtils.translate("carpet.commands.playerAction.info.craft.state", fakePlayer.getDisplayName()));
             // 如果打开了，将每一个合成槽位（包括输出槽位）中的物品的名称和堆叠数组装成一个可变文本对象并添加到集合
             // 合成格第一排
             list.add(TextUtils.appendAll(
@@ -76,7 +76,7 @@ public class CraftingTableCraftData extends AbstractActionData {
                     " ", getWithCountHoverText(currentScreenHandler.getSlot(9).getStack())));
         } else {
             // 如果没有打开工作台，将未打开工作台的信息添加到集合
-            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.craft.no_crafting_table",
+            list.add(TextUtils.translate("carpet.commands.playerAction.info.craft.no_crafting_table",
                     fakePlayer.getDisplayName(), Items.CRAFTING_TABLE.getName()));
         }
         return list;

@@ -55,6 +55,7 @@
     "rule.SpawnerBlockMixin",
     "rule.SwiftSneakEnchantmentMixin",
     "rule.TeleportCommandMixin",
+    "rule.NetworkThreadUtilsMixin",
     "rule.TradeOfferMixin",
     "rule.TridentItemMixin",
     "rule.TurtleEggBlockMixin",

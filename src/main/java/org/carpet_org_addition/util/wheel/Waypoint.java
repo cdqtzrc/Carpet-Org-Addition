@@ -9,9 +9,11 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.BlockPos;
 import org.carpet_org_addition.CarpetOrgAddition;
+import org.carpet_org_addition.util.IOUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.WorldUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 
 import java.io.File;
 import java.io.IOException;
@@ -94,7 +96,7 @@ public class Waypoint {
                         Waypoint waypoint = new Waypoint(location, f.getName());
                         waypoint.save(server);
                     } catch (IOException e) {
-                        CarpetOrgAddition.LOGGER.warn("路径点[{}]移动失败", WorldFormat.removeExtension(f.getName()));
+                        CarpetOrgAddition.LOGGER.warn("路径点[{}]移动失败", IOUtils.removeExtension(f.getName()));
                     }
                 }
             }
@@ -130,36 +132,36 @@ public class Waypoint {
         }
         WorldFormat worldFormat = new WorldFormat(server, WAYPOINT);
         File file = worldFormat.file(this.name);
-        WorldFormat.saveJson(file, WorldFormat.GSON, json);
+        IOUtils.saveJson(file, json);
     }
 
     // 从本地文件加载一个路径点对象
     public static Optional<Waypoint> load(MinecraftServer server, String name) throws IOException {
         WorldFormat worldFormat = new WorldFormat(server, WAYPOINT);
         File file = worldFormat.getFile(name);
-        JsonObject json = WorldFormat.loadJson(file);
+        JsonObject json = IOUtils.loadJson(file);
         BlockPos blockPos;
         // 路径点的三个坐标
-        if (WorldFormat.jsonHasElement(json, "x", "y", "z")) {
+        if (IOUtils.jsonHasElement(json, "x", "y", "z")) {
             blockPos = new BlockPos(json.get("x").getAsInt(), json.get("y").getAsInt(), json.get("z").getAsInt());
         } else {
             // 如果文件中读取就路径点中没有这三个坐标，直接返回空
             return Optional.empty();
         }
         // 路径点的维度
-        String dimension = WorldFormat.jsonHasElement(json, "dimension")
+        String dimension = IOUtils.jsonHasElement(json, "dimension")
                 ? json.get("dimension").getAsString() : WorldUtils.OVERWORLD;
         // 路径点的创建者
-        String creator = WorldFormat.jsonHasElement(json, "creator")
+        String creator = IOUtils.jsonHasElement(json, "creator")
                 ? json.get("creator").getAsString() : "#none";
         Waypoint waypoint = new Waypoint(blockPos, name, dimension, creator);
         // 添加路径点的另一个坐标
-        if (WorldFormat.jsonHasElement(json, "another_x", "another_z", "another_z")) {
+        if (IOUtils.jsonHasElement(json, "another_x", "another_z", "another_z")) {
             waypoint.setAnotherBlockPos(new BlockPos(json.get("another_x").getAsInt(),
                     json.get("another_y").getAsInt(), json.get("another_z").getAsInt()));
         }
         // 添加路径点的说明文本
-        if (WorldFormat.jsonHasElement(json, "illustrate")) {
+        if (IOUtils.jsonHasElement(json, "illustrate")) {
             waypoint.setIllustrate(json.get("illustrate").getAsString());
         }
         return Optional.of(waypoint);
@@ -169,21 +171,21 @@ public class Waypoint {
     public void show(ServerCommandSource source) {
         MutableText text = switch (this.dimension) {
             case WorldUtils.OVERWORLD -> this.anotherBlockPos == null
-                    ? TextUtils.getTranslate("carpet.commands.locations.show.overworld",
-                    this.formatName(), TextUtils.blockPos(this.blockPos, Formatting.GREEN))
-                    : TextUtils.getTranslate("carpet.commands.locations.show.overworld_and_the_nether",
-                    this.formatName(), TextUtils.blockPos(this.blockPos, Formatting.GREEN),
-                    TextUtils.blockPos(this.anotherBlockPos, Formatting.RED));
+                    ? TextUtils.translate("carpet.commands.locations.show.overworld",
+                    this.formatName(), TextConstants.blockPos(this.blockPos, Formatting.GREEN))
+                    : TextUtils.translate("carpet.commands.locations.show.overworld_and_the_nether",
+                    this.formatName(), TextConstants.blockPos(this.blockPos, Formatting.GREEN),
+                    TextConstants.blockPos(this.anotherBlockPos, Formatting.RED));
             case WorldUtils.THE_NETHER -> this.anotherBlockPos == null
-                    ? TextUtils.getTranslate("carpet.commands.locations.show.the_nether",
-                    this.formatName(), TextUtils.blockPos(this.blockPos, Formatting.RED))
-                    : TextUtils.getTranslate("carpet.commands.locations.show.the_nether_and_overworld",
-                    this.formatName(), TextUtils.blockPos(this.blockPos, Formatting.RED),
-                    TextUtils.blockPos(this.anotherBlockPos, Formatting.GREEN));
-            case WorldUtils.THE_END -> TextUtils.getTranslate("carpet.commands.locations.show.the_end",
-                    this.formatName(), TextUtils.blockPos(this.blockPos, Formatting.DARK_PURPLE));
-            default -> TextUtils.getTranslate("carpet.commands.locations.show.custom_dimension",
-                    this.formatName(), this.dimension, TextUtils.blockPos(this.blockPos, Formatting.GREEN));
+                    ? TextUtils.translate("carpet.commands.locations.show.the_nether",
+                    this.formatName(), TextConstants.blockPos(this.blockPos, Formatting.RED))
+                    : TextUtils.translate("carpet.commands.locations.show.the_nether_and_overworld",
+                    this.formatName(), TextConstants.blockPos(this.blockPos, Formatting.RED),
+                    TextConstants.blockPos(this.anotherBlockPos, Formatting.GREEN));
+            case WorldUtils.THE_END -> TextUtils.translate("carpet.commands.locations.show.the_end",
+                    this.formatName(), TextConstants.blockPos(this.blockPos, Formatting.DARK_PURPLE));
+            default -> TextUtils.translate("carpet.commands.locations.show.custom_dimension",
+                    this.formatName(), this.dimension, TextConstants.blockPos(this.blockPos, Formatting.GREEN));
         };
         MessageUtils.sendCommandFeedback(source, text);
     }

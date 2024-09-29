@@ -36,7 +36,7 @@ public class RuleSearchCommand {
             return 0;
         }
         List<CarpetRule<?>> list = CarpetServer.settingsManager.getCarpetRules().stream().toList();
-        MutableText text = TextUtils.getTranslate("carpet.commands.ruleSearch.feedback", rule);
+        MutableText text = TextUtils.translate("carpet.commands.ruleSearch.feedback", rule);
         // 将文本设置为粗体
         text.styled(style -> style.withBold(true));
         context.getSource().sendFeedback(() -> text, false);

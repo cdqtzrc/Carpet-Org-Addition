@@ -51,7 +51,7 @@ public class TradeData extends AbstractActionData {
     public ArrayList<MutableText> info(EntityPlayerMPFake fakePlayer) {
         ArrayList<MutableText> list = new ArrayList<>();
         // 获取按钮的索引
-        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.trade.item", fakePlayer.getDisplayName(), index + 1));
+        list.add(TextUtils.translate("carpet.commands.playerAction.info.trade.item", fakePlayer.getDisplayName(), index + 1));
         if (fakePlayer.currentScreenHandler instanceof MerchantScreenHandler merchantScreenHandler) {
             // 获取当前交易内容的对象
             TradeOffer tradeOffer = merchantScreenHandler.getRecipes().get(index);
@@ -62,18 +62,18 @@ public class TradeData extends AbstractActionData {
                     getWithCountHoverText(tradeOffer.getSellItem())));
             // 如果当前交易已被锁定，将交易已锁定的消息添加到集合，然后直接结束方法并返回集合
             if (tradeOffer.isDisabled()) {
-                list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.trade.disabled"));
+                list.add(TextUtils.translate("carpet.commands.playerAction.info.trade.disabled"));
                 return list;
             }
             // 将“交易状态”文本信息添加到集合中
-            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.trade.state"));
+            list.add(TextUtils.translate("carpet.commands.playerAction.info.trade.state"));
             list.add(TextUtils.appendAll("    ",
                     getWithCountHoverText(merchantScreenHandler.getSlot(0).getStack()), " ",
                     getWithCountHoverText(merchantScreenHandler.getSlot(1).getStack()), " -> ",
                     getWithCountHoverText(merchantScreenHandler.getSlot(2).getStack())));
         } else {
             // 将假玩家没有打开交易界面的消息添加到集合中
-            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.trade.no_villager", fakePlayer.getDisplayName()));
+            list.add(TextUtils.translate("carpet.commands.playerAction.info.trade.no_villager", fakePlayer.getDisplayName()));
         }
         return list;
     }

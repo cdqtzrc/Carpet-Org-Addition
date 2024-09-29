@@ -203,7 +203,7 @@ public class ReLoginTask extends PlayerScheduleTask {
             CarpetOrgAddition.hiddenLoginMessages = true;
             server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), fakePlayer, new ConnectedClientData(gameprofile, 0, fakePlayer.getClientOptions()));
         } catch (NullPointerException e) {
-            CarpetOrgAddition.LOGGER.warn("{}在服务器关闭时尝试上线", this.playerName, e);
+            CarpetOrgAddition.LOGGER.warn("{}在尝试在服务器关闭时上线", this.playerName, e);
             this.stop();
             return;
         } finally {

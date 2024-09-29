@@ -234,9 +234,11 @@ public class CarpetOrgAdditionSettings {
 
     // CCE更新抑制器
     @Rule(
-            categories = {ORG, RuleCategory.FEATURE}
+            categories = {ORG, RuleCategory.FEATURE},
+            options = {"true", "false"},
+            strict = false
     )
-    public static boolean CCEUpdateSuppression = false;
+    public static String CCEUpdateSuppression = "false";
 
     // 开放/seed命令权限
     @Rule(

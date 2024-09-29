@@ -53,11 +53,11 @@ public class PlayerActionCommand {
                                                         .executes(PlayerActionCommand::setSorting)))))
                         .then(CommandManager.literal("clean")
                                 .executes(context -> setClean(context, true))
-                                .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
+                                .then(CommandManager.argument("filter", ItemStackArgumentType.itemStack(commandBuildContext))
                                         .executes(context -> setClean(context, false))))
                         .then(CommandManager.literal("fill")
                                 .executes(context -> setFIll(context, true))
-                                .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
+                                .then(CommandManager.argument("filter", ItemStackArgumentType.itemStack(commandBuildContext))
                                         .executes(context -> setFIll(context, false))))
                         .then(CommandManager.literal("stop")
                                 .executes(PlayerActionCommand::setStop))
@@ -141,7 +141,7 @@ public class PlayerActionCommand {
             // 设置清空潜影盒内的所有物品，不需要获取Item对象
             actionManager.setAction(FakePlayerAction.CLEAN, CleanData.CLEAN_ALL);
         } else {
-            Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
+            Item item = ItemStackArgumentType.getItemStackArgument(context, "filter").getItem();
             actionManager.setAction(FakePlayerAction.CLEAN, new CleanData(item, false));
         }
         return 1;
@@ -155,7 +155,7 @@ public class PlayerActionCommand {
             // 向潜影盒内填充任意物品
             actionManager.setAction(FakePlayerAction.FILL, FillData.FILL_ALL);
         } else {
-            Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
+            Item item = ItemStackArgumentType.getItemStackArgument(context, "filter").getItem();
             actionManager.setAction(FakePlayerAction.FILL, new FillData(item, false));
         }
         return 5;
@@ -274,7 +274,7 @@ public class PlayerActionCommand {
         SimpleNamedScreenHandlerFactory screen = new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity)
                 -> new CraftingSetRecipeScreenHandler(i, playerInventory, fakePlayer,
                 ScreenHandlerContext.create(player.getWorld(), player.getBlockPos()), context),
-                TextUtils.getTranslate("carpet.commands.playerAction.info.craft.gui"));
+                TextUtils.translate("carpet.commands.playerAction.info.craft.gui"));
         player.openHandledScreen(screen);
         return 4;
     }
