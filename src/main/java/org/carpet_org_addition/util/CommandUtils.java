@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.MutableText;
 
 import java.util.UUID;
 
@@ -37,11 +38,7 @@ public class CommandUtils {
      * @throws CommandSyntaxException 如果命令执行者不是玩家，则抛出该异常
      */
     public static ServerPlayerEntity getSourcePlayer(ServerCommandSource source) throws CommandSyntaxException {
-        ServerPlayerEntity player = source.getPlayer();
-        if (player == null) {
-            throw new SimpleCommandExceptionType(TextUtils.getTranslate("carpet.command.source.not_player")).create();
-        }
-        return player;
+        return source.getPlayerOrThrow();
     }
 
     /**
@@ -67,7 +64,12 @@ public class CommandUtils {
      * @return 命令语法参数异常
      */
     public static CommandSyntaxException createException(String key, Object... obj) {
-        return new SimpleCommandExceptionType(TextUtils.getTranslate(key, obj)).create();
+        return new SimpleCommandExceptionType(TextUtils.translate(key, obj)).create();
+    }
+
+    public static CommandSyntaxException createException(Throwable e, String key, Object... obj) {
+        MutableText message = TextUtils.translate(key, obj);
+        return new SimpleCommandExceptionType(TextUtils.hoverText(message, e.getMessage())).create();
     }
 
     /**

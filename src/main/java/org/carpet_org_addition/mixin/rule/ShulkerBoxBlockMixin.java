@@ -9,6 +9,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
+import org.carpet_org_addition.exception.CCEUpdateSuppressException;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.WorldUtils;
@@ -18,10 +19,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Objects;
+
 
 @Mixin(ShulkerBoxBlock.class)
 public class ShulkerBoxBlockMixin {
-
     // 强制开启潜影盒
     @Inject(method = "canOpen", at = @At(value = "HEAD"), cancellable = true)
     private static void canOpen(BlockState state, World world, BlockPos pos, ShulkerBoxBlockEntity entity, CallbackInfoReturnable<Boolean> cir) {
@@ -35,19 +37,26 @@ public class ShulkerBoxBlockMixin {
     private void getComparatorOutput(BlockState state, World world, BlockPos pos, CallbackInfoReturnable<Integer> cir) {
         //!world.isClient： 更新抑制不在客户端进行，防止客户端游戏崩溃
         if (canUpdateSuppression(world, pos) && !world.isClient) {
-            throw new ClassCastException("类型转换异常，在:"
-                    + world.getRegistryKey().getValue() + " " + WorldUtils.toPosString(pos));
+            throw new CCEUpdateSuppressException(pos, "CCE triggered on " + WorldUtils.toWorldPosString(world, pos));
         }
     }
 
     // 潜影盒是否可以更新抑制
     @Unique
     private static boolean canUpdateSuppression(World world, BlockPos pos) {
-        if (CarpetOrgAdditionSettings.CCEUpdateSuppression) {
-            if (world.getBlockEntity(pos) instanceof ShulkerBoxBlockEntity shulkerBoxBlockEntity) {
-                String blockName = shulkerBoxBlockEntity.getDisplayName().getString();
+        if ("false".equalsIgnoreCase(CarpetOrgAdditionSettings.CCEUpdateSuppression)) {
+            return false;
+        }
+        if (world.getBlockEntity(pos) instanceof ShulkerBoxBlockEntity shulkerBoxBlockEntity) {
+            String blockName = shulkerBoxBlockEntity.getDisplayName().getString();
+            if ("true".equalsIgnoreCase(CarpetOrgAdditionSettings.CCEUpdateSuppression)) {
                 return "更新抑制器".equals(blockName) || "updateSuppression".equalsIgnoreCase(blockName);
             }
+            if (blockName == null) {
+                return false;
+            }
+            // 比较字符串并忽略大小写
+            return Objects.equals(CarpetOrgAdditionSettings.CCEUpdateSuppression.toLowerCase(), blockName.toLowerCase());
         }
         return false;
     }
@@ -56,8 +65,8 @@ public class ShulkerBoxBlockMixin {
     private void onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
         // 提示玩家不能打开用于更新抑制的潜影盒
         if (canUpdateSuppression(world, pos)) {
-            MessageUtils.sendTextMessageToHud(player, TextUtils.getTranslate("carpet.rule.message.CCEUpdateSuppression"));
-            cir.setReturnValue(ActionResult.CONSUME);
+            MessageUtils.sendTextMessageToHud(player, TextUtils.translate("carpet.rule.message.CCEUpdateSuppression"));
+            cir.setReturnValue(ActionResult.SUCCESS);
         }
     }
 }

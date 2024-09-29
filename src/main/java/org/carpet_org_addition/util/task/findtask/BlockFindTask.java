@@ -14,6 +14,7 @@ import org.carpet_org_addition.exception.TaskExecutionException;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.task.ServerTask;
 import org.carpet_org_addition.util.wheel.SelectionArea;
 
@@ -101,7 +102,7 @@ public class BlockFindTask extends ServerTask {
                     // 方块过多，无法统计
                     Runnable function = () -> MessageUtils.sendCommandErrorFeedback(this.context,
                             "carpet.commands.finder.block.too_much_blocks",
-                            TextUtils.getBlockName(this.argument.getBlockState().getBlock()));
+                            this.argument.getBlockState().getBlock().getName());
                     throw new TaskExecutionException(function);
                 }
             }
@@ -113,8 +114,8 @@ public class BlockFindTask extends ServerTask {
     private void sort() {
         if (this.results.isEmpty()) {
             // 从周围没有找到指定方块
-            MutableText blockName = TextUtils.getBlockName(this.argument.getBlockState().getBlock());
-            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.not_found_block", blockName);
+            MutableText name = this.argument.getBlockState().getBlock().getName();
+            MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.not_found_block", name);
             this.findState = FindState.END;
             return;
         }
@@ -129,11 +130,11 @@ public class BlockFindTask extends ServerTask {
         if (count <= FinderCommand.MAX_FEEDBACK_COUNT) {
             MessageUtils.sendCommandFeedback(context.getSource(),
                     "carpet.commands.finder.block.find", count,
-                    TextUtils.getBlockName(block));
+                    block.getName());
         } else {
             // 数量过多，只输出距离最近的前十个
             MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.block.find.limit",
-                    count, TextUtils.getBlockName(block), FinderCommand.MAX_FEEDBACK_COUNT);
+                    count, block.getName(), FinderCommand.MAX_FEEDBACK_COUNT);
         }
         for (int i = 0; i < this.results.size() && i < FinderCommand.MAX_FEEDBACK_COUNT; i++) {
             MessageUtils.sendTextMessage(context.getSource(), this.results.get(i).toText());
@@ -153,9 +154,9 @@ public class BlockFindTask extends ServerTask {
 
     private record Result(BlockPos sourcteBlockPos, BlockPos blockPos) {
         public MutableText toText() {
-            return TextUtils.getTranslate("carpet.commands.finder.block.feedback",
+            return TextUtils.translate("carpet.commands.finder.block.feedback",
                     MathUtils.getBlockIntegerDistance(sourcteBlockPos, blockPos),
-                    TextUtils.blockPos(blockPos, Formatting.GREEN));
+                    TextConstants.blockPos(blockPos, Formatting.GREEN));
         }
     }
 

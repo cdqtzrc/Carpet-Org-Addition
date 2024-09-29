@@ -2,9 +2,8 @@ package org.carpet_org_addition.command;
 
 import carpet.patches.EntityPlayerMPFake;
 import carpet.utils.CommandHelper;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -22,11 +21,9 @@ import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
-import org.carpet_org_addition.util.CommandUtils;
-import org.carpet_org_addition.util.GameUtils;
-import org.carpet_org_addition.util.MessageUtils;
-import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.constant.CommandSyntaxExceptionConstants;
+import org.carpet_org_addition.exception.CommandExecuteIOException;
+import org.carpet_org_addition.util.*;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerSafeAfkInterface;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerSerial;
 import org.carpet_org_addition.util.task.ServerTask;
@@ -38,15 +35,14 @@ import org.carpet_org_addition.util.task.playerscheduletask.ReLoginTask;
 import org.carpet_org_addition.util.wheel.WorldFormat;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.io.*;
+import java.util.*;
+import java.util.function.Predicate;
 
-@SuppressWarnings("SpellCheckingInspection")
 public class PlayerManagerCommand {
+
+    private static final String SAFEAFK_PROPERTIES = "safeafk.properties";
+
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         // 延迟登录节点
         RequiredArgumentBuilder<ServerCommandSource, Integer> loginNode = CommandManager.argument("delayed", IntegerArgumentType.integer(1));
@@ -72,13 +68,26 @@ public class PlayerManagerCommand {
                         .then(CommandManager.argument("name", StringArgumentType.string())
                                 .suggests(defaultSuggests())
                                 .executes(PlayerManagerCommand::spawnPlayer)))
+                .then(CommandManager.literal("annotation")
+                        .then(CommandManager.argument("name", StringArgumentType.string())
+                                .suggests(defaultSuggests())
+                                .executes(context -> setAnnotation(context, true))
+                                .then(CommandManager.argument("annotation", StringArgumentType.string())
+                                        .executes(context -> setAnnotation(context, false)))))
+                .then(CommandManager.literal("autologin")
+                        .then(CommandManager.argument("name", StringArgumentType.string())
+                                .suggests(defaultSuggests())
+                                .then(CommandManager.argument("autologin", BoolArgumentType.bool())
+                                        .executes(PlayerManagerCommand::setAutoLogin))))
                 .then(CommandManager.literal("resave")
                         .then(CommandManager.argument(CommandUtils.PLAYER, EntityArgumentType.player())
                                 .executes(context -> savePlayer(context, true))
                                 .then(CommandManager.argument("annotation", StringArgumentType.string())
                                         .executes(context -> withAnnotationSavePlayer(context, true)))))
                 .then(CommandManager.literal("list")
-                        .executes(PlayerManagerCommand::list))
+                        .executes(context -> list(context, s -> true))
+                        .then(CommandManager.argument("filter", StringArgumentType.string())
+                                .executes(context -> list(context, s -> s.contains(StringArgumentType.getString(context, "filter"))))))
                 .then(CommandManager.literal("delete")
                         .then(CommandManager.argument("name", StringArgumentType.string())
                                 .suggests(defaultSuggests())
@@ -105,29 +114,23 @@ public class PlayerManagerCommand {
                         .then(CommandManager.literal("list")
                                 .executes(PlayerManagerCommand::listScheduleTask)))
                 .then(CommandManager.literal("safeafk")
-                        .then(CommandManager.argument(CommandUtils.PLAYER, EntityArgumentType.player())
-                                .executes(context -> safeAfk(context, 5F))
-                                .then(CommandManager.argument("threshold", FloatArgumentType.floatArg())
-                                        .executes(context -> safeAfk(context, FloatArgumentType.getFloat(context, "threshold")))))));
-    }
-
-    // 安全挂机
-    private static int safeAfk(CommandContext<ServerCommandSource> context, float threshold) throws CommandSyntaxException {
-        EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
-        // 假玩家安全挂机阈值必须小于玩家最大生命值
-        if (threshold >= fakePlayer.getMaxHealth()) {
-            throw CommandUtils.createException("carpet.commands.playerManager.safeafk.threshold_too_high");
-        }
-        // 低于或等于0的值没有实际意义，统一设置为-1
-        if (threshold <= 0F) {
-            threshold = -1F;
-        }
-        // 设置安全挂机阈值
-        FakePlayerSafeAfkInterface safeAfk = (FakePlayerSafeAfkInterface) fakePlayer;
-        safeAfk.setHealthThreshold(threshold);
-        // 发送命令反馈
-        MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.safeafk.successfully_set_up", fakePlayer.getDisplayName(), threshold);
-        return (int) threshold;
+                        .then(CommandManager.literal("set")
+                                .then(CommandManager.argument(CommandUtils.PLAYER, EntityArgumentType.player())
+                                        .executes(context -> safeAfk(context, 5F, false))
+                                        .then(CommandManager.argument("threshold", FloatArgumentType.floatArg())
+                                                .executes(context -> safeAfk(context, FloatArgumentType.getFloat(context, "threshold"), false))
+                                                .then(CommandManager.argument("save", BoolArgumentType.bool())
+                                                        .executes(context -> safeAfk(context, FloatArgumentType.getFloat(context, "threshold"), BoolArgumentType.getBool(context, "save")))))))
+                        .then(CommandManager.literal("list")
+                                .executes(PlayerManagerCommand::listSafeAfk))
+                        .then(CommandManager.literal("cancel")
+                                .then(CommandManager.argument(CommandUtils.PLAYER, EntityArgumentType.player())
+                                        .executes(context -> cancelSafeAfk(context, false))
+                                        .then(CommandManager.argument("save", BoolArgumentType.bool())
+                                                .executes(context -> cancelSafeAfk(context, true)))))
+                        .then(CommandManager.literal("query")
+                                .then(CommandManager.argument(CommandUtils.PLAYER, EntityArgumentType.player())
+                                        .executes(PlayerManagerCommand::querySafeAfk)))));
     }
 
     // cancel子命令自动补全
@@ -146,8 +149,8 @@ public class PlayerManagerCommand {
     private static SuggestionProvider<ServerCommandSource> defaultSuggests() {
         return (context, builder) -> CommandSource.suggestMatching(new WorldFormat(context.getSource().getServer(),
                 FakePlayerSerial.PLAYER_DATA).toImmutableFileList().stream()
-                .filter(file -> file.getName().endsWith(WorldFormat.JSON_EXTENSION))
-                .map(file -> WorldFormat.removeExtension(file.getName()))
+                .filter(file -> file.getName().endsWith(IOUtils.JSON_EXTENSION))
+                .map(file -> IOUtils.removeExtension(file.getName()))
                 .map(StringArgumentType::escapeIfRequired), builder);
     }
 
@@ -170,12 +173,159 @@ public class PlayerManagerCommand {
         };
     }
 
-    // 列出每一个玩家
-    private static int list(CommandContext<ServerCommandSource> context) {
-        WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), FakePlayerSerial.PLAYER_DATA);
-        int count = FakePlayerSerial.list(context, worldFormat);
+    // 安全挂机
+    private static int safeAfk(CommandContext<ServerCommandSource> context, float threshold, boolean save) throws CommandSyntaxException {
+        EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
+        // 假玩家安全挂机阈值必须小于玩家最大生命值
+        if (threshold >= fakePlayer.getMaxHealth()) {
+            throw CommandUtils.createException("carpet.commands.playerManager.safeafk.threshold_too_high");
+        }
+        // 低于或等于0的值没有实际意义，统一设置为-1
+        if (threshold <= 0F) {
+            threshold = -1F;
+        }
+        // 设置安全挂机阈值
+        FakePlayerSafeAfkInterface safeAfk = (FakePlayerSafeAfkInterface) fakePlayer;
+        safeAfk.setHealthThreshold(threshold);
+        if (save) {
+            try {
+                saveSafeAfkThreshold(context, threshold, fakePlayer);
+            } catch (IOException e) {
+                throw CommandExecuteIOException.of(e);
+            }
+        } else {
+            String command = "/playerManager safeafk set " + fakePlayer.getName().getString() + " " + threshold + " true";
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.safeafk.successfully_set_up",
+                    fakePlayer.getDisplayName(), threshold, TextConstants.clickRun(command));
+        }
+        return (int) threshold;
+    }
+
+    // 列出所有设置了安全挂机的在线假玩家
+    private static int listSafeAfk(CommandContext<ServerCommandSource> context) {
+        List<ServerPlayerEntity> list = context.getSource().getServer().getPlayerManager().getPlayerList()
+                .stream().filter(player -> player instanceof EntityPlayerMPFake).toList();
+        int count = 0;
+        // 遍历所有在线并且设置了安全挂机的假玩家
+        for (ServerPlayerEntity player : list) {
+            float threshold = ((FakePlayerSafeAfkInterface) player).getHealthThreshold();
+            if (threshold < 0) {
+                continue;
+            }
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.safeafk.list.each",
+                    player.getDisplayName(), threshold);
+            count++;
+        }
+        // 没有玩家被列出
         if (count == 0) {
-            // 没有玩家被保存
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.safeafk.list.empty");
+        }
+        return count;
+    }
+
+    // 取消假玩家的安全挂机
+    private static int cancelSafeAfk(CommandContext<ServerCommandSource> context, boolean remove) throws CommandSyntaxException {
+        EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
+        // 设置安全挂机阈值
+        FakePlayerSafeAfkInterface safeAfk = (FakePlayerSafeAfkInterface) fakePlayer;
+        safeAfk.setHealthThreshold(-1);
+        if (remove) {
+            try {
+                saveSafeAfkThreshold(context, -1, fakePlayer);
+            } catch (IOException e) {
+                throw CommandExecuteIOException.of(e);
+            }
+        } else {
+            String key = "carpet.commands.playerManager.safeafk.successfully_set_up.cancel";
+            MutableText command = TextConstants.clickRun("/playerManager safeafk set " + fakePlayer.getName().getString() + " -1 true");
+            MessageUtils.sendCommandFeedback(context, key, fakePlayer.getDisplayName(), command);
+        }
+        return 1;
+    }
+
+    // 查询指定玩家的安全挂机阈值
+    private static int querySafeAfk(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
+        float threshold = ((FakePlayerSafeAfkInterface) fakePlayer).getHealthThreshold();
+        String key = "carpet.commands.playerManager.safeafk.list.each";
+        MessageUtils.sendCommandFeedback(context, key, fakePlayer.getDisplayName(), threshold);
+        return (int) threshold;
+    }
+
+    // 保存或删除安全挂机阈值
+    private static void saveSafeAfkThreshold(CommandContext<ServerCommandSource> context, float threshold,
+                                             EntityPlayerMPFake fakePlayer) throws IOException {
+        String playerName = fakePlayer.getName().getString();
+        WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), null);
+        File file = worldFormat.file(SAFEAFK_PROPERTIES);
+        // 文件存在或者文件成功创建
+        if (file.isFile() || file.createNewFile()) {
+            Properties properties = new Properties();
+            BufferedReader reader = IOUtils.toReader(file);
+            try (reader) {
+                properties.load(reader);
+            }
+            if (threshold > 0) {
+                // 将玩家安全挂机阈值保存到配置文件
+                properties.setProperty(playerName, String.valueOf(threshold));
+                MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.safeafk.successfully_set_up.save", fakePlayer.getDisplayName(), threshold);
+            } else {
+                // 将玩家安全挂机阈值从配置文件中删除
+                properties.remove(playerName);
+                MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.safeafk.successfully_set_up.remove", fakePlayer.getDisplayName());
+            }
+            BufferedWriter writer = IOUtils.toWriter(file);
+            try (writer) {
+                properties.store(writer, null);
+            }
+        }
+    }
+
+    /**
+     * 加载安全挂机阈值
+     */
+    public static void loadSafeAfk(ServerPlayerEntity player) {
+        if (player instanceof EntityPlayerMPFake) {
+            WorldFormat worldFormat = new WorldFormat(player.server, null);
+            File file = worldFormat.file(SAFEAFK_PROPERTIES);
+            // 文件必须存在
+            if (file.isFile()) {
+                Properties properties = new Properties();
+                try {
+                    BufferedReader reader = IOUtils.toReader(file);
+                    try (reader) {
+                        properties.load(reader);
+                    }
+                } catch (IOException e) {
+                    CarpetOrgAddition.LOGGER.error("假玩家安全挂机阈值加载时出错", e);
+                    return;
+                }
+                try {
+                    // 设置安全挂机阈值
+                    FakePlayerSafeAfkInterface safeAfk = (FakePlayerSafeAfkInterface) player;
+                    String value = properties.getProperty(player.getName().getString());
+                    if (value == null) {
+                        return;
+                    }
+                    float threshold = Float.parseFloat(value);
+                    safeAfk.setHealthThreshold(threshold);
+                    // 广播阈值设置的消息
+                    String key = "carpet.commands.playerManager.safeafk.successfully_set_up.auto";
+                    MutableText message = TextUtils.translate(key, player.getDisplayName(), threshold);
+                    MessageUtils.broadcastTextMessage(player, TextUtils.toGrayItalic(message));
+                } catch (NumberFormatException e) {
+                    CarpetOrgAddition.LOGGER.error("{}安全挂机阈值设置失败", player.getName().getString(), e);
+                }
+            }
+        }
+    }
+
+    // 列出每一个玩家
+    private static int list(CommandContext<ServerCommandSource> context, Predicate<String> filter) {
+        WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), FakePlayerSerial.PLAYER_DATA);
+        int count = FakePlayerSerial.list(context, worldFormat, filter);
+        if (count == 0) {
+            // 没有玩家被列出
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.list.no_player");
             return 0;
         }
@@ -196,6 +346,59 @@ public class PlayerManagerCommand {
         String annotation = StringArgumentType.getString(context, "annotation");
         FakePlayerSerial fakePlayerSerial = new FakePlayerSerial(fakePlayer, annotation);
         return savePlayer(context, fakePlayerSerial, fakePlayer, resave);
+    }
+
+    // 设置注释
+    private static int setAnnotation(CommandContext<ServerCommandSource> context, boolean remove) throws CommandSyntaxException {
+        String name = StringArgumentType.getString(context, "name");
+        WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), FakePlayerSerial.PLAYER_DATA);
+        // 修改注释
+        String annotation = remove ? null : StringArgumentType.getString(context, "annotation");
+        FakePlayerSerial serial;
+        try {
+            serial = new FakePlayerSerial(worldFormat, name);
+            serial.setAnnotation(annotation);
+            // 将玩家信息重新保存的本地文件
+            serial.save(context, true);
+        } catch (FileNotFoundException e) {
+            throw CommandUtils.createException("carpet.commands.playerManager.cannot_find_file", name);
+        } catch (IOException e) {
+            throw CommandExecuteIOException.of(e);
+        }
+        // 发送命令反馈
+        if (remove) {
+            // 移除注释
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.annotation.remove", serial.getDisplayName());
+        } else {
+            // 修改注释
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.annotation.modify", serial.getDisplayName(), annotation);
+        }
+        return 1;
+    }
+
+    // 设置自动登录
+    private static int setAutoLogin(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), FakePlayerSerial.PLAYER_DATA);
+        String name = StringArgumentType.getString(context, "name");
+        boolean autologin = BoolArgumentType.getBool(context, "autologin");
+        FakePlayerSerial serial;
+        try {
+            serial = new FakePlayerSerial(worldFormat, name);
+            // 设置自动登录
+            serial.setAutologin(autologin);
+            serial.save(context, true);
+        } catch (FileNotFoundException e) {
+            throw CommandUtils.createException("carpet.commands.playerManager.cannot_find_file", name);
+        } catch (IOException e) {
+            throw CommandExecuteIOException.of(e);
+        }
+        // 发送命令反馈
+        if (autologin) {
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.autologin.setup", serial.getDisplayName());
+        } else {
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.autologin.cancel", serial.getDisplayName());
+        }
+        return 1;
     }
 
     // 保存玩家
@@ -225,18 +428,14 @@ public class PlayerManagerCommand {
         String name = StringArgumentType.getString(context, "name");
         WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), FakePlayerSerial.PLAYER_DATA);
         try {
-            JsonObject json = WorldFormat.loadJson(worldFormat.getFile(name));
+            FakePlayerSerial serial = new FakePlayerSerial(worldFormat, name);
             // 生成假玩家
-            FakePlayerSerial.spawn(name, context.getSource().getServer(), json);
-        } catch (JsonParseException e) {
-            // 无法解析json文件
-            throw CommandSyntaxExceptionConstants.JSON_PARSE_EXCEPTION;
-        } catch (RuntimeException e) {
+            serial.spawn(context.getSource().getServer());
+        } catch (FileNotFoundException e) {
+            throw CommandUtils.createException("carpet.commands.playerManager.cannot_find_file", name);
+        } catch (RuntimeException | IOException e) {
             // 尝试生成假玩家时出现意外问题
-            throw CommandUtils.createException("carpet.commands.playerManager.spawn.fail");
-        } catch (IOException e) {
-            // 从文件读取“%s”玩家数据失败
-            throw CommandUtils.createException("carpet.commands.playerManager.spawn.io", name);
+            throw CommandUtils.createException(e, "carpet.commands.playerManager.spawn.fail");
         }
         return 1;
     }
@@ -259,11 +458,11 @@ public class PlayerManagerCommand {
     private static int setReLogin(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         if (fixShouldBeEnabled()) {
             // 文本内容：[这里]
-            MutableText here = TextUtils.getTranslate("carpet.command.text.click.here");
+            MutableText here = TextUtils.translate("carpet.command.text.click.here");
             // 单击后输入的命令
             String command = "/carpet fakePlayerSpawnMemoryLeakFix true";
             // [这里]的悬停提示
-            MutableText input = TextUtils.getTranslate("carpet.command.text.click.input", command);
+            MutableText input = TextUtils.translate("carpet.command.text.click.input", command);
             here = TextUtils.suggest(here, command, input, Formatting.AQUA);
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.relogin.condition", here);
             return 0;
@@ -337,31 +536,29 @@ public class PlayerManagerCommand {
         // 等待时间
         long tick = unit.getDelayed(context);
         List<DelayedLoginTask> list = instance.findTask(DelayedLoginTask.class, loginTask -> Objects.equals(name, loginTask.getPlayerName()));
-        MutableText time = TextUtils.hoverText(GameUtils.tickToTime(tick), GameUtils.tickToRealTime(tick));
+        MutableText time = TextUtils.hoverText(TextConstants.tickToTime(tick), TextConstants.tickToRealTime(tick));
         if (list.isEmpty()) {
             // 添加上线任务
             WorldFormat worldFormat = new WorldFormat(server, FakePlayerSerial.PLAYER_DATA);
-            JsonObject jsonObject;
+            FakePlayerSerial serial;
             try {
-                jsonObject = WorldFormat.loadJson(worldFormat.getFile(name));
+                serial = new FakePlayerSerial(worldFormat, name);
             } catch (IOException e) {
                 throw CommandUtils.createException("carpet.commands.playerManager.schedule.read_file");
             }
-            instance.addTask(new DelayedLoginTask(server, name, jsonObject, tick));
+            instance.addTask(new DelayedLoginTask(server, serial, tick));
             String key = server.getPlayerManager().getPlayer(name) == null
                     // <玩家>将于<时间>后上线
                     ? "carpet.commands.playerManager.schedule.login"
                     // <玩家>将于<时间>后再次尝试上线
                     : "carpet.commands.playerManager.schedule.login.try";
-            // 玩家名上的悬停提示
-            MutableText info = FakePlayerSerial.info(jsonObject);
             // 发送命令反馈
-            MessageUtils.sendCommandFeedback(context, key, TextUtils.hoverText(name, info), time);
+            MessageUtils.sendCommandFeedback(context, key, serial.getDisplayName(), time);
         } else {
             // 修改上线时间
             DelayedLoginTask task = list.get(0);
             // 为名称添加悬停文本
-            MutableText info = TextUtils.hoverText(name, FakePlayerSerial.info(task.getJsonObject()));
+            MutableText info = TextUtils.hoverText(name, task.getInfo());
             task.setDelayed(tick);
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.login.modify", info, time);
         }
@@ -374,7 +571,7 @@ public class PlayerManagerCommand {
         EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
         // 获取假玩家延时下线游戏刻数
         long tick = unit.getDelayed(context);
-        MutableText time = TextUtils.hoverText(GameUtils.tickToTime(tick), GameUtils.tickToRealTime(tick));
+        MutableText time = TextUtils.hoverText(TextConstants.tickToTime(tick), TextConstants.tickToRealTime(tick));
         ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
         List<DelayedLogoutTask> list = instance.findTask(DelayedLogoutTask.class, logoutTask -> fakePlayer.equals(logoutTask.getFakePlayer()));
         // 添加新任务

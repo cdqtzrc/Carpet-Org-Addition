@@ -22,7 +22,7 @@ public final class StopData extends AbstractActionData {
     public ArrayList<MutableText> info(EntityPlayerMPFake fakePlayer) {
         ArrayList<MutableText> list = new ArrayList<>();
         // 直接将假玩家没有任何动作的信息加入集合然后返回
-        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.stop", fakePlayer.getDisplayName()));
+        list.add(TextUtils.translate("carpet.commands.playerAction.info.stop", fakePlayer.getDisplayName()));
         return list;
     }
 }

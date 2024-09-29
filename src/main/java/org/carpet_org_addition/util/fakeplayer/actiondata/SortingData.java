@@ -82,15 +82,15 @@ public class SortingData extends AbstractActionData {
         // 获取假玩家的显示名称
         Text fakeName = fakePlayer.getDisplayName();
         // 将假玩家正在分拣物品的消息添加到集合中
-        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.sorting.item", fakeName, itemName));
+        list.add(TextUtils.translate("carpet.commands.playerAction.info.sorting.item", fakeName, itemName));
         // 获取分拣物品要丢出的方向
         MutableText thisPos = Text.literal(MathUtils.keepTwoDecimalPlaces(thisVec.getX(), thisVec.getY(), thisVec.getZ()));
         // 获取非分拣物品要丢出的方向
         MutableText otherPos = Text.literal(MathUtils.keepTwoDecimalPlaces(otherVec.getX(), otherVec.getY(), otherVec.getZ()));
         // 将丢要分拣物品的方向的信息添加到集合
-        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.sorting.this", itemName, thisPos));
+        list.add(TextUtils.translate("carpet.commands.playerAction.info.sorting.this", itemName, thisPos));
         // 将丢其他物品的方向的信息添加到集合
-        list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.sorting.other", otherPos));
+        list.add(TextUtils.translate("carpet.commands.playerAction.info.sorting.other", otherPos));
         return list;
     }
 

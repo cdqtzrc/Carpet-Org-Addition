@@ -32,10 +32,11 @@ public class ItemShadowingCommand {
             // 主手不能为空
             throw CommandUtils.createException("carpet.commands.itemshadowing.main_hand_is_empty");
         } else if (off.isEmpty()) {
+            // 制作物品分身
             player.setStackInHand(Hand.OFF_HAND, main);
             // 广播制作物品分身的消息
             MessageUtils.broadcastTextMessage(context.getSource(),
-                    TextUtils.getTranslate("carpet.commands.itemshadowing.broadcast",
+                    TextUtils.translate("carpet.commands.itemshadowing.broadcast",
                             player.getDisplayName(), main.toHoverableText()));
             // 将玩家制作物品分身的消息写入日志
             if (InventoryUtils.isShulkerBoxItem(main)) {

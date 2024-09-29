@@ -54,11 +54,11 @@ public class FillData extends AbstractActionData {
         ArrayList<MutableText> list = new ArrayList<>();
         if (this.allItem) {
             // 将“<玩家名> 正在向 潜影盒 填充 [item] 物品”信息添加到集合
-            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.fill_all.item",
+            list.add(TextUtils.translate("carpet.commands.playerAction.info.fill_all.item",
                     fakePlayer.getDisplayName(), Items.SHULKER_BOX.getName()));
         } else {
             // 将“<玩家名> 正在向 潜影盒 填充 [item] 物品”信息添加到集合
-            list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.fill.item",
+            list.add(TextUtils.translate("carpet.commands.playerAction.info.fill.item",
                     fakePlayer.getDisplayName(), Items.SHULKER_BOX.getName(), this.item.getDefaultStack().toHoverableText()));
         }
         return list;

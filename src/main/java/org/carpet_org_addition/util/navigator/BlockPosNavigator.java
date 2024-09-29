@@ -8,6 +8,7 @@ import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.WorldUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockPosNavigator extends AbstractNavigator {
@@ -27,11 +28,11 @@ public class BlockPosNavigator extends AbstractNavigator {
         }
         MutableText text;
         if (this.player.getWorld().equals(this.world)) {
-            MutableText in = TextUtils.simpleBlockPos(this.blockPos);
-            MutableText distance = TextUtils.getTranslate(DISTANCE, MathUtils.getBlockIntegerDistance(this.player.getBlockPos(), this.blockPos));
+            MutableText in = TextConstants.simpleBlockPos(this.blockPos);
+            MutableText distance = TextUtils.translate(DISTANCE, MathUtils.getBlockIntegerDistance(this.player.getBlockPos(), this.blockPos));
             text = getHUDText(this.blockPos.toCenterPos(),in,distance);
         } else {
-            text = TextUtils.appendAll(WorldUtils.getDimensionName(this.world), TextUtils.simpleBlockPos(this.blockPos));
+            text = TextUtils.appendAll(WorldUtils.getDimensionName(this.world), TextConstants.simpleBlockPos(this.blockPos));
         }
         MessageUtils.sendTextMessageToHud(this.player, text);
     }
@@ -47,7 +48,7 @@ public class BlockPosNavigator extends AbstractNavigator {
         if (this.player.getServerWorld().equals(this.world)) {
             if (MathUtils.getBlockIntegerDistance(this.player.getBlockPos(), this.blockPos) <= 8) {
                 // 到达目的地，停止追踪
-                MessageUtils.sendTextMessageToHud(this.player, TextUtils.getTranslate(REACH));
+                MessageUtils.sendTextMessageToHud(this.player, TextUtils.translate(REACH));
                 this.clear();
                 return true;
             }

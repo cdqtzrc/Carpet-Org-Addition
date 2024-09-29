@@ -69,6 +69,7 @@ public class FakePlayerActionManager {
         this.setAction(actionManager.getAction(), actionManager.getActionData());
     }
 
+    @Deprecated(forRemoval = true)
     public static void load(EntityPlayerMPFake fakePlayer, JsonObject json) {
         FakePlayerActionManager actionManager = FakePlayerActionInterface.getManager(fakePlayer);
         try {

@@ -18,13 +18,12 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.matcher.ItemMatcher;
 import org.carpet_org_addition.util.matcher.ItemStackMatcher;
 import org.carpet_org_addition.util.matcher.Matcher;
@@ -55,7 +54,7 @@ public class FinderCommand {
     /**
      * 村民的游戏内名称
      */
-    public static final MutableText VILLAGER = TextUtils.getTranslate("entity.minecraft.villager");
+    public static final MutableText VILLAGER = TextUtils.translate("entity.minecraft.villager");
     /**
      * 查找超时时抛出异常的反馈消息
      */
@@ -172,24 +171,8 @@ public class FinderCommand {
 
     // 将物品数量转换为“多少组多少个”的形式
     public static MutableText showCount(ItemStack itemStack, int count, boolean inTheShulkerBox) {
-        // 获取物品的最大堆叠数
-        int maxCount = itemStack.getMaxCount();
-        // 计算物品有多少组
-        int group = count / maxCount;
-        // 计算物品余几个
-        int remainder = count % maxCount;
-        String value = String.valueOf(count);
-        MutableText text = Text.literal(value);
-        if (inTheShulkerBox) {
-            // 如果包含在潜影盒内找到的物品，在数量上添加斜体效果
-            text = TextUtils.regularStyle(value, Formatting.WHITE, false, true, false, false);
-        }
-        if (group == 0) {
-            return TextUtils.hoverText(text, TextUtils.getTranslate("carpet.commands.finder.item.remainder", remainder), null);
-        } else if (remainder == 0) {
-            return TextUtils.hoverText(text, TextUtils.getTranslate("carpet.commands.finder.item.group", group), null);
-        } else {
-            return TextUtils.hoverText(text, TextUtils.getTranslate("carpet.commands.finder.item.count", group, remainder), null);
-        }
+        MutableText text = TextConstants.itemCount(count, itemStack.getMaxCount());
+        // 如果包含在潜影盒内找到的物品，在数量上添加斜体效果
+        return inTheShulkerBox ? TextUtils.toItalic(text) : text;
     }
 }
