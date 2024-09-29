@@ -458,11 +458,11 @@ public class PlayerManagerCommand {
     private static int setReLogin(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         if (fixShouldBeEnabled()) {
             // 文本内容：[这里]
-            MutableText here = TextUtils.getTranslate("carpet.command.text.click.here");
+            MutableText here = TextUtils.translate("carpet.command.text.click.here");
             // 单击后输入的命令
             String command = "/carpet fakePlayerSpawnMemoryLeakFix true";
             // [这里]的悬停提示
-            MutableText input = TextUtils.getTranslate("carpet.command.text.click.input", command);
+            MutableText input = TextUtils.translate("carpet.command.text.click.input", command);
             here = TextUtils.suggest(here, command, input, Formatting.AQUA);
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.relogin.condition", here);
             return 0;
