@@ -52,7 +52,6 @@
     "rule.SeedCommandMixin",
     "rule.ServerPlayerEntityMixin",
     "rule.ServerPlayerInteractionManagerMixin",
-    "rule.ServerPlayNetworkHandlerMixin",
     "rule.ShulkerBoxBlockMixin",
     "rule.SmithingScreenHandlerMixin",
     "rule.TeleportCommandMixin",
