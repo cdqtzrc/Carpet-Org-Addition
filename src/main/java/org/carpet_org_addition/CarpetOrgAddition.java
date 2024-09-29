@@ -37,11 +37,6 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     // 日志
     public static final Logger LOGGER = LoggerFactory.getLogger("CarpetOrgAddition");
     public static final String MOD_NAME_LOWER_CASE = "carpetorgaddition";
-    /*
-     * TODO：
-     *  显示试炼刷怪笼倒计时
-     *  自定义试炼刷怪笼生成间隔
-     */
 
     /**
      * 模组初始化
