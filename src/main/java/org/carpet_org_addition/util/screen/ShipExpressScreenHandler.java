@@ -105,8 +105,7 @@ public class ShipExpressScreenHandler extends GenericContainerScreenHandler {
             }
             onlyOneKind = 2;
         }
-        // TODO "向%s发送了%s个%s，点击%s全部撤回"第一个参数不正确
-        Text playerName = this.sourcePlayer.getDisplayName();
+        Text playerName = this.targetPlayer.getDisplayName();
         MutableText command = TextConstants.clickRun("/mail cancel");
         Object[] args = switch (onlyOneKind) {
             case 0 -> {

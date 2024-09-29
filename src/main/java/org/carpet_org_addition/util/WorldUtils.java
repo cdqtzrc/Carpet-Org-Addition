@@ -38,7 +38,7 @@ public class WorldUtils {
      * 这对内存是一个较大的负担。例如：如果Box的范围是长宽高各256，那么将有256*256*256=16777216个对象被创建，
      * 并且在集合对象使用完毕之前不会被回收，短时间内多次调用时，容易导致{@link OutOfMemoryError}
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static ArrayList<BlockPos> allBlockPos(Box box) {
         int endX = (int) box.maxX;
         int endY = (int) box.maxY;
@@ -75,6 +75,13 @@ public class WorldUtils {
      */
     public static String toPosString(BlockPos blockPos) {
         return blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ();
+    }
+
+    /**
+     * 将方块坐标转换为字符串形式，坐标前追加维度id
+     */
+    public static String toWorldPosString(World world, BlockPos blockPos) {
+        return getDimensionId(world) + "[" + toPosString(blockPos) + "]";
     }
 
     /**

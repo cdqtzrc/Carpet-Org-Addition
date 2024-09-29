@@ -22,10 +22,7 @@ import net.minecraft.util.Formatting;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.exception.CommandExecuteIOException;
-import org.carpet_org_addition.util.CommandUtils;
-import org.carpet_org_addition.util.GameUtils;
-import org.carpet_org_addition.util.MessageUtils;
-import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.*;
 import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerSafeAfkInterface;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerSerial;
@@ -40,12 +37,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class PlayerManagerCommand {
 
     private static final String SAFEAFK_PROPERTIES = "safeafk.properties";
 
-    // TODO 设置玩家自动上线，玩家信息显示动作，list支持筛选
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         // 延迟登录节点
         RequiredArgumentBuilder<ServerCommandSource, Integer> loginNode = CommandManager.argument("delayed", IntegerArgumentType.integer(1));
@@ -88,7 +85,9 @@ public class PlayerManagerCommand {
                                 .then(CommandManager.argument("annotation", StringArgumentType.string())
                                         .executes(context -> withAnnotationSavePlayer(context, true)))))
                 .then(CommandManager.literal("list")
-                        .executes(PlayerManagerCommand::list))
+                        .executes(context -> list(context, s -> true))
+                        .then(CommandManager.argument("filter", StringArgumentType.string())
+                                .executes(context -> list(context, s -> s.contains(StringArgumentType.getString(context, "filter"))))))
                 .then(CommandManager.literal("delete")
                         .then(CommandManager.argument("name", StringArgumentType.string())
                                 .suggests(defaultSuggests())
@@ -150,8 +149,8 @@ public class PlayerManagerCommand {
     private static SuggestionProvider<ServerCommandSource> defaultSuggests() {
         return (context, builder) -> CommandSource.suggestMatching(new WorldFormat(context.getSource().getServer(),
                 FakePlayerSerial.PLAYER_DATA).toImmutableFileList().stream()
-                .filter(file -> file.getName().endsWith(WorldFormat.JSON_EXTENSION))
-                .map(file -> WorldFormat.removeExtension(file.getName()))
+                .filter(file -> file.getName().endsWith(IOUtils.JSON_EXTENSION))
+                .map(file -> IOUtils.removeExtension(file.getName()))
                 .map(StringArgumentType::escapeIfRequired), builder);
     }
 
@@ -262,7 +261,7 @@ public class PlayerManagerCommand {
         // 文件存在或者文件成功创建
         if (file.isFile() || file.createNewFile()) {
             Properties properties = new Properties();
-            BufferedReader reader = WorldFormat.toReader(file);
+            BufferedReader reader = IOUtils.toReader(file);
             try (reader) {
                 properties.load(reader);
             }
@@ -275,7 +274,7 @@ public class PlayerManagerCommand {
                 properties.remove(playerName);
                 MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.safeafk.successfully_set_up.remove", fakePlayer.getDisplayName());
             }
-            BufferedWriter writer = WorldFormat.toWriter(file);
+            BufferedWriter writer = IOUtils.toWriter(file);
             try (writer) {
                 properties.store(writer, null);
             }
@@ -293,7 +292,7 @@ public class PlayerManagerCommand {
             if (file.isFile()) {
                 Properties properties = new Properties();
                 try {
-                    BufferedReader reader = WorldFormat.toReader(file);
+                    BufferedReader reader = IOUtils.toReader(file);
                     try (reader) {
                         properties.load(reader);
                     }
@@ -322,11 +321,11 @@ public class PlayerManagerCommand {
     }
 
     // 列出每一个玩家
-    private static int list(CommandContext<ServerCommandSource> context) {
+    private static int list(CommandContext<ServerCommandSource> context, Predicate<String> filter) {
         WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), FakePlayerSerial.PLAYER_DATA);
-        int count = FakePlayerSerial.list(context, worldFormat);
+        int count = FakePlayerSerial.list(context, worldFormat, filter);
         if (count == 0) {
-            // 没有玩家被保存
+            // 没有玩家被列出
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.list.no_player");
             return 0;
         }
@@ -397,7 +396,7 @@ public class PlayerManagerCommand {
         if (autologin) {
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.autologin.setup", serial.getDisplayName());
         } else {
-            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.autologin.cancel",  serial.getDisplayName());
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.autologin.cancel", serial.getDisplayName());
         }
         return 1;
     }
@@ -537,7 +536,7 @@ public class PlayerManagerCommand {
         // 等待时间
         long tick = unit.getDelayed(context);
         List<DelayedLoginTask> list = instance.findTask(DelayedLoginTask.class, loginTask -> Objects.equals(name, loginTask.getPlayerName()));
-        MutableText time = TextUtils.hoverText(GameUtils.tickToTime(tick), GameUtils.tickToRealTime(tick));
+        MutableText time = TextUtils.hoverText(TextConstants.tickToTime(tick), TextConstants.tickToRealTime(tick));
         if (list.isEmpty()) {
             // 添加上线任务
             WorldFormat worldFormat = new WorldFormat(server, FakePlayerSerial.PLAYER_DATA);
@@ -572,7 +571,7 @@ public class PlayerManagerCommand {
         EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
         // 获取假玩家延时下线游戏刻数
         long tick = unit.getDelayed(context);
-        MutableText time = TextUtils.hoverText(GameUtils.tickToTime(tick), GameUtils.tickToRealTime(tick));
+        MutableText time = TextUtils.hoverText(TextConstants.tickToTime(tick), TextConstants.tickToRealTime(tick));
         ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
         List<DelayedLogoutTask> list = instance.findTask(DelayedLogoutTask.class, logoutTask -> fakePlayer.equals(logoutTask.getFakePlayer()));
         // 添加新任务

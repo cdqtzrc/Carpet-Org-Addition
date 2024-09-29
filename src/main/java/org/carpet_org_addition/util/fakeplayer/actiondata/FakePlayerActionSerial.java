@@ -2,10 +2,12 @@ package org.carpet_org_addition.util.fakeplayer.actiondata;
 
 import carpet.patches.EntityPlayerMPFake;
 import com.google.gson.JsonObject;
+import net.minecraft.text.Text;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerAction;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionInterface;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerActionManager;
+import org.carpet_org_addition.util.wheel.TextBuilder;
 
 
 public class FakePlayerActionSerial {
@@ -68,6 +70,19 @@ public class FakePlayerActionSerial {
         }
         FakePlayerActionManager actionManager = FakePlayerActionInterface.getManager(fakePlayer);
         actionManager.setAction(this.action, this.actionData);
+    }
+
+    public boolean hasAction() {
+        return this != NO_ACTION && this.action != FakePlayerAction.STOP;
+    }
+
+    public Text toText() {
+        TextBuilder builder = new TextBuilder();
+        builder.append("carpet.commands.playerManager.info.action")
+                .newLine()
+                .indentation()
+                .append(this.action.getDisplayName());
+        return builder.build();
     }
 
     public JsonObject toJson() {

@@ -19,13 +19,14 @@ import org.carpet_org_addition.util.fakeplayer.actiondata.FakePlayerActionSerial
 import org.carpet_org_addition.util.task.ServerTaskManagerInterface;
 import org.carpet_org_addition.util.task.playerscheduletask.DelayedLoginTask;
 import org.carpet_org_addition.util.wheel.Annotation;
+import org.carpet_org_addition.util.wheel.TextBuilder;
 import org.carpet_org_addition.util.wheel.WorldFormat;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class FakePlayerSerial {
     public static final String PLAYER_DATA = "player_data";
@@ -69,11 +70,11 @@ public class FakePlayerSerial {
     /**
      * 假玩家手部动作
      */
-    private final EntityPlayerActionPackSerial actionPack;
+    private final EntityPlayerActionPackSerial interactiveAction;
     /**
      * 假玩家自动动作
      */
-    private final FakePlayerActionSerial actionSerial;
+    private final FakePlayerActionSerial autoAction;
 
     public FakePlayerSerial(EntityPlayerMPFake fakePlayer) {
         this.fakePlayerName = fakePlayer.getName().getString();
@@ -84,8 +85,8 @@ public class FakePlayerSerial {
         this.gameMode = fakePlayer.interactionManager.getGameMode();
         this.flying = fakePlayer.getAbilities().flying;
         this.sneaking = fakePlayer.isSneaking();
-        this.actionPack = new EntityPlayerActionPackSerial(((ServerPlayerInterface) fakePlayer).getActionPack());
-        this.actionSerial = new FakePlayerActionSerial(fakePlayer);
+        this.interactiveAction = new EntityPlayerActionPackSerial(((ServerPlayerInterface) fakePlayer).getActionPack());
+        this.autoAction = new FakePlayerActionSerial(fakePlayer);
     }
 
     public FakePlayerSerial(EntityPlayerMPFake fakePlayer, String annotation) {
@@ -94,9 +95,9 @@ public class FakePlayerSerial {
     }
 
     public FakePlayerSerial(WorldFormat worldFormat, String name) throws IOException {
-        JsonObject json = WorldFormat.loadJson(worldFormat.getFile(name));
+        JsonObject json = IOUtils.loadJson(worldFormat.getFile(name));
         // 玩家名
-        this.fakePlayerName = WorldFormat.removeExtension(name);
+        this.fakePlayerName = IOUtils.removeExtension(name);
         // 玩家位置
         JsonObject pos = json.get("pos").getAsJsonObject();
         this.playerPos = new Vec3d(pos.get("x").getAsDouble(), pos.get("y").getAsDouble(), pos.get("z").getAsDouble());
@@ -113,20 +114,20 @@ public class FakePlayerSerial {
         // 是否潜行
         this.sneaking = json.get("sneaking").getAsBoolean();
         // 是否自动登录
-        this.autologin = WorldFormat.getJsonElement(json, "autologin", false, Boolean.class);
+        this.autologin = IOUtils.getJsonElement(json, "autologin", false, Boolean.class);
         // 注释
         this.annotation.setAnnotation(json);
         // 假玩家左右手动作
         if (json.has("hand_action")) {
-            this.actionPack = new EntityPlayerActionPackSerial(json.get("hand_action").getAsJsonObject());
+            this.interactiveAction = new EntityPlayerActionPackSerial(json.get("hand_action").getAsJsonObject());
         } else {
-            this.actionPack = EntityPlayerActionPackSerial.NO_ACTION;
+            this.interactiveAction = EntityPlayerActionPackSerial.NO_ACTION;
         }
         // 假玩家动作，自动合成自动交易等
         if (json.has("script_action")) {
-            this.actionSerial = new FakePlayerActionSerial(json.get("script_action").getAsJsonObject());
+            this.autoAction = new FakePlayerActionSerial(json.get("script_action").getAsJsonObject());
         } else {
-            this.actionSerial = FakePlayerActionSerial.NO_ACTION;
+            this.autoAction = FakePlayerActionSerial.NO_ACTION;
         }
     }
 
@@ -144,15 +145,16 @@ public class FakePlayerSerial {
         boolean exists = file.exists();
         if (exists && !resave) {
             String command = "/playerManager resave " + name;
+            // 在命令参数后面追加注释
             if (this.annotation.hasContent()) {
                 command = command + " \"" + this.annotation + "\"";
             }
-            MutableText clickResave = TextUtils.command(TextConstants.CLICK_HERE.copy(), command,
-                    TextConstants.clickInput(command), Formatting.AQUA, false);
+            // 单击执行命令
+            MutableText clickResave = TextConstants.clickRun(command);
             MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.save.file_already_exist", clickResave);
             return -1;
         }
-        WorldFormat.saveJson(file, WorldFormat.GSON, this.toJson());
+        IOUtils.saveJson(file, this.toJson());
         return exists ? 1 : 0;
     }
 
@@ -166,40 +168,47 @@ public class FakePlayerSerial {
                 WorldUtils.getWorld(dimension), this.gameMode, flying);
         fakePlayer.setSneaking(sneaking);
         // 设置玩家动作
-        this.actionPack.startAction(fakePlayer);
-        this.actionSerial.startAction(fakePlayer);
+        this.interactiveAction.startAction(fakePlayer);
+        this.autoAction.startAction(fakePlayer);
     }
 
-    // 显示json信息
-    public MutableText info() {
-        ArrayList<MutableText> list = new ArrayList<>();
+    // 显示文本信息
+    public Text info() {
+        TextBuilder build = new TextBuilder();
         // 玩家位置
-        list.add(TextUtils.translate("carpet.commands.playerManager.info.pos",
+        build.appendLine("carpet.commands.playerManager.info.pos",
                 MathUtils.keepTwoDecimalPlaces(this.playerPos.getX(),
-                        this.playerPos.getY(), this.playerPos.getZ())));
+                        this.playerPos.getY(), this.playerPos.getZ()));
         // 获取朝向
-        list.add(TextUtils.translate("carpet.commands.playerManager.info.direction",
-                MathUtils.keepTwoDecimalPlaces(this.yaw), MathUtils.keepTwoDecimalPlaces(this.pitch)));
+        build.appendLine("carpet.commands.playerManager.info.direction",
+                MathUtils.keepTwoDecimalPlaces(this.yaw),
+                MathUtils.keepTwoDecimalPlaces(this.pitch));
         // 维度
-        list.add(TextUtils.translate("carpet.commands.playerManager.info.dimension", switch (this.dimension) {
+        build.appendLine("carpet.commands.playerManager.info.dimension", switch (this.dimension) {
             case "minecraft:overworld", "overworld" -> TextConstants.OVERWORLD;
             case "minecraft:the_nether", "the_nether" -> TextConstants.THE_NETHER;
             case "minecraft:the_end", "the_end" -> TextConstants.THE_END;
             default -> TextUtils.createText(dimension);
-        }));
+        });
         // 游戏模式
-        list.add(TextUtils.translate("carpet.commands.playerManager.info.gamemode", this.gameMode.getTranslatableName()));
+        build.appendLine("carpet.commands.playerManager.info.gamemode", this.gameMode.getTranslatableName());
         // 是否飞行
-        list.add(TextUtils.translate("carpet.commands.playerManager.info.flying", TextConstants.getBoolean(this.flying)));
+        build.appendLine("carpet.commands.playerManager.info.flying", TextConstants.getBoolean(this.flying));
         // 是否潜行
-        list.add(TextUtils.translate("carpet.commands.playerManager.info.sneaking", TextConstants.getBoolean(this.sneaking)));
+        build.appendLine("carpet.commands.playerManager.info.sneaking", TextConstants.getBoolean(this.sneaking));
         // 是否自动登录
-        list.add(TextUtils.translate("carpet.commands.playerManager.info.autologin", TextConstants.getBoolean(this.autologin)));
+        build.append("carpet.commands.playerManager.info.autologin", TextConstants.getBoolean(this.autologin));
+        if (this.interactiveAction.hasAction()) {
+            build.newLine().append(this.interactiveAction.toText());
+        }
+        if (autoAction.hasAction()) {
+            build.newLine().append(this.autoAction.toText());
+        }
         if (this.annotation.hasContent()) {
             // 添加注释
-            list.add(TextUtils.translate("carpet.commands.playerManager.info.annotation", this.annotation.getText()));
+            build.newLine().append("carpet.commands.playerManager.info.annotation", this.annotation.getText());
         }
-        return TextUtils.appendList(list);
+        return build.build();
     }
 
     public JsonObject toJson() {
@@ -228,9 +237,9 @@ public class FakePlayerSerial {
         // 注释
         json.addProperty("annotation", this.annotation.getAnnotation());
         // 添加左键右键动作
-        json.add("hand_action", actionPack.toJson());
+        json.add("hand_action", interactiveAction.toJson());
         // 添加玩家动作
-        json.add("script_action", this.actionSerial.toJson());
+        json.add("script_action", this.autoAction.toJson());
         return json;
     }
 
@@ -255,7 +264,7 @@ public class FakePlayerSerial {
     }
 
     // 列出每一条玩家信息
-    public static int list(CommandContext<ServerCommandSource> context, WorldFormat worldFormat) {
+    public static int list(CommandContext<ServerCommandSource> context, WorldFormat worldFormat, Predicate<String> filter) {
         MutableText online = TextUtils.translate("carpet.commands.playerManager.click.online");
         MutableText offline = TextUtils.translate("carpet.commands.playerManager.click.offline");
         // 使用变量记录列出的数量，而不是直接使用集合的长度，因为集合中可能存在一些非json的文件，或者被损坏的json文件
@@ -265,24 +274,30 @@ public class FakePlayerSerial {
         for (File file : jsonFileList) {
             try {
                 FakePlayerSerial serial = new FakePlayerSerial(worldFormat, file.getName());
-                // 添加快捷命令
-                String playerName = WorldFormat.removeExtension(file.getName());
-                String onlineCommand = "/playerManager spawn " + playerName;
-                String offlineCommand = "/player " + playerName + " kill";
-                MutableText mutableText = TextUtils.appendAll(
-                        TextUtils.command(TextUtils.createText("[↑]"), onlineCommand, online, Formatting.GREEN, false), " ",
-                        TextUtils.command(TextUtils.createText("[↓]"), offlineCommand, offline, Formatting.RED, false), " ",
-                        TextUtils.hoverText(TextUtils.createText("[?]"), serial.info(), Formatting.GRAY), " ",
-                        // 如果有注释，在列出的玩家的名字上也添加注释
-                        serial.annotation.hasContent() ? TextUtils.hoverText(playerName, serial.annotation.getText()) : playerName);
-                // 发送消息
-                MessageUtils.sendCommandFeedback(context.getSource(), mutableText);
-                count++;
+                if (filter.test(serial.annotation.getAnnotation())) {
+                    eachPlayer(context, file, online, offline, serial);
+                    count++;
+                }
             } catch (IOException | RuntimeException e) {
                 CarpetOrgAddition.LOGGER.warn("无法从文件{}加载玩家信息", file.getName(), e);
             }
         }
         return count;
+    }
+
+    private static void eachPlayer(CommandContext<ServerCommandSource> context, File file, MutableText online, MutableText offline, FakePlayerSerial serial) {
+        // 添加快捷命令
+        String playerName = IOUtils.removeExtension(file.getName());
+        String onlineCommand = "/playerManager spawn " + playerName;
+        String offlineCommand = "/player " + playerName + " kill";
+        MutableText mutableText = TextUtils.appendAll(
+                TextUtils.command(TextUtils.createText("[↑]"), onlineCommand, online, Formatting.GREEN, false), " ",
+                TextUtils.command(TextUtils.createText("[↓]"), offlineCommand, offline, Formatting.RED, false), " ",
+                TextUtils.hoverText(TextUtils.createText("[?]"), serial.info(), Formatting.GRAY), " ",
+                // 如果有注释，在列出的玩家的名字上也添加注释
+                serial.annotation.hasContent() ? TextUtils.hoverText(playerName, serial.annotation.getText()) : playerName);
+        // 发送消息
+        MessageUtils.sendCommandFeedback(context.getSource(), mutableText);
     }
 
     /**
@@ -305,7 +320,7 @@ public class FakePlayerSerial {
             try {
                 fakePlayerSerial = new FakePlayerSerial(worldFormat, file.getName());
             } catch (IOException e) {
-                CarpetOrgAddition.LOGGER.error("无法读取{}玩家数据", WorldFormat.removeExtension(file.getName()), e);
+                CarpetOrgAddition.LOGGER.error("无法读取{}玩家数据", IOUtils.removeExtension(file.getName()), e);
                 continue;
             }
             if (fakePlayerSerial.autologin) {

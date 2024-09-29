@@ -53,6 +53,7 @@
     "rule.ShulkerBoxBlockMixin",
     "rule.SmithingScreenHandlerMixin",
     "rule.TeleportCommandMixin",
+    "rule.NetworkThreadUtilsMixin",
     "rule.TradeOfferMixin",
     "rule.TridentEntityMixin",
     "rule.TridentItemMixin",

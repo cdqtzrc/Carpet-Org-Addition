@@ -34,7 +34,7 @@
   "carpet.rule.maxBlockPlaceDistanceReferToEntity.desc": "Make entities within maxBlockPlaceDistance reachable",
   "carpet.rule.knockbackStick.desc": "Enable knockback stick, i.e. stick with knockback enchantment",
   "carpet.rule.disableRespawnBlocksExplode.desc": "Disable the explosion of respawn blocks, e.g. beds or respawn anchors",
-  "carpet.rule.CCEUpdateSuppression.desc": "Making update suppressor based on ClassCaseException through naming the shulker box as \"updateSuppression\" or \"更新抑制器\"",
+  "carpet.rule.CCEUpdateSuppression.desc": "By naming a shulker box with a specified name, an \"ClassCastException\"-based update suppressor can be created",
   "carpet.rule.openSeedPermissions.desc": "Allow players without permission to use /seed command",
   "carpet.rule.commandSendMessage.desc": "Enable /sendMessage command for sending copiable message or urls",
   "carpet.rule.openCarpetPermissions.desc": "Allow /carpet in command singleplayer game",

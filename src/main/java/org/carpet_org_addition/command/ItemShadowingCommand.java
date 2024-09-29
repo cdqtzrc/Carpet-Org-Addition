@@ -32,6 +32,7 @@ public class ItemShadowingCommand {
             // 主手不能为空
             throw CommandUtils.createException("carpet.commands.itemshadowing.main_hand_is_empty");
         } else if (off.isEmpty()) {
+            // 制作物品分身
             player.setStackInHand(Hand.OFF_HAND, main);
             // 广播制作物品分身的消息
             MessageUtils.broadcastTextMessage(context.getSource(),

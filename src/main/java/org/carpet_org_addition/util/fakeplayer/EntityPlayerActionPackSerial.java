@@ -6,8 +6,10 @@ import carpet.helpers.EntityPlayerActionPack.Action;
 import carpet.helpers.EntityPlayerActionPack.ActionType;
 import carpet.patches.EntityPlayerMPFake;
 import com.google.gson.JsonObject;
+import net.minecraft.text.Text;
 import org.carpet_org_addition.mixin.rule.entityplayeractionpack.ActionAccessor;
 import org.carpet_org_addition.mixin.rule.entityplayeractionpack.EntityPlayerActionPackAccessor;
+import org.carpet_org_addition.util.wheel.TextBuilder;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -68,33 +70,47 @@ public class EntityPlayerActionPackSerial {
         }
     }
 
-    @Deprecated(forRemoval = true)
-    public static void startAction(EntityPlayerMPFake fakePlayer, JsonObject json) {
-        EntityPlayerActionPack action = ((ServerPlayerInterface) fakePlayer).getActionPack();
-        // 设置假玩家左键
-        if (json.has("attack")) {
-            JsonObject attack = json.get("attack").getAsJsonObject();
-            if (attack.get("continuous").getAsBoolean()) {
+    /**
+     * （玩家）是否有动作
+     */
+    public boolean hasAction() {
+        return this == NO_ACTION || !this.actionMap.isEmpty();
+    }
+
+    /**
+     * 将动作转换为文本
+     */
+    public Text toText() {
+        TextBuilder builder = new TextBuilder();
+        // 左键行为
+        Action attack = this.actionMap.get(ActionType.ATTACK);
+        if (attack != null) {
+            builder.append("carpet.commands.playerManager.info.left_click");
+            if (((ActionAccessor) attack).isContinuous()) {
                 // 左键长按
-                action.start(ActionType.ATTACK, Action.continuous());
+                builder.newLine().indentation().append("carpet.commands.playerManager.info.continuous");
             } else {
-                // 间隔左键
-                int interval = attack.get("interval").getAsInt();
-                action.start(ActionType.ATTACK, Action.interval(interval));
+                // 左键单击
+                builder.newLine().indentation().append("carpet.commands.playerManager.info.interval", attack.interval);
             }
         }
-        // 设置假玩家右键
-        if (json.has("use")) {
-            JsonObject attack = json.get("use").getAsJsonObject();
-            if (attack.get("continuous").getAsBoolean()) {
+        // 右键行为
+        Action use = this.actionMap.get(ActionType.USE);
+        if (use != null) {
+            if (attack != null) {
+                // 如果左键动作不为null，则在添加右键动作时换行，判断不应该在if(attack != null)内，因为可能没有右键动作
+                builder.newLine();
+            }
+            builder.append("carpet.commands.playerManager.info.right_click");
+            if (((ActionAccessor) use).isContinuous()) {
                 // 右键长按
-                action.start(ActionType.USE, Action.continuous());
+                builder.newLine().indentation().append("carpet.commands.playerManager.info.continuous");
             } else {
-                // 间隔右键
-                int interval = attack.get("interval").getAsInt();
-                action.start(ActionType.USE, Action.interval(interval));
+                // 右键单击
+                builder.newLine().indentation().append("carpet.commands.playerManager.info.interval", use.interval);
             }
         }
+        return builder.build();
     }
 
     public JsonObject toJson() {

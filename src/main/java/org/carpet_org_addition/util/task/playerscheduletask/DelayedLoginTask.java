@@ -7,9 +7,9 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.carpet_org_addition.CarpetOrgAddition;
-import org.carpet_org_addition.util.GameUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.constant.TextConstants;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerSerial;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,7 +57,7 @@ public class DelayedLoginTask extends PlayerScheduleTask {
 
     // 获取带有悬停提示的时间
     private @NotNull MutableText getDisplayTime() {
-        return TextUtils.hoverText(GameUtils.tickToTime(this.delayed), GameUtils.tickToRealTime(this.delayed));
+        return TextUtils.hoverText(TextConstants.tickToTime(this.delayed), TextConstants.tickToRealTime(this.delayed));
     }
 
     @Override
