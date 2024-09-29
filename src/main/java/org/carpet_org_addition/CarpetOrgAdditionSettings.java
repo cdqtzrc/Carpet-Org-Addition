@@ -527,4 +527,11 @@ public class CarpetOrgAdditionSettings {
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
     public static String commandMail = "ops";
+
+    // 抑制方块破坏位置不匹配警告
+    // TODO 需要测试
+    @Rule(
+            categories = {ORG, RuleCategory.EXPERIMENTAL}
+    )
+    public static boolean suppressionMismatchInDestroyBlockPosWarn = false;
 }

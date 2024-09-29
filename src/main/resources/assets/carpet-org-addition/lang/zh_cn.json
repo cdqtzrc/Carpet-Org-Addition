@@ -186,6 +186,8 @@
   "carpet.rule.fakePlayerSpawnMemoryLeakFix.desc": "修复在同时安装fabric api时生成假玩家导致的内存泄漏问题",
   "carpet.rule.commandMail.name": "快递命令",
   "carpet.rule.commandMail.desc": "启用/mail命令用来向其他玩家发送物品",
+  "carpet.rule.suppressionMismatchInDestroyBlockPosWarn.name": "抑制方块破坏位置不匹配警告",
+  "carpet.rule.suppressionMismatchInDestroyBlockPosWarn.desc": "阻止在日志中输出\"Mismatch in destroy block pos: {} {}\"警告",
   "carpet.rule.message.disableRespawnBlocksExplode": "已禁用重生方块爆炸",
   "carpet.rule.message.CCEUpdateSuppression": "你不能打开用于更新抑制的潜影盒",
   "carpet.rule.validate.less_than_or_equal": "值必须小于等于%s",
