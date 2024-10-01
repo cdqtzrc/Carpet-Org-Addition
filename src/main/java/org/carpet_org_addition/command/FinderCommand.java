@@ -59,6 +59,7 @@ public class FinderCommand {
      */
     public static final String TIME_OUT = "carpet.commands.finder.timeout";
 
+    // TODO 默认查找距离改为64，直接传入range参数
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("finder")
                 .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandFinder))

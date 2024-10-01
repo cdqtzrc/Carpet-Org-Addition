@@ -17,6 +17,13 @@ public class CCEUpdateSuppressException extends ClassCastException {
         this.triggerPos = blockPos;
     }
 
+    /**
+     * 在日志中输出造成异常的玩家和异常原因以及位置
+     *
+     * @param player 造成异常的玩家
+     * @param packet 造成异常的数据包
+     * @apiNote 如果启用了 {@code Carpet TIS Addition} 的{@code 阻止更新抑制崩溃}，可能导致异常提前被捕获
+     */
     public void onCatch(ServerPlayerEntity player, Packet<ServerPlayPacketListener> packet) {
         StringBuilder builder = new StringBuilder();
         builder.append(player.getName().getString()).append("在");
