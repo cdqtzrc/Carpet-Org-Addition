@@ -31,6 +31,7 @@ public class RuleSearchCommand {
 
     // 列出符合条件的规则
     private static int listRule(CommandContext<ServerCommandSource> context, boolean regex) {
+        // TODO 过度设计
         String rule = StringArgumentType.getString(context, "rule");
         if (CarpetServer.settingsManager == null) {
             return 0;

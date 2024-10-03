@@ -43,6 +43,7 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 public class PlayerActionCommand {
+    // TODO 自动钓鱼
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("playerAction").requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerAction))
                 .then(CommandManager.argument("player", EntityArgumentType.player())

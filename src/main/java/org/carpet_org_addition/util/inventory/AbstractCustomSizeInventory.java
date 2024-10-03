@@ -23,6 +23,7 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
 
     private final DefaultedList<ItemStack> stacks = DefaultedList.ofSize(this.getSize() - this.getActualSize(), PLACEHOLDER);
 
+    // TODO 不必要的抽象方法，可以直接重写size()
     /**
      * @return 物品栏的大小
      */
