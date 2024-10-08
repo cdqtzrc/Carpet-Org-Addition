@@ -54,6 +54,9 @@ public class FakePlayerActionSerial {
         } else if (json.has("trade")) {
             this.action = FakePlayerAction.TRADE;
             this.actionData = TradeData.load(json.get("trade").getAsJsonObject());
+        } else if (json.has("fishing")) {
+            this.action = FakePlayerAction.FISHING;
+            this.actionData = new FishingData();
         } else {
             CarpetOrgAddition.LOGGER.warn("从json中反序列化玩家动作失败");
             this.action = FakePlayerAction.STOP;
@@ -97,6 +100,7 @@ public class FakePlayerActionSerial {
             case RENAME -> "rename";
             case STONECUTTING -> "stonecutting";
             case TRADE -> "trade";
+            case FISHING -> "fishing";
         };
         json.add(action, this.actionData.toJson());
         return json;

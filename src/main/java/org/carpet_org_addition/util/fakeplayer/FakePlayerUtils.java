@@ -62,20 +62,6 @@ public class FakePlayerUtils {
     }
 
     /**
-     * 与快捷栏中的物品交互位置<br/>
-     * 如果当前操作的槽位索引为0，快捷栏索引为1，表示0索引槽位的物品与玩家2号快捷栏的物品交换位置
-     *
-     * @param screenHandler 假玩家当前打开的GUI
-     * @param slotIndex     假玩家当前操作槽位的索引
-     * @param key           快捷栏的索引
-     * @param player        当前操作的假玩家
-     */
-    @SuppressWarnings("unused")
-    public static void swapItem(ScreenHandler screenHandler, int slotIndex, int key, EntityPlayerMPFake player) {
-        screenHandler.onSlotClick(slotIndex, key, SlotActionType.SWAP, player);
-    }
-
-    /**
      * 让假玩家停止当前的操作
      *
      * @param source       用来获取玩家管理器对象，然后通过玩家管理器发送消息，source本身不需要发送消息

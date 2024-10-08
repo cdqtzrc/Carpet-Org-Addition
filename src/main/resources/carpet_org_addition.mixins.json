@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "command.EntityPlayerMPFakeMixin",
+    "command.FishingBobberEntityAccessor",
     "command.MinecraftServerMixin",
     "command.ServerPlayerEntityMixin",
     "logger.HUDControllerMixin",

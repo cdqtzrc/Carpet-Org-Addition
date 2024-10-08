@@ -44,6 +44,7 @@ import java.util.function.Predicate;
 
 public class PlayerActionCommand {
     // TODO 自动钓鱼
+    // TODO 设置命令返回值为1
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("playerAction").requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerAction))
                 .then(CommandManager.argument("player", EntityArgumentType.player())
@@ -92,7 +93,9 @@ public class PlayerActionCommand {
                         .then(CommandManager.literal("stonecutting")
                                 .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
                                         .then(CommandManager.argument("button", IntegerArgumentType.integer(1))
-                                                .executes(PlayerActionCommand::setStonecutting))))));
+                                                .executes(PlayerActionCommand::setStonecutting))))
+                        .then(CommandManager.literal("fishing")
+                                .executes(PlayerActionCommand::setFishing))));
     }
 
     // 注册物品谓词节点
@@ -239,6 +242,14 @@ public class PlayerActionCommand {
         int buttonIndex = IntegerArgumentType.getInteger(context, "button") - 1;
         actionManager.setAction(FakePlayerAction.STONECUTTING, new StonecuttingData(item, buttonIndex));
         return 9;
+    }
+
+    // 设置自动钓鱼
+    private static int setFishing(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
+        FakePlayerActionManager actionManager = FakePlayerActionInterface.getManager(fakePlayer);
+        actionManager.setAction(FakePlayerAction.FISHING, new FishingData());
+        return 1;
     }
 
     // 填充数组
