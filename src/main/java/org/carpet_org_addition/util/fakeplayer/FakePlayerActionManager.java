@@ -38,6 +38,8 @@ public class FakePlayerActionManager {
                     FakePlayerStonecutting.stonecutting((StonecuttingData) function.actionData, fakePlayer);
             // 自动交易
             case TRADE -> FakePlayerTrade.trade((TradeData) function.actionData, fakePlayer);
+            // 自动钓鱼
+            case FISHING -> FakePlayerFishing.fishing((FishingData) function.getActionData(), fakePlayer);
             default -> {
                 CarpetOrgAddition.LOGGER.error("{}的行为没有预先定义", this.function.getAction());
                 this.stop();
@@ -69,35 +71,6 @@ public class FakePlayerActionManager {
         this.setAction(actionManager.getAction(), actionManager.getActionData());
     }
 
-    @Deprecated(forRemoval = true)
-    public static void load(EntityPlayerMPFake fakePlayer, JsonObject json) {
-        FakePlayerActionManager actionManager = FakePlayerActionInterface.getManager(fakePlayer);
-        try {
-            if (json.has("stop")) {
-                actionManager.setAction(FakePlayerAction.STOP, StopData.STOP);
-            } else if (json.has("sorting")) {
-                actionManager.setAction(FakePlayerAction.SORTING, SortingData.load(json.get("sorting").getAsJsonObject()));
-            } else if (json.has("clean")) {
-                actionManager.setAction(FakePlayerAction.CLEAN, CleanData.load(json.get("clean").getAsJsonObject()));
-            } else if (json.has("fill")) {
-                actionManager.setAction(FakePlayerAction.FILL, FillData.load(json.get("fill").getAsJsonObject()));
-            } else if (json.has("inventory_crafting")) {
-                actionManager.setAction(FakePlayerAction.INVENTORY_CRAFT, InventoryCraftData.load(json.get("inventory_crafting").getAsJsonObject()));
-            } else if (json.has("crafting_table_craft")) {
-                actionManager.setAction(FakePlayerAction.CRAFTING_TABLE_CRAFT, CraftingTableCraftData.load(json.get("crafting_table_craft").getAsJsonObject()));
-            } else if (json.has("rename")) {
-                actionManager.setAction(FakePlayerAction.RENAME, RenameData.load(json.get("rename").getAsJsonObject()));
-            } else if (json.has("stonecutting")) {
-                actionManager.setAction(FakePlayerAction.STONECUTTING, StonecuttingData.load(json.get("stonecutting").getAsJsonObject()));
-            } else if (json.has("trade")) {
-                actionManager.setAction(FakePlayerAction.TRADE, TradeData.load(json.get("trade").getAsJsonObject()));
-            }
-        } catch (RuntimeException e) {
-            actionManager.stop();
-            CarpetOrgAddition.LOGGER.error("玩家动作反序列化失败：", e);
-        }
-    }
-
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         String action = switch (this.getAction()) {
@@ -110,6 +83,7 @@ public class FakePlayerActionManager {
             case RENAME -> "rename";
             case STONECUTTING -> "stonecutting";
             case TRADE -> "trade";
+            case FISHING -> "fishing";
         };
         json.add(action, this.getActionData().toJson());
         return json;

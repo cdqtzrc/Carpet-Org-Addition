@@ -36,9 +36,12 @@ public class ShulkerBoxBlockMixin {
     // CCE更新抑制器
     @Inject(method = "getComparatorOutput", at = @At("HEAD"))
     private void getComparatorOutput(BlockState state, World world, BlockPos pos, CallbackInfoReturnable<Integer> cir) {
-        //!world.isClient： 更新抑制不在客户端进行，防止客户端游戏崩溃
-        if (canUpdateSuppression(world, pos) && !world.isClient) {
-            throw new CCEUpdateSuppressException(pos, "CCE triggered on " + WorldUtils.toWorldPosString(world, pos));
+        // 不要在客户端抛出异常，这可能导致客户端游戏崩溃
+        if (world.isClient) {
+            return;
+        }
+        if (canUpdateSuppression(world, pos)) {
+            throw new CCEUpdateSuppressException(pos, "CCE Update Suppress triggered on " + WorldUtils.toWorldPosString(world, pos));
         }
     }
 
