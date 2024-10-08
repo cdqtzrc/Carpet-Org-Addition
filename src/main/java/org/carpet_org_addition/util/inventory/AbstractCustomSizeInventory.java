@@ -21,13 +21,7 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
         PLACEHOLDER = itemStack;
     }
 
-    private final DefaultedList<ItemStack> stacks = DefaultedList.ofSize(this.getSize() - this.getActualSize(), PLACEHOLDER);
-
-    // TODO 不必要的抽象方法，可以直接重写size()
-    /**
-     * @return 物品栏的大小
-     */
-    protected abstract int getSize();
+    private final DefaultedList<ItemStack> stacks = DefaultedList.ofSize(this.size() - this.getActualSize(), PLACEHOLDER);
 
     /**
      * @return 物品栏的实际大小，超出此大小的索引都是在GUI中用来占位的，没有实际用途
@@ -38,11 +32,6 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
      * @return 实际可用的物品栏
      */
     protected abstract Inventory getInventory();
-
-    @Override
-    public final int size() {
-        return this.getSize();
-    }
 
     @Override
     public final boolean isEmpty() {

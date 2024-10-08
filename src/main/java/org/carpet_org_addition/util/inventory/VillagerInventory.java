@@ -15,7 +15,7 @@ public class VillagerInventory extends AbstractCustomSizeInventory {
     }
 
     @Override
-    protected int getSize() {
+    public int size() {
         return 9;
     }
 
