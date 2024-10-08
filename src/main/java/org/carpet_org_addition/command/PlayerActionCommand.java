@@ -43,8 +43,6 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 public class PlayerActionCommand {
-    // TODO 自动钓鱼
-    // TODO 设置命令返回值为1
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("playerAction").requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerAction))
                 .then(CommandManager.argument("player", EntityArgumentType.player())
@@ -120,7 +118,7 @@ public class PlayerActionCommand {
         EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
         FakePlayerActionManager actionManager = FakePlayerActionInterface.getManager(fakePlayer);
         actionManager.stop();
-        return 0;
+        return 1;
     }
 
     // 设置物品分拣
@@ -134,7 +132,7 @@ public class PlayerActionCommand {
         //获取非分拣物品要丢出的方向
         Vec3d otherVec = Vec3ArgumentType.getVec3(context, "other");
         actionManager.setAction(FakePlayerAction.SORTING, new SortingData(item, thisVec, otherVec));
-        return 8;
+        return 1;
     }
 
     // 设置清空潜影盒
@@ -162,7 +160,7 @@ public class PlayerActionCommand {
             Item item = ItemStackArgumentType.getItemStackArgument(context, "filter").getItem();
             actionManager.setAction(FakePlayerAction.FILL, new FillData(item, false));
         }
-        return 5;
+        return 1;
     }
 
     // 单个物品合成
@@ -170,7 +168,7 @@ public class PlayerActionCommand {
         FakePlayerActionManager actionManager = prepareTheCrafting(context);
         Predicate<ItemStack> item = ItemPredicateArgumentType.getItemStackPredicate(context, "item");
         actionManager.setAction(FakePlayerAction.INVENTORY_CRAFT, new InventoryCraftData(fillArray(new ItemPredicateMatcher(item), new Matcher[4], false)));
-        return 2;
+        return 1;
     }
 
     // 四个物品合成
@@ -178,7 +176,7 @@ public class PlayerActionCommand {
         FakePlayerActionManager actionManager = prepareTheCrafting(context);
         Predicate<ItemStack> item = ItemPredicateArgumentType.getItemStackPredicate(context, "item");
         actionManager.setAction(FakePlayerAction.INVENTORY_CRAFT, new InventoryCraftData(fillArray(new ItemPredicateMatcher(item), new Matcher[4], true)));
-        return 2;
+        return 1;
     }
 
     // 设置物品栏合成
@@ -190,7 +188,7 @@ public class PlayerActionCommand {
             items[i - 1] = new ItemPredicateMatcher(ItemPredicateArgumentType.getItemStackPredicate(context, "item" + i));
         }
         actionManager.setAction(FakePlayerAction.INVENTORY_CRAFT, new InventoryCraftData(items));
-        return 2;
+        return 1;
     }
 
     // 九个物品合成
@@ -198,7 +196,7 @@ public class PlayerActionCommand {
         FakePlayerActionManager actionManager = prepareTheCrafting(context);
         Predicate<ItemStack> item = ItemPredicateArgumentType.getItemStackPredicate(context, "item");
         actionManager.setAction(FakePlayerAction.CRAFTING_TABLE_CRAFT, new CraftingTableCraftData(fillArray(new ItemPredicateMatcher(item), new Matcher[9], true)));
-        return 3;
+        return 1;
     }
 
     // 设置工作台合成
@@ -209,7 +207,7 @@ public class PlayerActionCommand {
             items[i - 1] = new ItemPredicateMatcher(ItemPredicateArgumentType.getItemStackPredicate(context, "item" + i));
         }
         actionManager.setAction(FakePlayerAction.CRAFTING_TABLE_CRAFT, new CraftingTableCraftData(items));
-        return 3;
+        return 1;
     }
 
     // 设置交易
@@ -219,7 +217,7 @@ public class PlayerActionCommand {
         // 获取按钮的索引，减去1
         int index = IntegerArgumentType.getInteger(context, "index") - 1;
         actionManager.setAction(FakePlayerAction.TRADE, new TradeData(index, voidTrade));
-        return 10;
+        return 1;
     }
 
     // 设置重命名
@@ -230,7 +228,7 @@ public class PlayerActionCommand {
         Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
         String newName = StringArgumentType.getString(context, "name");
         actionManager.setAction(FakePlayerAction.RENAME, new RenameData(item, newName));
-        return 7;
+        return 1;
     }
 
     // 设置使用切石机
@@ -241,7 +239,7 @@ public class PlayerActionCommand {
         Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
         int buttonIndex = IntegerArgumentType.getInteger(context, "button") - 1;
         actionManager.setAction(FakePlayerAction.STONECUTTING, new StonecuttingData(item, buttonIndex));
-        return 9;
+        return 1;
     }
 
     // 设置自动钓鱼
@@ -275,7 +273,7 @@ public class PlayerActionCommand {
         EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
         FakePlayerActionManager actionManager = FakePlayerActionInterface.getManager(fakePlayer);
         MessageUtils.sendListMessage(context.getSource(), actionManager.getActionData().info(fakePlayer));
-        return 6;
+        return 1;
     }
 
     // 打开控制假人合成物品的GUI
@@ -288,7 +286,7 @@ public class PlayerActionCommand {
                 ScreenHandlerContext.create(player.getWorld(), player.getBlockPos()), context),
                 TextUtils.translate("carpet.commands.playerAction.info.craft.gui"));
         player.openHandledScreen(screen);
-        return 4;
+        return 1;
     }
 
     // 提示启用Ctrl+Q合成修复
