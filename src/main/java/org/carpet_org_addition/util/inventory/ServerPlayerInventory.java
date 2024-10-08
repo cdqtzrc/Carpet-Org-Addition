@@ -15,7 +15,7 @@ public class ServerPlayerInventory extends AbstractCustomSizeInventory {
     }
 
     @Override
-    protected int getSize() {
+    public int size() {
         return 54;
     }
 

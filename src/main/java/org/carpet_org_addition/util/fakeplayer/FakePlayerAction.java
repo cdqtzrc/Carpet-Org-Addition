@@ -40,7 +40,11 @@ public enum FakePlayerAction {
     /**
      * 自动交易
      */
-    TRADE("carpet.commands.playerAction.action.trade");
+    TRADE("carpet.commands.playerAction.action.trade"),
+    /**
+     * 自动钓鱼
+     */
+    FISHING("carpet.commands.playerAction.action.fishing");
 
     private final MutableText displayName;
 
@@ -60,6 +64,7 @@ public enum FakePlayerAction {
             case RENAME -> RenameData.class;
             case STONECUTTING -> StonecuttingData.class;
             case TRADE -> TradeData.class;
+            case FISHING -> FishingData.class;
         }) {
             throw new IllegalArgumentException();
         }
@@ -84,6 +89,7 @@ public enum FakePlayerAction {
             case RENAME -> "重命名";
             case STONECUTTING -> "切石";
             case TRADE -> "交易";
+            case FISHING -> "钓鱼";
         };
     }
 }
