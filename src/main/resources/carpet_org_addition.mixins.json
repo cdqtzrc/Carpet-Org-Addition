@@ -54,7 +54,6 @@
     "rule.ServerPlayerEntityMixin",
     "rule.ServerPlayerInteractionManagerMixin",
     "rule.ServerPlayerInteractionManagerMixin",
-    "rule.ServerPlayNetworkHandlerMixin",
     "rule.ShulkerBoxBlockMixin",
     "rule.SmithingScreenHandlerMixin",
     "rule.TeleportCommandMixin",
