@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class NetworkThreadUtilsMixin {
     @SuppressWarnings({"MixinExtrasOperationParameters", "unchecked"})
     @WrapOperation(method = "method_11072", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/Packet;apply(Lnet/minecraft/network/listener/PacketListener;)V"))
-    private static <T extends PacketListener> void test(final Packet<T> packet, final T listener, Operation<Void> original) {
+    private static <T extends PacketListener> void changeLog(final Packet<T> packet, final T listener, Operation<Void> original) {
         try {
             try {
                 original.call(packet, listener);

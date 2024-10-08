@@ -6,6 +6,7 @@
   "plugin": "org.carpet_org_addition.util.MixinConfigPlugin",
   "mixins": [
     "command.EntityPlayerMPFakeMixin",
+    "command.FishingBobberEntityAccessor",
     "command.MinecraftServerMixin",
     "command.ServerPlayerEntityMixin",
     "compat.fabricapi.AbstractChanneledNetworkAddonInvoker",
@@ -52,6 +53,8 @@
     "rule.SeedCommandMixin",
     "rule.ServerPlayerEntityMixin",
     "rule.ServerPlayerInteractionManagerMixin",
+    "rule.ServerPlayerInteractionManagerMixin",
+    "rule.ServerPlayNetworkHandlerMixin",
     "rule.ShulkerBoxBlockMixin",
     "rule.SmithingScreenHandlerMixin",
     "rule.TeleportCommandMixin",

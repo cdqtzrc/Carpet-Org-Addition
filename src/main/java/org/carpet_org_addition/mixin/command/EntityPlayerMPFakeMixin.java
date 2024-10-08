@@ -50,7 +50,8 @@ public abstract class EntityPlayerMPFakeMixin implements FakePlayerActionInterfa
             // 向聊天栏发送错误消息的反馈
             MutableText message = TextUtils.translate("carpet.commands.playerAction.exception.runtime",
                     thisPlayer.getDisplayName(), this.getActionManager().getAction().getDisplayName());
-            MessageUtils.broadcastTextMessage(thisPlayer, TextUtils.setColor(message, Formatting.RED));
+            MutableText errorMessage = TextUtils.hoverText(TextUtils.setColor(message, Formatting.RED), e.getMessage());
+            MessageUtils.broadcastTextMessage(thisPlayer, errorMessage);
             // 让假玩家停止当前操作
             this.getActionManager().stop();
         }

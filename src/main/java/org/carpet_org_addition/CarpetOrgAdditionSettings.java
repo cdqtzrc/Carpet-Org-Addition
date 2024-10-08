@@ -529,7 +529,6 @@ public class CarpetOrgAdditionSettings {
     public static String commandMail = "ops";
 
     // 抑制方块破坏位置不匹配警告
-    // TODO 需要测试
     @Rule(
             categories = {ORG, RuleCategory.EXPERIMENTAL}
     )
