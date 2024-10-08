@@ -14,6 +14,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import org.carpet_org_addition.CarpetOrgAddition;
@@ -56,19 +57,19 @@ public class CreeperCommand {
 
         private CreeperExplosionTask(ServerPlayerEntity player) {
             this.player = player;
-            this.creeper = new CreeperEntity(EntityType.CREEPER, player.getWorld());
             // 传送到玩家周围
-            this.teleport();
+            this.creeper = teleport(player);
         }
 
         // 将苦力怕传送到合适位置
-        private void teleport() {
+        private static CreeperEntity teleport(ServerPlayerEntity player) {
+            CreeperEntity creeper = new CreeperEntity(EntityType.CREEPER, player.getWorld());
             BlockPos playerPos = player.getBlockPos();
             Vec3d fromPos = new Vec3d(playerPos.getX() - 3, playerPos.getY() - 1, playerPos.getZ() - 3);
             Vec3d toPos = new Vec3d(playerPos.getX() + 3, playerPos.getY() + 1, playerPos.getZ() + 3);
             SelectionArea selectionArea = new SelectionArea(new Box(fromPos, toPos));
             ArrayList<BlockPos> list = new ArrayList<>();
-            World world = this.player.getWorld();
+            World world = player.getWorld();
             // 获取符合条件的坐标
             for (BlockPos blockPos : selectionArea) {
                 // 当前方块是空气
@@ -82,7 +83,8 @@ public class CreeperCommand {
             }
             // 将苦力怕传送到随机坐标
             BlockPos randomPos = list.isEmpty() ? playerPos : list.get(MathUtils.randomInt(1, list.size()) - 1);
-            this.creeper.teleport(randomPos.getX(), randomPos.getY(), randomPos.getZ(), false);
+            TeleportTarget target = new TeleportTarget(player.getServerWorld(), randomPos.toBottomCenterPos(), Vec3d.ZERO, 0F, 0F, TeleportTarget.NO_OP);
+            return (CreeperEntity) creeper.teleportTo(target);
         }
 
         @Override
