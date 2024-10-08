@@ -317,7 +317,7 @@
   "carpet.commands.playerAction.info.trade.state": "交易状态:",
   "carpet.commands.playerAction.info.trade.no_villager": "%s没有打开交易GUI",
   "carpet.commands.playerAction.info.fishing": "%s正在钓鱼",
-  "carpet.commands.playerAction.stone_cutting": "无法合成物品，操作自动停止",
+  "carpet.commands.playerAction.stone_cutting": "无法合成物品，停止合成",
   "carpet.commands.playerAction.trade": "无法交易物品：停止交易",
   "carpet.commands.playerAction.craft": "无法合成物品，停止合成",
   "carpet.commands.playerAction.rename.not_experience": "经验不足，停止重命名",
