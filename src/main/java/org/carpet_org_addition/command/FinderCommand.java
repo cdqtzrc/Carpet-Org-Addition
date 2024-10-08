@@ -59,31 +59,30 @@ public class FinderCommand {
      */
     public static final String TIME_OUT = "carpet.commands.finder.timeout";
 
-    // TODO 默认查找距离改为64，直接传入range参数
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("finder")
                 .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandFinder))
                 .then(CommandManager.literal("block")
                         .then(CommandManager.argument("blockState", BlockStateArgumentType.blockState(commandBuildContext))
-                                .executes(context -> blockFinder(context, 32))
+                                .executes(context -> blockFinder(context, 64))
                                 .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 256))
-                                        .executes(context -> blockFinder(context, -1)))))
+                                        .executes(context -> blockFinder(context, IntegerArgumentType.getInteger(context, "range"))))))
                 .then(CommandManager.literal("item")
                         .then(CommandManager.argument("itemStack", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                .executes(context -> findItem(context, 32))
+                                .executes(context -> findItem(context, 64))
                                 .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 256))
-                                        .executes(context -> findItem(context, -1)))))
+                                        .executes(context -> findItem(context, IntegerArgumentType.getInteger(context, "range"))))))
                 .then(CommandManager.literal("trade")
                         .then(CommandManager.literal("item")
                                 .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(commandBuildContext))
-                                        .executes(context -> findTradeItem(context, 32))
+                                        .executes(context -> findTradeItem(context, 64))
                                         .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 256))
-                                                .executes(context -> findTradeItem(context, -1)))))
+                                                .executes(context -> findTradeItem(context, IntegerArgumentType.getInteger(context, "range"))))))
                         .then(CommandManager.literal("enchanted_book")
                                 .then(CommandManager.argument("enchantment", RegistryEntryArgumentType.registryEntry(commandBuildContext, RegistryKeys.ENCHANTMENT))
-                                        .executes(context -> findEnchantedBookTrade(context, 32))
+                                        .executes(context -> findEnchantedBookTrade(context, 64))
                                         .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 256))
-                                                .executes(context -> findEnchantedBookTrade(context, -1)))))));
+                                                .executes(context -> findEnchantedBookTrade(context, IntegerArgumentType.getInteger(context, "range"))))))));
     }
 
     // 物品查找
@@ -92,10 +91,6 @@ public class FinderCommand {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         // 获取要查找的物品堆栈
         Predicate<ItemStack> predicate = ItemPredicateArgumentType.getItemStackPredicate(context, "itemStack");
-        if (range == -1) {
-            // 获取要查找方块的范围
-            range = IntegerArgumentType.getInteger(context, "range");
-        }
         // 获取玩家所在的位置，这是命令开始执行的坐标
         BlockPos sourceBlockPos = player.getBlockPos();
         // 查找周围容器中的物品
@@ -112,10 +107,6 @@ public class FinderCommand {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         // 获取要匹配的方块状态
         BlockStateArgument blockStateArgument = BlockStateArgumentType.getBlockState(context, "blockState");
-        if (range == -1) {
-            // 获取要查找方块的范围
-            range = IntegerArgumentType.getInteger(context, "range");
-        }
         // 获取命令执行时的方块坐标
         final BlockPos sourceBlockPos = player.getBlockPos();
         ServerTaskManagerInterface tackManager = ServerTaskManagerInterface.getInstance(context.getSource().getServer());
@@ -129,10 +120,6 @@ public class FinderCommand {
     private static int findTradeItem(CommandContext<ServerCommandSource> context, int range) throws CommandSyntaxException {
         // 获取执行命令的玩家对象
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
-        if (range == -1) {
-            // 获取要查找方块的范围
-            range = IntegerArgumentType.getInteger(context, "range");
-        }
         // 获取要匹配的物品
         ItemMatcher matcher = new ItemMatcher(ItemStackArgumentType.getItemStackArgument(context, "itemStack").getItem());
         // 获取玩家所在的坐标
@@ -151,10 +138,6 @@ public class FinderCommand {
     private static int findEnchantedBookTrade(CommandContext<ServerCommandSource> context, int range) throws CommandSyntaxException {
         // 获取执行命令的玩家
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
-        if (range == -1) {
-            // 获取要查找方块的范围
-            range = IntegerArgumentType.getInteger(context, "range");
-        }
         // 获取需要查找的附魔
         Enchantment enchantment = RegistryEntryArgumentType.getEnchantment(context, "enchantment").value();
         // 获取玩家所在的位置
