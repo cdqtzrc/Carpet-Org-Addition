@@ -48,7 +48,7 @@ public class MixinTest {
         }
         // 检查json中声明的文件是否全部存在
         for (File file : this.mixinClass) {
-            Assert.assertTrue("不存在的Mixin类" + file.getPath(), file.isFile());
+            Assert.assertTrue("不存在的Mixin类：" + file.getPath(), file.isFile());
         }
     }
 
