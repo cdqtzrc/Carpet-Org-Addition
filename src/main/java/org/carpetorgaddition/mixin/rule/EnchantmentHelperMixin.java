@@ -1,4 +1,4 @@
-package org.carpet_org_addition.mixin.rule;
+package org.carpetorgaddition.mixin.rule;
 
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.EnchantmentEffectComponentTypes;

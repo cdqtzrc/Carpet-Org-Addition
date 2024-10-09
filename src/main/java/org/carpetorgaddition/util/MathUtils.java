@@ -2,8 +2,6 @@ package org.carpetorgaddition.util;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.MathHelper;
 import org.carpetorgaddition.CarpetOrgAdditionSettings;
 import org.carpetorgaddition.rulevalidator.MaxBlockPlaceDistanceValidator;
 

@@ -1,4 +1,4 @@
-package org.carpet_org_addition.mixin.rule;
+package org.carpetorgaddition.mixin.rule;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -6,7 +6,7 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ToolComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.carpet_org_addition.CarpetOrgAdditionSettings;
+import org.carpetorgaddition.CarpetOrgAdditionSettings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

@@ -1,6 +1,9 @@
 package org.carpetorgaddition.util;
 
-import net.minecraft.text.*;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.carpetorgaddition.translate.Translate;
 import org.jetbrains.annotations.NotNull;

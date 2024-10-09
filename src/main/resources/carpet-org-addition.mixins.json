@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "org.carpetorgaddition.mixin",
   "compatibilityLevel": "JAVA_17",
-  "plugin": "org.carpet_org_addition.util.MixinConfigPlugin",
+  "plugin": "org.carpetorgaddition.util.MixinConfigPlugin",
   "mixins": [
     "command.EntityPlayerMPFakeMixin",
     "command.FishingBobberEntityAccessor",
@@ -52,7 +52,6 @@
     "rule.SculkShriekerBlockMixin",
     "rule.SeedCommandMixin",
     "rule.ServerPlayerEntityMixin",
-    "rule.ServerPlayerInteractionManagerMixin",
     "rule.ServerPlayerInteractionManagerMixin",
     "rule.ShulkerBoxBlockMixin",
     "rule.SmithingScreenHandlerMixin",

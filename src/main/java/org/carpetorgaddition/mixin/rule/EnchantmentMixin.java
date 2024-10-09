@@ -1,10 +1,10 @@
-package org.carpet_org_addition.mixin.rule;
+package org.carpetorgaddition.mixin.rule;
 
 import net.minecraft.component.EnchantmentEffectComponentTypes;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import org.carpet_org_addition.CarpetOrgAdditionSettings;
+import org.carpetorgaddition.CarpetOrgAdditionSettings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;

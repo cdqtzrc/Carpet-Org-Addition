@@ -1,4 +1,4 @@
-package org.carpet_org_addition.util.wheel;
+package org.carpetorgaddition.util.wheel;
 
 import net.minecraft.component.type.ContainerComponent;
 

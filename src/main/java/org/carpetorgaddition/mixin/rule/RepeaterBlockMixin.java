@@ -1,4 +1,4 @@
-package org.carpet_org_addition.mixin.rule;
+package org.carpetorgaddition.mixin.rule;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RepeaterBlock;

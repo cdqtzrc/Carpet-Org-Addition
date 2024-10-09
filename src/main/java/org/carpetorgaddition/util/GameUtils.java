@@ -18,8 +18,8 @@ import net.minecraft.util.Uuids;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
-import org.carpet_org_addition.mixin.rule.EntityAccessor;
-import org.carpet_org_addition.mixin.rule.PlayerEntityAccessor;
+import org.carpetorgaddition.mixin.rule.EntityAccessor;
+import org.carpetorgaddition.mixin.rule.PlayerEntityAccessor;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

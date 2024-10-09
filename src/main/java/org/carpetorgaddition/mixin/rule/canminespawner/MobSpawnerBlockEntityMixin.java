@@ -1,7 +1,7 @@
-package org.carpet_org_addition.mixin.rule.canminespawner;
+package org.carpetorgaddition.mixin.rule.canminespawner;
 
 import net.minecraft.block.entity.MobSpawnerBlockEntity;
-import org.carpet_org_addition.CarpetOrgAdditionSettings;
+import org.carpetorgaddition.CarpetOrgAdditionSettings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

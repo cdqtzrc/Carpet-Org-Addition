@@ -1,4 +1,4 @@
-package org.carpet_org_addition.util;
+package org.carpetorgaddition.util;
 
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;

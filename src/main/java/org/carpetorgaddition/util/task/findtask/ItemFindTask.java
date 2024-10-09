@@ -23,10 +23,10 @@ import org.carpetorgaddition.util.InventoryUtils;
 import org.carpetorgaddition.util.MessageUtils;
 import org.carpetorgaddition.util.TextUtils;
 import org.carpetorgaddition.util.constant.TextConstants;
+import org.carpetorgaddition.util.inventory.ImmutableInventory;
 import org.carpetorgaddition.util.matcher.Matcher;
 import org.carpetorgaddition.util.task.ServerTask;
 import org.carpetorgaddition.util.wheel.Counter;
-import org.carpetorgaddition.util.inventory.ImmutableInventory;
 import org.carpetorgaddition.util.wheel.SelectionArea;
 import org.jetbrains.annotations.Nullable;
 

@@ -1,9 +1,9 @@
-package org.carpet_org_addition.mixin.rule;
+package org.carpetorgaddition.mixin.rule;
 
 import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
-import org.carpet_org_addition.util.wheel.ContainerDeepCopy;
+import org.carpetorgaddition.util.wheel.ContainerDeepCopy;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

@@ -1,4 +1,4 @@
-package org.carpet_org_addition.mixin.rule;
+package org.carpetorgaddition.mixin.rule;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -17,8 +17,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.carpet_org_addition.CarpetOrgAdditionSettings;
-import org.carpet_org_addition.util.EnchantmentUtils;
+import org.carpetorgaddition.CarpetOrgAdditionSettings;
+import org.carpetorgaddition.util.EnchantmentUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;

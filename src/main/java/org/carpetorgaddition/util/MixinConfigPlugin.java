@@ -1,4 +1,4 @@
-package org.carpet_org_addition.util;
+package org.carpetorgaddition.util;
 
 import me.fallenbreath.conditionalmixin.api.mixin.RestrictiveMixinConfigPlugin;
 
