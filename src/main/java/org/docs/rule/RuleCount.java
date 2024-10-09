@@ -1,7 +1,7 @@
 package org.docs.rule;
 
 import carpet.api.settings.Rule;
-import org.carpet_org_addition.CarpetOrgAdditionSettings;
+import org.carpetorgaddition.CarpetOrgAdditionSettings;
 
 import java.lang.reflect.Field;
 

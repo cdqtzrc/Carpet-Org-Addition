@@ -18,14 +18,14 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "org.carpet_org_addition.client.CarpetOrgAdditionClient"
+      "org.carpetorgaddition.client.CarpetOrgAdditionClient"
     ],
     "main": [
-      "org.carpet_org_addition.CarpetOrgAddition"
+      "org.carpetorgaddition.CarpetOrgAddition"
     ]
   },
   "mixins": [
-    "carpet_org_addition.mixins.json"
+    "carpet-org-addition.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",
