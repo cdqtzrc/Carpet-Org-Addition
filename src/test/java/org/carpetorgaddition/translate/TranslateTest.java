@@ -79,7 +79,7 @@ public class TranslateTest {
      */
     @Test
     public void translationUsedBy() throws IOException {
-        File rootPath = new File("src/main/java/org/carpet_org_addition");
+        File rootPath = new File("src/main/java/org/carpetorgaddition");
         Counter<String> counter = new Counter<>();
         notRuleKey.forEach(key -> counter.set(key, 0));
         translationUsedBy(rootPath, counter);
