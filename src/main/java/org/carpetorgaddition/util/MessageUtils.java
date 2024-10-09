@@ -108,6 +108,10 @@ public class MessageUtils {
         MessageUtils.sendTextMessage(source, TextUtils.setColor(TextUtils.translate(key, obj), Formatting.RED));
     }
 
+    public static void sendCommandErrorFeedback(ServerCommandSource source, Text message) {
+        MessageUtils.sendTextMessage(source, TextUtils.setColor(message.copy(), Formatting.RED));
+    }
+
     /**
      * <br>发送一条红色的可以被翻译的消息做为命令的执行反馈，消息内容仅消息发送者可见<br/>
      * 鼠标悬停时可以显示异常信息
