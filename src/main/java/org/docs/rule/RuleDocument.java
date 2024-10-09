@@ -60,7 +60,7 @@ public class RuleDocument {
 
     // 读取字节码信息
     RuleInformation readClass(String rule) throws ClassNotFoundException, NoSuchFieldException {
-        Class<?> clazz = Class.forName("org.carpet_org_addition.CarpetOrgAdditionSettings");
+        Class<?> clazz = Class.forName("org.carpetorgaddition.CarpetOrgAdditionSettings");
         Field field = clazz.getField(rule);
         return new RuleInformation(field, readRuleName(rule), readRuleDesc(rule), readRuleExtra(rule));
     }
