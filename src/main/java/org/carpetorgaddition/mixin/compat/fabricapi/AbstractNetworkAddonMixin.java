@@ -1,4 +1,4 @@
-package org.carpet_org_addition.mixin.compat.fabricapi;
+package org.carpetorgaddition.mixin.compat.fabricapi;
 
 import carpet.patches.FakeClientConnection;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
@@ -8,8 +8,8 @@ import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.minecraft.network.ClientConnection;
-import org.carpet_org_addition.CarpetOrgAdditionSettings;
-import org.carpet_org_addition.util.constant.ModIds;
+import org.carpetorgaddition.CarpetOrgAdditionSettings;
+import org.carpetorgaddition.util.constant.ModIds;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 

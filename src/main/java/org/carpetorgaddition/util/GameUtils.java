@@ -4,7 +4,6 @@ import carpet.patches.EntityPlayerMPFake;
 import carpet.patches.FakeClientConnection;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.MutableText;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
 import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket;
@@ -18,8 +17,8 @@ import net.minecraft.util.Uuids;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
-import org.carpet_org_addition.mixin.rule.EntityAccessor;
-import org.carpet_org_addition.mixin.rule.PlayerEntityAccessor;
+import org.carpetorgaddition.mixin.rule.EntityAccessor;
+import org.carpetorgaddition.mixin.rule.PlayerEntityAccessor;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

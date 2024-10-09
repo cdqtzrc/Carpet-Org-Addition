@@ -1,4 +1,4 @@
-package org.carpet_org_addition.util.constant;
+package org.carpetorgaddition.util.constant;
 
 public class ModIds {
     /**
