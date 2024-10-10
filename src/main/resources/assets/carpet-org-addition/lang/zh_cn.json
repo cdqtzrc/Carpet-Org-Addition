@@ -190,6 +190,7 @@
   "carpet.rule.suppressionMismatchInDestroyBlockPosWarn.desc": "阻止在日志中输出“Mismatch in destroy block pos: {} {}”警告",
   "carpet.rule.message.disableRespawnBlocksExplode": "已禁用重生方块爆炸",
   "carpet.rule.message.CCEUpdateSuppression": "你不能打开用于更新抑制的潜影盒",
+  "carpet.rule.validate.invalid_value": "规则“%s”值无效：%s",
   "carpet.rule.validate.less_than_or_equal": "值必须小于等于%s",
   "carpet.rule.validate.greater_than_or_equal_or_number": "值必须大于等于%s，或者为%s",
   "carpet.rule.validate.between_two_number_or_number": "值必须介于%s和%s之间，或者为%s",
