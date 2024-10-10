@@ -1,22 +1,20 @@
 package org.carpetorgaddition.rulevalidator;
 
-import carpet.api.settings.CarpetRule;
-import carpet.api.settings.Validator;
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.MutableText;
 import org.carpetorgaddition.util.constant.RuleValidatorConstants;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 // 信标范围验证
-public class BeaconRangeExpandValidator extends Validator<Integer> {
+public class BeaconRangeExpandValidator extends AbstractValidator<Integer> {
     public static final int MAX_VALUE = 1024;
 
     @Override
-    public Integer validate(@Nullable ServerCommandSource serverCommandSource, CarpetRule<Integer> carpetRule, Integer integer, String s) {
-        return integer <= MAX_VALUE ? integer : null;
+    public boolean validate(Integer integer) {
+        return integer <= MAX_VALUE;
     }
 
     @Override
-    public String description() {
-        return RuleValidatorConstants.lessThanOrEqual(MAX_VALUE).getString();
+    public @NotNull MutableText errorMessage() {
+        return RuleValidatorConstants.lessThanOrEqual(MAX_VALUE);
     }
 }

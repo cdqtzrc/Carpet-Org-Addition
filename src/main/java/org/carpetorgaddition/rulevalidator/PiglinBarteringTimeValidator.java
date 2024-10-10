@@ -1,20 +1,18 @@
 package org.carpetorgaddition.rulevalidator;
 
-import carpet.api.settings.CarpetRule;
-import carpet.api.settings.Validator;
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.MutableText;
 import org.carpetorgaddition.util.constant.RuleValidatorConstants;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 // 自定义猪灵交易时间
-public class PiglinBarteringTimeValidator extends Validator<Long> {
+public class PiglinBarteringTimeValidator extends AbstractValidator<Long> {
     @Override
-    public Long validate(@Nullable ServerCommandSource serverCommandSource, CarpetRule<Long> carpetRule, Long aLong, String s) {
-        return aLong >= 0 || aLong == -1 ? aLong : null;
+    public boolean validate(Long newValue) {
+        return newValue >= 0 || newValue == -1;
     }
 
     @Override
-    public String description() {
-        return RuleValidatorConstants.greaterThanOrEqualOrNumber(0, -1).getString();
+    public @NotNull MutableText errorMessage() {
+        return RuleValidatorConstants.greaterThanOrEqualOrNumber(0, -1);
     }
 }
