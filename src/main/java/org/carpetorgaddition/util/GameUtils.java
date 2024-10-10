@@ -7,7 +7,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
-import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket;
+import net.minecraft.network.packet.s2c.play.EntityPositionSyncS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntitySetHeadYawS2CPacket;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
@@ -70,19 +70,19 @@ public class GameUtils {
 
     private static EntityPlayerMPFake trySpawn(MinecraftServer server, Vec3d pos, float yaw, float pitch, RegistryKey<World> dimensionId, GameMode gamemode, boolean flying, GameProfile gameprofile, ServerWorld worldIn) {
         // 生成假玩家的逻辑似乎不在主线程
-        EntityPlayerMPFake instance = EntityPlayerMPFake.respawnFake(server, worldIn, gameprofile, SyncedClientOptions.createDefault());
-        instance.fixStartingPosition = () -> instance.refreshPositionAndAngles(pos.x, pos.y, pos.z, yaw, pitch);
-        server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), instance, new ConnectedClientData(gameprofile, 0, instance.getClientOptions(), false));
-        instance.teleport(worldIn, pos.x, pos.y, pos.z, yaw, pitch);
-        instance.setHealth(20.0F);
-        ((EntityAccessor) instance).cancelRemoved();
-        Objects.requireNonNull(instance.getAttributeInstance(EntityAttributes.GENERIC_STEP_HEIGHT)).setBaseValue(0.6F);
-        instance.interactionManager.changeGameMode(gamemode);
-        server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(instance, (byte) ((int) (instance.headYaw * 256.0F / 360.0F))), dimensionId);
-        server.getPlayerManager().sendToDimension(new EntityPositionS2CPacket(instance), dimensionId);
-        instance.getDataTracker().set(PlayerEntityAccessor.getPlayerModelParts(), (byte) 127);
-        instance.getAbilities().flying = flying;
-        return instance;
+        EntityPlayerMPFake fakePlayer = EntityPlayerMPFake.respawnFake(server, worldIn, gameprofile, SyncedClientOptions.createDefault());
+        fakePlayer.fixStartingPosition = () -> fakePlayer.refreshPositionAndAngles(pos.x, pos.y, pos.z, yaw, pitch);
+        server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), fakePlayer, new ConnectedClientData(gameprofile, 0, fakePlayer.getClientOptions(), false));
+        WorldUtils.teleport(fakePlayer, worldIn, pos.x, pos.y, pos.z, yaw, pitch);
+        fakePlayer.setHealth(20.0F);
+        ((EntityAccessor) fakePlayer).cancelRemoved();
+        Objects.requireNonNull(fakePlayer.getAttributeInstance(EntityAttributes.STEP_HEIGHT)).setBaseValue(0.6F);
+        fakePlayer.interactionManager.changeGameMode(gamemode);
+        server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(fakePlayer, (byte) ((int) (fakePlayer.headYaw * 256.0F / 360.0F))), dimensionId);
+        server.getPlayerManager().sendToDimension(EntityPositionSyncS2CPacket.create(fakePlayer), dimensionId);
+        fakePlayer.getDataTracker().set(PlayerEntityAccessor.getPlayerModelParts(), (byte) 127);
+        fakePlayer.getAbilities().flying = flying;
+        return fakePlayer;
     }
 
     /**

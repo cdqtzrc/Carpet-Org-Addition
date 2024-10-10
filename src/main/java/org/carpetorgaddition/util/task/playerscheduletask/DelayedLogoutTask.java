@@ -29,10 +29,10 @@ public class DelayedLogoutTask extends PlayerScheduleTask {
                 // 假玩家可能被真玩家顶替，或者假玩家穿过了末地返回传送门，或者假玩家退出游戏后重新上线
                 ServerPlayerEntity player = this.server.getPlayerManager().getPlayer(this.fakePlayer.getUuid());
                 if (player instanceof EntityPlayerMPFake) {
-                    player.kill();
+                    player.kill(player.getServerWorld());
                 }
             } else {
-                this.fakePlayer.kill();
+                this.fakePlayer.kill(fakePlayer.getServerWorld());
             }
             this.delayed = -1L;
         } else {

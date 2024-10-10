@@ -76,7 +76,6 @@
     "rule.fakeplayerkeepinventory.ServerPlayerEntityMixin",
     "rule.respawnblocksexplode.BedBlockMixin",
     "rule.respawnblocksexplode.RespawnAnchorBlockMixin",
-    "util.CraftingScreenHandlerMixin",
     "util.PlayerManagerMixin",
     "util.ServerPlayNetworkHandlerMixin",
     "util.TranslatableTextContentMixin"

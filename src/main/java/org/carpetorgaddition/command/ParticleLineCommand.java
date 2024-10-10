@@ -22,7 +22,6 @@ import org.carpetorgaddition.util.MessageUtils;
 import org.carpetorgaddition.util.WorldUtils;
 import org.carpetorgaddition.util.task.DrawParticleLineTask;
 import org.carpetorgaddition.util.task.ServerTaskManagerInterface;
-import org.joml.Vector3f;
 
 public class ParticleLineCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -53,7 +52,7 @@ public class ParticleLineCommand {
             to = Vec3ArgumentType.getVec3(context, "to");
         }
         // 获取粒子的效果类型
-        ParticleEffect mainParticle = new DustParticleEffect(new Vector3f(0, 0, 0), 1);
+        ParticleEffect mainParticle = new DustParticleEffect(0x000000, 1);
         // 计算粒子线的长度（平方）
         double distanceTo = from.squaredDistanceTo(to);
         // 计算粒子线长度

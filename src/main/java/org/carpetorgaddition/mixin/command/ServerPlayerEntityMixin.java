@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -75,7 +76,7 @@ public abstract class ServerPlayerEntityMixin implements NavigatorInterface, Fak
     }
 
     @Inject(method = "damage", at = @At(value = "RETURN"))
-    private void damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    private void damage(ServerWorld world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (this.safeAfkThreshold > 0 && thisPlayer instanceof EntityPlayerMPFake) {
             safeAfk(source, amount);
         }
@@ -113,7 +114,7 @@ public abstract class ServerPlayerEntityMixin implements NavigatorInterface, Fak
             // 恢复饥饿值
             thisPlayer.getHungerManager().setFoodLevel(20);
             // 退出假人
-            thisPlayer.kill();
+            thisPlayer.kill(thisPlayer.getServerWorld());
         }
     }
 

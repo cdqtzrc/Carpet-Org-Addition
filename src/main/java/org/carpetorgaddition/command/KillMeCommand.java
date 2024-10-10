@@ -25,7 +25,7 @@ public class KillMeCommand {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         //广播自杀消息
         MessageUtils.broadcastTextMessage(context.getSource(), TextUtils.translate("carpet.commands.killMe", player.getDisplayName()));
-        player.kill();
+        player.kill(player.getServerWorld());
         return 1;
     }
 }

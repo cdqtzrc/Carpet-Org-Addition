@@ -348,7 +348,7 @@ public class Express implements Comparable<Express> {
         nbt.putInt("id", this.id);
         int[] args = {time.getYear(), time.getMonthValue(), time.getDayOfMonth(), time.getHour(), time.getMinute(), time.getSecond()};
         nbt.putIntArray("time", args);
-        nbt.put("item", this.express.encode(server.getRegistryManager(), new NbtCompound()));
+        nbt.put("item", this.express.toNbt(server.getRegistryManager(), new NbtCompound()));
         return nbt;
     }
 

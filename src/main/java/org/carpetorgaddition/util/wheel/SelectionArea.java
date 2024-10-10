@@ -3,6 +3,7 @@ package org.carpetorgaddition.util.wheel;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
+import org.carpetorgaddition.CarpetOrgAddition;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -25,7 +26,9 @@ public class SelectionArea implements Iterable<BlockPos> {
         this.minY = world.getBottomY();
         this.minZ = sourcePos.getZ() - Math.abs(range);
         this.maxX = sourcePos.getX() + Math.abs(range);
-        this.maxY = world.getTopY();
+        int topY = world.getBottomY() + world.getHeight();
+        CarpetOrgAddition.LOGGER.info("世界顶部：{}", topY);
+        this.maxY = topY;
         this.maxZ = sourcePos.getZ() + Math.abs(range);
     }
 

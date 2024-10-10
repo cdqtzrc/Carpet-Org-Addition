@@ -89,11 +89,11 @@ public class SpectatorCommand {
         requireSpectator(player);
         ServerWorld dimension = DimensionArgumentType.getDimensionArgument(context, "dimension");
         if (player.getWorld().getRegistryKey() == World.OVERWORLD && dimension.getRegistryKey() == World.NETHER) {
-            player.teleport(dimension, player.getX() / 8, player.getY(), player.getZ() / 8, player.getYaw(), player.getPitch());
+            WorldUtils.teleport(player, dimension, player.getX() / 8, player.getY(), player.getZ() / 8, player.getYaw(), player.getPitch());
         } else if (player.getWorld().getRegistryKey() == World.NETHER && dimension.getRegistryKey() == World.OVERWORLD) {
-            player.teleport(dimension, player.getX() * 8, player.getY(), player.getZ() * 8, player.getYaw(), player.getPitch());
+            WorldUtils.teleport(player, dimension, player.getX() * 8, player.getY(), player.getZ() * 8, player.getYaw(), player.getPitch());
         } else {
-            player.teleport(dimension, player.getX(), player.getY(), player.getZ(), player.getYaw(), player.getPitch());
+            WorldUtils.teleport(player, dimension, player.getX(), player.getY(), player.getZ(), player.getYaw(), player.getPitch());
         }
         // 发送命令反馈
         MessageUtils.sendCommandFeedback(context, "carpet.commands.spectator.teleport.success.dimension",
@@ -108,7 +108,7 @@ public class SpectatorCommand {
         requireSpectator(player);
         ServerWorld dimension = DimensionArgumentType.getDimensionArgument(context, "dimension");
         Vec3d location = Vec3ArgumentType.getVec3(context, "location");
-        player.teleport(dimension, location.getX(), location.getY(), location.getZ(), player.getYaw(), player.getPitch());
+        WorldUtils.teleport(player, dimension, location.getX(), location.getY(), location.getZ(), player.getYaw(), player.getPitch());
         // 发送命令反馈
         MessageUtils.sendCommandFeedback(context, "commands.teleport.success.location.single",
                 player.getDisplayName(), formatFloat(location.getX()), formatFloat(location.getY()), formatFloat(location.getZ()));
@@ -121,7 +121,7 @@ public class SpectatorCommand {
         // 检查玩家是不是旁观模式
         requireSpectator(player);
         Entity entity = EntityArgumentType.getEntity(context, "entity");
-        player.teleport((ServerWorld) entity.getWorld(), entity.getX(), entity.getY(), entity.getZ(), entity.getYaw(), entity.getPitch());
+        WorldUtils.teleport(player, (ServerWorld) entity.getWorld(), entity.getX(), entity.getY(), entity.getZ(), entity.getYaw(), entity.getPitch());
         // 发送命令反馈
         MessageUtils.sendCommandFeedback(context, "commands.teleport.success.entity.single",
                 player.getDisplayName(), entity.getDisplayName());
@@ -175,7 +175,7 @@ public class SpectatorCommand {
                 float pitch = json.get("pitch").getAsFloat();
                 String dimension = json.get("dimension").getAsString();
                 ServerWorld world = WorldUtils.getWorld(server, dimension);
-                player.teleport(world, x, y, z, yaw, pitch);
+                WorldUtils.teleport(player, world, x, y, z, yaw, pitch);
             }
         } catch (IOException | NullPointerException e) {
             CarpetOrgAddition.LOGGER.warn("无法正常读取{}的位置信息", GameUtils.getPlayerName(player));

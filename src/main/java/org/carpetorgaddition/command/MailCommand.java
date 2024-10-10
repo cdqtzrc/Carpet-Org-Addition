@@ -194,7 +194,7 @@ public class MailCommand {
         list.add(TextUtils.translate("carpet.commands.mail.list.sender", express.getSender()));
         list.add(TextUtils.translate("carpet.commands.mail.list.recipient", express.getRecipient()));
         list.add(TextUtils.translate("carpet.commands.mail.list.item",
-                TextUtils.translate(express.getExpress().getTranslationKey()), express.getExpress().getCount()));
+                TextUtils.translate(express.getExpress().getItem().getTranslationKey()), express.getExpress().getCount()));
         list.add(TextUtils.translate("carpet.commands.mail.list.time", express.getTime()));
         // 拼接字符串
         text = TextUtils.hoverText(text, TextUtils.appendList(list));

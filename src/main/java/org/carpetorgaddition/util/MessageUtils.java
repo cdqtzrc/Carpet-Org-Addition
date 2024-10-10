@@ -59,7 +59,7 @@ public class MessageUtils {
      * @param message 发送文本消息的内容
      */
     public static void sendTextMessage(PlayerEntity player, Text message) {
-        player.sendMessage(message);
+        player.sendMessage(message, false);
     }
 
     /**

@@ -2,11 +2,9 @@ package org.carpetorgaddition.mixin.rule;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FireworkRocketItem;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import org.carpetorgaddition.CarpetOrgAdditionSettings;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,22 +22,22 @@ public abstract class FireworkRocketItemMixin {
         }
         //不能在飞行时对方块使用烟花
         if (CarpetOrgAdditionSettings.flyingUseOnBlockFirework) {
-            if (player.isFallFlying()) {
+            if (player.isGliding()) {
                 cir.setReturnValue(ActionResult.PASS);
                 return;
             }
         }
         //烟花火箭使用冷却(对方块使用)
         if (CarpetOrgAdditionSettings.fireworkRocketUseCooldown) {
-            player.getItemCooldownManager().set((FireworkRocketItem) (Object) this, 5);
+            player.getItemCooldownManager().set(context.getStack(), 5);
         }
     }
 
     //烟花火箭使用冷却(使用鞘翅飞行时)
     @Inject(method = "use", at = @At("HEAD"))
-    private void use(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
-        if (CarpetOrgAdditionSettings.fireworkRocketUseCooldown && user != null && user.isFallFlying()) {
-            user.getItemCooldownManager().set((FireworkRocketItem) (Object) this, 5);
+    private void use(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+        if (CarpetOrgAdditionSettings.fireworkRocketUseCooldown && user != null && user.isGliding()) {
+            user.getItemCooldownManager().set(user.getStackInHand(hand), 5);
         }
     }
 }

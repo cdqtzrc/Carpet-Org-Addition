@@ -18,6 +18,7 @@ import org.carpetorgaddition.util.constant.TextConstants;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.UUID;
 
 public class WorldUtils {
@@ -177,5 +178,33 @@ public class WorldUtils {
     public static void playSound(ServerPlayerEntity player, SoundEvent soundEvent, SoundCategory soundCategory) {
         World world = player.getWorld();
         world.playSound(null, player.getX(), player.getY(), player.getZ(), soundEvent, soundCategory, 1F, 1F);
+    }
+
+    /**
+     * 将一个实体传送到目标维度的指定位置
+     *
+     * @param source 要传送的实体
+     * @param world  要传送到目标维度
+     * @param x      目的地X坐标
+     * @param y      目的地Y坐标
+     * @param z      目的地Z坐标
+     * @param yaw    传送后实体的偏航角
+     * @param pitch  传送后实体的俯仰角
+     */
+    public static void teleport(Entity source, ServerWorld world, double x, double y, double z, float yaw, float pitch) {
+        source.teleport(world, x, y, z, Set.of(), yaw, pitch, true);
+    }
+
+    /**
+     * 将指定实体传送到目标实体位置
+     *
+     * @param source 要传送的实体
+     * @param target 目标实体
+     */
+    public static void teleport(Entity source, Entity target) {
+        // 不要在客户端传送实体
+        if (target.getWorld() instanceof ServerWorld world) {
+            teleport(source, world, target.getX(), target.getY(), target.getZ(), target.getYaw(), target.getPitch());
+        }
     }
 }

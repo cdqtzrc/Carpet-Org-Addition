@@ -28,7 +28,7 @@ public class ServerPlayerEntityMixin {
             ItemStack itemStack = new ItemStack(Items.PLAYER_HEAD);
             itemStack.set(DataComponentTypes.PROFILE, new ProfileComponent(thisPlayer.getGameProfile()));
             creeperEntity.onHeadDropped();
-            thisPlayer.dropStack(itemStack);
+            thisPlayer.dropStack(thisPlayer.getServerWorld(), itemStack);
         }
     }
 }

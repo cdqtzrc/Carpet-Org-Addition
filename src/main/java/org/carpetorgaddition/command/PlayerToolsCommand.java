@@ -19,10 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionTypes;
 import org.carpetorgaddition.CarpetOrgAdditionSettings;
-import org.carpetorgaddition.util.CommandUtils;
-import org.carpetorgaddition.util.MathUtils;
-import org.carpetorgaddition.util.MessageUtils;
-import org.carpetorgaddition.util.TextUtils;
+import org.carpetorgaddition.util.*;
 import org.carpetorgaddition.util.constant.TextConstants;
 import org.carpetorgaddition.util.screen.PlayerEnderChestScreenHandler;
 import org.carpetorgaddition.util.screen.PlayerInventoryScreenHandler;
@@ -85,8 +82,9 @@ public class PlayerToolsCommand {
         // 在假玩家位置播放潜影贝传送音效
         fakePlayer.getWorld().playSound(null, fakePlayer.prevX, fakePlayer.prevY, fakePlayer.prevZ,
                 SoundEvents.ENTITY_SHULKER_TELEPORT, fakePlayer.getSoundCategory(), 1.0f, 1.0f);
+
         // 传送玩家
-        fakePlayer.teleport(player.getServerWorld(), player.getX(), player.getY(), player.getZ(), player.getYaw(), player.getPitch());
+        WorldUtils.teleport(fakePlayer, player);
         // 获取假玩家名和命令执行玩家名
         Text fakePlayerName = fakePlayer.getDisplayName();
         Text playerName = player.getDisplayName();

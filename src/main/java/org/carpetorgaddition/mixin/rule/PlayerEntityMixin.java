@@ -48,7 +48,7 @@ public abstract class PlayerEntityMixin {
     @Inject(method = "interact", at = @At("HEAD"), cancellable = true)
     private void interact(Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
         if (thisPlayer instanceof ServerPlayerEntity serverPlayer && !thisPlayer.isSpectator()
-                && CommandHelper.canUseCommand(thisPlayer.getCommandSource(),
+                && CommandHelper.canUseCommand(thisPlayer.getCommandSource(serverPlayer.getServerWorld()),
                 CarpetOrgAdditionSettings.commandPlayerAction)) {
             switch (CarpetOrgAdditionSettings.quickSettingFakePlayerCraft) {
                 case FALSE:
