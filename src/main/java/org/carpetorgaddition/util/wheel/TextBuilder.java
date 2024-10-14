@@ -64,8 +64,8 @@ public class TextBuilder {
     /**
      * 将当前对象转换为文本对象，每个元素之间不换行
      */
-    public Text build() {
-        MutableText text = list.get(0).copy();
+    public MutableText build() {
+        MutableText text = list.getFirst().copy();
         for (int i = 1; i < this.list.size(); i++) {
             text.append(this.list.get(i));
         }
