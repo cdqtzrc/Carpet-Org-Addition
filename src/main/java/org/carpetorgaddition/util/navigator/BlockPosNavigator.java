@@ -1,9 +1,11 @@
 package org.carpetorgaddition.util.navigator;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.carpetorgaddition.network.WaypointUpdateS2CPack;
 import org.carpetorgaddition.util.MathUtils;
 import org.carpetorgaddition.util.MessageUtils;
 import org.carpetorgaddition.util.TextUtils;
@@ -19,18 +21,20 @@ public class BlockPosNavigator extends AbstractNavigator {
         super(player);
         this.blockPos = blockPos;
         this.world = world;
+        ServerPlayNetworking.send(player, new WaypointUpdateS2CPack(blockPos.toCenterPos(), world));
     }
 
     @Override
     public void tick() {
         if (this.terminate()) {
+            this.clear();
             return;
         }
         MutableText text;
         if (this.player.getWorld().equals(this.world)) {
             MutableText in = TextConstants.simpleBlockPos(this.blockPos);
             MutableText distance = TextUtils.translate(DISTANCE, MathUtils.getBlockIntegerDistance(this.player.getBlockPos(), this.blockPos));
-            text = getHUDText(this.blockPos.toCenterPos(),in,distance);
+            text = getHUDText(this.blockPos.toCenterPos(), in, distance);
         } else {
             text = TextUtils.appendAll(WorldUtils.getDimensionName(this.world), TextConstants.simpleBlockPos(this.blockPos));
         }

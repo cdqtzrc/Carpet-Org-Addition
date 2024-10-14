@@ -1,6 +1,7 @@
 package org.carpetorgaddition.mixin.command;
 
 import carpet.patches.EntityPlayerMPFake;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerInventory;
@@ -16,6 +17,7 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.carpetorgaddition.CarpetOrgAddition;
 import org.carpetorgaddition.CarpetOrgAdditionSettings;
+import org.carpetorgaddition.network.WaypointClearS2CPack;
 import org.carpetorgaddition.util.InventoryUtils;
 import org.carpetorgaddition.util.MathUtils;
 import org.carpetorgaddition.util.MessageUtils;
@@ -219,6 +221,7 @@ public abstract class ServerPlayerEntityMixin implements NavigatorInterface, Fak
     @Override
     public void clearNavigator() {
         this.navigator = null;
+        ServerPlayNetworking.send(thisPlayer, new WaypointClearS2CPack());
     }
 
     @Override

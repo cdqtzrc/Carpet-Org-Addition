@@ -1,9 +1,11 @@
 package org.carpetorgaddition.util.navigator;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import org.carpetorgaddition.network.WaypointUpdateS2CPack;
 import org.carpetorgaddition.util.MathUtils;
 import org.carpetorgaddition.util.MessageUtils;
 import org.carpetorgaddition.util.TextUtils;
@@ -32,6 +34,7 @@ public class WaypointNavigator extends AbstractNavigator {
     @Override
     public void tick() {
         if (terminate()) {
+            this.clear();
             return;
         }
         // 路径点的目标位置
@@ -44,23 +47,30 @@ public class WaypointNavigator extends AbstractNavigator {
             // 玩家和路径点在相同的维度
             Text text = this.getHUDText(blockPos.toCenterPos(), getIn(blockPos), getDistance(playerBlockPos, blockPos));
             MessageUtils.sendTextMessageToHud(this.player, text);
-        } else if (((playerDimension.equals(WorldUtils.OVERWORLD) && waypointDimension.equals(WorldUtils.THE_NETHER))
-                || (playerDimension.equals(WorldUtils.THE_NETHER) && waypointDimension.equals(WorldUtils.OVERWORLD)))
-                && this.waypoint.getAnotherBlockPos() != null) {
-            // 玩家和路径点在不同的维度，但是维度可以互相转换
-            // 将坐标设置为斜体
-            Text in = TextUtils.translate(IN, waypoint.getName(),
-                    TextUtils.toItalic(TextConstants.simpleBlockPos(blockPos)));
-            Text text = this.getHUDText(this.waypoint.getAnotherBlockPos().toCenterPos(), in,
-                    getDistance(playerBlockPos, this.waypoint.getAnotherBlockPos()));
-            MessageUtils.sendTextMessageToHud(this.player, text);
+            ServerPlayNetworking.send(this.player, new WaypointUpdateS2CPack(blockPos.toCenterPos(), waypointDimension));
         } else {
-            // 玩家和路径点在不同维度
-            Text dimensionName = WorldUtils.getDimensionName(WorldUtils.getWorld(this.player.getServer(),
-                    this.waypoint.getDimension()));
-            MutableText in = TextUtils.translate(IN, waypoint.getName(),
-                    TextUtils.appendAll(dimensionName, TextConstants.simpleBlockPos(blockPos)));
-            MessageUtils.sendTextMessageToHud(this.player, in);
+            BlockPos anotherBlockPos = this.waypoint.getAnotherBlockPos();
+            if (((playerDimension.equals(WorldUtils.OVERWORLD) && waypointDimension.equals(WorldUtils.THE_NETHER))
+                    || (playerDimension.equals(WorldUtils.THE_NETHER) && waypointDimension.equals(WorldUtils.OVERWORLD)))
+                    && anotherBlockPos != null) {
+                // 玩家和路径点在不同的维度，但是维度可以互相转换
+                // 将坐标设置为斜体
+                Text in = TextUtils.translate(IN, waypoint.getName(),
+                        TextUtils.toItalic(TextConstants.simpleBlockPos(blockPos)));
+                Text text = this.getHUDText(anotherBlockPos.toCenterPos(), in,
+                        getDistance(playerBlockPos, anotherBlockPos));
+                MessageUtils.sendTextMessageToHud(this.player, text);
+                ServerPlayNetworking.send(this.player,
+                        new WaypointUpdateS2CPack(anotherBlockPos.toCenterPos(),
+                                WorldUtils.getDimensionId(this.player.getWorld())));
+            } else {
+                // 玩家和路径点在不同维度
+                Text dimensionName = WorldUtils.getDimensionName(WorldUtils.getWorld(this.player.getServer(),
+                        this.waypoint.getDimension()));
+                MutableText in = TextUtils.translate(IN, waypoint.getName(),
+                        TextUtils.appendAll(dimensionName, TextConstants.simpleBlockPos(blockPos)));
+                MessageUtils.sendTextMessageToHud(this.player, in);
+            }
         }
     }
 

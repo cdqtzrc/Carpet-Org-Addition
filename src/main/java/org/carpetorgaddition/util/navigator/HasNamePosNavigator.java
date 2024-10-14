@@ -23,6 +23,7 @@ public class HasNamePosNavigator extends BlockPosNavigator {
     @Override
     public void tick() {
         if (this.terminate()) {
+            this.clear();
             return;
         }
         MutableText text;

@@ -14,6 +14,7 @@ import net.minecraft.util.math.Vec3d;
 import org.carpetorgaddition.command.PlayerManagerCommand;
 import org.carpetorgaddition.command.RegisterCarpetCommands;
 import org.carpetorgaddition.logger.WanderingTraderSpawnLogger;
+import org.carpetorgaddition.network.NetworkS2CPackRegister;
 import org.carpetorgaddition.translate.Translate;
 import org.carpetorgaddition.util.express.ExpressManager;
 import org.carpetorgaddition.util.express.ExpressManagerInterface;
@@ -32,6 +33,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     // 日志
     public static final Logger LOGGER = LoggerFactory.getLogger("CarpetOrgAddition");
     public static final String MOD_NAME_LOWER_CASE = "carpetorgaddition";
+    public static final String MOD_ID = "carpet-org-addition";
 
     /**
      * 模组初始化
@@ -39,6 +41,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     @Override
     public void onInitialize() {
         CarpetServer.manageExtension(new CarpetOrgAddition());
+        NetworkS2CPackRegister.register();
     }
 
     // 在游戏开始时
