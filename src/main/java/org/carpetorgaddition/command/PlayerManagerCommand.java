@@ -459,47 +459,50 @@ public class PlayerManagerCommand {
 
     // 设置不断重新上线下线
     private static int setReLogin(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        if (fixShouldBeEnabled()) {
-            // 文本内容：[这里]
-            MutableText here = TextUtils.translate("carpet.command.text.click.here");
-            // 单击后输入的命令
-            String command = "/carpet fakePlayerSpawnMemoryLeakFix true";
-            // [这里]的悬停提示
-            MutableText input = TextUtils.translate("carpet.command.text.click.input", command);
-            here = TextUtils.suggest(here, command, input, Formatting.AQUA);
-            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.relogin.condition", here);
-            return 0;
-        }
-        // 获取目标假玩家名
-        String name = StringArgumentType.getString(context, "name");
-        int interval = IntegerArgumentType.getInteger(context, "interval");
-        MinecraftServer server = context.getSource().getServer();
-        ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
-        // 如果任务存在，修改任务，否则添加任务
-        ReLoginTask task = getReLoginTask(instance, name);
-        if (task == null) {
-            // 添加任务
-            ServerPlayerEntity player = server.getPlayerManager().getPlayer(name);
-            if (player == null) {
-                // 玩家不存在
-                throw CommandUtils.createException("argument.entity.notfound.player");
+        // 强制启用内存泄漏修复
+        if (fixMemoryLeak(context)) {
+            // 获取目标假玩家名
+            String name = StringArgumentType.getString(context, "name");
+            int interval = IntegerArgumentType.getInteger(context, "interval");
+            MinecraftServer server = context.getSource().getServer();
+            ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
+            // 如果任务存在，修改任务，否则添加任务
+            ReLoginTask task = getReLoginTask(instance, name);
+            if (task == null) {
+                // 添加任务
+                ServerPlayerEntity player = server.getPlayerManager().getPlayer(name);
+                if (player == null) {
+                    // 玩家不存在
+                    throw CommandUtils.createException("argument.entity.notfound.player");
+                } else {
+                    // 目标玩家不是假玩家
+                    CommandUtils.checkFakePlayer(player);
+                }
+                instance.addTask(new ReLoginTask(name, interval, server, player.getServerWorld().getRegistryKey(), context));
             } else {
-                // 目标玩家不是假玩家
-                CommandUtils.checkFakePlayer(player);
+                // 修改周期时间
+                task.setInterval(interval);
+                MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.relogin.set_interval", name, interval);
             }
-            instance.addTask(new ReLoginTask(name, interval, server, player.getServerWorld().getRegistryKey(), context));
-        } else {
-            // 修改周期时间
-            task.setInterval(interval);
-            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.relogin.set_interval", name, interval);
+            return interval;
         }
-        return interval;
+        return 0;
     }
 
-    // 是否应该启用内存泄漏修复
-    public static boolean fixShouldBeEnabled() {
-        // 是否同时安装了fabric-api，并且没有启用内存泄漏修复
-        return CarpetOrgAddition.FABRIC_API && !CarpetOrgAdditionSettings.fakePlayerSpawnMemoryLeakFix;
+    // 启用内存泄漏修复
+    private static boolean fixMemoryLeak(CommandContext<ServerCommandSource> context) {
+        if (CarpetOrgAdditionSettings.fakePlayerSpawnMemoryLeakFix) {
+            return true;
+        }
+        // 文本内容：[这里]
+        MutableText here = TextUtils.translate("carpet.command.text.click.here");
+        // 单击后输入的命令
+        String command = "/carpet fakePlayerSpawnMemoryLeakFix true";
+        // [这里]的悬停提示
+        MutableText input = TextUtils.translate("carpet.command.text.click.input", command);
+        here = TextUtils.suggest(here, command, input, Formatting.AQUA);
+        MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.schedule.relogin.condition", here);
+        return false;
     }
 
     // 获取假玩家周期上下线任务

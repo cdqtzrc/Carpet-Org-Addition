@@ -27,7 +27,7 @@ import net.minecraft.util.UserCache;
 import net.minecraft.util.Uuids;
 import net.minecraft.world.World;
 import org.carpetorgaddition.CarpetOrgAddition;
-import org.carpetorgaddition.command.PlayerManagerCommand;
+import org.carpetorgaddition.CarpetOrgAdditionSettings;
 import org.carpetorgaddition.exception.TaskExecutionException;
 import org.carpetorgaddition.mixin.rule.EntityAccessor;
 import org.carpetorgaddition.mixin.rule.PlayerEntityAccessor;
@@ -62,7 +62,30 @@ public class ReLoginTask extends PlayerScheduleTask {
 
     @Override
     public void tick() {
-        if (PlayerManagerCommand.fixShouldBeEnabled()) {
+        // 启用内存泄漏修复
+        if (CarpetOrgAdditionSettings.fakePlayerSpawnMemoryLeakFix) {
+            ServerPlayerEntity player = this.server.getPlayerManager().getPlayer(this.playerName);
+            if (player == null) {
+                if (this.canSpawn == 0) {
+                    homePositionSpawn(this.playerName, this.server, this.dimensionId);
+                    this.canSpawn = 2;
+                } else {
+                    this.canSpawn--;
+                }
+            } else if (this.remainingTick <= 0) {
+                this.remainingTick = this.interval;
+                if (player instanceof EntityPlayerMPFake fakePlayer) {
+                    // 如果假玩家坠入虚空，设置任务为停止
+                    if (fakePlayer.getY() < fakePlayer.getServerWorld().getBottomY() - 64) {
+                        this.stop();
+                    }
+                    // 让假玩家退出游戏
+                    this.logoutPlayer(fakePlayer);
+                }
+            } else {
+                this.remainingTick--;
+            }
+        } else {
             Runnable function = () -> {
                 MessageUtils.sendCommandErrorFeedback(context, "carpet.commands.playerManager.schedule.relogin.rule.disable");
                 // 如果假玩家已经下线，重新生成假玩家
@@ -72,27 +95,6 @@ public class ReLoginTask extends PlayerScheduleTask {
                 }
             };
             throw new TaskExecutionException(function);
-        }
-        ServerPlayerEntity player = this.server.getPlayerManager().getPlayer(this.playerName);
-        if (player == null) {
-            if (this.canSpawn == 0) {
-                homePositionSpawn(this.playerName, this.server, this.dimensionId);
-                this.canSpawn = 2;
-            } else {
-                this.canSpawn--;
-            }
-        } else if (this.remainingTick <= 0) {
-            this.remainingTick = this.interval;
-            if (player instanceof EntityPlayerMPFake fakePlayer) {
-                // 如果假玩家坠入虚空，设置任务为停止
-                if (fakePlayer.getY() < fakePlayer.getServerWorld().getBottomY() - 64) {
-                    this.stop();
-                }
-                // 让假玩家退出游戏
-                this.logoutPlayer(fakePlayer);
-            }
-        } else {
-            this.remainingTick--;
         }
     }
 
