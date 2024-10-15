@@ -58,8 +58,8 @@ public class TextConstants {
         }
         if (CarpetOrgAdditionSettings.canHighlightBlockPos) {
             MutableText highlight = TextUtils.createText(" [H]");
-            TextUtils.command(highlight, "/highlightWaypoint " + WorldUtils.toPosString(blockPos),
-                    TextUtils.translate("ommc.highlight_waypoint.tooltip"), color, false);
+            TextUtils.command(highlight, "/highlight " + WorldUtils.toPosString(blockPos),
+                    TextUtils.translate("carpet.client.commands.highlight"), color, false);
             return TextUtils.appendAll(pos, highlight);
         }
         return pos;

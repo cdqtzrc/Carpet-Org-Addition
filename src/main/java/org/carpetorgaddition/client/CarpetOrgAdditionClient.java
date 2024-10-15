@@ -12,6 +12,7 @@ public class CarpetOrgAdditionClient implements ClientModInitializer {
      */
     @Override
     public void onInitializeClient() {
+        // TODO 更改注册位置
         // 注册网络数据包接收器
         NetworkPackReceiverRegister.register();
         // 注册路径点渲染器
