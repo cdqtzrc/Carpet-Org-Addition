@@ -1,8 +1,7 @@
-package org.carpetorgaddition.client.renderer;
+package org.carpetorgaddition.client.renderer.waypoint;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -13,49 +12,37 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import org.carpetorgaddition.util.WorldUtils;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
-public enum WaypointRender {
-    /**
-     * 常规
-     */
-    CONVENTION(Identifier.ofVanilla("textures/map/decorations/red_x.png")),
-    /**
-     * 导航器
-     */
-    NAVIGATOR(Identifier.ofVanilla("textures/map/decorations/target_x.png")),
-    TAIGA_VILLAGE(Identifier.ofVanilla("textures/map/decorations/taiga_village.png"));
-    /**
-     * 路径点图标，来自原版地图
-     */
-    private final Identifier ICON;
-    @Nullable
-    private Vec3d target;
-    @Nullable
-    private String worldId;
+import java.util.Objects;
 
-    WaypointRender(Identifier identifier) {
-        this.ICON = identifier;
+public class WaypointRender {
+    private final WaypointRenderType renderType;
+    private final Vec3d target;
+    private final String worldId;
+    private final long startTime = System.currentTimeMillis();
+
+    public WaypointRender(WaypointRenderType renderType, Vec3d target, String worldId) {
+        this.renderType = renderType;
+        this.target = target;
+        this.worldId = worldId;
     }
 
-    public static void register() {
-        // 注册路径点渲染器
-        for (WaypointRender render : WaypointRender.values()) {
-            WorldRenderEvents.LAST.register(render::drawWaypoint);
-        }
+    public WaypointRender(WaypointRenderType renderType, Vec3d target, World world) {
+        this(renderType, target, WorldUtils.getDimensionId(world));
     }
 
     /**
      * 绘制路径点
      */
-    public void drawWaypoint(WorldRenderContext context) {
-        MatrixStack matrixStack = context.matrixStack();
+    public void drawWaypoint(WorldRenderContext renderContext) {
+        MatrixStack matrixStack = renderContext.matrixStack();
         MinecraftClient client = MinecraftClient.getInstance();
         Camera camera = client.gameRenderer.getCamera();
         if (camera == null) {
@@ -68,7 +55,7 @@ public enum WaypointRender {
         RenderSystem.enableBlend();
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
-        drawIcon(context, matrixStack, vec3d, camera);
+        drawIcon(renderContext, matrixStack, vec3d, camera);
         RenderSystem.disableBlend();
         RenderSystem.depthMask(true);
         BackgroundRenderer.clearFog();
@@ -113,7 +100,7 @@ public enum WaypointRender {
         // 将路径点平移到方块位置
         matrixStack.translate(correctionVec3d.getX(), correctionVec3d.getY(), correctionVec3d.getZ());
         // 固定路径点大小，防止因距离的改变而改变（远小近大）
-        float scale = (float) correctionVec3d.length() / 30F;
+        float scale = this.renderType.getScale(correctionVec3d.length(), this.startTime);
         matrixStack.scale(scale, scale, scale);
         // 翻转路径点
         matrixStack.multiply(new Quaternionf(-1, 0, 0, 0));
@@ -130,7 +117,7 @@ public enum WaypointRender {
         bufferBuilder.vertex(matrix4f, 1F, 1F, 0F).texture(1, 1).overlay(OverlayTexture.DEFAULT_UV).normal(entry, 0F, 1F, 0F);
         bufferBuilder.vertex(matrix4f, 1F, -1F, 0F).texture(1, 0).overlay(OverlayTexture.DEFAULT_UV).normal(entry, 0F, 1F, 0F);
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.setShaderTexture(0, ICON);
+        RenderSystem.setShaderTexture(0, renderType.getIcon());
         // 将缓冲区绘制到屏幕上。
         BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
         tessellator.clear();
@@ -190,13 +177,28 @@ public enum WaypointRender {
         return target;
     }
 
-    public void setTarget(Vec3d target, String world) {
-        this.target = target;
-        this.worldId = world;
+    public WaypointRenderType getRenderType() {
+        return this.renderType;
     }
 
-    public void clear() {
-        this.target = null;
-        this.worldId = null;
+    public boolean endRendering() {
+        return this.renderType.getVanishingTime() > 0 && System.currentTimeMillis() > this.startTime + this.renderType.getDurationTime() + this.renderType.getVanishingTime();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        WaypointRender that = (WaypointRender) o;
+        return renderType == that.renderType && Objects.equals(target, that.target) && Objects.equals(worldId, that.worldId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(renderType, target, worldId);
     }
 }
