@@ -6,7 +6,7 @@ public enum WaypointRenderType {
     /**
      * 高亮
      */
-    HIGHLIGHT(Identifier.ofVanilla("textures/map/decorations/red_x.png"), 3000L, 3000L),
+    HIGHLIGHT(Identifier.ofVanilla("textures/map/decorations/red_x.png"), 60000L, 3000L),
     /**
      * 导航
      */
