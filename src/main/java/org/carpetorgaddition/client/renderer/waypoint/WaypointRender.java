@@ -67,14 +67,18 @@ public class WaypointRender {
         if (player == null || this.target == null || this.worldId == null) {
             return null;
         }
+        // 获取玩家所在维度ID
         String playerWorldId = WorldUtils.getDimensionId(player.getWorld());
-        if (playerWorldId.equals(this.worldId)) {
+        // 玩家和路径点在同一维度
+        if (WorldUtils.sameWorld(this.worldId, playerWorldId)) {
             return this.target;
         }
-        if (playerWorldId.equals(WorldUtils.OVERWORLD) && this.worldId.equals(WorldUtils.THE_NETHER)) {
+        // 玩家在主世界，路径点在下界，将路径点坐标换算成主世界坐标
+        if (WorldUtils.isOverworld(playerWorldId) && WorldUtils.isTheNether(this.worldId)) {
             return new Vec3d(this.target.getX() * 8, this.target.getY(), this.target.getZ() * 8);
         }
-        if (playerWorldId.equals(WorldUtils.THE_NETHER) && this.worldId.equals(WorldUtils.OVERWORLD)) {
+        // 玩家在下界，路径点在主世界，将路径点坐标换算成下界坐标
+        if (WorldUtils.isTheNether(playerWorldId) && WorldUtils.isOverworld(this.worldId)) {
             return new Vec3d(this.target.getX() / 8, this.target.getY(), this.target.getZ() / 8);
         }
         return null;

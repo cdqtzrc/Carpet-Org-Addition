@@ -11,9 +11,11 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.InvalidIdentifierException;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
+import org.carpetorgaddition.CarpetOrgAddition;
 import org.carpetorgaddition.util.constant.TextConstants;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,6 +29,9 @@ public class WorldUtils {
     public static final String OVERWORLD = "minecraft:overworld";
     public static final String THE_NETHER = "minecraft:the_nether";
     public static final String THE_END = "minecraft:the_end";
+    public static final String SIMPLE_OVERWORLD = "overworld";
+    public static final String SIMPLE_THE_NETHER = "the_nether";
+    public static final String SIMPLE_THE_END = "the_end";
 
     /**
      * 获取区域内所有方块坐标的集合
@@ -177,5 +182,38 @@ public class WorldUtils {
     public static void playSound(ServerPlayerEntity player, SoundEvent soundEvent, SoundCategory soundCategory) {
         World world = player.getWorld();
         world.playSound(null, player.getX(), player.getY(), player.getZ(), soundEvent, soundCategory, 1F, 1F);
+    }
+
+    /**
+     * @return 两个维度ID是否表示的是同一个世界
+     */
+    public static boolean sameWorld(String world1, String world2) {
+        try {
+            return Identifier.of(world1).equals(Identifier.of(world2));
+        } catch (InvalidIdentifierException e) {
+            CarpetOrgAddition.LOGGER.warn("无效的维度ID", e);
+        }
+        return false;
+    }
+
+    /**
+     * @return 维度ID是否表示主世界
+     */
+    public static boolean isOverworld(String worldId) {
+        return OVERWORLD.equals(worldId) || SIMPLE_OVERWORLD.equals(worldId);
+    }
+
+    /**
+     * @return 维度ID是否表示下界
+     */
+    public static boolean isTheNether(String worldId) {
+        return THE_NETHER.equals(worldId) || SIMPLE_THE_NETHER.equals(worldId);
+    }
+
+    /**
+     * @return 维度ID是否表示末地
+     */
+    public static boolean isTheEnd(String worldId) {
+        return THE_END.equals(worldId) || SIMPLE_THE_END.equals(worldId);
     }
 }

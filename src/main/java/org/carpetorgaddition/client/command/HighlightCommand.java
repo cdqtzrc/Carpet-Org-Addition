@@ -30,7 +30,7 @@ public class HighlightCommand {
         WaypointRender newRender = new WaypointRender(WaypointRenderType.HIGHLIGHT, vec3d, world);
         // 如果两个路径点指向同一个位置，就让玩家看向该路径点
         if (newRender.equals(oldRender)) {
-            // if语句结束后仍要设置新路径点，因为要重置消失时间
+            // if语句结束后仍要设置新路径点，因为要重置持续时间
             context.getSource().getEntity().lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, oldRender.getPos());
         }
         // 设置新的路径点
