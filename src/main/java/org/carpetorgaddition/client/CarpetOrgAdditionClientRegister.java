@@ -15,7 +15,6 @@ public class CarpetOrgAdditionClientRegister {
         registerCommandArgument();
         registerC2SNetworkPack();
         registerNetworkPackReceiver();
-        registerNetworkPackReceiver();
         registerRender();
     }
 
@@ -31,7 +30,7 @@ public class CarpetOrgAdditionClientRegister {
      * 注册客户端命令参数
      */
     private static void registerCommandArgument() {
-        // 客户端方块坐标
+        // 客户端方块坐标命令参数
         ClientBlockPosArgumentType.register();
     }
 
