@@ -15,7 +15,6 @@ import net.minecraft.util.InvalidIdentifierException;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
-import org.carpetorgaddition.CarpetOrgAddition;
 import org.carpetorgaddition.util.constant.TextConstants;
 import org.jetbrains.annotations.Nullable;
 
@@ -186,14 +185,18 @@ public class WorldUtils {
 
     /**
      * @return 两个维度ID是否表示的是同一个世界
+     * @throws InvalidIdentifierException 如果维度ID不合法
      */
     public static boolean sameWorld(String world1, String world2) {
-        try {
-            return Identifier.of(world1).equals(Identifier.of(world2));
-        } catch (InvalidIdentifierException e) {
-            CarpetOrgAddition.LOGGER.warn("无效的维度ID", e);
-        }
-        return false;
+        return Identifier.of(world1).equals(Identifier.of(world2));
+    }
+
+    /**
+     * @return 两个维度ID是否分别表示不同的世界
+     * @throws InvalidIdentifierException 如果维度ID不合法
+     */
+    public static boolean differentWorld(String world1, String world2) {
+        return !Identifier.of(world1).equals(Identifier.of(world2));
     }
 
     /**

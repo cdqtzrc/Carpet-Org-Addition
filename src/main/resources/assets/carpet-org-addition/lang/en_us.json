@@ -352,7 +352,6 @@
   "carpet.commands.multiple.no_player": "The target player does not exist",
   "carpet.commands.multiple.error": "Unexpected error encountered while ship items in bulk",
   "carpet.commands.ruleSearch.feedback": "Carpet Mod options matching \"%s\"",
-  "carpet.client.commands.highlight": "Click to highlight the waypoint",
   "carpet.logger.wanderingTrader.time.second": "%ss",
   "carpet.logger.wanderingTrader.time.minutes": "%smin",
   "carpet.logger.wanderingTrader.time.minutes_and_seconds": "%smin %ss",
@@ -362,5 +361,7 @@
   "carpet.logger.wanderingTrader.message.navigate": "[navigate]",
   "carpet.logger.wanderingTrader.message.navigate.hover": "Click to navigate %s",
   "carpet.logger.wanderingTrader.gamerule.not_enabled": "Gamerule \"%s\" is not enabled",
-  "carpet.inventory.item.placeholder": "PLACEHOLDER"
+  "carpet.inventory.item.placeholder": "PLACEHOLDER",
+  "carpet.client.commands.highlight": "Click to highlight the waypoint",
+  "carpet.client.render.waypoint.error": "An unexpected error was encountered while rendering the waypoint"
 }

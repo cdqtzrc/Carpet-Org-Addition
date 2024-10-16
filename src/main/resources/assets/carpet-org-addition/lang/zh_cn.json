@@ -435,7 +435,6 @@
   "carpet.commands.multiple.no_player": "目标玩家不存在",
   "carpet.commands.multiple.error": "批量发送物品时遇到意外错误",
   "carpet.commands.ruleSearch.feedback": "Carpet Mod中符合“%s”的选项：:",
-  "carpet.client.commands.highlight": "点击以高亮路径点",
   "carpet.logger.wanderingTrader.time.second": "%s秒",
   "carpet.logger.wanderingTrader.time.minutes": "%s分",
   "carpet.logger.wanderingTrader.time.minutes_and_seconds": "%s分%s秒",
@@ -445,5 +444,7 @@
   "carpet.logger.wanderingTrader.message.navigate": "[导航]",
   "carpet.logger.wanderingTrader.message.navigate.hover": "点击导航到此%s",
   "carpet.logger.wanderingTrader.gamerule.not_enabled": "游戏规则“%s”未启用",
-  "carpet.inventory.item.placeholder": "占位"
+  "carpet.inventory.item.placeholder": "占位",
+  "carpet.client.commands.highlight": "点击以高亮路径点",
+  "carpet.client.render.waypoint.error": "渲染路径点时遇到意外错误"
 }

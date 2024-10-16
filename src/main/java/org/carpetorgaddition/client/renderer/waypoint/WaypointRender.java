@@ -10,11 +10,12 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.carpetorgaddition.client.util.ClientMessageUtils;
+import org.carpetorgaddition.util.TextUtils;
 import org.carpetorgaddition.util.WorldUtils;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -52,13 +53,14 @@ public class WaypointRender {
         if (vec3d == null) {
             return;
         }
-        RenderSystem.enableBlend();
-        RenderSystem.disableDepthTest();
-        RenderSystem.depthMask(false);
-        drawIcon(renderContext, matrixStack, vec3d, camera);
-        RenderSystem.disableBlend();
-        RenderSystem.depthMask(true);
-        BackgroundRenderer.clearFog();
+        try {
+            // 允许路径点透过方块渲染
+            RenderSystem.disableDepthTest();
+            // 绘制图标
+            drawIcon(renderContext, matrixStack, vec3d, camera);
+        } catch (RuntimeException e) {
+            ClientMessageUtils.sendErrorMessage(e, "carpet.client.render.waypoint.error");
+        }
     }
 
     @Nullable
@@ -140,7 +142,11 @@ public class WaypointRender {
         // 计算距离
         double distance = offset.length();
         String formatted = distance >= 1000 ? "%.1fkm".formatted(distance / 1000) : "%.1fm".formatted(distance);
-        MutableText text = Text.literal(formatted);
+        MutableText text = TextUtils.createText(formatted);
+        // 如果玩家与路径点不在同一纬度，设置距离文本为斜体
+        if (WorldUtils.differentWorld(this.worldId, WorldUtils.getDimensionId(context.world()))) {
+            text = TextUtils.toItalic(text);
+        }
         // 获取文本宽度
         int width = textRenderer.getWidth(formatted);
         // 获取背景不透明度
