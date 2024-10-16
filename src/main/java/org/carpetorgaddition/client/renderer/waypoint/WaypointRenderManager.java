@@ -1,5 +1,6 @@
 package org.carpetorgaddition.client.renderer.waypoint;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import org.jetbrains.annotations.Nullable;
@@ -12,6 +13,8 @@ public class WaypointRenderManager {
     public static void register() {
         // 注册路径点渲染器
         WorldRenderEvents.LAST.register(WaypointRenderManager::frame);
+        // 断开连接时清除路径点
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> WaypointRenderManager.clearAllRender());
     }
 
     private static void frame(WorldRenderContext context) {
@@ -32,7 +35,6 @@ public class WaypointRenderManager {
         RENDERS.remove(type);
     }
 
-    // TODO 退出游戏时自动执行
     public static void clearAllRender() {
         RENDERS.clear();
     }
