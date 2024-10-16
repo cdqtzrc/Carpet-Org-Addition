@@ -12,10 +12,16 @@ public enum WaypointRenderType {
      */
     NAVIGATOR(Identifier.ofVanilla("textures/map/decorations/target_x.png"), -1L, -1L);
     /**
-     * 路径点图标，来自原版地图
+     * 路径点图标
      */
     private final Identifier icon;
+    /**
+     * 路径点持续时间
+     */
     private final long durationTime;
+    /**
+     * 路径点消失时间
+     */
     private final long vanishingTime;
 
     WaypointRenderType(Identifier identifier, long durationTime, long vanishingTime) {
@@ -24,18 +30,33 @@ public enum WaypointRenderType {
         this.vanishingTime = vanishingTime;
     }
 
+    /**
+     * @return 获取路径点的图标
+     */
     public Identifier getIcon() {
         return this.icon;
     }
 
-    public long getVanishingTime() {
-        return this.vanishingTime;
-    }
-
+    /**
+     * @return 获取路径点的持续时间
+     */
     public long getDurationTime() {
         return this.durationTime;
     }
 
+    /**
+     * @return 获取路径点的消失时间
+     */
+    public long getVanishingTime() {
+        return this.vanishingTime;
+    }
+
+    /**
+     * 获取路径点大小
+     *
+     * @param distance  摄像机到路径点的距离，用来抵消远小近大
+     * @param startTime 路径点开始渲染的时间
+     */
     public float getScale(double distance, long startTime) {
         float scale = (float) distance / 30F;
         if (this.vanishingTime > 0) {

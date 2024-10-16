@@ -181,7 +181,10 @@ public class WaypointRender {
         return this.renderType;
     }
 
-    public boolean endRendering() {
+    /**
+     * @return 是否应该停止渲染
+     */
+    public boolean shouldStop() {
         return this.renderType.getVanishingTime() > 0 && System.currentTimeMillis() > this.startTime + this.renderType.getDurationTime() + this.renderType.getVanishingTime();
     }
 

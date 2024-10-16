@@ -16,7 +16,7 @@ public class WaypointRenderManager {
 
     private static void frame(WorldRenderContext context) {
         RENDERS.forEach((key, value) -> value.drawWaypoint(context));
-        RENDERS.entrySet().removeIf(entry -> entry.getValue().endRendering());
+        RENDERS.entrySet().removeIf(entry -> entry.getValue().shouldStop());
     }
 
     public static void setRender(WaypointRender render) {
@@ -32,6 +32,7 @@ public class WaypointRenderManager {
         RENDERS.remove(type);
     }
 
+    // TODO 退出游戏时自动执行
     public static void clearAllRender() {
         RENDERS.clear();
     }
