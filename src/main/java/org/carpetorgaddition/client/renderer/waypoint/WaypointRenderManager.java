@@ -17,24 +17,46 @@ public class WaypointRenderManager {
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> WaypointRenderManager.clearAllRender());
     }
 
+    /**
+     * 每一帧都调用
+     */
     private static void frame(WorldRenderContext context) {
         RENDERS.forEach((key, value) -> value.drawWaypoint(context));
         RENDERS.entrySet().removeIf(entry -> entry.getValue().shouldStop());
     }
 
+    /**
+     * 设置路径点渲染器
+     *
+     * @param render 新路径点渲染器
+     */
     public static void setRender(WaypointRender render) {
         RENDERS.put(render.getRenderType(), render);
     }
 
+    /**
+     * 获取路径点渲染器
+     *
+     * @param type 渲染器类型
+     * @return 路径点渲染器，可能为null
+     */
     @Nullable
     public static WaypointRender getRender(WaypointRenderType type) {
         return RENDERS.get(type);
     }
 
+    /**
+     * 清除指定渲染器
+     *
+     * @param type 渲染器类型
+     */
     public static void clearRender(WaypointRenderType type) {
         RENDERS.remove(type);
     }
 
+    /**
+     * 清除所有渲染器
+     */
     public static void clearAllRender() {
         RENDERS.clear();
     }

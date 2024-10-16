@@ -122,6 +122,7 @@ public class MessageUtils {
      * @param obj    消息中替代占位符的内容
      */
     public static void sendCommandErrorFeedback(ServerCommandSource source, Throwable e, String key, Object... obj) {
+        // TODO 可能导致空指针
         String error = e.getMessage();
         MutableText message = TextUtils.setColor(TextUtils.translate(key, obj), Formatting.RED);
         MessageUtils.sendTextMessage(source, TextUtils.hoverText(message, TextUtils.createText(error)));

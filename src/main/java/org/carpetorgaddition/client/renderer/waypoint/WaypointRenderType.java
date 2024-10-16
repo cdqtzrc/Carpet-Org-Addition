@@ -79,4 +79,16 @@ public enum WaypointRenderType {
             return scale;
         }
     }
+
+    /**
+     * @return 获取日志名称
+     * @apiNote 不要在游戏中使用
+     */
+    public String getLogName() {
+        String name = switch (this) {
+            case HIGHLIGHT -> "高亮";
+            case NAVIGATOR -> "导航";
+        };
+        return "路径点（" + name + "）";
+    }
 }

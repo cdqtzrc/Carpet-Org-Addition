@@ -14,6 +14,7 @@ import net.minecraft.util.Colors;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.carpetorgaddition.CarpetOrgAddition;
 import org.carpetorgaddition.client.util.ClientMessageUtils;
 import org.carpetorgaddition.util.TextUtils;
 import org.carpetorgaddition.util.WorldUtils;
@@ -58,8 +59,13 @@ public class WaypointRender {
             RenderSystem.disableDepthTest();
             // 绘制图标
             drawIcon(renderContext, matrixStack, vec3d, camera);
+            throw new RuntimeException();
         } catch (RuntimeException e) {
+            // 发送错误消息，然后停止渲染
             ClientMessageUtils.sendErrorMessage(e, "carpet.client.render.waypoint.error");
+            CarpetOrgAddition.LOGGER.error("渲染{}路径点时遇到意外错误", this.renderType.getLogName(), e);
+            // 直接删除，EnumMap不会引发并发修改异常
+            WaypointRenderManager.clearRender(this.renderType);
         }
     }
 

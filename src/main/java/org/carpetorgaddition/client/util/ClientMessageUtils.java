@@ -8,6 +8,8 @@ import net.minecraft.util.Formatting;
 import org.carpetorgaddition.CarpetOrgAddition;
 import org.carpetorgaddition.util.TextUtils;
 
+import java.util.Objects;
+
 public class ClientMessageUtils {
     private ClientMessageUtils() {
     }
@@ -33,6 +35,6 @@ public class ClientMessageUtils {
 
     public static void sendErrorMessage(Throwable e, String key, Object... args) {
         MutableText message = TextUtils.translate(key, args);
-        sendErrorMessage(TextUtils.hoverText(message, e.getMessage()));
+        sendErrorMessage(TextUtils.hoverText(message, Objects.requireNonNullElse(e.getMessage(), e.getClass().getSimpleName())));
     }
 }
