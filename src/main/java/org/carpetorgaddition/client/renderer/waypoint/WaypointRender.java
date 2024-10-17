@@ -63,9 +63,7 @@ public class WaypointRender {
             // 发送错误消息，然后停止渲染
             ClientMessageUtils.sendErrorMessage(e, "carpet.client.render.waypoint.error");
             CarpetOrgAddition.LOGGER.error("渲染{}路径点时遇到意外错误", this.renderType.getLogName(), e);
-            // 直接删除，EnumMap不会引发并发修改异常
-            // TODO 更改路径点的清除方式，导航器的路径点通过发送命令清除
-            WaypointRenderManager.clearRender(this.renderType);
+            this.renderType.clear();
         }
     }
 

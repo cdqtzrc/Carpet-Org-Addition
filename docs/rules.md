@@ -300,9 +300,9 @@ _对方块的破坏和交互同样有效_<br/>
 
 ### CCE更新抑制器(CCEUpdateSuppression)
 
-通过将潜影盒命名为“更新抑制器”或“updateSuppression”来制作基于"ClassCastException"的更新抑制器
+通过将潜影盒命名为指定名称来制作基于“ClassCastException”的更新抑制器
 
-- 类型：`布尔值`
+- 类型：`字符串`
 - 默认值：`false`
 - 参考选项：`true`，`false`
 - 分类：`Org`，`特性`
@@ -673,7 +673,7 @@ _no_only_hostile：任何敌对生物都不能捡起掉落物，其它生物为�
 
 ### 可高亮方块坐标(canHighlightBlockPos)
 
-在方块坐标文本右侧添加一个按钮用来单击高亮路径点，此功能需要在客户端安装OMMC作为前置
+在方块坐标文本右侧添加一个按钮用来单击高亮方块坐标
 
 - 类型：`布尔值`
 - 默认值：`true`
@@ -734,4 +734,31 @@ _-1表示无限制_<br/>
 - 默认值：`3`
 - 参考选项：`1`，`3`，`5`，`-1`
 - 分类：`Org`，`生存`
+
+### 假玩家生成内存泄漏修复(fakePlayerSpawnMemoryLeakFix)
+
+修复在同时安装fabric api时生成假玩家导致的内存泄漏问题
+
+- 类型：`布尔值`
+- 默认值：`false`
+- 参考选项：`true`，`false`
+- 分类：`Org`，`漏洞修复`
+
+### 快递命令(commandMail)
+
+启用/mail命令用来向其他玩家发送物品
+
+- 类型：`字符串`
+- 默认值：`ops`
+- 参考选项：`true`，`false`，`ops`，`0`，`1`，`2`，`3`，`4`
+- 分类：`Org`，`命令`
+
+### 抑制方块破坏位置不匹配警告(suppressionMismatchInDestroyBlockPosWarn)
+
+阻止在日志中输出“Mismatch in destroy block pos: {} {}”警告
+
+- 类型：`布尔值`
+- 默认值：`false`
+- 参考选项：`true`，`false`
+- 分类：`Org`，`试验性`
 

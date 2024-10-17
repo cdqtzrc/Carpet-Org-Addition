@@ -4,6 +4,7 @@ import carpet.api.settings.Rule;
 import carpet.api.settings.RuleCategory;
 import org.carpetorgaddition.rulevalidator.*;
 import org.carpetorgaddition.rulevalue.*;
+import org.docs.rule.HideRule;
 
 @SuppressWarnings("CanBeFinal")
 public class CarpetOrgAdditionSettings {
@@ -537,7 +538,10 @@ public class CarpetOrgAdditionSettings {
     // 同步导航器航点
     @Rule(
             categories = {ORG, RuleCategory.CLIENT},
-            validators = SyncNavigateWaypointObserver.class
+            validators = SyncNavigateWaypointObserver.class,
+            // 总是返回false
+            conditions = SyncNavigateWaypointObserver.class
     )
-    public static boolean syncNavigateWaypoint = false;
+    @HideRule
+    public static boolean syncNavigateWaypoint = true;
 }

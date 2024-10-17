@@ -10,6 +10,9 @@ public class RuleCount {
         Field[] fields = CarpetOrgAdditionSettings.class.getFields();
         int count = 0;
         for (Field field : fields) {
+            if (field.isAnnotationPresent(HideRule.class)) {
+                continue;
+            }
             if (field.isAnnotationPresent(Rule.class)) {
                 count++;
             }

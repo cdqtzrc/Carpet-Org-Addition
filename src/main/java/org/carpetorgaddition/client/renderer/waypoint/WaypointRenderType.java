@@ -1,6 +1,7 @@
 package org.carpetorgaddition.client.renderer.waypoint;
 
 import net.minecraft.util.Identifier;
+import org.carpetorgaddition.client.util.ClientCommandUtils;
 
 public enum WaypointRenderType {
     /**
@@ -77,6 +78,21 @@ public enum WaypointRenderType {
             return scale * cubic;
         } else {
             return scale;
+        }
+    }
+
+    /**
+     * 清除高亮路径点
+     */
+    public void clear() {
+        switch (this) {
+            // 直接删除，EnumMap不会引发并发修改异常
+            case HIGHLIGHT -> WaypointRenderManager.clearRender(HIGHLIGHT);
+            // 请求服务器停止发送路径点更新数据包
+            case NAVIGATOR -> {
+                ClientCommandUtils.sendCommand("/navigate stop");
+                WaypointRenderManager.clearRender(NAVIGATOR);
+            }
         }
     }
 
