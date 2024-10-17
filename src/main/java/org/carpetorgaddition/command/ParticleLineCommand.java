@@ -24,6 +24,7 @@ import org.carpetorgaddition.util.task.DrawParticleLineTask;
 import org.carpetorgaddition.util.task.ServerTaskManagerInterface;
 import org.joml.Vector3f;
 
+// TODO 不再需要
 public class ParticleLineCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("particleLine")

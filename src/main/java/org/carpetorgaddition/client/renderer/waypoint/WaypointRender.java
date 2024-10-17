@@ -59,7 +59,6 @@ public class WaypointRender {
             RenderSystem.disableDepthTest();
             // 绘制图标
             drawIcon(renderContext, matrixStack, vec3d, camera);
-            throw new RuntimeException();
         } catch (RuntimeException e) {
             // 发送错误消息，然后停止渲染
             ClientMessageUtils.sendErrorMessage(e, "carpet.client.render.waypoint.error");
