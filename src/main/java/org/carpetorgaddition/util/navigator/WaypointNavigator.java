@@ -1,6 +1,5 @@
 package org.carpetorgaddition.util.navigator;
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -47,7 +46,7 @@ public class WaypointNavigator extends AbstractNavigator {
             // 玩家和路径点在相同的维度
             Text text = this.getHUDText(blockPos.toCenterPos(), getIn(blockPos), getDistance(playerBlockPos, blockPos));
             MessageUtils.sendTextMessageToHud(this.player, text);
-            ServerPlayNetworking.send(this.player, new WaypointUpdateS2CPack(blockPos.toCenterPos(), waypointDimension));
+            this.syncWaypoint(new WaypointUpdateS2CPack(blockPos.toCenterPos(), waypointDimension));
         } else {
             BlockPos anotherBlockPos = this.waypoint.getAnotherBlockPos();
             if (((playerDimension.equals(WorldUtils.OVERWORLD) && waypointDimension.equals(WorldUtils.THE_NETHER))
@@ -60,9 +59,7 @@ public class WaypointNavigator extends AbstractNavigator {
                 Text text = this.getHUDText(anotherBlockPos.toCenterPos(), in,
                         getDistance(playerBlockPos, anotherBlockPos));
                 MessageUtils.sendTextMessageToHud(this.player, text);
-                ServerPlayNetworking.send(this.player,
-                        new WaypointUpdateS2CPack(anotherBlockPos.toCenterPos(),
-                                WorldUtils.getDimensionId(this.player.getWorld())));
+                this.syncWaypoint(new WaypointUpdateS2CPack(anotherBlockPos.toCenterPos(), playerDimension));
             } else {
                 // 玩家和路径点在不同维度
                 Text dimensionName = WorldUtils.getDimensionName(WorldUtils.getWorld(this.player.getServer(),

@@ -21,7 +21,9 @@ public abstract class AbstractValidator<T> extends Validator<T> {
 
     @Override
     public T validate(@Nullable ServerCommandSource serverCommandSource, CarpetRule<T> carpetRule, T newValue, String userInput) {
-        return validate(newValue) ? newValue : null;
+        T result = validate(newValue) ? newValue : null;
+        onChange(serverCommandSource, result);
+        return result;
     }
 
     /**
@@ -45,5 +47,14 @@ public abstract class AbstractValidator<T> extends Validator<T> {
         String translatedName = RuleHelper.translatedName(currentRule);
         MessageUtils.sendCommandErrorFeedback(source, "carpet.rule.validate.invalid_value", translatedName, providedValue);
         MessageUtils.sendCommandErrorFeedback(source, errorMessage());
+    }
+
+    /**
+     * 当规则被更改时调用
+     *
+     * @param source   规则值的修改者，如果在规则同步期间调用，可能为{@code null}
+     * @param newValue 规则的新值，如果为{@code null}，表示规则没有被修改
+     */
+    public void onChange(@Nullable ServerCommandSource source, @Nullable T newValue) {
     }
 }

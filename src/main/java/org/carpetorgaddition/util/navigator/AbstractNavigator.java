@@ -1,11 +1,16 @@
 package org.carpetorgaddition.util.navigator;
 
+import carpet.utils.CommandHelper;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
+import org.carpetorgaddition.CarpetOrgAdditionSettings;
+import org.carpetorgaddition.network.WaypointUpdateS2CPack;
 import org.carpetorgaddition.util.TextUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -62,7 +67,7 @@ public abstract class AbstractNavigator {
      * @param target 玩家看向的位置
      * @see net.minecraft.client.gui.hud.SubtitlesHud#render(DrawContext)
      */
-    public static int forwardAngle(PlayerEntity player, Vec3d target) {
+    private static int forwardAngle(PlayerEntity player, Vec3d target) {
         double x = target.getX() - player.getX();
         double y = target.getZ() - player.getZ();
         // 将直角坐标转换为极坐标，然后获取角度
@@ -89,7 +94,7 @@ public abstract class AbstractNavigator {
     }
 
     // 玩家视角是否指向目标位置（仅考虑高度）
-    public static int verticalAngle(PlayerEntity player, Vec3d target) {
+    private static int verticalAngle(PlayerEntity player, Vec3d target) {
         double x = Math.sqrt(Math.pow(player.getX() - target.getX(), 2) + Math.pow(player.getZ() - target.getZ(), 2));
         double y = target.getY() - player.getEyeY();
         double result = player.getPitch() + Math.toDegrees(Math.atan2(y, x));
@@ -99,6 +104,17 @@ public abstract class AbstractNavigator {
             return -1;
         } else {
             return 0;
+        }
+    }
+
+    /**
+     * 同步路径点
+     */
+    protected void syncWaypoint(WaypointUpdateS2CPack pack) {
+        // 要求玩家有执行/navigate命令的权限
+        boolean hasPermission = CommandHelper.canUseCommand(this.player.getCommandSource(), CarpetOrgAdditionSettings.commandNavigate);
+        if (CarpetOrgAdditionSettings.syncNavigateWaypoint && hasPermission) {
+            ServerPlayNetworking.send(this.player, pack);
         }
     }
 

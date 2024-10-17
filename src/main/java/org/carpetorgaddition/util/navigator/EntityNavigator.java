@@ -1,6 +1,5 @@
 package org.carpetorgaddition.util.navigator;
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.MinecraftServer;
@@ -9,7 +8,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.carpetorgaddition.network.WaypointClearS2CPack;
 import org.carpetorgaddition.network.WaypointUpdateS2CPack;
 import org.carpetorgaddition.util.MathUtils;
 import org.carpetorgaddition.util.MessageUtils;
@@ -45,7 +43,6 @@ public class EntityNavigator extends AbstractNavigator {
         if (this.targetDeath()) {
             // 如果目标实体死亡，就清除玩家的追踪器
             MessageUtils.sendTextMessageToHud(this.player, TextUtils.translate("carpet.commands.navigate.hud.target_death"));
-            ServerPlayNetworking.send(this.player, new WaypointClearS2CPack());
             this.clear();
             return;
         }
@@ -65,7 +62,7 @@ public class EntityNavigator extends AbstractNavigator {
                             TextConstants.simpleBlockPos(entity.getBlockPos())));
         }
         MessageUtils.sendTextMessageToHud(this.player, text);
-        ServerPlayNetworking.send(this.player, new WaypointUpdateS2CPack(this.entity.getEyePos(), world));
+        this.syncWaypoint(new WaypointUpdateS2CPack(this.entity.getEyePos(), world));
     }
 
     /**

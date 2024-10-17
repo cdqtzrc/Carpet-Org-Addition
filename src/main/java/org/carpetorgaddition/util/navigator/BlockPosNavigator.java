@@ -1,6 +1,5 @@
 package org.carpetorgaddition.util.navigator;
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.math.BlockPos;
@@ -21,7 +20,8 @@ public class BlockPosNavigator extends AbstractNavigator {
         super(player);
         this.blockPos = blockPos;
         this.world = world;
-        ServerPlayNetworking.send(player, new WaypointUpdateS2CPack(blockPos.toCenterPos(), world));
+        // 同步导航点
+        this.syncWaypoint(new WaypointUpdateS2CPack(blockPos.toCenterPos(), world));
     }
 
     @Override

@@ -27,6 +27,7 @@ import org.carpetorgaddition.util.fakeplayer.FakePlayerSafeAfkInterface;
 import org.carpetorgaddition.util.matcher.ItemMatcher;
 import org.carpetorgaddition.util.navigator.*;
 import org.carpetorgaddition.util.wheel.Waypoint;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -42,6 +43,7 @@ import java.util.Optional;
 public abstract class ServerPlayerEntityMixin implements NavigatorInterface, FakePlayerSafeAfkInterface {
     @Unique
     private final ServerPlayerEntity thisPlayer = (ServerPlayerEntity) (Object) this;
+    @Nullable
     @Unique
     private AbstractNavigator navigator;
     @Unique
@@ -193,6 +195,7 @@ public abstract class ServerPlayerEntityMixin implements NavigatorInterface, Fak
         return this.safeAfkThreshold;
     }
 
+    @Nullable
     @Override
     public AbstractNavigator getNavigator() {
         return this.navigator;

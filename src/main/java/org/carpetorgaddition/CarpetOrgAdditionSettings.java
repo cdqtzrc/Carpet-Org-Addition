@@ -533,4 +533,11 @@ public class CarpetOrgAdditionSettings {
             categories = {ORG, RuleCategory.EXPERIMENTAL}
     )
     public static boolean suppressionMismatchInDestroyBlockPosWarn = false;
+
+    // 同步导航器航点
+    @Rule(
+            categories = {ORG, RuleCategory.CLIENT},
+            validators = SyncNavigateWaypointObserver.class
+    )
+    public static boolean syncNavigateWaypoint = false;
 }
