@@ -90,7 +90,7 @@ public enum WaypointRenderType {
             case HIGHLIGHT -> WaypointRenderManager.clearRender(HIGHLIGHT);
             // 请求服务器停止发送路径点更新数据包
             case NAVIGATOR -> {
-                ClientCommandUtils.sendCommand("/navigate stop");
+                ClientCommandUtils.sendCommand("navigate stop");
                 WaypointRenderManager.clearRender(NAVIGATOR);
             }
         }
