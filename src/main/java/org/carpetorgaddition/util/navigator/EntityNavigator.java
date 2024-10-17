@@ -120,7 +120,6 @@ public class EntityNavigator extends AbstractNavigator {
                 if (server == null) {
                     return true;
                 }
-                // 从服务器查找新实体对象
                 UUID uuid = entity.getUuid();
                 // 从服务器查找新实体对象
                 for (ServerWorld world : server.getWorlds()) {
@@ -128,8 +127,10 @@ public class EntityNavigator extends AbstractNavigator {
                     if (newEntity == null || newEntity.isRemoved()) {
                         continue;
                     }
-                    // 将玩家的追踪器目标设置为这个新实体
-                    this.navigatorInterface.setNavigator(newEntity, this.isContinue);
+                    if (this.entity != newEntity) {
+                        // 将玩家的追踪器目标设置为这个新实体
+                        this.navigatorInterface.setNavigator(newEntity, this.isContinue);
+                    }
                     return false;
                 }
                 // 目标活着，没有被清除，返回false

@@ -4,7 +4,6 @@ import carpet.utils.CommandHelper;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -21,6 +20,14 @@ public abstract class AbstractNavigator {
     @NotNull
     protected final ServerPlayerEntity player;
     protected final NavigatorInterface navigatorInterface;
+    /**
+     * 上一个坐标
+     */
+    private Vec3d previousPosition;
+    /**
+     * 上一个维度
+     */
+    private String previousWorldId;
 
     public AbstractNavigator(@NotNull ServerPlayerEntity player) {
         this.player = player;
@@ -111,11 +118,39 @@ public abstract class AbstractNavigator {
      * 同步路径点
      */
     protected void syncWaypoint(WaypointUpdateS2CPack pack) {
-        // 要求玩家有执行/navigate命令的权限
-        boolean hasPermission = CommandHelper.canUseCommand(this.player.getCommandSource(), CarpetOrgAdditionSettings.commandNavigate);
-        if (CarpetOrgAdditionSettings.syncNavigateWaypoint && hasPermission) {
-            ServerPlayNetworking.send(this.player, pack);
+        // 更新上一个坐标
+        if (this.updatePrevious(pack)) {
+            // 要求玩家有执行/navigate命令的权限
+            boolean hasPermission = CommandHelper.canUseCommand(this.player.getCommandSource(), CarpetOrgAdditionSettings.commandNavigate);
+            if (CarpetOrgAdditionSettings.syncNavigateWaypoint && hasPermission) {
+                ServerPlayNetworking.send(this.player, pack);
+            }
         }
+    }
+
+    /**
+     * 更新上一个坐标
+     *
+     * @return 坐标是否更新了
+     */
+    private boolean updatePrevious(WaypointUpdateS2CPack pack) {
+        // 目标未移动，不需要更新
+        if (pack.target().equals(this.previousPosition) && pack.worldId().equals(this.previousWorldId)) {
+            return false;
+        }
+        this.previousPosition = pack.target();
+        this.previousWorldId = pack.worldId();
+        return true;
+    }
+
+    /**
+     * 发送路径点更新
+     */
+    public void sendWaypointUpdate() {
+        if (this.previousPosition == null || this.previousWorldId == null) {
+            return;
+        }
+        ServerPlayNetworking.send(this.player, new WaypointUpdateS2CPack(this.previousPosition, this.previousWorldId));
     }
 
     /**
