@@ -175,7 +175,7 @@ public abstract class AbstractTradeFindTask extends ServerTask {
         String indexArray;
         // 如果只有一个索引，直接返回元素字符串
         if (list.size() == 1) {
-            return list.get(0).toString();
+            return list.getFirst().toString();
         }
         // 如果多个索引，将索引拼接后返回
         StringJoiner stringJoiner = new StringJoiner(", ", "[", "]");
