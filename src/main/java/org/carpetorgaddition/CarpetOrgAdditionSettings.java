@@ -424,6 +424,9 @@ public class CarpetOrgAdditionSettings {
 
     // 同步导航器航点
     @HideRule
-    @Rule(categories = {ORG, RuleCategory.CLIENT})
+    @Rule(
+            categories = {ORG, RuleCategory.CLIENT},
+            validators = SyncNavigateWaypointObserver.class
+    )
     public static boolean syncNavigateWaypoint = true;
 }
