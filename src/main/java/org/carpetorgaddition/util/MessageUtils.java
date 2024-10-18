@@ -11,6 +11,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MessageUtils {
     private MessageUtils() {
@@ -122,8 +123,7 @@ public class MessageUtils {
      * @param obj    消息中替代占位符的内容
      */
     public static void sendCommandErrorFeedback(ServerCommandSource source, Throwable e, String key, Object... obj) {
-        // TODO 可能导致空指针
-        String error = e.getMessage();
+        String error = Objects.requireNonNullElse(e.getMessage(), e.getClass().getSimpleName());
         MutableText message = TextUtils.setColor(TextUtils.translate(key, obj), Formatting.RED);
         MessageUtils.sendTextMessage(source, TextUtils.hoverText(message, TextUtils.createText(error)));
     }
