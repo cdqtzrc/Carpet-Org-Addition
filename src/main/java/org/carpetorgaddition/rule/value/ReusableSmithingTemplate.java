@@ -1,4 +1,4 @@
-package org.carpetorgaddition.rulevalue;
+package org.carpetorgaddition.rule.value;
 
 public enum ReusableSmithingTemplate {
     TRUE, FALSE, UPGRADE

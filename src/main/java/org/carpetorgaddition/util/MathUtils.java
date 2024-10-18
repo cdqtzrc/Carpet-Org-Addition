@@ -3,7 +3,7 @@ package org.carpetorgaddition.util;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import org.carpetorgaddition.CarpetOrgAdditionSettings;
-import org.carpetorgaddition.rulevalidator.MaxBlockPlaceDistanceValidator;
+import org.carpetorgaddition.rule.validator.MaxBlockPlaceDistanceValidator;
 
 import java.util.Random;
 import java.util.StringJoiner;

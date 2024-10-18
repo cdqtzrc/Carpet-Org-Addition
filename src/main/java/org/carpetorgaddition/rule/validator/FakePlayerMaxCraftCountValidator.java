@@ -1,4 +1,4 @@
-package org.carpetorgaddition.rulevalidator;
+package org.carpetorgaddition.rule.validator;
 
 import net.minecraft.text.MutableText;
 import org.carpetorgaddition.util.constant.RuleValidatorConstants;

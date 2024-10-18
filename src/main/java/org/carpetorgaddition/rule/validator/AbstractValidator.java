@@ -1,4 +1,4 @@
-package org.carpetorgaddition.rulevalidator;
+package org.carpetorgaddition.rule.validator;
 
 import carpet.api.settings.CarpetRule;
 import carpet.api.settings.RuleHelper;

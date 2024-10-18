@@ -60,6 +60,7 @@ public class FinderCommand {
      */
     public static final String TIME_OUT = "carpet.commands.finder.timeout";
 
+    // TODO 添加from...to
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("finder")
                 .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandFinder))

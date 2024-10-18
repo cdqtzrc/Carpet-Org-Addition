@@ -2,9 +2,9 @@ package org.carpetorgaddition;
 
 import carpet.api.settings.Rule;
 import carpet.api.settings.RuleCategory;
-import org.carpetorgaddition.rulevalidator.*;
-import org.carpetorgaddition.rulevalue.*;
-import org.docs.rule.HideRule;
+import org.carpetorgaddition.rule.HideRule;
+import org.carpetorgaddition.rule.validator.*;
+import org.carpetorgaddition.rule.value.*;
 
 @SuppressWarnings("CanBeFinal")
 public class CarpetOrgAdditionSettings {
@@ -43,6 +43,7 @@ public class CarpetOrgAdditionSettings {
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
     )
+    @HideRule
     public static boolean sculkShriekerCanSummon = false;
 
     // 创造玩家免疫/kill
@@ -55,6 +56,7 @@ public class CarpetOrgAdditionSettings {
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
     )
+    @HideRule
     public static boolean itemNeverDespawn = false;
 
     // 滑翔时不能对方块使用烟花
@@ -104,18 +106,21 @@ public class CarpetOrgAdditionSettings {
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
     )
+    @HideRule
     public static boolean disableDamageImmunity = false;
 
     // 干草捆完全抵消摔落伤害
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
     )
+    @HideRule
     public static boolean hayBlockCompleteOffsetFall = false;
 
     // 蓝冰上不能刷怪
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
     )
+    @HideRule
     public static boolean blueIceCanSpawn = false;
 
     // 禁止蝙蝠生成
@@ -158,18 +163,21 @@ public class CarpetOrgAdditionSettings {
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
     )
+    @HideRule
     public static boolean disablePiglinZombify = false;
 
     // 禁止村民女巫化
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
     )
+    @HideRule
     public static boolean disableVillagerWitch = false;
 
     // 禁止铁傀儡攻击玩家
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
     )
+    @HideRule
     public static boolean disableIronGolemAttackPlayer = false;
 
     // 将镐作为基岩的有效采集工具
@@ -221,6 +229,7 @@ public class CarpetOrgAdditionSettings {
             options = {"true", "false"},
             strict = false
     )
+    // TODO 添加规则额外描述：true向下兼容
     public static String CCEUpdateSuppression = "false";
 
     // 开放/seed命令权限
@@ -416,6 +425,7 @@ public class CarpetOrgAdditionSettings {
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
+    @HideRule
     public static WetSpongeImmediatelyDry wetSpongeImmediatelyDry = WetSpongeImmediatelyDry.FALSE;
 
     // 假玩家死亡不掉落
@@ -467,6 +477,7 @@ public class CarpetOrgAdditionSettings {
     @Rule(
             categories = {ORG, RuleCategory.FEATURE}
     )
+    @HideRule
     public static MobWhetherOrNotCanPickItem mobWhetherOrNotCanPickItem = MobWhetherOrNotCanPickItem.VANILLA;
 
     // 可高亮方块坐标
@@ -537,10 +548,7 @@ public class CarpetOrgAdditionSettings {
 
     // 同步导航器航点
     @Rule(
-            categories = {ORG, RuleCategory.CLIENT},
-            validators = SyncNavigateWaypointObserver.class,
-            // 总是返回false
-            conditions = SyncNavigateWaypointObserver.class
+            categories = {ORG, RuleCategory.CLIENT}
     )
     @HideRule
     public static boolean syncNavigateWaypoint = true;

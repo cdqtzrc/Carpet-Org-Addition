@@ -3,6 +3,7 @@ package org.docs.rule;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.carpetorgaddition.rule.HideRule;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;

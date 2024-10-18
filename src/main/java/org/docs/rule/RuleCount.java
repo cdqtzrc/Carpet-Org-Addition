@@ -2,6 +2,7 @@ package org.docs.rule;
 
 import carpet.api.settings.Rule;
 import org.carpetorgaddition.CarpetOrgAdditionSettings;
+import org.carpetorgaddition.rule.HideRule;
 
 import java.lang.reflect.Field;
 

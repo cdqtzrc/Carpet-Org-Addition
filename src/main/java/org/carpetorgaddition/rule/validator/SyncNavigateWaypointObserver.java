@@ -1,6 +1,5 @@
-package org.carpetorgaddition.rulevalidator;
+package org.carpetorgaddition.rule.validator;
 
-import carpet.api.settings.Rule;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -12,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SyncNavigateWaypointObserver extends AbstractValidator<Boolean> implements Rule.Condition{
+public class SyncNavigateWaypointObserver extends AbstractValidator<Boolean> {
     @Override
     public boolean validate(Boolean newValue) {
         return true;
@@ -37,10 +36,5 @@ public class SyncNavigateWaypointObserver extends AbstractValidator<Boolean> imp
         } else {
             list.forEach(player -> ServerPlayNetworking.send(player, new WaypointClearS2CPack()));
         }
-    }
-
-    @Override
-    public boolean shouldRegister() {
-        return false;
     }
 }

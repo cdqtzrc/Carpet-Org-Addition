@@ -67,6 +67,7 @@
     "rule.canminespawner.SpawnerBlockMixin",
     "rule.carpet.EntityPlayerMPFakeMixin",
     "rule.carpet.SettingsManagerAccessor",
+    "rule.carpet.SettingsManagerMixin",
     "rule.disablemobpeacefuldespawn.MobEntityMixin",
     "rule.disablemobpeacefuldespawn.WitherEntityMixin",
     "rule.entityplayeractionpack.ActionAccessor",

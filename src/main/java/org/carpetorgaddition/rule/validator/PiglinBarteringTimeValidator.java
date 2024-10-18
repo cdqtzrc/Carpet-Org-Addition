@@ -1,16 +1,13 @@
-package org.carpetorgaddition.rulevalidator;
+package org.carpetorgaddition.rule.validator;
 
 import net.minecraft.text.MutableText;
 import org.carpetorgaddition.util.constant.RuleValidatorConstants;
 import org.jetbrains.annotations.NotNull;
 
-// 设置基岩硬度校验
-public class BedrockHardnessValidator extends AbstractValidator<Float> {
-    private BedrockHardnessValidator() {
-    }
-
+// 自定义猪灵交易时间
+public class PiglinBarteringTimeValidator extends AbstractValidator<Long> {
     @Override
-    public boolean validate(Float newValue) {
+    public boolean validate(Long newValue) {
         return newValue >= 0 || newValue == -1;
     }
 
