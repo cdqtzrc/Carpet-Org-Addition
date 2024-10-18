@@ -305,6 +305,7 @@ public class PlayerActionCommand {
     private static FakePlayerActionManager prepareTheCrafting(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
         // 提示启用合成修复
+        // TODO 不再需要启用规则
         promptToEnableCtrlQCraftingFix(context.getSource());
         return FakePlayerActionInterface.getManager(fakePlayer);
     }
