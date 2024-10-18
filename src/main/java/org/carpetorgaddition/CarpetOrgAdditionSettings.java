@@ -171,7 +171,6 @@ public class CarpetOrgAdditionSettings {
             options = {"true", "false"},
             strict = false
     )
-    // TODO 添加规则额外描述：true向下兼容
     public static String CCEUpdateSuppression = "false";
 
     // 开放/seed命令权限
