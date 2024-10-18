@@ -75,7 +75,12 @@ public class FinderCommand {
                         .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(commandBuildContext))
                                 .executes(context -> findItem(context, 64))
                                 .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 256))
-                                        .executes(context -> findItem(context, IntegerArgumentType.getInteger(context, "range"))))))
+                                        .executes(context -> findItem(context, IntegerArgumentType.getInteger(context, "range"))))
+                                .then(CommandManager.literal("from")
+                                        .then(CommandManager.argument("from", BlockPosArgumentType.blockPos())
+                                                .then(CommandManager.literal("to")
+                                                        .then(CommandManager.argument("to", BlockPosArgumentType.blockPos())
+                                                                .executes(FinderCommand::areaItemFinder)))))))
                 .then(CommandManager.literal("trade")
                         .then(CommandManager.literal("item")
                                 .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(commandBuildContext))
@@ -105,6 +110,21 @@ public class FinderCommand {
         return 1;
     }
 
+    // 区域查找物品
+    private static int areaItemFinder(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
+        BlockPos from = BlockPosArgumentType.getBlockPos(context, "from");
+        BlockPos to = BlockPosArgumentType.getBlockPos(context, "to");
+        // 获取要查找的物品
+        ItemStack itemStack = ItemStackArgumentType.getItemStackArgument(context, "itemStack").createStack(1, false);
+        Matcher matcher = new ItemStackMatcher(itemStack);
+        // 计算要查找的区域
+        SelectionArea selectionArea = new SelectionArea(from, to);
+        ServerTaskManagerInterface taskManager = ServerTaskManagerInterface.getInstance(player.getServer());
+        taskManager.addTask(new ItemFindTask(player.getWorld(), matcher, selectionArea, context));
+        return 1;
+    }
+
     // 方块查找
     private static int blockFinder(CommandContext<ServerCommandSource> context, int range) throws CommandSyntaxException {
         // 获取执行命令的玩家并非空判断
@@ -127,10 +147,12 @@ public class FinderCommand {
         BlockPos to = BlockPosArgumentType.getBlockPos(context, "to");
         // 获取要匹配的方块状态
         BlockStateArgument argument = BlockStateArgumentType.getBlockState(context, "blockState");
+        // 计算要查找的区域
         SelectionArea selectionArea = new SelectionArea(from, to);
         ServerTaskManagerInterface taskManager = ServerTaskManagerInterface.getInstance(player.getServer());
+        // 添加查找任务
         taskManager.addTask(new BlockFindTask(player.getServerWorld(), player.getBlockPos(), selectionArea, context, argument));
-        return 0;
+        return 1;
     }
 
     // 准备根据物品查找交易项
