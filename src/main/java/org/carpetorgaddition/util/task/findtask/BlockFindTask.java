@@ -25,7 +25,7 @@ public class BlockFindTask extends ServerTask {
     private final ServerWorld world;
     private final SelectionArea selectionArea;
     private final CommandContext<ServerCommandSource> context;
-    private final BlockPos sourctePos;
+    private final BlockPos sourcePos;
     private Iterator<BlockPos> iterator;
     private FindState findState;
     /**
@@ -39,9 +39,9 @@ public class BlockFindTask extends ServerTask {
     private final BlockStateArgument argument;
     private final ArrayList<Result> results = new ArrayList<>();
 
-    public BlockFindTask(ServerWorld world, BlockPos sourctePos, SelectionArea selectionArea, CommandContext<ServerCommandSource> context, BlockStateArgument blockStateArgument) {
+    public BlockFindTask(ServerWorld world, BlockPos sourcePos, SelectionArea selectionArea, CommandContext<ServerCommandSource> context, BlockStateArgument blockStateArgument) {
         this.world = world;
-        this.sourctePos = sourctePos;
+        this.sourcePos = sourcePos;
         this.selectionArea = selectionArea;
         this.context = context;
         this.argument = blockStateArgument;
@@ -96,7 +96,7 @@ public class BlockFindTask extends ServerTask {
             // 判断区块是否已加载
             if (this.world.isChunkLoaded(chunkX, chunkZ)) {
                 if (this.argument.test(world, blockPos)) {
-                    this.results.add(new Result(this.sourctePos, blockPos));
+                    this.results.add(new Result(this.sourcePos, blockPos));
                 }
                 if (this.results.size() > FinderCommand.MAXIMUM_STATISTICAL_COUNT) {
                     // 方块过多，无法统计
@@ -119,7 +119,7 @@ public class BlockFindTask extends ServerTask {
             this.findState = FindState.END;
             return;
         }
-        this.results.sort((o1, o2) -> MathUtils.compareBlockPos(this.sourctePos, o1.blockPos(), o2.blockPos()));
+        this.results.sort((o1, o2) -> MathUtils.compareBlockPos(this.sourcePos, o1.blockPos(), o2.blockPos()));
         this.findState = FindState.FEEDBACK;
     }
 

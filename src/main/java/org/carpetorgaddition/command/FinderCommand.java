@@ -6,10 +6,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.argument.BlockStateArgument;
-import net.minecraft.command.argument.BlockStateArgumentType;
-import net.minecraft.command.argument.ItemStackArgumentType;
-import net.minecraft.command.argument.RegistryEntryReferenceArgumentType;
+import net.minecraft.command.argument.*;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.RegistryKeys;
@@ -68,7 +65,12 @@ public class FinderCommand {
                         .then(CommandManager.argument("blockState", BlockStateArgumentType.blockState(commandBuildContext))
                                 .executes(context -> blockFinder(context, 64))
                                 .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 256))
-                                        .executes(context -> blockFinder(context, IntegerArgumentType.getInteger(context, "range"))))))
+                                        .executes(context -> blockFinder(context, IntegerArgumentType.getInteger(context, "range"))))
+                                .then(CommandManager.literal("from")
+                                        .then(CommandManager.argument("from", BlockPosArgumentType.blockPos())
+                                                .then(CommandManager.literal("to")
+                                                        .then(CommandManager.argument("to", BlockPosArgumentType.blockPos())
+                                                                .executes(FinderCommand::areaBlockFinder)))))))
                 .then(CommandManager.literal("item")
                         .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(commandBuildContext))
                                 .executes(context -> findItem(context, 64))
@@ -116,6 +118,19 @@ public class FinderCommand {
         SelectionArea selectionArea = new SelectionArea(world, sourceBlockPos, range);
         tackManager.addTask(new BlockFindTask(world, sourceBlockPos, selectionArea, context, blockStateArgument));
         return 1;
+    }
+
+    // 区域方块查找
+    private static int areaBlockFinder(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
+        BlockPos from = BlockPosArgumentType.getBlockPos(context, "from");
+        BlockPos to = BlockPosArgumentType.getBlockPos(context, "to");
+        // 获取要匹配的方块状态
+        BlockStateArgument argument = BlockStateArgumentType.getBlockState(context, "blockState");
+        SelectionArea selectionArea = new SelectionArea(from, to);
+        ServerTaskManagerInterface taskManager = ServerTaskManagerInterface.getInstance(player.getServer());
+        taskManager.addTask(new BlockFindTask(player.getServerWorld(), player.getBlockPos(), selectionArea, context, argument));
+        return 0;
     }
 
     // 准备根据物品查找交易项
