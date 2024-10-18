@@ -261,11 +261,12 @@ public class CarpetOrgAdditionSettings {
     public static boolean fakePlayerCraftKeepItem = false;
 
     // 绘制粒子线命令
+    @HideRule
     @Rule(
             categories = {ORG, RuleCategory.COMMAND},
             options = {"true", "false", "ops", "0", "1", "2", "3", "4"}
     )
-    public static String commandParticleLine = "true";
+    public static String commandParticleLine = "false";
 
     // 禁止特定生物在和平模式下被清除
     @Rule(categories = {ORG, RuleCategory.FEATURE})

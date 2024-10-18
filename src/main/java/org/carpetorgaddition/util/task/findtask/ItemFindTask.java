@@ -239,16 +239,9 @@ public class ItemFindTask extends ServerTask {
     private record Result(Item item, @Nullable UUID uuid, BlockPos blockPos,
                           MutableText containerName, int count, boolean shulkerBox) {
         private MutableText toText() {
-            String command;
-            if (uuid == null) {
-                // 获取要执行的命令，使用%f是因为数值较大时小数可能变成科学计数法
-                Object[] args = {blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5};
-                command = "/particleLine ~ ~1 ~ %.1f %.1f %.1f".formatted(args);
-            } else {
-                command = "/particleLine ~ ~1 ~ " + uuid;
-            }
-            return TextUtils.translate("carpet.commands.finder.item.each", TextConstants.blockPos(blockPos, Formatting.GREEN),
-                    TextUtils.command(containerName, command, null, null, true),
+            return TextUtils.translate("carpet.commands.finder.item.each",
+                    TextConstants.blockPos(blockPos, Formatting.GREEN),
+                    containerName,
                     FinderCommand.showCount(item.getDefaultStack(), count, shulkerBox));
         }
     }
