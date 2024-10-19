@@ -1,6 +1,7 @@
 package org.carpetorgaddition.client;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import org.carpetorgaddition.client.command.DictionaryCommand;
 import org.carpetorgaddition.client.command.HighlightCommand;
 import org.carpetorgaddition.client.command.argument.ClientBlockPosArgumentType;
 import org.carpetorgaddition.client.renderer.waypoint.WaypointRender;
@@ -24,6 +25,8 @@ public class CarpetOrgAdditionClientRegister {
     private static void registerCommand() {
         // 高亮路径点命令
         HighlightCommand.register();
+        // 字典命令
+        DictionaryCommand.register();
     }
 
     /**

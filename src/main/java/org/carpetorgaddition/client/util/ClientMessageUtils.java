@@ -27,6 +27,13 @@ public class ClientMessageUtils {
     }
 
     /**
+     * 向客户端玩家发送一条聊天消息
+     */
+    public static void sendMessage(String key, Object... args) {
+        sendMessage(TextUtils.translate(key, args));
+    }
+
+    /**
      * 向客户端玩家发送一条红色的聊天消息
      */
     public static void sendErrorMessage(Text message) {
