@@ -103,6 +103,7 @@ public abstract class ClientObjectArgumentType<T> implements ArgumentType<List<T
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
         if (context.getSource() instanceof CommandSource) {
+            // TODO 可能有对象名称包含空格，添加引号包裹
             String[] array = getRegistry().map(this::objectToString).toArray(String[]::new);
             return CommandSource.suggestMatching(array, builder);
         } else {

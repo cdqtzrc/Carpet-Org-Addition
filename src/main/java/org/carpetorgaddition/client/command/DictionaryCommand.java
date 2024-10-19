@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class DictionaryCommand {
-    // TODO 更新日志 补全注释
+    // TODO 补全注释 处理多个对象匹配成功的情况
     public static void register() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
                 dispatcher.register(ClientCommandManager.literal("dictionary")
