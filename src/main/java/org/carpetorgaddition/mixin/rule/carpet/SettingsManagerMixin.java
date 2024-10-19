@@ -18,7 +18,6 @@ public class SettingsManagerMixin {
     @WrapOperation(method = "parseSettingsClass", at = @At(value = "INVOKE", target = "Ljava/lang/reflect/Field;getAnnotation(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;", ordinal = 0))
     private <T extends Annotation> T shouldRegister(Field field, Class<Rule> annotationClass, Operation<Rule> original) {
         if (field.isAnnotationPresent(HideRule.class)) {
-            CarpetOrgAddition.LOGGER.info("规则{}已被隐藏", field.getName());
             return null;
         }
         return (T) original.call(field, annotationClass);
