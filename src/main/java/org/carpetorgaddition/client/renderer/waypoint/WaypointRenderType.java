@@ -60,6 +60,7 @@ public enum WaypointRenderType {
      */
     public float getScale(double distance, long startTime) {
         float scale = (float) distance / 30F;
+        scale = Math.max(scale * (1F - (((float) distance / 50F) * 0.1F)), scale * 0.8F);
         if (this.vanishingTime > 0) {
             long currentTimeMillis = System.currentTimeMillis();
             long duration = startTime + this.durationTime;
