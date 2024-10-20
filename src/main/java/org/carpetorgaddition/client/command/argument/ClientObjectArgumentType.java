@@ -46,6 +46,11 @@ public abstract class ClientObjectArgumentType<T> implements ArgumentType<List<T
     }
 
     @SuppressWarnings("unchecked")
+    public static <T> List<T> getType(CommandContext<FabricClientCommandSource> context, String name) {
+        return (List<T>) context.getArgument(name, List.class);
+    }
+
+    @SuppressWarnings("unchecked")
     public static List<Block> getBlock(CommandContext<FabricClientCommandSource> context, String name) {
         return (List<Block>) context.getArgument(name, List.class);
     }
