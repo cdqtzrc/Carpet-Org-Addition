@@ -1,5 +1,6 @@
 package org.carpetorgaddition.client.command;
 
+import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -29,28 +30,14 @@ import java.util.List;
 public class DictionaryCommand {
     // TODO 补全注释
     public static void register() {
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-        {
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             LiteralArgumentBuilder<FabricClientCommandSource> builder = ClientCommandManager.literal("dictionary");
-            dispatcher.register(builder
-                    .then(ClientCommandManager.literal("item")
-                            .then(ClientCommandManager.argument("item", ClientObjectArgumentType.item())
-                                    .executes(context -> getId(context, DictionaryType.ITEM))))
-                    .then(ClientCommandManager.literal("block")
-                            .then(ClientCommandManager.argument("block", ClientObjectArgumentType.block())
-                                    .executes(context -> getId(context, DictionaryType.BLOCK))))
-                    .then(ClientCommandManager.literal("entity")
-                            .then(ClientCommandManager.argument("entity", ClientObjectArgumentType.entityType())
-                                    .executes(context -> getId(context, DictionaryType.ENTITY))))
-                    .then(ClientCommandManager.literal("enchantment")
-                            .then(ClientCommandManager.argument("enchantment", ClientObjectArgumentType.enchantment())
-                                    .executes(context -> getId(context, DictionaryType.ENCHANTMENT))))
-                    .then(ClientCommandManager.literal("statusEffect")
-                            .then(ClientCommandManager.argument("statusEffect", ClientObjectArgumentType.statusEffect())
-                                    .executes(context -> getId(context, DictionaryType.STATUS_EFFECT))))
-                    .then(ClientCommandManager.literal("biome")
-                            .then(ClientCommandManager.argument("biome", ClientObjectArgumentType.biome())
-                                    .executes(context -> getId(context, DictionaryType.BIOME)))));
+            for (DictionaryType value : DictionaryType.values()) {
+                builder.then(ClientCommandManager.literal(value.name)
+                        .then(ClientCommandManager.argument(value.name, value.getArgumentType())
+                                .executes(context -> getId(context, value))));
+            }
+            dispatcher.register(builder);
         });
     }
 
@@ -125,6 +112,17 @@ public class DictionaryCommand {
                     String key = registry.get(RegistryKeys.BIOME).getId((Biome) obj).toTranslationKey("biome");
                     yield TextUtils.translate(key);
                 }
+            };
+        }
+
+        private ArgumentType<?> getArgumentType() {
+            return switch (this) {
+                case ITEM -> ClientObjectArgumentType.item();
+                case BLOCK -> ClientObjectArgumentType.block();
+                case ENTITY -> ClientObjectArgumentType.entityType();
+                case ENCHANTMENT -> ClientObjectArgumentType.enchantment();
+                case STATUS_EFFECT -> ClientObjectArgumentType.statusEffect();
+                case BIOME -> ClientObjectArgumentType.biome();
             };
         }
     }
