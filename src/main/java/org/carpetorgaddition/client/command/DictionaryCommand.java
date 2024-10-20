@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.StatusEffect;
@@ -18,6 +19,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import org.carpetorgaddition.client.command.argument.ClientObjectArgumentType;
 import org.carpetorgaddition.client.util.ClientMessageUtils;
@@ -26,12 +28,13 @@ import org.carpetorgaddition.util.TextUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 public class DictionaryCommand {
-    // TODO 补全注释
     public static void register() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             LiteralArgumentBuilder<FabricClientCommandSource> builder = ClientCommandManager.literal("dictionary");
+            // 注册每一项子命令
             for (DictionaryType value : DictionaryType.values()) {
                 builder.then(ClientCommandManager.literal(value.name)
                         .then(ClientCommandManager.argument(value.name, value.getArgumentType())
@@ -41,13 +44,17 @@ public class DictionaryCommand {
         });
     }
 
+    // 获取对象id
     private static <T> int getId(CommandContext<FabricClientCommandSource> context, DictionaryType type) {
         List<T> list = ClientObjectArgumentType.getType(context, type.name);
         if (list.size() == 1) {
+            // 字符串只对应一个对象
             T t = list.getFirst();
+            // 获取对象id
             String id = type.id(t);
             sendFeedback(type.name(t), id);
         } else {
+            // 字符串对应多个对象
             sendFeedback(list.size());
             for (T t : list) {
                 sendFeedback(type.id(t));
@@ -56,6 +63,7 @@ public class DictionaryCommand {
         return list.size();
     }
 
+    // 发送命令反馈
     private static void sendFeedback(Text text, String id) {
         ClientMessageUtils.sendMessage("carpet.client.commands.dictionary.id", text, canCopyId(id));
     }
@@ -68,40 +76,75 @@ public class DictionaryCommand {
         ClientMessageUtils.sendMessage("carpet.client.commands.dictionary.multiple.each", canCopyId(id));
     }
 
+    // 将字符串id转换成可以单击复制的形式
     @NotNull
     private static MutableText canCopyId(String id) {
         return TextUtils.copy(id, id, TextUtils.translate("chat.copy.click"), Formatting.GREEN);
     }
 
     private enum DictionaryType {
+        /**
+         * 物品
+         */
         ITEM("item"),
+        /**
+         * 方块
+         */
         BLOCK("block"),
+        /**
+         * 实体
+         */
         ENTITY("entity"),
+        /**
+         * 附魔
+         */
         ENCHANTMENT("enchantment"),
+        /**
+         * 状态效果
+         */
         STATUS_EFFECT("statusEffect"),
+        /**
+         * 生物群系
+         */
         BIOME("biome");
+        /**
+         * 子命令和子命令参数
+         */
         private final String name;
 
         DictionaryType(String name) {
             this.name = name;
         }
 
-        @SuppressWarnings("DataFlowIssue")
+        // 获取对象id
         private String id(Object obj) {
-            DynamicRegistryManager.Immutable registry = MinecraftClient.getInstance().player.networkHandler.getRegistryManager();
+            ClientPlayerEntity player = Objects.requireNonNull(MinecraftClient.getInstance().player);
+            DynamicRegistryManager.Immutable registry = player.networkHandler.getRegistryManager();
             return switch (this) {
                 case ITEM -> Registries.ITEM.getId((Item) obj).toString();
                 case BLOCK -> Registries.BLOCK.getId((Block) obj).toString();
                 case ENTITY -> Registries.ENTITY_TYPE.getId((EntityType<?>) obj).toString();
-                case ENCHANTMENT -> registry.get(RegistryKeys.ENCHANTMENT).getId((Enchantment) obj).toString();
-                case STATUS_EFFECT -> registry.get(RegistryKeys.STATUS_EFFECT).getId((StatusEffect) obj).toString();
-                case BIOME -> registry.get(RegistryKeys.BIOME).getId((Biome) obj).toString();
+                case ENCHANTMENT -> {
+                    Identifier id = registry.get(RegistryKeys.ENCHANTMENT).getId((Enchantment) obj);
+                    yield Objects.requireNonNull(id, "无法获取附魔id").toString();
+                }
+                case STATUS_EFFECT -> {
+                    Identifier id = registry.get(RegistryKeys.STATUS_EFFECT).getId((StatusEffect) obj);
+                    yield Objects.requireNonNull(id, "无法获取状态效果id").toString();
+                }
+                case BIOME -> {
+                    Identifier id = registry.get(RegistryKeys.BIOME).getId((Biome) obj);
+                    yield Objects.requireNonNull(id, "无法获取生物群系id").toString();
+                }
             };
         }
 
-        @SuppressWarnings("DataFlowIssue")
+        // 获取对象名称
         private Text name(Object obj) {
-            DynamicRegistryManager.Immutable registry = MinecraftClient.getInstance().player.networkHandler.getRegistryManager();
+            // 获取客户端玩家
+            ClientPlayerEntity player = Objects.requireNonNull(MinecraftClient.getInstance().player);
+            // 获取注册管理器
+            DynamicRegistryManager.Immutable registry = player.networkHandler.getRegistryManager();
             return switch (this) {
                 case ITEM -> ((Item) obj).getName();
                 case BLOCK -> ((Block) obj).getName();
@@ -109,12 +152,14 @@ public class DictionaryCommand {
                 case ENCHANTMENT -> EnchantmentUtils.getName((Enchantment) obj);
                 case STATUS_EFFECT -> ((StatusEffect) obj).getName();
                 case BIOME -> {
-                    String key = registry.get(RegistryKeys.BIOME).getId((Biome) obj).toTranslationKey("biome");
+                    Identifier id = Objects.requireNonNull(registry.get(RegistryKeys.BIOME).getId((Biome) obj), "无法获取生物群系id");
+                    String key = id.toTranslationKey("biome");
                     yield TextUtils.translate(key);
                 }
             };
         }
 
+        // 获取参数类型
         private ArgumentType<?> getArgumentType() {
             return switch (this) {
                 case ITEM -> ClientObjectArgumentType.item();
