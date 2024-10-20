@@ -50,45 +50,20 @@ public abstract class ClientObjectArgumentType<T> implements ArgumentType<List<T
         return (List<T>) context.getArgument(name, List.class);
     }
 
-    @SuppressWarnings("unchecked")
-    public static List<Block> getBlock(CommandContext<FabricClientCommandSource> context, String name) {
-        return (List<Block>) context.getArgument(name, List.class);
-    }
-
     public static ClientEntityArgumentType entityType() {
         return new ClientEntityArgumentType();
-    }
-
-    @SuppressWarnings("unchecked")
-    public static List<EntityType<?>> getEntityType(CommandContext<FabricClientCommandSource> context, String name) {
-        return (List<EntityType<?>>) context.getArgument(name, List.class);
     }
 
     public static ClientEnchantmentArgumentType enchantment() {
         return new ClientEnchantmentArgumentType();
     }
 
-    @SuppressWarnings("unchecked")
-    public static List<Enchantment> getEnchantment(CommandContext<FabricClientCommandSource> context, String name) {
-        return (List<Enchantment>) context.getArgument(name, List.class);
-    }
-
     public static ClientStatusEffectArgumentType statusEffect() {
         return new ClientStatusEffectArgumentType();
     }
 
-    @SuppressWarnings("unchecked")
-    public static List<StatusEffect> getStatusEffect(CommandContext<FabricClientCommandSource> context, String name) {
-        return (List<StatusEffect>) context.getArgument(name, List.class);
-    }
-
     public static ClientBiomeArgumentType biome() {
         return new ClientBiomeArgumentType();
-    }
-
-    @SuppressWarnings("unchecked")
-    public static List<Biome> getBiome(CommandContext<FabricClientCommandSource> context, String name) {
-        return (List<Biome>) context.getArgument(name, List.class);
     }
 
     @Override
