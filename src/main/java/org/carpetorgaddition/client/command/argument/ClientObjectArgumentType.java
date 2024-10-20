@@ -90,15 +90,15 @@ public abstract class ClientObjectArgumentType<T> implements ArgumentType<List<T
     public List<T> parse(StringReader reader) throws CommandSyntaxException {
         int cursor = reader.getCursor();
         String itemName = ClientCommandUtils.readWord(reader);
-        // 由于可以使用资源包更改物品名称，因此一个名称可能对应多个物品
+        // 由于可以使用资源包更改对象名称，因此一个名称可能对应多个对象
         ArrayList<T> list = new ArrayList<>();
         for (T t : getRegistry().toList()) {
-            // 获取所有与字符串对应的物品
+            // 获取所有与字符串对应的对象
             if (Objects.equals(itemName, objectToString(t))) {
                 list.add(t);
             }
         }
-        // 没有物品与字符串对应
+        // 没有对象与字符串对应
         if (list.isEmpty()) {
             reader.setCursor(cursor);
             throw CommandUtils.createException("carpet.client.commands.dictionary.not_matched");
@@ -114,8 +114,10 @@ public abstract class ClientObjectArgumentType<T> implements ArgumentType<List<T
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
         if (context.getSource() instanceof CommandSource) {
-            // TODO 可能有对象名称包含空格，添加引号包裹
-            String[] array = getRegistry().map(this::objectToString).toArray(String[]::new);
+            String[] array = getRegistry()
+                    .map(this::objectToString)
+                    .map(s -> s.contains(" ") ? "\"" + s + "\"" : s)
+                    .toArray(String[]::new);
             return CommandSource.suggestMatching(array, builder);
         } else {
             return Suggestions.empty();
