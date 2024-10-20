@@ -16,6 +16,8 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
+import net.minecraft.world.biome.Biome;
 import org.carpetorgaddition.client.command.argument.ClientObjectArgumentType;
 import org.carpetorgaddition.client.util.ClientMessageUtils;
 import org.carpetorgaddition.util.EnchantmentUtils;
@@ -43,7 +45,10 @@ public class DictionaryCommand {
                                         .executes(DictionaryCommand::enchantment)))
                         .then(ClientCommandManager.literal("statusEffect")
                                 .then(ClientCommandManager.argument("statusEffect", ClientObjectArgumentType.statusEffect())
-                                        .executes(DictionaryCommand::statusEffect)))));
+                                        .executes(DictionaryCommand::statusEffect)))
+                        .then(ClientCommandManager.literal("biome")
+                                .then(ClientCommandManager.argument("biome", ClientObjectArgumentType.biome())
+                                        .executes(DictionaryCommand::biome)))));
     }
 
     private static int item(CommandContext<FabricClientCommandSource> context) {
@@ -92,6 +97,20 @@ public class DictionaryCommand {
         for (StatusEffect statusEffect : list) {
             String id = Objects.requireNonNull(Registries.STATUS_EFFECT.getId(statusEffect)).toString();
             sendFeedback(statusEffect.getName(), id);
+        }
+        return list.size();
+    }
+
+    private static int biome(CommandContext<FabricClientCommandSource> context) {
+        List<Biome> list = ClientObjectArgumentType.getBiome(context, "biome");
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        if (player == null) {
+            return 0;
+        }
+        Registry<Biome> registry = player.networkHandler.getRegistryManager().get(RegistryKeys.BIOME);
+        for (Biome biome : list) {
+            Identifier id = Objects.requireNonNull(registry.getId(biome));
+            sendFeedback(TextUtils.translate(id.toTranslationKey("biome")), id.toString());
         }
         return list.size();
     }

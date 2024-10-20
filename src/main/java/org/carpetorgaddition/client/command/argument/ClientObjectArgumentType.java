@@ -18,9 +18,11 @@ import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.world.biome.Biome;
 import org.carpetorgaddition.client.util.ClientCommandUtils;
 import org.carpetorgaddition.util.CommandUtils;
 import org.carpetorgaddition.util.EnchantmentUtils;
+import org.carpetorgaddition.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +75,15 @@ public abstract class ClientObjectArgumentType<T> implements ArgumentType<List<T
     @SuppressWarnings("unchecked")
     public static List<StatusEffect> getStatusEffect(CommandContext<FabricClientCommandSource> context, String name) {
         return (List<StatusEffect>) context.getArgument(name, List.class);
+    }
+
+    public static ClientBiomeArgumentType biome() {
+        return new ClientBiomeArgumentType();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<Biome> getBiome(CommandContext<FabricClientCommandSource> context, String name) {
+        return (List<Biome>) context.getArgument(name, List.class);
     }
 
     @Override
@@ -205,6 +216,26 @@ public abstract class ClientObjectArgumentType<T> implements ArgumentType<List<T
                 return player.networkHandler.getRegistryManager().get(RegistryKeys.STATUS_EFFECT).stream();
             }
             return Stream.empty();
+        }
+    }
+
+    public static class ClientBiomeArgumentType extends ClientObjectArgumentType<Biome> {
+
+        @Override
+        protected String objectToString(Biome biome) {
+            assert MinecraftClient.getInstance().player != null;
+            Registry<Biome> biomes = MinecraftClient.getInstance().player.networkHandler.getRegistryManager().get(RegistryKeys.BIOME);
+            return TextUtils.translate(Objects.requireNonNull(biomes.getId(biome)).toTranslationKey("biome")).getString();
+
+        }
+
+        @Override
+        protected Stream<Biome> getRegistry() {
+            ClientPlayerEntity player = MinecraftClient.getInstance().player;
+            if (player == null) {
+                return Stream.empty();
+            }
+            return player.networkHandler.getRegistryManager().get(RegistryKeys.BIOME).stream();
         }
     }
 }
