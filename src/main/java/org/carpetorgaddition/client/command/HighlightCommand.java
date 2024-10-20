@@ -17,7 +17,9 @@ public class HighlightCommand {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
                 dispatcher.register(ClientCommandManager.literal("highlight")
                         .then(ClientCommandManager.argument("blockPos", ClientBlockPosArgumentType.blockPos())
-                                .executes(HighlightCommand::highlight))));
+                                .executes(HighlightCommand::highlight))
+                        .then(ClientCommandManager.literal("clear")
+                                .executes(context -> clear()))));
     }
 
     // 高亮路径点
@@ -35,6 +37,12 @@ public class HighlightCommand {
         }
         // 设置新的路径点
         WaypointRenderManager.setRender(newRender);
+        return 1;
+    }
+
+    // 取消高亮路径点
+    private static int clear() {
+        WaypointRenderManager.clearRender(WaypointRenderType.HIGHLIGHT);
         return 1;
     }
 }
