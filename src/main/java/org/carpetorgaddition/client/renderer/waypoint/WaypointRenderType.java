@@ -7,11 +7,11 @@ public enum WaypointRenderType {
     /**
      * 高亮
      */
-    HIGHLIGHT(Identifier.ofVanilla("textures/map/decorations/red_x.png"), 60000L, 1000L),
+    HIGHLIGHT(Identifier.ofVanilla("textures/map/decorations/red_x.png"), 60000L),
     /**
      * 导航
      */
-    NAVIGATOR(Identifier.ofVanilla("textures/map/decorations/target_x.png"), -1L, -1L);
+    NAVIGATOR(Identifier.ofVanilla("textures/map/decorations/target_x.png"), -1L);
     /**
      * 路径点图标
      */
@@ -23,12 +23,11 @@ public enum WaypointRenderType {
     /**
      * 路径点消失时间
      */
-    private final long vanishingTime;
+    private static final long VANISHING_TIME = 800L;
 
-    WaypointRenderType(Identifier identifier, long durationTime, long vanishingTime) {
+    WaypointRenderType(Identifier identifier, long durationTime) {
         this.icon = identifier;
         this.durationTime = durationTime;
-        this.vanishingTime = vanishingTime;
     }
 
     /**
@@ -54,16 +53,16 @@ public enum WaypointRenderType {
         if (fade) {
             long currentTimeMillis = System.currentTimeMillis();
             // 剩余消失时间
-            long remainingTime = (fadeTime + this.vanishingTime) - currentTimeMillis;
+            long remainingTime = (fadeTime + VANISHING_TIME) - currentTimeMillis;
             return fade(remainingTime, scale);
-        } else if (this.vanishingTime > 0L) {
+        } else if (this.durationTime > 0L) {
             long currentTimeMillis = System.currentTimeMillis();
             long duration = startTime + this.durationTime;
             if (currentTimeMillis < duration) {
                 return scale;
             }
             // 剩余消失时间
-            long remainingTime = (duration + this.vanishingTime) - currentTimeMillis;
+            long remainingTime = (duration + VANISHING_TIME) - currentTimeMillis;
             return fade(remainingTime, scale);
         } else {
             return scale;
@@ -82,7 +81,7 @@ public enum WaypointRenderType {
             return 0F;
         }
         // 让消失动画先慢后快
-        float x = remainingTime / (float) this.vanishingTime;
+        float x = remainingTime / (float) VANISHING_TIME;
         float cubic = x * x * x;
         // 消失动画（缩放）
         return scale * cubic;

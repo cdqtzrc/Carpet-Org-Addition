@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class DictionaryCommand {
+    // TODO 导入资源包后测试
     public static void register() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             LiteralArgumentBuilder<FabricClientCommandSource> builder = ClientCommandManager.literal("dictionary");

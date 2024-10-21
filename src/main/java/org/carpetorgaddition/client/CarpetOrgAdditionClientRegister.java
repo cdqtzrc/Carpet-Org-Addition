@@ -50,7 +50,7 @@ public class CarpetOrgAdditionClientRegister {
         // 注册路径点更新数据包
         ClientPlayNetworking.registerGlobalReceiver(WaypointUpdateS2CPack.ID, (payload, context) -> WaypointRenderManager.setRender(new WaypointRender(WaypointRenderType.NAVIGATOR, payload.target(), payload.worldId())));
         // 注册路径点清除数据包
-        ClientPlayNetworking.registerGlobalReceiver(WaypointClearS2CPack.ID, ((payload, context) -> WaypointRenderManager.clearRender(WaypointRenderType.NAVIGATOR)));
+        ClientPlayNetworking.registerGlobalReceiver(WaypointClearS2CPack.ID, ((payload, context) -> WaypointRenderManager.setFade(WaypointRenderType.NAVIGATOR)));
     }
 
     /**

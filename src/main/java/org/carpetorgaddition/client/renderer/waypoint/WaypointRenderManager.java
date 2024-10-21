@@ -46,6 +46,18 @@ public class WaypointRenderManager {
     }
 
     /**
+     * 设置路径点立即消失
+     *
+     * @param type 路径点的类型
+     */
+    public static void setFade(WaypointRenderType type) {
+        WaypointRender render = getRender(type);
+        if (render != null) {
+            render.setFade();
+        }
+    }
+
+    /**
      * 清除指定渲染器
      *
      * @param type 渲染器类型
