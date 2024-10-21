@@ -29,6 +29,9 @@ public class WaypointRender {
     private final Vec3d target;
     private final String worldId;
     private final long startTime = System.currentTimeMillis();
+    private boolean fade = false;
+    private long fadeTime = -1L;
+    private boolean stop = false;
 
     public WaypointRender(WaypointRenderType renderType, Vec3d target, String worldId) {
         this.renderType = renderType;
@@ -110,7 +113,11 @@ public class WaypointRender {
         // 将路径点平移到方块位置
         matrixStack.translate(correctionVec3d.getX(), correctionVec3d.getY(), correctionVec3d.getZ());
         // 固定路径点大小，防止因距离的改变而改变（远小近大）
-        float scale = this.renderType.getScale(correctionVec3d.length(), this.startTime);
+        float scale = this.renderType.getScale(correctionVec3d.length(), this.startTime, this.fade, this.fadeTime);
+        if (scale <= 0F) {
+            this.stop = true;
+            return;
+        }
         matrixStack.scale(scale, scale, scale);
         // 翻转路径点
         matrixStack.multiply(new Quaternionf(-1, 0, 0, 0));
@@ -199,7 +206,15 @@ public class WaypointRender {
      * @return 是否应该停止渲染
      */
     public boolean shouldStop() {
-        return this.renderType.getVanishingTime() > 0 && System.currentTimeMillis() > this.startTime + this.renderType.getDurationTime() + this.renderType.getVanishingTime();
+        return this.stop;
+    }
+
+    /**
+     * 设置该路径点消失
+     */
+    public void setFade() {
+        this.fade = true;
+        this.fadeTime = System.currentTimeMillis();
     }
 
     @Override

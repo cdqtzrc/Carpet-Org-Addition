@@ -39,29 +39,24 @@ public enum WaypointRenderType {
     }
 
     /**
-     * @return 获取路径点的持续时间
-     */
-    public long getDurationTime() {
-        return this.durationTime;
-    }
-
-    /**
-     * @return 获取路径点的消失时间
-     */
-    public long getVanishingTime() {
-        return this.vanishingTime;
-    }
-
-    /**
      * 获取路径点大小
      *
      * @param distance  摄像机到路径点的距离，用来抵消远小近大
      * @param startTime 路径点开始渲染的时间
+     * @param fade      路径点是否立即消失
+     * @param fadeTime  路径点设置立即消失时的时间
      */
-    public float getScale(double distance, long startTime) {
+    public float getScale(double distance, long startTime, boolean fade, long fadeTime) {
+        // 修正路径点大小，使大小不会随着距离的改变而改变
         float scale = (float) distance / 30F;
-        scale = Math.max(scale * (1F - (((float) distance / 50F) * 0.1F)), scale * 0.8F);
-        if (this.vanishingTime > 0) {
+        // 再次修正路径点大小，使随着距离的拉远路径点尺寸略微减小
+        scale = Math.max(scale * (1F - (((float) distance / 40F) * 0.1F)), scale * 0.75F);
+        if (fade) {
+            long currentTimeMillis = System.currentTimeMillis();
+            // 剩余消失时间
+            long remainingTime = (fadeTime + this.vanishingTime) - currentTimeMillis;
+            return fade(remainingTime, scale);
+        } else if (this.vanishingTime > 0L) {
             long currentTimeMillis = System.currentTimeMillis();
             long duration = startTime + this.durationTime;
             if (currentTimeMillis < duration) {
@@ -69,17 +64,28 @@ public enum WaypointRenderType {
             }
             // 剩余消失时间
             long remainingTime = (duration + this.vanishingTime) - currentTimeMillis;
-            if (remainingTime < 0) {
-                return 0;
-            }
-            // 让消失动画先慢后快
-            float x = remainingTime / (float) this.vanishingTime;
-            float cubic = x * x;
-            // 消失动画（缩放）
-            return scale * cubic;
+            return fade(remainingTime, scale);
         } else {
             return scale;
         }
+    }
+
+    /**
+     * 修正正在消失的路径点的大小
+     *
+     * @param remainingTime 剩余消失时间
+     * @param scale         路径点的大小
+     * @return 路径点的消失动画
+     */
+    private float fade(long remainingTime, float scale) {
+        if (remainingTime < 0L) {
+            return 0F;
+        }
+        // 让消失动画先慢后快
+        float x = remainingTime / (float) this.vanishingTime;
+        float cubic = x * x * x;
+        // 消失动画（缩放）
+        return scale * cubic;
     }
 
     /**
