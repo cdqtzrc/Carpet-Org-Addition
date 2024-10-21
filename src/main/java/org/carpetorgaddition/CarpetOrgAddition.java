@@ -44,6 +44,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
         NetworkS2CPackRegister.register();
     }
 
+    // TODO 更改版本号
     // 在游戏开始时
     @Override
     public void onGameStarted() {

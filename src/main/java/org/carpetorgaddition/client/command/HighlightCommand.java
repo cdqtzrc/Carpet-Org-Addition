@@ -42,6 +42,7 @@ public class HighlightCommand {
 
     // 取消高亮路径点
     private static int clear() {
+        // TODO 改为通过清除剩余时间移除路径点
         WaypointRenderManager.clearRender(WaypointRenderType.HIGHLIGHT);
         return 1;
     }

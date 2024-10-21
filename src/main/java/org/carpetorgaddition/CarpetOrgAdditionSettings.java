@@ -369,9 +369,8 @@ public class CarpetOrgAdditionSettings {
     public static MobWhetherOrNotCanPickItem mobWhetherOrNotCanPickItem = MobWhetherOrNotCanPickItem.VANILLA;
 
     // 可高亮方块坐标
-    @HideRule
     @Rule(categories = {ORG, RuleCategory.SURVIVAL, RuleCategory.CLIENT})
-    public static boolean canHighlightBlockPos = true;
+    public static CanHighlightBlockPos canHighlightBlockPos = CanHighlightBlockPos.DEFAULT;
 
     // 玩家管理器命令
     @Rule(
