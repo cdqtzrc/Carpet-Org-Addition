@@ -31,39 +31,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 public abstract class ClientObjectArgumentType<T> implements ArgumentType<List<T>> {
-
-    public static ClientItemArgumentType item() {
-        return new ClientItemArgumentType();
+    private ClientObjectArgumentType() {
     }
 
-    @SuppressWarnings("unchecked")
-    public static List<Item> getItem(CommandContext<FabricClientCommandSource> context, String name) {
-        return (List<Item>) context.getArgument(name, List.class);
-    }
-
-    public static ClientBlockArgumentType block() {
-        return new ClientBlockArgumentType();
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> List<T> getType(CommandContext<FabricClientCommandSource> context, String name) {
-        return (List<T>) context.getArgument(name, List.class);
-    }
-
-    public static ClientEntityArgumentType entityType() {
-        return new ClientEntityArgumentType();
-    }
-
-    public static ClientEnchantmentArgumentType enchantment() {
-        return new ClientEnchantmentArgumentType();
-    }
-
-    public static ClientStatusEffectArgumentType statusEffect() {
-        return new ClientStatusEffectArgumentType();
-    }
-
-    public static ClientBiomeArgumentType biome() {
-        return new ClientBiomeArgumentType();
+    public static List<?> getType(CommandContext<FabricClientCommandSource> context, String name) {
+        return context.getArgument(name, List.class);
     }
 
     @Override

@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class DictionaryCommand {
-    // TODO 导入资源包后测试
     public static void register() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             LiteralArgumentBuilder<FabricClientCommandSource> builder = ClientCommandManager.literal("dictionary");
@@ -46,18 +45,19 @@ public class DictionaryCommand {
     }
 
     // 获取对象id
-    private static <T> int getId(CommandContext<FabricClientCommandSource> context, DictionaryType type) {
-        List<T> list = ClientObjectArgumentType.getType(context, type.name);
+    private static int getId(CommandContext<FabricClientCommandSource> context, DictionaryType type) {
+        List<?> list = ClientObjectArgumentType.getType(context, type.name);
+        // list集合至少有一个元素，不与任何对象匹配的字符串在解析命令时不会成功
         if (list.size() == 1) {
             // 字符串只对应一个对象
-            T t = list.getFirst();
+            Object t = list.getFirst();
             // 获取对象id
             String id = type.id(t);
             sendFeedback(type.name(t), id);
         } else {
             // 字符串对应多个对象
             sendFeedback(list.size());
-            for (T t : list) {
+            for (Object t : list) {
                 sendFeedback(type.id(t));
             }
         }
@@ -163,12 +163,12 @@ public class DictionaryCommand {
         // 获取参数类型
         private ArgumentType<?> getArgumentType() {
             return switch (this) {
-                case ITEM -> ClientObjectArgumentType.item();
-                case BLOCK -> ClientObjectArgumentType.block();
-                case ENTITY -> ClientObjectArgumentType.entityType();
-                case ENCHANTMENT -> ClientObjectArgumentType.enchantment();
-                case STATUS_EFFECT -> ClientObjectArgumentType.statusEffect();
-                case BIOME -> ClientObjectArgumentType.biome();
+                case ITEM -> new ClientObjectArgumentType.ClientItemArgumentType();
+                case BLOCK -> new ClientObjectArgumentType.ClientBlockArgumentType();
+                case ENTITY -> new ClientObjectArgumentType.ClientEntityArgumentType();
+                case ENCHANTMENT -> new ClientObjectArgumentType.ClientEnchantmentArgumentType();
+                case STATUS_EFFECT -> new ClientObjectArgumentType.ClientStatusEffectArgumentType();
+                case BIOME -> new ClientObjectArgumentType.ClientBiomeArgumentType();
             };
         }
     }
