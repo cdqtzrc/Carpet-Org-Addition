@@ -7,6 +7,9 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import org.carpetorgaddition.CarpetOrgAddition;
 
 public class ClientCommandUtils {
+    private ClientCommandUtils() {
+    }
+
     /**
      * 让客户端玩家向服务器发送一条命令
      *

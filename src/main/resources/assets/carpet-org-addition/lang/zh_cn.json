@@ -315,6 +315,7 @@
   "carpet.commands.playerAction.info.stonecutting.item": "%s正在使用%s和%s制作%s",
   "carpet.commands.playerAction.info.stonecutting.button": "按钮索引: %s",
   "carpet.commands.playerAction.info.stonecutting.no_stonecutting": "%s没有打开%s",
+  "carpet.commands.playerAction.info.stonecutter.gui": "设置切石机配方",
   "carpet.commands.playerAction.info.trade.item": "%s正在交易第%s个选项中的物品",
   "carpet.commands.playerAction.info.trade.disabled": "交易已被锁定",
   "carpet.commands.playerAction.info.trade.state": "交易状态:",
