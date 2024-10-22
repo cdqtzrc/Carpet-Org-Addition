@@ -21,7 +21,9 @@ public class WaypointRenderManager {
      * 每一帧都调用
      */
     private static void frame(WorldRenderContext context) {
+        // 渲染路径点
         RENDERS.forEach((key, value) -> value.drawWaypoint(context));
+        // 移除已渲染结束的路径点
         RENDERS.entrySet().removeIf(entry -> entry.getValue().shouldStop());
     }
 
@@ -46,7 +48,7 @@ public class WaypointRenderManager {
     }
 
     /**
-     * 设置路径点立即消失
+     * 设置路径点消失
      *
      * @param type 路径点的类型
      */

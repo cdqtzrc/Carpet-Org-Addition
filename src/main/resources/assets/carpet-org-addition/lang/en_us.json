@@ -231,6 +231,7 @@
   "carpet.commands.playerAction.info.stonecutting.item": "%1$s is crafting %4$s with %2$s and %3$s",
   "carpet.commands.playerAction.info.stonecutting.button": "Button Index: %s",
   "carpet.commands.playerAction.info.stonecutting.no_stonecutting": "%s isn't opening %s",
+  "carpet.commands.playerAction.info.stonecutter.gui": "Set stonecutter recipes",
   "carpet.commands.playerAction.info.trade.item": "%s is trading items of %s-th option",
   "carpet.commands.playerAction.info.trade.disabled": "Trading option is disabled",
   "carpet.commands.playerAction.info.trade.state": "Trading Status:",

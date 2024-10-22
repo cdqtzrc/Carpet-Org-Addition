@@ -127,7 +127,7 @@ public class WaypointRender {
         MatrixStack.Entry entry = matrixStack.peek();
         Matrix4f matrix4f = entry.getPositionMatrix();
         Tessellator tessellator = Tessellator.getInstance();
-        // 渲染图标纹理
+        // 绘制图标纹理
         BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         bufferBuilder.vertex(matrix4f, -1F, -1F, 0F).texture(0, 0).overlay(OverlayTexture.DEFAULT_UV).normal(entry, 0F, 1F, 0F);
         bufferBuilder.vertex(matrix4f, -1F, 1F, 0F).texture(0, 1).overlay(OverlayTexture.DEFAULT_UV).normal(entry, 0F, 1F, 0F);
