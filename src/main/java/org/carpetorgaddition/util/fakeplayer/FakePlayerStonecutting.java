@@ -5,6 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.StonecutterScreenHandler;
 import net.minecraft.screen.slot.Slot;
+import org.carpetorgaddition.CarpetOrgAdditionSettings;
 import org.carpetorgaddition.exception.InfiniteLoopException;
 import org.carpetorgaddition.util.fakeplayer.actiondata.StonecuttingData;
 
@@ -17,6 +18,8 @@ public class FakePlayerStonecutting {
             // 获取要切割的物品和按钮的索引
             Item item = stonecuttingData.getItem();
             int buttonIndex = stonecuttingData.getButton();
+            // 定义变量记录成功完成合成的次数
+            int craftCount = 0;
             // 用于循环次数过多时抛出异常结束循环
             int loopCount = 0;
             while (true) {
@@ -62,6 +65,12 @@ public class FakePlayerStonecutting {
                 if (outputSlot.hasStack()) {
                     // 丢出该物品
                     FakePlayerUtils.loopThrowItem(stonecutterScreenHandler, 1, fakePlayer);
+                    craftCount++;
+                    // 限制每个游戏刻合成次数
+                    int ruleValue = CarpetOrgAdditionSettings.fakePlayerMaxCraftCount;
+                    if (ruleValue > 0 && craftCount >= CarpetOrgAdditionSettings.fakePlayerMaxCraftCount) {
+                        return;
+                    }
                 } else {
                     // 否则，认为前面的操作有误，停止合成，结束方法
                     FakePlayerUtils.stopAction(fakePlayer.getCommandSource(), fakePlayer,
