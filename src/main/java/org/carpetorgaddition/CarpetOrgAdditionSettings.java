@@ -429,4 +429,5 @@ public class CarpetOrgAdditionSettings {
             validators = SyncNavigateWaypointObserver.class
     )
     public static boolean syncNavigateWaypoint = true;
+    // TODO /player命令生成的假玩家显示召唤者
 }
