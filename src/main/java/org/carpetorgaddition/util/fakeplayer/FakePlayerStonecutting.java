@@ -9,12 +9,21 @@ import org.carpetorgaddition.CarpetOrgAdditionSettings;
 import org.carpetorgaddition.exception.InfiniteLoopException;
 import org.carpetorgaddition.util.InventoryUtils;
 import org.carpetorgaddition.util.fakeplayer.actiondata.StonecuttingData;
+import org.carpetorgaddition.util.inventory.AutoGrowInventory;
 
 public class FakePlayerStonecutting {
     private FakePlayerStonecutting() {
     }
 
     public static void stonecutting(StonecuttingData stonecuttingData, EntityPlayerMPFake fakePlayer) {
+        AutoGrowInventory inventory = new AutoGrowInventory();
+        stonecutting(stonecuttingData, fakePlayer, inventory);
+        for (ItemStack itemStack : inventory) {
+            fakePlayer.dropItem(itemStack, false, true);
+        }
+    }
+
+    public static void stonecutting(StonecuttingData stonecuttingData, EntityPlayerMPFake fakePlayer, AutoGrowInventory inventory) {
         if (fakePlayer.currentScreenHandler instanceof StonecutterScreenHandler stonecutterScreenHandler) {
             // 获取要切割的物品和按钮的索引
             Item item = stonecuttingData.getItem();
@@ -56,8 +65,8 @@ public class FakePlayerStonecutting {
                 Slot outputSlot = stonecutterScreenHandler.getSlot(1);
                 // 如果输出槽有物品
                 if (outputSlot.hasStack()) {
-                    // 丢出该物品
-                    FakePlayerUtils.loopThrowItem(stonecutterScreenHandler, 1, fakePlayer);
+                    // 收集产物
+                    FakePlayerUtils.collectItem(stonecutterScreenHandler, 1, inventory, fakePlayer);
                     craftCount++;
                     // 限制每个游戏刻合成次数
                     int ruleValue = CarpetOrgAdditionSettings.fakePlayerMaxCraftCount;

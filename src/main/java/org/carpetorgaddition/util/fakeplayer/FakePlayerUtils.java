@@ -9,6 +9,7 @@ import org.carpetorgaddition.CarpetOrgAdditionSettings;
 import org.carpetorgaddition.util.MessageUtils;
 import org.carpetorgaddition.util.TextUtils;
 import org.carpetorgaddition.util.fakeplayer.actiondata.StopData;
+import org.carpetorgaddition.util.inventory.AutoGrowInventory;
 
 public class FakePlayerUtils {
 
@@ -162,6 +163,24 @@ public class FakePlayerUtils {
         while (screenHandler.getSlot(slotIndex).hasStack()) {
             screenHandler.onSlotClick(slotIndex, THROW_Q, SlotActionType.THROW, player);
         }
+    }
+
+    /**
+     * 收集槽位上的物品
+     */
+    public static void collectItem(ScreenHandler screenHandler, int slotIndex, AutoGrowInventory inventory, EntityPlayerMPFake fakePlayer) {
+        // 临时存放光标上的物品
+        ItemStack temp = screenHandler.getCursorStack().copy();
+        screenHandler.setCursorStack(ItemStack.EMPTY);
+        while (screenHandler.getSlot(slotIndex).hasStack()) {
+            // 拿取槽位上的物品
+            screenHandler.onSlotClick(slotIndex, PICKUP_RIGHT_CLICK, SlotActionType.PICKUP, fakePlayer);
+            // 将槽位上的物品放入物品栏并清空光标上的物品
+            inventory.addStack(screenHandler.getCursorStack().copy());
+            screenHandler.setCursorStack(ItemStack.EMPTY);
+        }
+        // 将临时存放的物品放回光标
+        screenHandler.setCursorStack(temp);
     }
 
     /**
