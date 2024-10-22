@@ -7,6 +7,7 @@ import net.minecraft.screen.StonecutterScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import org.carpetorgaddition.CarpetOrgAdditionSettings;
 import org.carpetorgaddition.exception.InfiniteLoopException;
+import org.carpetorgaddition.util.InventoryUtils;
 import org.carpetorgaddition.util.fakeplayer.actiondata.StonecuttingData;
 
 public class FakePlayerStonecutting {
@@ -45,16 +46,8 @@ public class FakePlayerStonecutting {
                 // 如果需要遍历物品栏
                 if (needToTraverseInventory) {
                     // 尝试从物品栏中找到需要的物品
-                    for (int index = 2; index < stonecutterScreenHandler.slots.size(); index++) {
-                        // 如果找到，移动到切石机输入槽，然后结束循环
-                        if (stonecutterScreenHandler.getSlot(index).getStack().isOf(item)) {
-                            FakePlayerUtils.quickMove(stonecutterScreenHandler, index, fakePlayer);
-                            break;
-                        }
-                        // 如果遍历完物品栏还没有找到指定物品，认为物品栏中没有该物品，结束方法
-                        if (index == stonecutterScreenHandler.slots.size() - 1) {
-                            return;
-                        }
+                    if (tryMoveItem(fakePlayer, stonecutterScreenHandler, item)) {
+                        return;
                     }
                 }
                 // 模拟单击切石机按钮
@@ -73,11 +66,43 @@ public class FakePlayerStonecutting {
                     }
                 } else {
                     // 否则，认为前面的操作有误，停止合成，结束方法
-                    FakePlayerUtils.stopAction(fakePlayer.getCommandSource(), fakePlayer,
-                            "carpet.commands.playerAction.stone_cutting");
+                    FakePlayerUtils.stopAction(fakePlayer.getCommandSource(), fakePlayer, "carpet.commands.playerAction.stone_cutting");
                     return;
                 }
             }
         }
+    }
+
+    /**
+     * 将物品移动到切石机输入槽位
+     *
+     * @return 是否已经所有材料用完
+     */
+    private static boolean tryMoveItem(EntityPlayerMPFake fakePlayer, StonecutterScreenHandler screenHandler, Item item) {
+        for (int index = 2; index < screenHandler.slots.size(); index++) {
+            // 如果找到，移动到切石机输入槽，然后结束循环
+            ItemStack itemStack = screenHandler.getSlot(index).getStack();
+            if (itemStack.isOf(item)) {
+                FakePlayerUtils.quickMove(screenHandler, index, fakePlayer);
+                return false;
+            } else if (CarpetOrgAdditionSettings.fakePlayerCraftPickItemFromShulkerBox && InventoryUtils.isShulkerBoxItem(itemStack)) {
+                // 从潜影盒中查找指定物品
+                ItemStack stack = InventoryUtils.pickItemFromShulkerBox(itemStack, content -> content.isOf(item));
+                // 未找到指定物品
+                if (stack.isEmpty()) {
+                    continue;
+                }
+                // 将物品移动到切石机输入槽
+                // 丢弃光标上的物品（如果有）
+                FakePlayerUtils.dropCursorStack(screenHandler, fakePlayer);
+                // 将光标上的物品设置为从潜影盒中取出来的物品
+                screenHandler.setCursorStack(stack);
+                // 将光标上的物品放在切石机输入槽位上
+                FakePlayerUtils.pickupCursorStack(screenHandler, 0, fakePlayer);
+                return false;
+            }
+        }
+        // 如果遍历完物品栏还没有找到指定物品，认为物品栏中没有该物品，结束方法
+        return true;
     }
 }

@@ -114,9 +114,11 @@ public abstract class LivingEntityMixin {
         for (ItemStack shulkerBox : mainInventory) {
             if (InventoryUtils.isShulkerBoxItem(shulkerBox)) {
                 // 从潜影盒中拿取不死图腾
-                ItemStack itemInTheBox = InventoryUtils.shulkerBoxConsumer(shulkerBox,
+                ItemStack itemInTheBox = InventoryUtils.shulkerBoxConsumer(
+                        shulkerBox,
                         stack -> stack.isOf(Items.TOTEM_OF_UNDYING),
-                        stack -> stack.decrement(1));
+                        stack -> stack.decrement(1)
+                );
                 // 潜影盒中可能没有不死图腾
                 if (itemInTheBox.isEmpty()) {
                     continue;
