@@ -3,6 +3,7 @@
   "minVersion": "0.8",
   "package": "org.carpetorgaddition.mixin",
   "compatibilityLevel": "JAVA_21",
+  "plugin": "org.carpetorgaddition.debug.DebugIMixinConfigPlugin",
   "mixins": [
     "command.EntityPlayerMPFakeMixin",
     "command.FishingBobberEntityAccessor",
