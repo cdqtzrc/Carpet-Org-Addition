@@ -15,7 +15,6 @@ import org.carpetorgaddition.util.fakeplayer.actiondata.StonecuttingData;
 public class StonecutterSetRecipeScreenHandler extends StonecutterScreenHandler {
     private final EntityPlayerMPFake fakePlayer;
 
-    // TODO 合成速度限制，右键直接打开GUI
     public StonecutterSetRecipeScreenHandler(
             int syncId,
             PlayerInventory playerInventory,

@@ -15,6 +15,7 @@ public class FakePlayerStonecutting {
     private FakePlayerStonecutting() {
     }
 
+    // TODO 需要测试
     public static void stonecutting(StonecuttingData stonecuttingData, EntityPlayerMPFake fakePlayer) {
         /*
          * 切石机的输出槽不能使用Ctrl+Q一次性丢出整组物品，只能一个个丢出。
