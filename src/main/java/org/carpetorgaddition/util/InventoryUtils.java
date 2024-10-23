@@ -11,6 +11,7 @@ import org.carpetorgaddition.util.matcher.SimpleMatcher;
 import org.carpetorgaddition.util.wheel.ContainerDeepCopy;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class InventoryUtils {
     /**
@@ -144,5 +145,18 @@ public class InventoryUtils {
             return blockItem.getBlock() instanceof ShulkerBoxBlock;
         }
         return false;
+    }
+
+    /**
+     * 断言指定物品为空
+     *
+     * @param itemStack 被断言的物品
+     * @param message   异常消息
+     */
+    public static void assertEmptyStack(ItemStack itemStack, Supplier<String> message) {
+        if (itemStack.isEmpty()) {
+            return;
+        }
+        throw new IllegalStateException(message.get());
     }
 }
