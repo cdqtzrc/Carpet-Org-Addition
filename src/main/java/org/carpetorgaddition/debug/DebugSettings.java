@@ -1,6 +1,6 @@
 package org.carpetorgaddition.debug;
 
 public class DebugSettings {
-    @DebugRule(name = "测试", desc = "测试用")
-    public static boolean test = false;
+    @DebugRule(name = "打开玩家物品栏")
+    public static boolean openFakePlayerInventory = false;
 }

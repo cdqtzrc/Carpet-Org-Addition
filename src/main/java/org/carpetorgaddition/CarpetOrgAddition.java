@@ -26,6 +26,7 @@ import org.carpetorgaddition.util.wheel.Waypoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.management.ManagementFactory;
 import java.util.Map;
 
 public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
@@ -37,6 +38,10 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     public static final Logger LOGGER = LoggerFactory.getLogger("CarpetOrgAddition");
     public static final String MOD_NAME_LOWER_CASE = "carpetorgaddition";
     public static final String MOD_ID = "carpet-org-addition";
+    /**
+     * 当前jvm是否为调试模式
+     */
+    public static final boolean IS_DEBUG = ManagementFactory.getRuntimeMXBean().getInputArguments().stream().anyMatch(s -> s.contains("jdwp"));
 
     /**
      * 模组初始化
@@ -45,10 +50,12 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     public void onInitialize() {
         CarpetServer.manageExtension(new CarpetOrgAddition());
         NetworkS2CPackRegister.register();
-        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+        // 如果当前为调试模式的开发环境，注册测试规则
+        if (IS_DEBUG && FabricLoader.getInstance().isDevelopmentEnvironment()) {
             DebugRuleRegistrar.getInstance().registrar(DebugSettings.class);
         }
     }
+
 
     // 在游戏开始时
     @Override

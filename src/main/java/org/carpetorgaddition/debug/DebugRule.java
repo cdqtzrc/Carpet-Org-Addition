@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 public @interface DebugRule {
     String name();
 
-    String desc();
+    String desc() default "";
 
     String[] extra() default {};
 
