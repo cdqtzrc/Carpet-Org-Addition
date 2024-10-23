@@ -5,6 +5,7 @@ import carpet.CarpetServer;
 import carpet.patches.EntityPlayerMPFake;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.server.MinecraftServer;
@@ -13,6 +14,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import org.carpetorgaddition.command.PlayerManagerCommand;
 import org.carpetorgaddition.command.RegisterCarpetCommands;
+import org.carpetorgaddition.debug.DebugRuleRegistrar;
+import org.carpetorgaddition.debug.DebugSettings;
 import org.carpetorgaddition.logger.WanderingTraderSpawnLogger;
 import org.carpetorgaddition.network.NetworkS2CPackRegister;
 import org.carpetorgaddition.translate.Translate;
@@ -42,6 +45,9 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     public void onInitialize() {
         CarpetServer.manageExtension(new CarpetOrgAddition());
         NetworkS2CPackRegister.register();
+        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+            DebugRuleRegistrar.getInstance().registrar(DebugSettings.class);
+        }
     }
 
     // 在游戏开始时
