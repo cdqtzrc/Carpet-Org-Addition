@@ -1,6 +1,5 @@
 package org.carpetorgaddition.command;
 
-import carpet.CarpetSettings;
 import carpet.patches.EntityPlayerMPFake;
 import carpet.utils.CommandHelper;
 import com.mojang.brigadier.Command;
@@ -22,14 +21,11 @@ import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 import org.carpetorgaddition.CarpetOrgAdditionSettings;
 import org.carpetorgaddition.util.CommandUtils;
 import org.carpetorgaddition.util.MessageUtils;
 import org.carpetorgaddition.util.TextUtils;
-import org.carpetorgaddition.util.constant.TextConstants;
 import org.carpetorgaddition.util.fakeplayer.FakePlayerAction;
 import org.carpetorgaddition.util.fakeplayer.FakePlayerActionInterface;
 import org.carpetorgaddition.util.fakeplayer.FakePlayerActionManager;
@@ -283,30 +279,16 @@ public class PlayerActionCommand {
         // 打开合成GUI
         SimpleNamedScreenHandlerFactory screen = new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity)
                 -> new CraftingSetRecipeScreenHandler(i, playerInventory, fakePlayer,
-                ScreenHandlerContext.create(player.getWorld(), player.getBlockPos()), context),
+                ScreenHandlerContext.create(player.getWorld(), player.getBlockPos())),
                 TextUtils.translate("carpet.commands.playerAction.info.craft.gui"));
         player.openHandledScreen(screen);
         return 1;
-    }
-
-    // 提示启用Ctrl+Q合成修复
-    public static void promptToEnableCtrlQCraftingFix(ServerCommandSource source) {
-        if (CarpetSettings.ctrlQCraftingFix) {
-            return;
-        }
-        String command = "/carpet ctrlQCraftingFix true";
-        // [这里]的悬停提示
-        MutableText hoverText = TextConstants.clickInput(command);
-        MutableText suggest = TextUtils.suggest(TextConstants.CLICK_HERE.copy(), command, hoverText, Formatting.AQUA);
-        MessageUtils.sendCommandFeedback(source, "carpet.commands.playerAction.set", suggest);
     }
 
     // 在设置假玩家合成时获取动作管理器并提示启用合成修复
     private static FakePlayerActionManager prepareTheCrafting(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         EntityPlayerMPFake fakePlayer = CommandUtils.getArgumentFakePlayer(context);
         // 提示启用合成修复
-        // TODO 不再需要启用规则
-        promptToEnableCtrlQCraftingFix(context.getSource());
         return FakePlayerActionInterface.getManager(fakePlayer);
     }
 }

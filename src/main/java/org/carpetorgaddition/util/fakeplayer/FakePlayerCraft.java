@@ -1,6 +1,5 @@
 package org.carpetorgaddition.util.fakeplayer;
 
-import carpet.CarpetSettings;
 import carpet.patches.EntityPlayerMPFake;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.CraftingScreenHandler;
@@ -29,7 +28,7 @@ public class FakePlayerCraft {
             int craftCount = 0;
             // 记录循环次数用来在游戏可能进入死循环时抛出异常
             int loopCount = 0;
-            do {
+            while (true) {
                 // 检查循环次数，在循环次数过多时抛出异常
                 loopCount++;
                 if (loopCount > MAX_LOOP_COUNT) {
@@ -116,7 +115,7 @@ public class FakePlayerCraft {
                     // 遍历完物品栏后，如果找到正确合成材料小于9，认为玩家身上没有足够的合成材料了，直接结束方法
                     return;
                 }
-            } while (CarpetSettings.ctrlQCraftingFix);
+            }
         }
     }
 
@@ -128,7 +127,7 @@ public class FakePlayerCraft {
         int craftCount = 0;
         // 记录循环次数用来在游戏可能进入死循环时抛出异常
         int loopCount = 0;
-        do {
+        while (true) {
             // 检查循环次数
             loopCount++;
             if (loopCount > MAX_LOOP_COUNT) {
@@ -211,7 +210,7 @@ public class FakePlayerCraft {
                 // 遍历完物品栏后，如果没有找到足够多的合成材料，认为玩家身上没有足够的合成材料了，直接结束方法
                 return;
             }
-        } while (CarpetSettings.ctrlQCraftingFix);
+        }
     }
 
     /**

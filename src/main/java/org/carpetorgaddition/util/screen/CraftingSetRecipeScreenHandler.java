@@ -1,7 +1,6 @@
 package org.carpetorgaddition.util.screen;
 
 import carpet.patches.EntityPlayerMPFake;
-import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
@@ -9,12 +8,9 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.CraftingScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.server.command.ServerCommandSource;
-import org.carpetorgaddition.command.PlayerActionCommand;
 import org.carpetorgaddition.util.fakeplayer.FakePlayerAction;
 import org.carpetorgaddition.util.fakeplayer.FakePlayerActionInterface;
 import org.carpetorgaddition.util.fakeplayer.FakePlayerActionManager;
-import org.carpetorgaddition.util.fakeplayer.FakePlayerUtils;
 import org.carpetorgaddition.util.fakeplayer.actiondata.CraftingTableCraftData;
 import org.carpetorgaddition.util.fakeplayer.actiondata.InventoryCraftData;
 import org.carpetorgaddition.util.matcher.ItemMatcher;
@@ -24,28 +20,22 @@ public class CraftingSetRecipeScreenHandler extends CraftingScreenHandler {
      * 一个假玩家对象，类中所有操作都是围绕这个假玩家进行的
      */
     private final EntityPlayerMPFake fakePlayer;
-    /**
-     * 执行/playerAction命令后的命令执行上下文对象，修改假玩家动作类型时会用到这个属性
-     */
-    private final CommandContext<ServerCommandSource> context;
 
     public CraftingSetRecipeScreenHandler(int syncId,
                                           PlayerInventory playerInventory,
                                           EntityPlayerMPFake fakePlayer,
-                                          ScreenHandlerContext screenHandlerContext,
-                                          CommandContext<ServerCommandSource> context) {
+                                          ScreenHandlerContext screenHandlerContext) {
         super(syncId, playerInventory, screenHandlerContext);
         this.fakePlayer = fakePlayer;
-        this.context = context;
     }
 
     // 阻止玩家取出输出槽位的物品
     @Override
     public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player) {
-        // 比较当前槽位的索引和工作台输出槽位的索引，不要获取槽位外的索引处的槽位，这会导致索引越界
-        if (slotIndex == FakePlayerUtils.EMPTY_SPACE_SLOT_INDEX || this.getSlot(slotIndex) != this.getOutputSlot()) {
-            super.onSlotClick(slotIndex, button, actionType, player);
+        if (slotIndex == 0) {
+            return;
         }
+        super.onSlotClick(slotIndex, button, actionType, player);
     }
 
     // 关闭GUI时，设置假玩家的合成动作和配方
@@ -64,8 +54,6 @@ public class CraftingSetRecipeScreenHandler extends CraftingScreenHandler {
         setCraftAction(items, FakePlayerActionInterface.getManager(fakePlayer));
         // 关闭GUI后，使用父类的方法让物品回到玩家背包
         super.onClosed(player);
-        // 提示启用Ctrl+Q合成修复
-        PlayerActionCommand.promptToEnableCtrlQCraftingFix(context.getSource());
     }
 
     // 设置假玩家合成动作
