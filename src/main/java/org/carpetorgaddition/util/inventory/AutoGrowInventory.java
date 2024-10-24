@@ -88,7 +88,7 @@ public class AutoGrowInventory implements Inventory, Iterable<ItemStack> {
         // 将当前封装的物品栏替换为新物品栏，并重新添加物品
         this.inventory = inventory;
         this.growCount++;
-        return this.addStack(stack);
+        return this.addStack(itemStack);
     }
 
     @NotNull
