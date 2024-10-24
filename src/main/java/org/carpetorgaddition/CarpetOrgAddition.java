@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+// TODO 拆分ModInitializer和CarpetExtension
 public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     /**
      * 控制玩家登录登出的消息是否显示
@@ -44,7 +45,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
      */
     @Override
     public void onInitialize() {
-        CarpetServer.manageExtension(new CarpetOrgAddition());
+        CarpetServer.manageExtension(this);
         NetworkS2CPackRegister.register();
         // 如果当前为调试模式的开发环境，注册测试规则
         if (DebugIMixinConfigPlugin.IS_DEBUG && FabricLoader.getInstance().isDevelopmentEnvironment()) {
