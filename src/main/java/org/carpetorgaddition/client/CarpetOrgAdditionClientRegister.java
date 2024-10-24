@@ -1,12 +1,14 @@
 package org.carpetorgaddition.client;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.loader.api.FabricLoader;
 import org.carpetorgaddition.client.command.DictionaryCommand;
 import org.carpetorgaddition.client.command.HighlightCommand;
 import org.carpetorgaddition.client.command.argument.ClientBlockPosArgumentType;
 import org.carpetorgaddition.client.renderer.waypoint.WaypointRender;
 import org.carpetorgaddition.client.renderer.waypoint.WaypointRenderManager;
 import org.carpetorgaddition.client.renderer.waypoint.WaypointRenderType;
+import org.carpetorgaddition.debug.client.render.HudRender;
 import org.carpetorgaddition.network.WaypointClearS2CPack;
 import org.carpetorgaddition.network.WaypointUpdateS2CPack;
 
@@ -17,6 +19,7 @@ public class CarpetOrgAdditionClientRegister {
         registerC2SNetworkPack();
         registerNetworkPackReceiver();
         registerRender();
+        developed();
     }
 
     /**
@@ -59,5 +62,14 @@ public class CarpetOrgAdditionClientRegister {
     private static void registerRender() {
         // 注册路径点渲染器
         WaypointRenderManager.register();
+    }
+
+    /**
+     * 仅用于开发测试
+     */
+    private static void developed() {
+        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+            HudRender.render();
+        }
     }
 }
